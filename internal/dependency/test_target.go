@@ -6,4 +6,5 @@ import "github.com/hotstone-seo/hotstone-server/typical"
 
 func init() {
 	typical.Context.TestTargets.Append("./app")
+	typical.Context.TestTargets.Append("./app/config")
 }
