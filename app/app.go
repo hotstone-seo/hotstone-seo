@@ -21,22 +21,18 @@ type module struct {
 	typcfg.Configuration
 }
 
-func (module) AppCommands(c *typcli.ContextCli) []cli.Command {
+func (module) AppCommands(c typcli.Cli) []cli.Command {
 	return []cli.Command{
-		cli.Command{
-			Name:   "provider",
-			Usage:  "Start the provider",
-			Action: c.Action(startProvider),
-		},
-		cli.Command{
-			Name:   "server",
-			Usage:  "Start the Server",
-			Action: c.Action(startServer),
-		},
+		cli.Command{Name: "provider", Usage: "Start the provider", Action: c.Action(startProvider)},
+		cli.Command{Name: "server", Usage: "Start the Server", Action: c.Action(startServer)},
 	}
 }
 
-func (m module) loadConfig(loader typcfg.Loader) (cfg config.Config, err error) {
-	err = loader.Load(m.Configuration, &cfg)
-	return
+func (m module) Provide() []interface{} {
+	return []interface{}{
+		func(loader typcfg.Loader) (cfg config.Config, err error) {
+			err = loader.Load(m.Configuration, &cfg)
+			return
+		},
+	}
 }

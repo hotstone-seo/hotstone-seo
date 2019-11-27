@@ -101,6 +101,8 @@ github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81P
 github.com/typical-go/typical-go v0.9.1/go.mod h1:fjPxH8kPav3uNtUZp8Q4F8ZHMY+mSgjynsVZe4e0mb4=
 github.com/typical-go/typical-go v0.9.2 h1:c+igmdXPujs6JqomZbRy1Yosnj2Z22ELLa56RkUzq00=
 github.com/typical-go/typical-go v0.9.2/go.mod h1:fjPxH8kPav3uNtUZp8Q4F8ZHMY+mSgjynsVZe4e0mb4=
+github.com/typical-go/typical-go v0.9.3 h1:SLxDxklT4holtyaqXnNReUaFQalNgXDG+bStULEeJiE=
+github.com/typical-go/typical-go v0.9.3/go.mod h1:fjPxH8kPav3uNtUZp8Q4F8ZHMY+mSgjynsVZe4e0mb4=
 github.com/typical-go/typical-rest-server v0.8.6 h1:QC/rAKUMWGlRe5/H/b6CwIlDTnoqrtkpgvo92t2eZE0=
 github.com/typical-go/typical-rest-server v0.8.6/go.mod h1:h0UG+ifHrhvR+ZEc4M1g8zwNBzaCB3o6C9er6Nsndlc=
 github.com/urfave/cli v1.21.0 h1:wYSSj06510qPIzGSua9ZqsncMmWE3Zr55KBERygyrxE=
