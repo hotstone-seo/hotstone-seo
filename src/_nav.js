@@ -7,7 +7,7 @@ export default {
     },
     {
       name: 'Meta-Tag',
-      url: '/base/rule',
+      url: '/base/metatag',
       icon: 'icon-puzzle',
     },
     {

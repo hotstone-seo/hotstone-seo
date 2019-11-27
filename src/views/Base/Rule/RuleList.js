@@ -10,7 +10,7 @@ class RuleList extends Component {
   }
   handleClick() {
     const { history } = this.props;
-    history.push('/base/ruleForm');
+    history.push('/base/RuleForm');
   }
   render() {
     return (

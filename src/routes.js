@@ -35,8 +35,8 @@ const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 const RuleList = React.lazy(() => import('./views/Base/Rule/RuleList'));
 const RuleForm = React.lazy(() => import('./views/Base/Rule/RuleForm'));
+const MetaTagList = React.lazy(() => import('./views/Base/Metatag/Metatag'));
 
-// https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
@@ -78,6 +78,7 @@ const routes = [
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/base/rule', name: 'Rules', component: RuleList },
   { path: '/base/ruleForm', name: 'Rules', component: RuleForm },
+  { path: '/base/metatag', name: 'Metatag', component: MetaTagList },
 ];
 
 export default routes;
