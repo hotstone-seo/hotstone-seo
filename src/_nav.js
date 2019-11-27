@@ -1,6 +1,16 @@
 export default {
   items: [
     {
+      name: 'Rule',
+      url: '/base/rule',
+      icon: 'icon-puzzle',
+    },
+    {
+      name: 'Meta-Tag',
+      url: '/base/rule',
+      icon: 'icon-puzzle',
+    },
+    {
       name: 'Dashboard',
       url: '/dashboard',
       icon: 'icon-speedometer',
