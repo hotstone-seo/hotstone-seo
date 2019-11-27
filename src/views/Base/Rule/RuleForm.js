@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Badge,
+  
   Button,
   Card,
   CardBody,
@@ -10,11 +10,13 @@ import {
  
   Form,
   FormGroup,
-  FormText,
-  
-  Input,
- 
    
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Input,
+  InputGroup,
+  InputGroupButtonDropdown,
   Label,
   Row,
 } from 'reactstrap';
@@ -55,57 +57,51 @@ class RuleForm extends Component {
                    
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="text-input">Text Input</Label>
+                      <Label htmlFor="text-input">Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="text-input" name="text-input" placeholder="Text" />
-                      <FormText color="muted">This is a help text</FormText>
+                      <Input type="text" id="name" name="name" placeholder="Name" />
+                      
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="email-input">Email Input</Label>
+                      <Label htmlFor="text-input">URL Pattern</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="email" id="email-input" name="email-input" placeholder="Enter Email" autoComplete="email"/>
-                      <FormText className="help-block">Please enter your email</FormText>
+                      <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" />
+                       
+                    </Col>
+                  </FormGroup>
+                   
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="textarea-input">Exclusion</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="textarea" name="exclusion" id="exclusion" rows="3"
+                             placeholder="Exclusion" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="password-input">Password</Label>
+                      <Label htmlFor="text-input">Data Source</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="password" id="password-input" name="password-input" placeholder="Password" autoComplete="new-password" />
-                      <FormText className="help-block">Please enter a complex password</FormText>
+                        <InputGroup>
+                        <InputGroupButtonDropdown addonType="prepend"
+                                                  isOpen={this.state.first}
+                                                  toggle={() => { this.setState({ first: !this.state.first }); }}>
+                          <DropdownToggle caret color="primary">
+                            -Choose-
+                          </DropdownToggle>
+                          <DropdownMenu className={this.state.first ? 'show' : ''}>
+                            <DropdownItem>Airport</DropdownItem>                           
+                          </DropdownMenu>
+                        </InputGroupButtonDropdown>                     
+                      </InputGroup>
                     </Col>
                   </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="date-input">Date Input <Badge>NEW</Badge></Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="date" id="date-input" name="date-input" placeholder="date" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="disabled-input">Disabled Input</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="disabled-input" name="disabled-input" placeholder="Disabled" disabled />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="textarea-input">Textarea</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" name="textarea-input" id="textarea-input" rows="3"
-                             placeholder="Content..." />
-                    </Col>
-                  </FormGroup>
-                  
                  
                                 
                    
@@ -116,7 +112,7 @@ class RuleForm extends Component {
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="reset" size="sm" color="danger"><i className="fa fa-ban"></i> Reset</Button>
+                <Button type="button" size="sm" color="secondary"><i className="fa fa-ban"></i> Verify</Button>
               </CardFooter>
             </Card>
             
