@@ -1,15 +1,24 @@
 import React, { Component } from 'react';
 import {  Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button, NavLink } from 'reactstrap';
+import RuleForm from './RuleForm';
+import PropTypes from 'prop-types';
 
-class Tables extends Component {
+class RuleList extends Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    const { history } = this.props;
+    history.push('/base/ruleForm');
+  }
   render() {
     return (
-      <div className="animated fadeIn">
-        
-        <Row>
 
+      <div className="animated fadeIn">       
+        <Row>
         <Col xs="6" lg="2">
-        <Button block color="primary">Add New</Button>
+        <Button block color="primary" onClick={this.handleClick} >Add New</Button>
         
             </Col>
             
@@ -115,5 +124,10 @@ class Tables extends Component {
     );
   }
 }
+RuleList.propTypes = {
+  match: PropTypes.shape({
+    path: PropTypes.string,
+  }).isRequired,
+};
 
-export default Tables;
+export default RuleList;

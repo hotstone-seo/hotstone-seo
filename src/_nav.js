@@ -35,11 +35,6 @@ export default {
           icon: 'icon-puzzle',
         },
         {
-          name: 'Carousels',
-          url: '/base/carousels',
-          icon: 'icon-puzzle',
-        },
-        {
           name: 'Collapses',
           url: '/base/collapses',
           icon: 'icon-puzzle',
@@ -52,11 +47,6 @@ export default {
         {
           name: 'Forms',
           url: '/base/forms',
-          icon: 'icon-puzzle',
-        },
-        {
-          name: 'Jumbotrons',
-          url: '/base/jumbotrons',
           icon: 'icon-puzzle',
         },
         {
@@ -194,15 +184,6 @@ export default {
           icon: 'icon-bell',
         },
       ],
-    },
-    {
-      name: 'Widgets',
-      url: '/widgets',
-      icon: 'icon-calculator',
-      badge: {
-        variant: 'info',
-        text: 'NEW',
-      },
     },
     {
       divider: true,
