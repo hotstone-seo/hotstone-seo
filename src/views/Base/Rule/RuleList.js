@@ -28,16 +28,13 @@ class RuleList extends Component {
                 Rule
               </CardHeader>
               <CardBody>
-               
-               
-             
                 <Table responsive bordered>
                   <thead>
                   <tr>
                     <th>Name</th>
                     <th>URL Pattern</th>
-                    <th>Canonical</th>
-                    <th>Language</th>
+                    <th>Data Source</th>
+                     
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -46,21 +43,16 @@ class RuleList extends Component {
                     <td>Pompeius René</td>
                     <td>2xxx</td>
                     <td>xx</td>
-                    <td>
-                      ENG
-                    </td>
+                    
                     <td>
                     <NavLink href="#">Edit</NavLink>
-                     
                     </td>
                   </tr>
                   <tr>
                     <td>Paĉjo Jadon</td>
                     <td>xxx</td>
                     <td>xx</td>
-                    <td>
-                      END
-                    </td>
+                     
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -71,9 +63,7 @@ class RuleList extends Component {
                     <td>ccc</td>
                     <td>cc</td>
                     
-                    <td>
-                     ENG
-                    </td>
+                     
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -82,9 +72,7 @@ class RuleList extends Component {
                     <td>Ganesha Dubhghall</td>
                     <td>fff</td>
                     <td>fff</td>
-                    <td>
-                    ID
-                    </td>
+                     
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -93,9 +81,7 @@ class RuleList extends Component {
                     <td>Hiroto Šimun</td>
                     <td>2012/01/21</td>
                     <td>Staff</td>
-                    <td>
-                     ID
-                    </td>
+                    
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>

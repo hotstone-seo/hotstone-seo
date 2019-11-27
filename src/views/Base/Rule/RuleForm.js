@@ -7,10 +7,8 @@ import {
   CardFooter,
   CardHeader,
   Col,
- 
   Form,
   FormGroup,
-   
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
@@ -102,12 +100,6 @@ class RuleForm extends Component {
                       </InputGroup>
                     </Col>
                   </FormGroup>
-                 
-                                
-                   
-                  
-                 
-                  
                 </Form>
               </CardBody>
               <CardFooter>
