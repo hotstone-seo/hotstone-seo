@@ -35,6 +35,8 @@ const RuleList = React.lazy(() => import('./views/Base/Rule/RuleList'));
 const RuleForm = React.lazy(() => import('./views/Base/Rule/RuleForm'));
 const MetaTagList = React.lazy(() => import('./views/Base/Metatag/Metatag'));
 const MetatagPreview = React.lazy(() => import('./views/Base/Metatag/MetatagPreview'));
+const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSource'));
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -76,6 +78,8 @@ const routes = [
   { path: '/base/metatag', name: 'Metatag', component: MetaTagList },
   { path: '/base/metatagForm', name: 'Metatag', component: MetatagForm },
   { path: '/base/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
+  { path: '/base/datasource', name: 'DataSource', component: DataSourceList },
+  
 ];
 
 export default routes;

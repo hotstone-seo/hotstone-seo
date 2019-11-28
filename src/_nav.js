@@ -1,6 +1,16 @@
 export default {
   items: [
     {
+      name: 'Analytic',
+      url: '/dashboard',
+      icon: 'icon-speedometer',
+    },
+    {
+      name: 'DataSource',
+      url: '/base/datasource',
+      icon: 'icon-puzzle',
+    },
+    {
       name: 'Rule',
       url: '/base/rule',
       icon: 'icon-puzzle',
@@ -10,11 +20,7 @@ export default {
       url: '/base/metatag',
       icon: 'icon-puzzle',
     },
-    {
-      name: 'Analytic',
-      url: '/dashboard',
-      icon: 'icon-speedometer',
-    },
+    
     {
       name: 'Base',
       url: '/base',
