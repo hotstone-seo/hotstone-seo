@@ -64,21 +64,20 @@ class MetatagForm extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="text-input">URL Pattern</Label>
+                      <Label htmlFor="text-input">Content</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" />
+                      <Input type="text" id="content" name="content" placeholder="Content" />
                        
                     </Col>
                   </FormGroup>
                    
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="textarea-input">Exclusion</Label>
+                      <Label htmlFor="text-input">Default Content</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="textarea" name="exclusion" id="exclusion" rows="3"
-                             placeholder="Exclusion" />
+                        <Input type="text" id="defaultcontent" name="defaultcontent" placeholder="Default Content" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -94,7 +93,7 @@ class MetatagForm extends Component {
                             -Choose-
                           </DropdownToggle>
                           <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>Airport</DropdownItem>                           
+                            <DropdownItem>Airport Detail</DropdownItem>                           
                           </DropdownMenu>
                         </InputGroupButtonDropdown>                     
                       </InputGroup>
@@ -104,7 +103,7 @@ class MetatagForm extends Component {
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="sm" color="secondary"><i className="fa fa-ban"></i> Verify</Button>
+                <Button type="button" size="sm" color="secondary"><i className="fa fa-ban"></i> Preview</Button>
               </CardFooter>
             </Card>
             

@@ -1,4 +1,5 @@
 import React from 'react';
+import MetatagForm from './views/Base/Metatag/MetatagForm';
 
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
@@ -75,6 +76,7 @@ const routes = [
   { path: '/base/rule', name: 'Rules', component: RuleList },
   { path: '/base/ruleForm', name: 'Rules', component: RuleForm },
   { path: '/base/metatag', name: 'Metatag', component: MetaTagList },
+  { path: '/base/metatagForm', name: 'Metatag', component: MetatagForm },
 ];
 
 export default routes;
