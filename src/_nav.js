@@ -11,13 +11,9 @@ export default {
       icon: 'icon-puzzle',
     },
     {
-      name: 'Dashboard',
+      name: 'Analytic',
       url: '/dashboard',
       icon: 'icon-speedometer',
-      badge: {
-        variant: 'info',
-        text: 'NEW',
-      },
     },
     {
       name: 'Base',
@@ -163,11 +159,6 @@ export default {
       url: '/notifications',
       icon: 'icon-bell',
       children: [
-        {
-          name: 'Alerts',
-          url: '/notifications/alerts',
-          icon: 'icon-bell',
-        },
         {
           name: 'Badges',
           url: '/notifications/badges',

@@ -26,7 +26,6 @@ const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
 const Flags = React.lazy(() => import('./views/Icons/Flags'));
 const FontAwesome = React.lazy(() => import('./views/Icons/FontAwesome'));
 const SimpleLineIcons = React.lazy(() => import('./views/Icons/SimpleLineIcons'));
-const Alerts = React.lazy(() => import('./views/Notifications/Alerts'));
 const Badges = React.lazy(() => import('./views/Notifications/Badges'));
 const Modals = React.lazy(() => import('./views/Notifications/Modals'));
 const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
@@ -35,6 +34,7 @@ const User = React.lazy(() => import('./views/Users/User'));
 const RuleList = React.lazy(() => import('./views/Base/Rule/RuleList'));
 const RuleForm = React.lazy(() => import('./views/Base/Rule/RuleForm'));
 const MetaTagList = React.lazy(() => import('./views/Base/Metatag/Metatag'));
+const MetatagPreview = React.lazy(() => import('./views/Base/Metatag/MetatagPreview'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -66,8 +66,6 @@ const routes = [
   { path: '/icons/flags', name: 'Flags', component: Flags },
   { path: '/icons/font-awesome', name: 'Font Awesome', component: FontAwesome },
   { path: '/icons/simple-line-icons', name: 'Simple Line Icons', component: SimpleLineIcons },
-  { path: '/notifications', exact: true, name: 'Notifications', component: Alerts },
-  { path: '/notifications/alerts', name: 'Alerts', component: Alerts },
   { path: '/notifications/badges', name: 'Badges', component: Badges },
   { path: '/notifications/modals', name: 'Modals', component: Modals },
   { path: '/widgets', name: 'Widgets', component: Widgets },
@@ -77,6 +75,7 @@ const routes = [
   { path: '/base/ruleForm', name: 'Rules', component: RuleForm },
   { path: '/base/metatag', name: 'Metatag', component: MetaTagList },
   { path: '/base/metatagForm', name: 'Metatag', component: MetatagForm },
+  { path: '/base/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
 ];
 
 export default routes;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import {
-  
   Button,
   Card,
   CardBody,
@@ -30,6 +31,9 @@ class MetatagForm extends Component {
       fadeIn: true,
       timeout: 300
     };
+
+    this.handlePreview = this.handlePreview.bind(this);
+
   }
 
   toggle() {
@@ -38,6 +42,11 @@ class MetatagForm extends Component {
 
   toggleFade() {
     this.setState((prevState) => { return { fadeIn: !prevState }});
+  }
+
+  handlePreview() {
+    const { history } = this.props;
+    history.push('/base/MetatagPreview');
   }
 
   render() {
@@ -103,25 +112,19 @@ class MetatagForm extends Component {
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="sm" color="secondary"><i className="fa fa-ban"></i> Preview</Button>
+                <Button type="button" size="sm" color="secondary" onClick={this.handlePreview}><i className="fa fa-ban"></i> Preview</Button>
               </CardFooter>
             </Card>
             
           </Col>
-          <Col xs="12" md="6">
-             
-            
-            
-             
-          </Col>
-        </Row>
-         
-        
-         
-         
+        </Row>         
       </div>
     );
   }
 }
-
+MetatagForm.propTypes = {
+    match: PropTypes.shape({
+      path: PropTypes.string,
+    }).isRequired,
+};
 export default MetatagForm;
