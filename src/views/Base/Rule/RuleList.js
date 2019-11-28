@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {  Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button, NavLink } from 'reactstrap';
-import RuleForm from './RuleForm';
 import PropTypes from 'prop-types';
 
 class RuleList extends Component {
@@ -34,7 +33,7 @@ class RuleList extends Component {
                     <th>Name</th>
                     <th>URL Pattern</th>
                     <th>Data Source</th>
-                     
+                    <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -43,7 +42,7 @@ class RuleList extends Component {
                     <td>Pompeius René</td>
                     <td>2xxx</td>
                     <td>xx</td>
-                    
+                    <th>Nov 15 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>
                     </td>
@@ -52,7 +51,7 @@ class RuleList extends Component {
                     <td>Paĉjo Jadon</td>
                     <td>xxx</td>
                     <td>xx</td>
-                     
+                    <th>Nov 15 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -63,7 +62,7 @@ class RuleList extends Component {
                     <td>ccc</td>
                     <td>cc</td>
                     
-                     
+                    <th>Nov 15 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -72,7 +71,7 @@ class RuleList extends Component {
                     <td>Ganesha Dubhghall</td>
                     <td>fff</td>
                     <td>fff</td>
-                     
+                    <th>Nov 15 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -81,7 +80,7 @@ class RuleList extends Component {
                     <td>Hiroto Šimun</td>
                     <td>2012/01/21</td>
                     <td>Staff</td>
-                    
+                    <th>Nov 15 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
