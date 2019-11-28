@@ -33,7 +33,7 @@ class Metatag extends Component {
                     <th>Name</th>
                     <th>Rule</th>
                     <th>Content</th>
-                     
+                    <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -42,7 +42,7 @@ class Metatag extends Component {
                     <td>Pompeius René</td>
                     <td>2xxx</td>
                     <td>xx</td>
-                    
+                    <th>Nov 16 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>
                     </td>
@@ -51,7 +51,7 @@ class Metatag extends Component {
                     <td>Paĉjo Jadon</td>
                     <td>xxx</td>
                     <td>xx</td>
-                     
+                    <th>Nov 16 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -61,7 +61,7 @@ class Metatag extends Component {
                     <td>Micheal Mercurius</td>
                     <td>ccc</td>
                     <td>cc</td>
-                    
+                    <th>Nov 16 2019</th>
                      
                     <td>
                     <NavLink href="#">Edit</NavLink>   
@@ -71,7 +71,7 @@ class Metatag extends Component {
                     <td>Ganesha Dubhghall</td>
                     <td>fff</td>
                     <td>fff</td>
-                     
+                    <th>Nov 16 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
@@ -80,7 +80,7 @@ class Metatag extends Component {
                     <td>Hiroto Šimun</td>
                     <td>2012/01/21</td>
                     <td>Staff</td>
-                    
+                    <th>Nov 16 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>   
                     </td>
