@@ -94,18 +94,13 @@ class RuleList extends Component {
                   </PaginationItem>
                   <PaginationItem className="page-item"><PaginationLink tag="button">2</PaginationLink></PaginationItem>
                   <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                  <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
                   <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
                 </Pagination>
               </CardBody>
             </Card>
-          </Col>
-
+         </Col>
         </Row>
-
-        
       </div>
-
     );
   }
 }
