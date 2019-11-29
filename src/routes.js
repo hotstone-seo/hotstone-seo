@@ -36,6 +36,7 @@ const RuleForm = React.lazy(() => import('./views/Base/Rule/RuleForm'));
 const MetaTagList = React.lazy(() => import('./views/Base/Metatag/Metatag'));
 const MetatagPreview = React.lazy(() => import('./views/Base/Metatag/MetatagPreview'));
 const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSource'));
+const DataSourceForm = React.lazy(() => import('./views/Base/DataSource/DataSourceForm'));
 const CanonicalList = React.lazy(() => import('./views/Base/Canonical/Canonical'));
 
 const routes = [
@@ -79,6 +80,7 @@ const routes = [
   { path: '/base/metatagForm', name: 'Metatag', component: MetatagForm },
   { path: '/base/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
   { path: '/base/datasource', name: 'DataSource', component: DataSourceList },
+  { path: '/base/DataSourceForm', name: 'DataSource', component: DataSourceForm },
   { path: '/base/canonical', name: 'Canonical', component: CanonicalList },
 ];
 
