@@ -16,6 +16,11 @@ export default {
       icon: 'icon-puzzle',
     },
     {
+      name: 'Canonical',
+      url: '/base/canonical',
+      icon: 'icon-puzzle',
+    },
+    {
       name: 'Meta-Tag',
       url: '/base/metatag',
       icon: 'icon-puzzle',

@@ -57,7 +57,7 @@ class CanonicalForm extends Component {
           <Col xs="12" md="12">
             <Card>
               <CardHeader>
-                <strong>Add New Meta-Tag</strong>
+                <strong>Add New Canonical</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">

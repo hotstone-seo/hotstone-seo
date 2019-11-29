@@ -38,6 +38,7 @@ const MetatagPreview = React.lazy(() => import('./views/Base/Metatag/MetatagPrev
 const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSource'));
 const DataSourceForm = React.lazy(() => import('./views/Base/DataSource/DataSourceForm'));
 const CanonicalList = React.lazy(() => import('./views/Base/Canonical/Canonical'));
+const CanonicalForm = React.lazy(() => import('./views/Base/Canonical/CanonicalForm'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -82,6 +83,7 @@ const routes = [
   { path: '/base/datasource', name: 'DataSource', component: DataSourceList },
   { path: '/base/DataSourceForm', name: 'DataSource', component: DataSourceForm },
   { path: '/base/canonical', name: 'Canonical', component: CanonicalList },
+  { path: '/base/canonicalForm', name: 'Canonical', component: CanonicalForm },
 ];
 
 export default routes;
