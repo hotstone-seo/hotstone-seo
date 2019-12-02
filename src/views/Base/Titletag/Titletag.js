@@ -30,61 +30,34 @@ class Titletag extends Component {
                 <Table responsive bordered>
                   <thead>
                   <tr>
-                    <th>Name</th>
                     <th>Rule</th>
-                    <th>Content</th>
+                    <th>Language</th>
+                    <th>Title</th>
                     <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr>
-                    <td>Pompeius René</td>
-                    <td>2xxx</td>
-                    <td>xx</td>
+                    <td>Airport Detail</td>
+                    <td>ID</td>
+                    <td>{name} is located at {province}</td>
                     <th>Nov 16 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>
                     </td>
                   </tr>
                   <tr>
-                    <td>Paĉjo Jadon</td>
-                    <td>xxx</td>
-                    <td>xx</td>
+                     <td>Airport Detail</td>
+                    <td>ENG</td>
+                    <td>{name} is located at {province}</td>
                     <th>Nov 16 2019</th>
                     <td>
-                    <NavLink href="#">Edit</NavLink>   
+                    <NavLink href="#">Edit</NavLink>
                     </td>
 
                   </tr>
-                  <tr>
-                    <td>Micheal Mercurius</td>
-                    <td>ccc</td>
-                    <td>cc</td>
-                    <th>Nov 16 2019</th>
-                     
-                    <td>
-                    <NavLink href="#">Edit</NavLink>   
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Ganesha Dubhghall</td>
-                    <td>fff</td>
-                    <td>fff</td>
-                    <th>Nov 16 2019</th>
-                    <td>
-                    <NavLink href="#">Edit</NavLink>   
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Hiroto Šimun</td>
-                    <td>2012/01/21</td>
-                    <td>Staff</td>
-                    <th>Nov 16 2019</th>
-                    <td>
-                    <NavLink href="#">Edit</NavLink>   
-                    </td>
-                  </tr>
+                    
                   </tbody>
                 </Table>
                 <Pagination>
