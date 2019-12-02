@@ -9,7 +9,7 @@ class Titletag extends Component {
   }
   handleClick() {
     const { history } = this.props;
-    history.push('/base/MetatagForm');
+    history.push('/base/TitletagForm');
   }
   render() {
     return (
@@ -24,7 +24,7 @@ class Titletag extends Component {
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>
-                Meta-Tag
+                Title-Tag
               </CardHeader>
               <CardBody>
                 <Table responsive bordered>
