@@ -63,33 +63,10 @@ class TitletagForm extends Component {
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                    
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
-                      
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Content</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="content" name="content" placeholder="Content" />
-                       
-                    </Col>
-                  </FormGroup>
+                 
+                 
                    
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Default Content</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                        <Input type="text" id="defaultcontent" name="defaultcontent" placeholder="Default Content" />
-                    </Col>
-                  </FormGroup>
+                 
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Rule</Label>
@@ -109,6 +86,26 @@ class TitletagForm extends Component {
                       </InputGroup>
                     </Col>
                   </FormGroup>
+
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="text-input">Language</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      
+                       
+                    </Col>
+                  </FormGroup>
+
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="text-input">Title</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                         
+                    </Col>
+                  </FormGroup>
+
                 </Form>
               </CardBody>
               <CardFooter>
