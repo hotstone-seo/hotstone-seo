@@ -1,5 +1,3 @@
-// +build typical
-
 package main
 
 import "github.com/typical-go/typical-go/pkg/typprebuilder"
