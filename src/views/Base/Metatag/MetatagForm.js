@@ -41,7 +41,7 @@ class MetatagForm extends Component {
   }
 
   toggleFade() {
-    this.setState((prevState) => { return { fadeIn: !prevState }});
+    this.setState((prevState) => { return { fadeIn: !prevState } });
   }
 
   handlePreview() {
@@ -52,7 +52,7 @@ class MetatagForm extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-     
+
         <Row>
           <Col xs="12" md="12">
             <Card>
@@ -61,14 +61,14 @@ class MetatagForm extends Component {
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                   
+
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Name</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="name" name="name" placeholder="Name" />
-                      
+
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -77,16 +77,16 @@ class MetatagForm extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="content" name="content" placeholder="Content" />
-                       
+
                     </Col>
                   </FormGroup>
-                   
+
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Default Content</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <Input type="text" id="defaultcontent" name="defaultcontent" placeholder="Default Content" />
+                      <Input type="text" id="defaultcontent" name="defaultcontent" placeholder="Default Content" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -94,17 +94,17 @@ class MetatagForm extends Component {
                       <Label htmlFor="text-input">Rule</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <InputGroup>
+                      <InputGroup>
                         <InputGroupButtonDropdown addonType="prepend"
-                                                  isOpen={this.state.first}
-                                                  toggle={() => { this.setState({ first: !this.state.first }); }}>
+                          isOpen={this.state.first}
+                          toggle={() => { this.setState({ first: !this.state.first }); }}>
                           <DropdownToggle caret color="primary">
                             -Choose-
                           </DropdownToggle>
                           <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>Airport Detail</DropdownItem>                           
+                            <DropdownItem>Airport Detail</DropdownItem>
                           </DropdownMenu>
-                        </InputGroupButtonDropdown>                     
+                        </InputGroupButtonDropdown>
                       </InputGroup>
                     </Col>
                   </FormGroup>
@@ -115,16 +115,16 @@ class MetatagForm extends Component {
                 <Button type="button" size="sm" color="secondary" onClick={this.handlePreview}><i className="fa fa-ban"></i> Preview</Button>
               </CardFooter>
             </Card>
-            
+
           </Col>
-        </Row>         
+        </Row>
       </div>
     );
   }
 }
 MetatagForm.propTypes = {
-    match: PropTypes.shape({
-      path: PropTypes.string,
-    }).isRequired,
+  match: PropTypes.shape({
+    path: PropTypes.string,
+  }).isRequired,
 };
 export default MetatagForm;

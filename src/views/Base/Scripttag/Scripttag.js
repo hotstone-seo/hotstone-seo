@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button, NavLink } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 class Scripttag extends Component {
@@ -14,13 +14,13 @@ class Scripttag extends Component {
   render() {
     return (
 
-      <div className="animated fadeIn">       
+      <div className="animated fadeIn">
         <Row>
-        <Col xs="6" lg="2">
-        <Button block color="primary" onClick={this.handleClick} >Add New</Button>
-        
-            </Col>
-            
+          <Col xs="6" lg="2">
+            <Button block color="primary" onClick={this.handleClick} >Add New</Button>
+
+          </Col>
+
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>
@@ -29,62 +29,62 @@ class Scripttag extends Component {
               <CardBody>
                 <Table responsive bordered>
                   <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Rule</th>
-                    <th>Content</th>
-                    <th>Updated Date</th>
-                    <th>Action</th>
-                  </tr>
+                    <tr>
+                      <th>Name</th>
+                      <th>Rule</th>
+                      <th>Content</th>
+                      <th>Updated Date</th>
+                      <th>Action</th>
+                    </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>Pompeius René</td>
-                    <td>2xxx</td>
-                    <td>xx</td>
-                    <th>Nov 16 2019</th>
-                    <td>
-                    <NavLink href="#">Edit</NavLink>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Paĉjo Jadon</td>
-                    <td>xxx</td>
-                    <td>xx</td>
-                    <th>Nov 16 2019</th>
-                    <td>
-                    <NavLink href="#">Edit</NavLink>   
-                    </td>
+                    <tr>
+                      <td>Pompeius René</td>
+                      <td>2xxx</td>
+                      <td>xx</td>
+                      <th>Nov 16 2019</th>
+                      <td>
+                        <NavLink href="#">Edit</NavLink>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Paĉjo Jadon</td>
+                      <td>xxx</td>
+                      <td>xx</td>
+                      <th>Nov 16 2019</th>
+                      <td>
+                        <NavLink href="#">Edit</NavLink>
+                      </td>
 
-                  </tr>
-                  <tr>
-                    <td>Micheal Mercurius</td>
-                    <td>ccc</td>
-                    <td>cc</td>
-                    <th>Nov 16 2019</th>
-                     
-                    <td>
-                    <NavLink href="#">Edit</NavLink>   
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Ganesha Dubhghall</td>
-                    <td>fff</td>
-                    <td>fff</td>
-                    <th>Nov 16 2019</th>
-                    <td>
-                    <NavLink href="#">Edit</NavLink>   
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Hiroto Šimun</td>
-                    <td>2012/01/21</td>
-                    <td>Staff</td>
-                    <th>Nov 16 2019</th>
-                    <td>
-                    <NavLink href="#">Edit</NavLink>   
-                    </td>
-                  </tr>
+                    </tr>
+                    <tr>
+                      <td>Micheal Mercurius</td>
+                      <td>ccc</td>
+                      <td>cc</td>
+                      <th>Nov 16 2019</th>
+
+                      <td>
+                        <NavLink href="#">Edit</NavLink>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Ganesha Dubhghall</td>
+                      <td>fff</td>
+                      <td>fff</td>
+                      <th>Nov 16 2019</th>
+                      <td>
+                        <NavLink href="#">Edit</NavLink>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Hiroto Šimun</td>
+                      <td>2012/01/21</td>
+                      <td>Staff</td>
+                      <th>Nov 16 2019</th>
+                      <td>
+                        <NavLink href="#">Edit</NavLink>
+                      </td>
+                    </tr>
                   </tbody>
                 </Table>
                 <Pagination>
@@ -103,7 +103,7 @@ class Scripttag extends Component {
 
         </Row>
 
-        
+
       </div>
 
     );

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {  Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button, NavLink } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Row, Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 class DataSource extends Component {
@@ -14,13 +14,13 @@ class DataSource extends Component {
   render() {
     return (
 
-      <div className="animated fadeIn">       
+      <div className="animated fadeIn">
         <Row>
-        <Col xs="6" lg="2">
-        <Button block color="primary" onClick={this.handleClick} >Add New</Button>
-        
-            </Col>
-            
+          <Col xs="6" lg="2">
+            <Button block color="primary" onClick={this.handleClick} >Add New</Button>
+
+          </Col>
+
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>
@@ -29,25 +29,25 @@ class DataSource extends Component {
               <CardBody>
                 <Table responsive bordered>
                   <thead>
-                  <tr>
-                    <th>Data Source Name</th>
-                    <th>Webhook</th>
-                    <th>Fields</th>
-                    <th>Updated Date</th>
-                    <th>Action</th>
-                  </tr>
+                    <tr>
+                      <th>Data Source Name</th>
+                      <th>Webhook</th>
+                      <th>Fields</th>
+                      <th>Updated Date</th>
+                      <th>Action</th>
+                    </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>Airport</td>
-                    <td>http://fligh-service/airport</td>
-                    <td>Id, name, address, province</td>
-                    <td>Nov 15 2019</td>
-                    <td>
-                    <NavLink href="#">Edit</NavLink>
-                    </td>
-                  </tr>
-                 
+                    <tr>
+                      <td>Airport</td>
+                      <td>http://fligh-service/airport</td>
+                      <td>Id, name, address, province</td>
+                      <td>Nov 15 2019</td>
+                      <td>
+                        <NavLink href="#">Edit</NavLink>
+                      </td>
+                    </tr>
+
                   </tbody>
                 </Table>
                 <Pagination>
@@ -55,12 +55,12 @@ class DataSource extends Component {
                   <PaginationItem active>
                     <PaginationLink tag="button">1</PaginationLink>
                   </PaginationItem>
-                  
+
                   <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
                 </Pagination>
               </CardBody>
             </Card>
-         </Col>
+          </Col>
         </Row>
       </div>
     );

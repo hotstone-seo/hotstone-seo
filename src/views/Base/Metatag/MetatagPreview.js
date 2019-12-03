@@ -8,9 +8,7 @@ import {
   CardFooter,
   CardHeader,
   Col,
-   
   FormGroup,
-   
   Row,
 } from 'reactstrap';
 var thisIsMyCopy = '<head><meta charset="UTF-8"><meta name="description" content="Free Web tutorials"></head>';
@@ -34,7 +32,7 @@ class MetatagPreview extends Component {
   }
 
   toggleFade() {
-    this.setState((prevState) => { return { fadeIn: !prevState }});
+    this.setState((prevState) => { return { fadeIn: !prevState } });
   }
   handleBack() {
     const { history } = this.props;
@@ -43,7 +41,7 @@ class MetatagPreview extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-     
+
         <Row>
           <Col xs="12" md="12">
             <Card>
@@ -51,30 +49,30 @@ class MetatagPreview extends Component {
                 <strong> Meta-Tag Preview</strong>
               </CardHeader>
               <CardBody>
-                
-                  <FormGroup row>
-                    <Col xs="12" md="12">
-                     
+
+                <FormGroup row>
+                  <Col xs="12" md="12">
+
                     <div className="content" > {thisIsMyCopy}</div>
-                    </Col>
-                  </FormGroup>
-                
+                  </Col>
+                </FormGroup>
+
               </CardBody>
               <CardFooter>
-               <Button type="button" size="sm" color="secondary" onClick={this.handleBack}><i className="fa fa-ban"></i> Back</Button>
+                <Button type="button" size="sm" color="secondary" onClick={this.handleBack}><i className="fa fa-ban"></i> Back</Button>
               </CardFooter>
             </Card>
           </Col>
-        </Row>         
+        </Row>
       </div>
     );
   }
 }
 
 MetatagPreview.propTypes = {
-    match: PropTypes.shape({
-      path: PropTypes.string,
-    }).isRequired,
+  match: PropTypes.shape({
+    path: PropTypes.string,
+  }).isRequired,
 };
 
 export default MetatagPreview;

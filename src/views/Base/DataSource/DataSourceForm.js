@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  
+
   Button,
   Card,
   CardBody,
@@ -37,13 +37,13 @@ class RuleForm extends Component {
   }
 
   toggleFade() {
-    this.setState((prevState) => { return { fadeIn: !prevState }});
+    this.setState((prevState) => { return { fadeIn: !prevState } });
   }
 
   render() {
     return (
       <div className="animated fadeIn">
-     
+
         <Row>
           <Col xs="12" md="12">
             <Card>
@@ -52,14 +52,14 @@ class RuleForm extends Component {
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                   
+
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Data Source Name</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="name" name="name" placeholder="Name" />
-                      
+
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -67,17 +67,17 @@ class RuleForm extends Component {
                       <Label htmlFor="text-input">Webhook</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <InputGroup>
+                      <InputGroup>
                         <InputGroupButtonDropdown addonType="prepend"
-                                                  isOpen={this.state.first}
-                                                  toggle={() => { this.setState({ first: !this.state.first }); }}>
+                          isOpen={this.state.first}
+                          toggle={() => { this.setState({ first: !this.state.first }); }}>
                           <DropdownToggle caret color="primary">
                             -Choose-
                           </DropdownToggle>
                           <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>http://flight-service/airport</DropdownItem>                           
+                            <DropdownItem>http://flight-service/airport</DropdownItem>
                           </DropdownMenu>
-                        </InputGroupButtonDropdown>                     
+                        </InputGroupButtonDropdown>
                       </InputGroup>
                     </Col>
                   </FormGroup>
@@ -88,9 +88,9 @@ class RuleForm extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="textarea" name="fields" id="fields" rows="3"
-                             placeholder="Fields" />
+                        placeholder="Fields" />
                     </Col>
-                  </FormGroup>                 
+                  </FormGroup>
                 </Form>
               </CardBody>
               <CardFooter>
@@ -98,7 +98,7 @@ class RuleForm extends Component {
                 <Button type="button" size="sm" color="secondary"><i className="fa fa-ban"></i> Validate</Button>
               </CardFooter>
             </Card>
-            
+
           </Col>
         </Row>
       </div>

@@ -26,7 +26,7 @@ class Canonical extends Component {
               <CardHeader>
                 Canonical
               </CardHeader>
-              <CardBody>
+              
                 <Table responsive bordered>
                   <thead>
                   <tr>
@@ -59,7 +59,7 @@ class Canonical extends Component {
                   
                   <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
                 </Pagination>
-              </CardBody>
+               
             </Card>
          </Col>
         </Row>
