@@ -2,7 +2,6 @@ import React from 'react';
 import MetatagForm from './views/Base/Metatag/MetatagForm';
 
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
-const Cards = React.lazy(() => import('./views/Base/Cards'));
 const Carousels = React.lazy(() => import('./views/Base/Carousels'));
 const Dropdowns = React.lazy(() => import('./views/Base/Dropdowns'));
 const Forms = React.lazy(() => import('./views/Base/Forms'));
@@ -45,8 +44,6 @@ const LanguageList = React.lazy(() => import('./views/Base/Language/Language'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/base', exact: true, name: 'Base', component: Cards },
-  { path: '/base/cards', name: 'Cards', component: Cards },
   { path: '/base/forms', name: 'Forms', component: Forms },
   { path: '/base/switches', name: 'Switches', component: Switches },
   { path: '/base/tables', name: 'Tables', component: Tables },
