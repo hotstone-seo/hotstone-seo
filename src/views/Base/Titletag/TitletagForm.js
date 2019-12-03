@@ -19,7 +19,7 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-import Scripttag from './Scripttag';
+ 
 
 class TitletagForm extends Component {
   constructor(props) {
@@ -87,7 +87,19 @@ class TitletagForm extends Component {
                       <Label htmlFor="text-input">Language</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      
+                    <InputGroup>
+                        <InputGroupButtonDropdown addonType="prepend"
+                                                  isOpen={this.state.first}
+                                                  toggle={() => { this.setState({ first: !this.state.first }); }}>
+                          <DropdownToggle caret color="primary">
+                            -Choose-
+                          </DropdownToggle>
+                          <DropdownMenu className={this.state.first ? 'show' : ''}>
+                            <DropdownItem>ID</DropdownItem>
+                            <DropdownItem>EN</DropdownItem>                      
+                          </DropdownMenu>
+                        </InputGroupButtonDropdown>                     
+                      </InputGroup>
                        
                     </Col>
                   </FormGroup>
@@ -97,7 +109,8 @@ class TitletagForm extends Component {
                       <Label htmlFor="text-input">Title</Label>
                     </Col>
                     <Col xs="12" md="9">
-                         
+                      <Input type="textarea" name="title" id="title" rows="3"
+                             placeholder="Title" />
                     </Col>
                   </FormGroup>
 
