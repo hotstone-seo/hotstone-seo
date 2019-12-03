@@ -1,6 +1,0 @@
-{
-    "name": "Language",
-    "version": "0.0.0",
-    "private": true,
-    "main": "./Language.js"
-}
