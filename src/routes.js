@@ -4,7 +4,6 @@ import MetatagForm from './views/Base/Metatag/MetatagForm';
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
 const Carousels = React.lazy(() => import('./views/Base/Carousels'));
-const Collapses = React.lazy(() => import('./views/Base/Collapses'));
 const Dropdowns = React.lazy(() => import('./views/Base/Dropdowns'));
 const Forms = React.lazy(() => import('./views/Base/Forms'));
 const Jumbotrons = React.lazy(() => import('./views/Base/Jumbotrons'));
@@ -39,6 +38,10 @@ const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSour
 const DataSourceForm = React.lazy(() => import('./views/Base/DataSource/DataSourceForm'));
 const CanonicalList = React.lazy(() => import('./views/Base/Canonical/Canonical'));
 const CanonicalForm = React.lazy(() => import('./views/Base/Canonical/CanonicalForm'));
+const TitletagList = React.lazy(() => import('./views/Base/Titletag/Titletag'));
+const TitletagForm = React.lazy(() => import('./views/Base/Titletag/TitletagForm'));
+const ScripttagList = React.lazy(() => import('./views/Base/Scripttag/Scripttag'));
+const ScripttagForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagForm'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -51,7 +54,6 @@ const routes = [
   { path: '/base/tabs', name: 'Tabs', component: Tabs },
   { path: '/base/breadcrumbs', name: 'Breadcrumbs', component: Breadcrumbs },
   { path: '/base/carousels', name: 'Carousel', component: Carousels },
-  { path: '/base/collapses', name: 'Collapse', component: Collapses },
   { path: '/base/dropdowns', name: 'Dropdowns', component: Dropdowns },
   { path: '/base/jumbotrons', name: 'Jumbotrons', component: Jumbotrons },
   { path: '/base/list-groups', name: 'List Groups', component: ListGroups },
@@ -84,6 +86,10 @@ const routes = [
   { path: '/base/DataSourceForm', name: 'DataSource', component: DataSourceForm },
   { path: '/base/canonical', name: 'Canonical', component: CanonicalList },
   { path: '/base/canonicalForm', name: 'Canonical', component: CanonicalForm },
+  { path: '/base/titletag', name: 'Titletag', component: TitletagList },
+  { path: '/base/titletagForm', name: 'Titletag', component: TitletagForm },
+  { path: '/base/Scripttag', name: 'Scripttag', component: ScripttagList },
+  { path: '/base/ScripttagForm', name: 'Scripttag', component: ScripttagForm },
 ];
 
 export default routes;

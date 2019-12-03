@@ -19,7 +19,7 @@ import {
   Label,
   Row,
 } from 'reactstrap';
-import Scripttag from './Scripttag';
+ 
 
 class ScripttagForm extends Component {
   constructor(props) {

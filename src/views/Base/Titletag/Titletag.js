@@ -41,7 +41,7 @@ class Titletag extends Component {
                   <tr>
                     <td>Airport Detail</td>
                     <td>ID</td>
-                    <td>{name} is located at {province}</td>
+                    <td>.. is located at ..</td>
                     <th>Nov 16 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>
@@ -50,7 +50,7 @@ class Titletag extends Component {
                   <tr>
                      <td>Airport Detail</td>
                     <td>ENG</td>
-                    <td>{name} is located at {province}</td>
+                    <td>.. is located at ..</td>
                     <th>Nov 16 2019</th>
                     <td>
                     <NavLink href="#">Edit</NavLink>

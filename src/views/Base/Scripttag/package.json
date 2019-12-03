@@ -1,6 +1,6 @@
 {
-    "name": "ScripttagList",
+    "name": "Scripttag",
     "version": "0.0.0",
     "private": true,
-    "main": "./ScripttagList.js"
+    "main": "./Scripttag.js"
   }
