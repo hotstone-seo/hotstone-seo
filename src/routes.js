@@ -6,8 +6,6 @@ const Cards = React.lazy(() => import('./views/Base/Cards'));
 const Carousels = React.lazy(() => import('./views/Base/Carousels'));
 const Dropdowns = React.lazy(() => import('./views/Base/Dropdowns'));
 const Forms = React.lazy(() => import('./views/Base/Forms'));
-const Jumbotrons = React.lazy(() => import('./views/Base/Jumbotrons'));
-const ListGroups = React.lazy(() => import('./views/Base/ListGroups'));
 const Navbars = React.lazy(() => import('./views/Base/Navbars'));
 const Navs = React.lazy(() => import('./views/Base/Navs'));
 const Paginations = React.lazy(() => import('./views/Base/Paginations'));
@@ -55,8 +53,6 @@ const routes = [
   { path: '/base/breadcrumbs', name: 'Breadcrumbs', component: Breadcrumbs },
   { path: '/base/carousels', name: 'Carousel', component: Carousels },
   { path: '/base/dropdowns', name: 'Dropdowns', component: Dropdowns },
-  { path: '/base/jumbotrons', name: 'Jumbotrons', component: Jumbotrons },
-  { path: '/base/list-groups', name: 'List Groups', component: ListGroups },
   { path: '/base/navbars', name: 'Navbars', component: Navbars },
   { path: '/base/navs', name: 'Navs', component: Navs },
   { path: '/base/paginations', name: 'Paginations', component: Paginations },
