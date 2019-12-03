@@ -42,7 +42,7 @@ class DataSource extends Component {
                     <td>Airport</td>
                     <td>http://fligh-service/airport</td>
                     <td>Id, name, address, province</td>
-                    <th>Nov 15 2019</th>
+                    <td>Nov 15 2019</td>
                     <td>
                     <NavLink href="#">Edit</NavLink>
                     </td>

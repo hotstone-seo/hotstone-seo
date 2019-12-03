@@ -6,6 +6,11 @@ export default {
       icon: 'icon-speedometer',
     },
     {
+      name: 'Language',
+      url: '/base/language',
+      icon: 'icon-puzzle',
+    },
+    {
       name: 'DataSource',
       url: '/base/datasource',
       icon: 'icon-puzzle',
@@ -30,13 +35,10 @@ export default {
       url: '/base/titletag',
       icon: 'icon-puzzle',
     },
-
     {
       name: 'Script-Tag',
       url: '/base/scripttag',
       icon: 'icon-puzzle',
     },
-
-      
   ],
 };
