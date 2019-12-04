@@ -10,12 +10,7 @@ import {
     Col,
     Form,
     FormGroup,
-    DropdownItem,
-    DropdownMenu,
-    DropdownToggle,
     Input,
-    InputGroup,
-    InputGroupButtonDropdown,
     Label,
     Row,
 } from 'reactstrap';
@@ -24,34 +19,17 @@ import {
 class ScripttagForm extends Component {
     constructor(props) {
         super(props);
-
-        this.toggle = this.toggle.bind(this);
-        this.toggleFade = this.toggleFade.bind(this);
-        this.state = {
-            collapse: true,
-            fadeIn: true,
-            timeout: 300
-        };
-
         this.handlePreview = this.handlePreview.bind(this);
-
-    }
-
-    toggle() {
-        this.setState({ collapse: !this.state.collapse });
-    }
-
-    toggleFade() {
-        this.setState((prevState) => { return { fadeIn: !prevState } });
     }
 
     handlePreview() {
         const { history } = this.props;
-        history.push('/base/MetatagPreview');
+        history.push('/base/ScripttagPreview');
     }
 
     render() {
         return (
+
             <div className="animated fadeIn">
                 <Row>
                     <Col xs="12" md="9" lg="6">
@@ -64,50 +42,38 @@ class ScripttagForm extends Component {
 
                                     <FormGroup row>
                                         <Col md="3">
-                                            <Label htmlFor="text-input">Name</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            <Input type="text" id="name" name="name" placeholder="Name" />
-
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">Content</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            <Input type="text" id="content" name="content" placeholder="Content" />
-
-                                        </Col>
-                                    </FormGroup>
-
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">Default Content</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            <Input type="text" id="defaultcontent" name="defaultcontent" placeholder="Default Content" />
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="3">
                                             <Label htmlFor="text-input">Rule</Label>
                                         </Col>
                                         <Col xs="12" md="9">
-                                            <InputGroup>
-                                                <InputGroupButtonDropdown addonType="prepend"
-                                                    isOpen={this.state.first}
-                                                    toggle={() => { this.setState({ first: !this.state.first }); }}>
-                                                    <DropdownToggle caret color="primary">
-                                                        -Choose-
-                                                    </DropdownToggle>
-                                                    <DropdownMenu className={this.state.first ? 'show' : ''}>
-                                                        <DropdownItem>Airport Detail</DropdownItem>
-                                                    </DropdownMenu>
-                                                </InputGroupButtonDropdown>
-                                            </InputGroup>
+                                        <Input type="select" name="rule" id="rule">
+                                                <option>Airport Detail</option>
+                                                
+                                            </Input>
                                         </Col>
                                     </FormGroup>
+
+                                    <FormGroup row>
+                                        <Col md="3">
+                                            <Label htmlFor="text-input">Type</Label>
+                                        </Col>
+                                        <Col xs="12" md="9">
+                                            <Input type="select" name="type" id="type">
+                                                <option>Javascript</option>
+                                                
+                                            </Input>
+                                        </Col>
+                                    </FormGroup>
+                                    <FormGroup row>
+                                        <Col md="3">
+                                            <Label htmlFor="text-input">Source</Label>
+                                        </Col>
+                                        <Col xs="12" md="9">
+                                            <Input type="text" id="content" name="content" placeholder="Source" />
+                                        </Col>
+                                    </FormGroup>
+
+
+
                                 </Form>
                             </CardBody>
                             <CardFooter>

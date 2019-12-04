@@ -26,9 +26,9 @@ class Scripttag extends Component {
               <Table responsive bordered>
                 <thead>
                   <tr>
-                    <th>Name</th>
                     <th>Rule</th>
-                    <th>Content</th>
+                    <th>Type</th>
+                    <th>Source</th>
                     <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
@@ -74,7 +74,7 @@ class Scripttag extends Component {
                   </tr>
                   <tr>
                     <td>Hiroto Šimun</td>
-                    <td>2012/01/21</td>
+                    <td>dfdfdf</td>
                     <td>Staff</td>
                     <td>Nov 16 2019</td>
                     <td>
