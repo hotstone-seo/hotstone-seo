@@ -20,7 +20,7 @@ import {
   Row,
 } from 'reactstrap';
 
-class DataSourceForm extends Component {
+class CanonicalEditForm extends Component {
   constructor(props) {
     super(props);
 
@@ -31,6 +31,9 @@ class DataSourceForm extends Component {
       fadeIn: true,
       timeout: 300
     };
+
+    this.handleCancel = this.handleCancel.bind(this);
+
   }
 
   toggle() {
@@ -41,6 +44,11 @@ class DataSourceForm extends Component {
     this.setState((prevState) => { return { fadeIn: !prevState } });
   }
 
+  handleCancel() {
+    const { history } = this.props;
+    history.push('/base/canonical');
+  }
+
   render() {
     return (
       <div className="animated fadeIn">
@@ -48,21 +56,21 @@ class DataSourceForm extends Component {
           <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
-                <strong>Edit Data Source</strong>
+                <strong>Edit Canonical</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="text-input">Data Source Name</Label>
+                      <Label htmlFor="text-input">Canonical-Tag</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
+                      <Input type="text" id="name" name="name" placeholder="Canonical-Tag" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="text-input">Webhook</Label>
+                      <Label htmlFor="text-input">Rule</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <InputGroup>
@@ -73,27 +81,17 @@ class DataSourceForm extends Component {
                             -Choose-
                           </DropdownToggle>
                           <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>http://flight-service/airport</DropdownItem>
+                            <DropdownItem>Airport Detail</DropdownItem>
                           </DropdownMenu>
                         </InputGroupButtonDropdown>
                       </InputGroup>
-                    </Col>
-                  </FormGroup>
-
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="textarea-input">Fields</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" name="fields" id="fields" rows="3"
-                        placeholder="Fields" />
                     </Col>
                   </FormGroup>
                 </Form>
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Save Change</Button>
-                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}>Cancel</Button>
+                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
               </CardFooter>
             </Card>
           </Col>
@@ -102,9 +100,9 @@ class DataSourceForm extends Component {
     );
   }
 }
-DataSourceForm.propTypes = {
+CanonicalEditForm.propTypes = {
   match: PropTypes.shape({
     path: PropTypes.string,
   }).isRequired,
 };
-export default DataSourceForm;
+export default CanonicalEditForm;

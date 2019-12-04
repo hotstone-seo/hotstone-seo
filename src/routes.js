@@ -23,6 +23,7 @@ const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSour
 const DataSourceForm = React.lazy(() => import('./views/Base/DataSource/DataSourceForm'));
 const CanonicalList = React.lazy(() => import('./views/Base/Canonical/Canonical'));
 const CanonicalForm = React.lazy(() => import('./views/Base/Canonical/CanonicalForm'));
+const CanonicalEditForm = React.lazy(() => import('./views/Base/Canonical/CanonicalEditForm'));
 const TitletagList = React.lazy(() => import('./views/Base/Titletag/Titletag'));
 const TitletagForm = React.lazy(() => import('./views/Base/Titletag/TitletagForm'));
 const ScripttagList = React.lazy(() => import('./views/Base/Scripttag/Scripttag'));
@@ -57,12 +58,14 @@ const routes = [
   { path: '/base/DataSourceForm', name: 'DataSource', component: DataSourceForm },
   { path: '/base/canonical', name: 'Canonical', component: CanonicalList },
   { path: '/base/canonicalForm', name: 'Canonical', component: CanonicalForm },
+  { path: '/base/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },
   { path: '/base/titletag', name: 'Titletag', component: TitletagList },
   { path: '/base/titletagForm', name: 'Titletag', component: TitletagForm },
   { path: '/base/Scripttag', name: 'Scripttag', component: ScripttagList },
   { path: '/base/ScripttagForm', name: 'Scripttag', component: ScripttagForm },
   { path: '/base/Language', name: 'Language', component: LanguageList },
   { path: '/base/LanguageForm', name: 'Language', component: LanguageForm },
+
 ];
 
 export default routes;

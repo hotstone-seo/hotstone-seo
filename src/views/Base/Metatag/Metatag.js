@@ -74,7 +74,7 @@ class Metatag extends Component {
                   </tr>
                   <tr>
                     <td>Hiroto Šimun</td>
-                    <td>2012/01/21</td>
+                    <td>xzzzz</td>
                     <td>Staff</td>
                     <td>Nov 16 2019</td>
                     <td>

@@ -6,10 +6,15 @@ class Canonical extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
   handleClick() {
     const { history } = this.props;
     history.push('/base/CanonicalForm');
+  }
+  handleEdit() {
+    const { history } = this.props;
+    history.push('/base/canonicalEditForm');
   }
   render() {
     return (
@@ -37,7 +42,7 @@ class Canonical extends Component {
                   <td>Airport</td>
                   <td>Nov 15 2019</td>
                   <td>
-                    <NavLink href="#">Edit</NavLink>
+                    <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                   </td>
                 </tr>
               </tbody>

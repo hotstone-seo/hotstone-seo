@@ -39,15 +39,13 @@ class ScripttagForm extends Component {
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-
                                     <FormGroup row>
                                         <Col md="3">
                                             <Label htmlFor="text-input">Rule</Label>
                                         </Col>
                                         <Col xs="12" md="9">
-                                        <Input type="select" name="rule" id="rule">
+                                            <Input type="select" name="rule" id="rule">
                                                 <option>Airport Detail</option>
-                                                
                                             </Input>
                                         </Col>
                                     </FormGroup>
@@ -59,7 +57,6 @@ class ScripttagForm extends Component {
                                         <Col xs="12" md="9">
                                             <Input type="select" name="type" id="type">
                                                 <option>Javascript</option>
-                                                
                                             </Input>
                                         </Col>
                                     </FormGroup>
@@ -71,9 +68,6 @@ class ScripttagForm extends Component {
                                             <Input type="text" id="content" name="content" placeholder="Source" />
                                         </Col>
                                     </FormGroup>
-
-
-
                                 </Form>
                             </CardBody>
                             <CardFooter>
