@@ -19,7 +19,7 @@ class Canonical extends Component {
             Canonical
           </CardHeader>
           <CardBody>
-            <div style={{ marginBottom: '.5rem' }}>
+            <div style={{ marginBottom: '.5rem'}}>
               <Button color="primary" onClick={this.handleClick}>Add New</Button>
             </div>
             <Table responsive bordered>
