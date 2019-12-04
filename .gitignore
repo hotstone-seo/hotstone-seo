@@ -1,0 +1,16 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Compiled source files
+lib/
+
+# Package lock
+package-lock.json
+
+# MacOS specific
+.DS_Store
