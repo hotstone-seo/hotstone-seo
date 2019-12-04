@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-
   Button,
   Card,
   CardBody,
@@ -43,23 +42,20 @@ class RuleForm extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-
         <Row>
-          <Col xs="12" md="12">
+          <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
                 <strong>Add New Data Source</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Data Source Name</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="name" name="name" placeholder="Name" />
-
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -94,11 +90,10 @@ class RuleForm extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="sm" color="secondary"><i className="fa fa-ban"></i> Validate</Button>
+                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Validate</Button>
               </CardFooter>
             </Card>
-
           </Col>
         </Row>
       </div>

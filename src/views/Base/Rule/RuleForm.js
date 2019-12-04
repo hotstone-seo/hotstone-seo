@@ -43,23 +43,20 @@ class RuleForm extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-
         <Row>
-          <Col xs="12" md="12">
+          <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
                 <strong>Add New Rule</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Name</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="name" name="name" placeholder="Name" />
-
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -68,10 +65,8 @@ class RuleForm extends Component {
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" />
-
                     </Col>
                   </FormGroup>
-
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="textarea-input">Exclusion</Label>
@@ -103,13 +98,10 @@ class RuleForm extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="sm" color="secondary"><i className="fa fa-ban"></i> Verify</Button>
+              <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Verify</Button>
               </CardFooter>
             </Card>
-
-          </Col>
-          <Col xs="12" md="6">
           </Col>
         </Row>
       </div>

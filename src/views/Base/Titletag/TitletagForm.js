@@ -53,9 +53,8 @@ class TitletagForm extends Component {
     render() {
         return (
             <div className="animated fadeIn">
-
                 <Row>
-                    <Col xs="12" md="12">
+                    <Col xs="12" md="9" lg="6">
                         <Card>
                             <CardHeader>
                                 <strong>Add New Title-Tag</strong>
@@ -117,8 +116,8 @@ class TitletagForm extends Component {
                                 </Form>
                             </CardBody>
                             <CardFooter>
-                                <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                                <Button type="button" size="sm" color="secondary" onClick={this.handlePreview}><i className="fa fa-ban"></i> Preview</Button>
+                                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Preview</Button>
                             </CardFooter>
                         </Card>
 

@@ -43,7 +43,7 @@ class MetatagPreview extends Component {
       <div className="animated fadeIn">
 
         <Row>
-          <Col xs="12" md="12">
+           <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
                 <strong> Meta-Tag Preview</strong>
