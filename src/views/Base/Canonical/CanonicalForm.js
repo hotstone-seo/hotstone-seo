@@ -52,26 +52,22 @@ class CanonicalForm extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-
         <Row>
-          <Col xs="12" md="12">
+          <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
                 <strong>Add New Canonical</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Canonical-Tag</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="name" name="name" placeholder="Canonical-Tag" />
-
                     </Col>
                   </FormGroup>
-
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Rule</Label>
@@ -94,11 +90,10 @@ class CanonicalForm extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="sm" color="primary"><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="sm" color="secondary" onClick={this.handlePreview}><i className="fa fa-ban"></i> Preview</Button>
+                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Preview</Button>
               </CardFooter>
             </Card>
-
           </Col>
         </Row>
       </div>
