@@ -7,8 +7,6 @@ const ButtonGroups = React.lazy(() => import('./views/Buttons/ButtonGroups'));
 const Buttons = React.lazy(() => import('./views/Buttons/Buttons'));
 const Dashboard = React.lazy(() => import('./views/Dashboard'));
 const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
-const Flags = React.lazy(() => import('./views/Icons/Flags'));
-const FontAwesome = React.lazy(() => import('./views/Icons/FontAwesome'));
 const SimpleLineIcons = React.lazy(() => import('./views/Icons/SimpleLineIcons'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
@@ -30,9 +28,9 @@ const TitletagEditForm = React.lazy(() => import('./views/Base/Titletag/Titletag
 const ScripttagList = React.lazy(() => import('./views/Base/Scripttag/Scripttag'));
 const ScripttagForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagForm'));
 const ScripttagEditForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagEditForm'));
-const LanguageList = React.lazy(() => import('./views/Base/Language/Language'));
-const LanguageForm = React.lazy(() => import('./views/Base/Language/LanguageForm'));
-const LanguageEditForm = React.lazy(() => import('./views/Base/Language/LanguageEditForm'));
+const LanguageList = React.lazy(() => import('./views/Language/Language'));
+const LanguageForm = React.lazy(() => import('./views/Language/LanguageForm'));
+const LanguageEditForm = React.lazy(() => import('./views/Language/LanguageEditForm'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -44,8 +42,6 @@ const routes = [
   { path: '/buttons/brand-buttons', name: 'Brand Buttons', component: BrandButtons },
   { path: '/icons', exact: true, name: 'Icons', component: CoreUIIcons },
   { path: '/icons/coreui-icons', name: 'CoreUI Icons', component: CoreUIIcons },
-  { path: '/icons/flags', name: 'Flags', component: Flags },
-  { path: '/icons/font-awesome', name: 'Font Awesome', component: FontAwesome },
   { path: '/icons/simple-line-icons', name: 'Simple Line Icons', component: SimpleLineIcons },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
@@ -68,9 +64,9 @@ const routes = [
   { path: '/base/scripttag', name: 'Scripttag', component: ScripttagList },
   { path: '/base/scripttagForm', name: 'Scripttag', component: ScripttagForm },
   { path: '/base/scripttagEditForm', name: 'Scripttag', component: ScripttagEditForm },
-  { path: '/base/Language', name: 'Language', component: LanguageList },
-  { path: '/base/LanguageForm', name: 'Language', component: LanguageForm },
-  { path: '/base/LanguageEditForm', name: 'Language', component: LanguageEditForm },
+  { path: '/language', name: 'Language', component: LanguageList },
+  { path: '/languageForm', name: 'Language', component: LanguageForm },
+  { path: '/languageEditForm', name: 'Language', component: LanguageEditForm },
 ];
 
 export default routes;

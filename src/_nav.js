@@ -7,7 +7,7 @@ export default {
     },
     {
       name: 'Language',
-      url: '/base/language',
+      url: '/language',
       icon: 'icon-puzzle',
     },
     {

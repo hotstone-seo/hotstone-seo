@@ -10,11 +10,11 @@ class Language extends Component {
     }
     handleClick() {
         const { history } = this.props;
-        history.push('/base/LanguageForm');
+        history.push('/languageForm');
     }
     handleEdit() {
         const { history } = this.props;
-        history.push('/base/LanguageEditForm');
+        history.push('/languageEditForm');
     }
     render() {
         return (

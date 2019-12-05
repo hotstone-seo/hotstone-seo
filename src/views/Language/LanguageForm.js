@@ -15,7 +15,7 @@ import {
   Row,
 } from 'reactstrap';
 
-class LanguageEditForm extends Component {
+class LanguageForm extends Component {
   constructor(props) {
     super(props);
 
@@ -39,7 +39,7 @@ class LanguageEditForm extends Component {
 
   handleCancel() {
     const { history } = this.props;
-    history.push('/base/Language');
+    history.push('/language');
   }
 
   render() {
@@ -49,7 +49,7 @@ class LanguageEditForm extends Component {
           <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
-                <strong>Edit Language</strong>
+                <strong>Add New Language</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -58,7 +58,7 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Language Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="langName" name="langName" placeholder="Language Name" value="Indonesia Language" />
+                      <Input type="text" id="langName" name="langName" placeholder="Language Name" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -66,7 +66,7 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Language Code</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <Input type="text" id="langCode" name="langCode" placeholder="Language Code" value="ID"/>
+                        <Input type="text" id="langCode" name="langCode" placeholder="Language Code" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -74,13 +74,13 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Country</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <Input type="text" id="country" name="country" placeholder="Country" value="Indonesia" />
+                        <Input type="text" id="country" name="country" placeholder="Country" />
                     </Col>
                   </FormGroup>
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Save Change</Button>
+                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
               </CardFooter>
             </Card>
@@ -90,9 +90,9 @@ class LanguageEditForm extends Component {
     );
   }
 }
-LanguageEditForm.propTypes = {
+LanguageForm.propTypes = {
   match: PropTypes.shape({
     path: PropTypes.string,
   }).isRequired,
 };
-export default LanguageEditForm;
+export default LanguageForm;
