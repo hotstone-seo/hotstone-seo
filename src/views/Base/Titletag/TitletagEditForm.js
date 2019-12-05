@@ -116,7 +116,7 @@ class TitletagEditForm extends Component {
                             </CardBody>
                             <CardFooter>
                                 <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}><i className="fa fa-eye"></i> Cancel</Button>
+                                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
                             </CardFooter>
                         </Card>
 

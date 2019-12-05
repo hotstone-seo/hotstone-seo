@@ -5,16 +5,17 @@ import PropTypes from 'prop-types';
 class Titletag extends Component {
     constructor(props) {
         super(props);
+        
         this.handleClick = this.handleClick.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
     }
     handleClick() {
         const { history } = this.props;
-        history.push('/base/TitletagForm');
+        history.push('/base/titletagForm');
     }
     handleEdit() {
-        const { history } = this.props;
-        history.push('/base/TitletagEditForm');
+        const { history } = this.props;       
+        history.push('/base/titletagEditForm');
     }
     render() {
         return (

@@ -10,11 +10,11 @@ class Scripttag extends Component {
   }
   handleClick() {
     const { history } = this.props;
-    history.push('/base/ScripttagForm');
+    history.push('/base/scripttagForm');
   }
   handleEdit() {
     const { history } = this.props;
-    history.push('/base/ScripttagEditForm');
+    history.push('/base/scripttagEditForm');
   }
   render() {
     return (

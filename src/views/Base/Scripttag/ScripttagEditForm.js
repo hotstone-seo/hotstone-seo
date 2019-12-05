@@ -23,7 +23,7 @@ class ScripttagEditForm extends Component {
 
     handleCancel() {
         const { history } = this.props;
-        history.push('/base/Scripttag');
+        history.push('/base/scripttag');
     }
 
     render() {
@@ -71,7 +71,7 @@ class ScripttagEditForm extends Component {
                             </CardBody>
                             <CardFooter>
                                 <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i>Save Change</Button>
-                                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}><i className="fa fa-eye"></i> Cancel</Button>
+                                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
                             </CardFooter>
                         </Card>
                     </Col>

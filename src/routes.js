@@ -29,8 +29,10 @@ const CanonicalForm = React.lazy(() => import('./views/Base/Canonical/CanonicalF
 const CanonicalEditForm = React.lazy(() => import('./views/Base/Canonical/CanonicalEditForm'));
 const TitletagList = React.lazy(() => import('./views/Base/Titletag/Titletag'));
 const TitletagForm = React.lazy(() => import('./views/Base/Titletag/TitletagForm'));
+const TitletagEditForm = React.lazy(() => import('./views/Base/Titletag/TitletagEditForm'));
 const ScripttagList = React.lazy(() => import('./views/Base/Scripttag/Scripttag'));
 const ScripttagForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagForm'));
+const ScripttagEditForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagEditForm'));
 const LanguageList = React.lazy(() => import('./views/Base/Language/Language'));
 const LanguageForm = React.lazy(() => import('./views/Base/Language/LanguageForm'));
 const LanguageEditForm = React.lazy(() => import('./views/Base/Language/LanguageEditForm'));
@@ -68,8 +70,10 @@ const routes = [
   { path: '/base/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },
   { path: '/base/titletag', name: 'Titletag', component: TitletagList },
   { path: '/base/titletagForm', name: 'Titletag', component: TitletagForm },
-  { path: '/base/Scripttag', name: 'Scripttag', component: ScripttagList },
-  { path: '/base/ScripttagForm', name: 'Scripttag', component: ScripttagForm },
+  { path: '/base/titletagEditForm', name: 'Titletag', component: TitletagEditForm },
+  { path: '/base/scripttag', name: 'Scripttag', component: ScripttagList },
+  { path: '/base/scripttagForm', name: 'Scripttag', component: ScripttagForm },
+  { path: '/base/scripttagEditForm', name: 'Scripttag', component: ScripttagEditForm },
   { path: '/base/Language', name: 'Language', component: LanguageList },
   { path: '/base/LanguageForm', name: 'Language', component: LanguageForm },
   { path: '/base/LanguageEditForm', name: 'Language', component: LanguageEditForm },
