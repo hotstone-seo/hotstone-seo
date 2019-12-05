@@ -43,7 +43,7 @@ class RuleEditForm extends Component {
 
   handleCancel() {
     const { history } = this.props;
-    history.push('/base/RuleList');
+    history.push('/base/rule');
   }
 
   render() {
@@ -105,7 +105,7 @@ class RuleEditForm extends Component {
               </CardBody>
               <CardFooter>
               <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Save Change</Button>
-                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}>Cancel</Button>
+                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
               </CardFooter>
             </Card>
           </Col>
