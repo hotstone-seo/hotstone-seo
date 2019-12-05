@@ -58,7 +58,7 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Language Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="langName" name="langName" placeholder="Language Name" value="" />
+                      <Input type="text" id="langName" name="langName" placeholder="Language Name" value="Indonesia Language" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -66,7 +66,7 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Language Code</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <Input type="text" id="langCode" name="langCode" placeholder="Language Code" value=""/>
+                        <Input type="text" id="langCode" name="langCode" placeholder="Language Code" value="ID"/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -74,7 +74,7 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Country</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <Input type="text" id="country" name="country" placeholder="Country" value="" />
+                        <Input type="text" id="country" name="country" placeholder="Country" value="Indonesia" />
                     </Col>
                   </FormGroup>
                 </Form>
