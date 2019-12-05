@@ -22,7 +22,7 @@ export default {
     },
     {
       name: 'Canonical',
-      url: '/base/canonical',
+      url: '/canonical',
       icon: 'icon-puzzle',
     },
     {

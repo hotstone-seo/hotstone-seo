@@ -51,7 +51,7 @@ class CanonicalForm extends Component {
 
   handleCancel() {
     const { history } = this.props;
-    history.push('/base/canonical');
+    history.push('/canonical');
   }
   render() {
     return (

@@ -10,7 +10,6 @@ const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
 const Flags = React.lazy(() => import('./views/Icons/Flags'));
 const FontAwesome = React.lazy(() => import('./views/Icons/FontAwesome'));
 const SimpleLineIcons = React.lazy(() => import('./views/Icons/SimpleLineIcons'));
-const Badges = React.lazy(() => import('./views/Notifications/Badges'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 const RuleList = React.lazy(() => import('./views/Base/Rule/RuleList'));
@@ -22,9 +21,9 @@ const MetaTagEditForm = React.lazy(() => import('./views/Base/Metatag/MetatagEdi
 const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSource'));
 const DataSourceEditForm = React.lazy(() => import('./views/Base/DataSource/DataSourceEditForm'));
 const DataSourceForm = React.lazy(() => import('./views/Base/DataSource/DataSourceForm'));
-const CanonicalList = React.lazy(() => import('./views/Base/Canonical/Canonical'));
-const CanonicalForm = React.lazy(() => import('./views/Base/Canonical/CanonicalForm'));
-const CanonicalEditForm = React.lazy(() => import('./views/Base/Canonical/CanonicalEditForm'));
+const CanonicalList = React.lazy(() => import('./views/Canonical/Canonical'));
+const CanonicalForm = React.lazy(() => import('./views/Canonical/CanonicalForm'));
+const CanonicalEditForm = React.lazy(() => import('./views/Canonical/CanonicalEditForm'));
 const TitletagList = React.lazy(() => import('./views/Base/Titletag/Titletag'));
 const TitletagForm = React.lazy(() => import('./views/Base/Titletag/TitletagForm'));
 const TitletagEditForm = React.lazy(() => import('./views/Base/Titletag/TitletagEditForm'));
@@ -48,7 +47,6 @@ const routes = [
   { path: '/icons/flags', name: 'Flags', component: Flags },
   { path: '/icons/font-awesome', name: 'Font Awesome', component: FontAwesome },
   { path: '/icons/simple-line-icons', name: 'Simple Line Icons', component: SimpleLineIcons },
-  { path: '/notifications/badges', name: 'Badges', component: Badges },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/base/rule', name: 'Rules', component: RuleList },
@@ -61,9 +59,9 @@ const routes = [
   { path: '/base/datasource', name: 'DataSource', component: DataSourceList },
   { path: '/base/DataSourceForm', name: 'DataSource', component: DataSourceForm },
   { path: '/base/DataSourceEditForm', name: 'DataSource', component: DataSourceEditForm },
-  { path: '/base/canonical', name: 'Canonical', component: CanonicalList },
-  { path: '/base/canonicalForm', name: 'Canonical', component: CanonicalForm },
-  { path: '/base/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },
+  { path: '/canonical', name: 'Canonical', component: CanonicalList },
+  { path: '/canonicalForm', name: 'Canonical', component: CanonicalForm },
+  { path: '/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },
   { path: '/base/titletag', name: 'Titletag', component: TitletagList },
   { path: '/base/titletagForm', name: 'Titletag', component: TitletagForm },
   { path: '/base/titletagEditForm', name: 'Titletag', component: TitletagEditForm },

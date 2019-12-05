@@ -10,11 +10,11 @@ class Canonical extends Component {
   }
   handleClick() {
     const { history } = this.props;
-    history.push('/base/CanonicalForm');
+    history.push('/CanonicalForm');
   }
   handleEdit() {
     const { history } = this.props;
-    history.push('/base/canonicalEditForm');
+    history.push('/canonicalEditForm');
   }
   render() {
     return (
