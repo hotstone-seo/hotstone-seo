@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-
 import {
+
   Button,
   Card,
   CardBody,
@@ -20,7 +19,7 @@ import {
   Row,
 } from 'reactstrap';
 
-class DataSourceForm extends Component {
+class RuleEditForm extends Component {
   constructor(props) {
     super(props);
 
@@ -44,7 +43,7 @@ class DataSourceForm extends Component {
 
   handleCancel() {
     const { history } = this.props;
-    history.push('/base/DataSource');
+    history.push('/base/RuleList');
   }
 
   render() {
@@ -54,13 +53,13 @@ class DataSourceForm extends Component {
           <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
-                <strong>Add New Data Source</strong>
+                <strong>Edit Rule</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="text-input">Data Source Name</Label>
+                      <Label htmlFor="text-input">Name</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <Input type="text" id="name" name="name" placeholder="Name" />
@@ -68,7 +67,24 @@ class DataSourceForm extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      <Label htmlFor="text-input">Webhook</Label>
+                      <Label htmlFor="text-input">URL Pattern</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="textarea-input">Exclusion</Label>
+                    </Col>
+                    <Col xs="12" md="9">
+                      <Input type="textarea" name="exclusion" id="exclusion" rows="3"
+                        placeholder="Exclusion" />
+                    </Col>
+                  </FormGroup>
+                  <FormGroup row>
+                    <Col md="3">
+                      <Label htmlFor="text-input">Data Source</Label>
                     </Col>
                     <Col xs="12" md="9">
                       <InputGroup>
@@ -79,27 +95,17 @@ class DataSourceForm extends Component {
                             -Choose-
                           </DropdownToggle>
                           <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>http://flight-service/airport</DropdownItem>
+                            <DropdownItem>Airport</DropdownItem>
                           </DropdownMenu>
                         </InputGroupButtonDropdown>
                       </InputGroup>
                     </Col>
                   </FormGroup>
-
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="textarea-input">Fields</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" name="fields" id="fields" rows="3"
-                        placeholder="Fields" />
-                    </Col>
-                  </FormGroup>
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i>Submit</Button>
-                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
+              <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Save Change</Button>
+                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}>Cancel</Button>
               </CardFooter>
             </Card>
           </Col>
@@ -108,9 +114,5 @@ class DataSourceForm extends Component {
     );
   }
 }
-DataSourceForm.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string,
-  }).isRequired,
-};
-export default DataSourceForm;
+
+export default RuleEditForm;

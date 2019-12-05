@@ -6,10 +6,15 @@ class Metatag extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
   handleClick() {
     const { history } = this.props;
     history.push('/base/MetatagForm');
+  }
+  handleEdit() {
+    const { history } = this.props;
+    history.push('/base/MetatagEditForm');
   }
   render() {
     return (
@@ -40,7 +45,7 @@ class Metatag extends Component {
                     <td>xx</td>
                     <td>Nov 16 2019</td>
                     <td>
-                      <NavLink href="#">Edit</NavLink>
+                      <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                     </td>
                   </tr>
                   <tr>

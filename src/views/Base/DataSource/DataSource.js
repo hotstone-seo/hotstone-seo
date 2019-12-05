@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 class DataSource extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
   }
-  handleClick() {
+  handleAdd() {
     const { history } = this.props;
     history.push('/base/DataSourceForm');
   }
@@ -26,7 +26,7 @@ class DataSource extends Component {
             </CardHeader>
             <CardBody>
               <div style={{ marginBottom: '.5rem' }}>
-                <Button color="primary" onClick={this.handleClick}>Add New</Button>
+                <Button color="primary" onClick={this.handleAdd}>Add New</Button>
               </div>
               <Table responsive bordered>
                 <thead>

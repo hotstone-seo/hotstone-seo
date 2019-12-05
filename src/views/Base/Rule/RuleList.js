@@ -6,10 +6,16 @@ class RuleList extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
   handleClick() {
     const { history } = this.props;
     history.push('/base/RuleForm');
+  }
+  
+  handleEdit() {
+    const { history } = this.props;
+    history.push('/base/RuleEditForm');
   }
   render() {
     return (
@@ -40,9 +46,10 @@ class RuleList extends Component {
                     <td>xx</td>
                     <td>Nov 15 2019</td>
                     <td>
-                      <NavLink href="#">Edit</NavLink>
+                      <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                     </td>
                   </tr>
+                 
                   <tr>
                     <td>Paĉjo Jadon</td>
                     <td>xxx</td>
