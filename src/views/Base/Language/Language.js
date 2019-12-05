@@ -6,10 +6,15 @@ class Language extends Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
     handleClick() {
         const { history } = this.props;
         history.push('/base/LanguageForm');
+    }
+    handleEdit() {
+        const { history } = this.props;
+        history.push('/base/LanguageEditForm');
     }
     render() {
         return (
@@ -35,7 +40,7 @@ class Language extends Component {
                                     <tr>
                                         <td>Indonesia</td>
                                         <td>ID</td>
-                                        <td><NavLink href="#">Edit</NavLink></td>
+                                        <td><NavLink href="#" onClick={this.handleEdit}>Edit</NavLink></td>
                                     </tr>
                                 </tbody>
                             </Table>

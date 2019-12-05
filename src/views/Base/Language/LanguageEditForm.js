@@ -49,7 +49,7 @@ class LanguageEditForm extends Component {
           <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
-                <strong>Add New Language</strong>
+                <strong>Edit Language</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -58,7 +58,7 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Language Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="langName" name="langName" placeholder="Language Name" />
+                      <Input type="text" id="langName" name="langName" placeholder="Language Name" value="" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -66,7 +66,7 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Language Code</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <Input type="text" id="langCode" name="langCode" placeholder="Language Code" />
+                        <Input type="text" id="langCode" name="langCode" placeholder="Language Code" value=""/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -74,13 +74,13 @@ class LanguageEditForm extends Component {
                       <Label htmlFor="text-input">Country</Label>
                     </Col>
                     <Col xs="12" md="9">
-                        <Input type="text" id="country" name="country" placeholder="Country" />
+                        <Input type="text" id="country" name="country" placeholder="Country" value="" />
                     </Col>
                   </FormGroup>
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Save Change</Button>
                 <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
               </CardFooter>
             </Card>

@@ -46,7 +46,7 @@ class DataSourceEditForm extends Component {
     const { history } = this.props;
     history.push('/base/DataSource');
   }
-  
+
   render() {
     return (
         <div className="animated fadeIn">
@@ -63,7 +63,7 @@ class DataSourceEditForm extends Component {
                       <Label htmlFor="text-input">Data Source Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
+                      <Input type="text" id="name" name="name" placeholder="Name" value="Airport" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -91,7 +91,7 @@ class DataSourceEditForm extends Component {
                       <Label htmlFor="textarea-input">Fields</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="textarea" name="fields" id="fields" rows="3"
+                      <Input type="textarea" name="fields" id="fields" rows="3" value="Id, name, address, province"
                         placeholder="Fields" />
                     </Col>
                   </FormGroup>
@@ -99,7 +99,7 @@ class DataSourceEditForm extends Component {
               </CardBody>
               <CardFooter>
                 <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Save Change</Button>
-                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}>Cancel</Button>
+                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
               </CardFooter>
             </Card>
           </Col>
