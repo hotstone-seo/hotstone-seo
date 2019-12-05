@@ -40,9 +40,9 @@ class Scripttag extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Rule1</td>
-                    <td>TYpe1</td>
-                    <td>Source1</td>
+                    <td>Airport Detail</td>
+                    <td>Javascript</td>
+                    <td>https://www.google-anayytics.com/analytics.js</td>
                     <td>Nov 16 2019</td>
                     <td>
                       <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>

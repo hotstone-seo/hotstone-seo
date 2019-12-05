@@ -15,14 +15,13 @@ import {
     Row,
 } from 'reactstrap';
 
-
 class ScripttagEditForm extends Component {
     constructor(props) {
         super(props);
-        this.handlePreview = this.handlePreview.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
     }
 
-    handlePreview() {
+    handleCancel() {
         const { history } = this.props;
         history.push('/base/Scripttag');
     }
@@ -45,7 +44,7 @@ class ScripttagEditForm extends Component {
                                         </Col>
                                         <Col xs="12" md="9">
                                             <Input type="select" name="rule" id="rule">
-                                                <option>Airport Detail</option>
+                                                <option selected>Airport Detail</option>
                                             </Input>
                                         </Col>
                                     </FormGroup>
@@ -56,7 +55,7 @@ class ScripttagEditForm extends Component {
                                         </Col>
                                         <Col xs="12" md="9">
                                             <Input type="select" name="type" id="type">
-                                                <option>Javascript</option>
+                                                <option selected>Javascript</option>
                                             </Input>
                                         </Col>
                                     </FormGroup>
@@ -65,14 +64,14 @@ class ScripttagEditForm extends Component {
                                             <Label htmlFor="text-input">Source</Label>
                                         </Col>
                                         <Col xs="12" md="9">
-                                            <Input type="text" id="content" name="content" placeholder="Source" />
+                                            <Input type="text" id="content" name="content" placeholder="Source" value="https://www.google-anayytics.com/analytics.js" />
                                         </Col>
                                     </FormGroup>
                                 </Form>
                             </CardBody>
                             <CardFooter>
                                 <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i>Save Change</Button>
-                                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Cancel</Button>
+                                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}><i className="fa fa-eye"></i> Cancel</Button>
                             </CardFooter>
                         </Card>
                     </Col>

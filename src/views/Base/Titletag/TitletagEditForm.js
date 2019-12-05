@@ -20,7 +20,6 @@ import {
     Row,
 } from 'reactstrap';
 
-
 class TitletagEditForm extends Component {
     constructor(props) {
         super(props);
@@ -33,7 +32,7 @@ class TitletagEditForm extends Component {
             timeout: 300
         };
 
-        this.handlePreview = this.handlePreview.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
 
     }
 
@@ -45,9 +44,9 @@ class TitletagEditForm extends Component {
         this.setState((prevState) => { return { fadeIn: !prevState } });
     }
 
-    handlePreview() {
+    handleCancel() {
         const { history } = this.props;
-        history.push('/base/TitletagPreview');
+        history.push('/base/Titletag');
     }
 
     render() {
@@ -117,7 +116,7 @@ class TitletagEditForm extends Component {
                             </CardBody>
                             <CardFooter>
                                 <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Preview</Button>
+                                <Button type="button" size="md" color="secondary" onClick={this.handleCancel}><i className="fa fa-eye"></i> Cancel</Button>
                             </CardFooter>
                         </Card>
 
