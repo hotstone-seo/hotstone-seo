@@ -12,12 +12,12 @@ export default {
     },
     {
       name: 'DataSource',
-      url: '/base/datasource',
+      url: '/datasource',
       icon: 'icon-puzzle',
     },
     {
       name: 'Rule',
-      url: '/base/rule',
+      url: '/rule',
       icon: 'icon-puzzle',
     },
     {

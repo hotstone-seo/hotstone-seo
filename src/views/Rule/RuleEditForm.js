@@ -43,7 +43,7 @@ class RuleEditForm extends Component {
 
   handleCancel() {
     const { history } = this.props;
-    history.push('/base/rule');
+    history.push('/rule');
   }
 
   render() {

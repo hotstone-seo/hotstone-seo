@@ -10,15 +10,15 @@ const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
 const SimpleLineIcons = React.lazy(() => import('./views/Icons/SimpleLineIcons'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
-const RuleList = React.lazy(() => import('./views/Base/Rule/RuleList'));
-const RuleForm = React.lazy(() => import('./views/Base/Rule/RuleForm'));
-const RuleEditForm = React.lazy(() => import('./views/Base/Rule/RuleEditForm'));
+const RuleList = React.lazy(() => import('./views/Rule/RuleList'));
+const RuleForm = React.lazy(() => import('./views/Rule/RuleForm'));
+const RuleEditForm = React.lazy(() => import('./views/Rule/RuleEditForm'));
 const MetaTagList = React.lazy(() => import('./views/Base/Metatag/Metatag'));
 const MetatagPreview = React.lazy(() => import('./views/Base/Metatag/MetatagPreview'));
 const MetaTagEditForm = React.lazy(() => import('./views/Base/Metatag/MetatagEditForm'));
-const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSource'));
-const DataSourceEditForm = React.lazy(() => import('./views/Base/DataSource/DataSourceEditForm'));
-const DataSourceForm = React.lazy(() => import('./views/Base/DataSource/DataSourceForm'));
+const DataSourceList = React.lazy(() => import('./views/DataSource/DataSource'));
+const DataSourceEditForm = React.lazy(() => import('./views/DataSource/DataSourceEditForm'));
+const DataSourceForm = React.lazy(() => import('./views/DataSource/DataSourceForm'));
 const CanonicalList = React.lazy(() => import('./views/Canonical/Canonical'));
 const CanonicalForm = React.lazy(() => import('./views/Canonical/CanonicalForm'));
 const CanonicalEditForm = React.lazy(() => import('./views/Canonical/CanonicalEditForm'));
@@ -45,16 +45,16 @@ const routes = [
   { path: '/icons/simple-line-icons', name: 'Simple Line Icons', component: SimpleLineIcons },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
-  { path: '/base/rule', name: 'Rules', component: RuleList },
-  { path: '/base/ruleForm', name: 'Rules', component: RuleForm },
-  { path: '/base/ruleEditForm', name: 'Rules', component: RuleEditForm },
+  { path: '/rule', name: 'Rules', component: RuleList },
+  { path: '/ruleForm', name: 'Rules', component: RuleForm },
+  { path: '/ruleEditForm', name: 'Rules', component: RuleEditForm },
   { path: '/base/metatag', name: 'Metatag', component: MetaTagList },
   { path: '/base/metatagForm', name: 'Metatag', component: MetatagForm },
   { path: '/base/metatagEditForm', name: 'Metatag', component: MetaTagEditForm },
   { path: '/base/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
-  { path: '/base/datasource', name: 'DataSource', component: DataSourceList },
-  { path: '/base/DataSourceForm', name: 'DataSource', component: DataSourceForm },
-  { path: '/base/DataSourceEditForm', name: 'DataSource', component: DataSourceEditForm },
+  { path: '/datasource', name: 'DataSource', component: DataSourceList },
+  { path: '/dataSourceForm', name: 'DataSource', component: DataSourceForm },
+  { path: '/dataSourceEditForm', name: 'DataSource', component: DataSourceEditForm },
   { path: '/canonical', name: 'Canonical', component: CanonicalList },
   { path: '/canonicalForm', name: 'Canonical', component: CanonicalForm },
   { path: '/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },

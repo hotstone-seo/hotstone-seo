@@ -20,7 +20,7 @@ import {
   Row,
 } from 'reactstrap';
 
-class DataSourceForm extends Component {
+class DataSourceEditForm extends Component {
   constructor(props) {
     super(props);
 
@@ -44,17 +44,17 @@ class DataSourceForm extends Component {
 
   handleCancel() {
     const { history } = this.props;
-    history.push('/base/DataSource');
+    history.push('/dataSource');
   }
 
   render() {
     return (
-      <div className="animated fadeIn">
+        <div className="animated fadeIn">
         <Row>
           <Col xs="12" md="9" lg="6">
             <Card>
               <CardHeader>
-                <strong>Add New Data Source</strong>
+                <strong>Edit Data Source</strong>
               </CardHeader>
               <CardBody>
                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -63,7 +63,7 @@ class DataSourceForm extends Component {
                       <Label htmlFor="text-input">Data Source Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
+                      <Input type="text" id="name" name="name" placeholder="Name" value="Airport" />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -91,14 +91,14 @@ class DataSourceForm extends Component {
                       <Label htmlFor="textarea-input">Fields</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="textarea" name="fields" id="fields" rows="3"
+                      <Input type="textarea" name="fields" id="fields" rows="3" value="Id, name, address, province"
                         placeholder="Fields" />
                     </Col>
                   </FormGroup>
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i>Submit</Button>
+                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Save Change</Button>
                 <Button type="button" size="md" color="secondary" onClick={this.handleCancel}>Cancel</Button>
               </CardFooter>
             </Card>
@@ -108,9 +108,9 @@ class DataSourceForm extends Component {
     );
   }
 }
-DataSourceForm.propTypes = {
+DataSourceEditForm.propTypes = {
   match: PropTypes.shape({
     path: PropTypes.string,
   }).isRequired,
 };
-export default DataSourceForm;
+export default DataSourceEditForm;

@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink,  Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-class RuleList extends Component {
+class DataSource extends Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
   }
-  handleClick() {
+  handleAdd() {
     const { history } = this.props;
-    history.push('/base/RuleForm');
+    history.push('/dataSourceForm');
   }
-  
   handleEdit() {
     const { history } = this.props;
-    history.push('/base/RuleEditForm');
+    history.push('/dataSourceEditForm');
   }
   render() {
     return (
@@ -23,32 +22,33 @@ class RuleList extends Component {
         <Col xs="12" lg="12">
           <Card>
             <CardHeader>
-              Rule
+              Data Source
             </CardHeader>
             <CardBody>
               <div style={{ marginBottom: '.5rem' }}>
-                <Button color="primary" onClick={this.handleClick}>Add New</Button>
+                <Button color="primary" onClick={this.handleAdd}>Add New</Button>
               </div>
               <Table responsive bordered>
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>URL Pattern</th>
-                    <th>Data Source</th>
+                    <th>Data Source Name</th>
+                    <th>Webhook</th>
+                    <th>Fields</th>
                     <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Rule1</td>
-                    <td>http://xxx</td>
-                    <td>DataSource1</td>
+                    <td>Airport</td>
+                    <td>http://fligh-service/airport</td>
+                    <td>Id, name, address, province</td>
                     <td>Nov 15 2019</td>
                     <td>
                       <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                     </td>
                   </tr>
+
                 </tbody>
               </Table>
               <Pagination>
@@ -65,10 +65,10 @@ class RuleList extends Component {
     );
   }
 }
-RuleList.propTypes = {
+DataSource.propTypes = {
   match: PropTypes.shape({
     path: PropTypes.string,
   }).isRequired,
 };
 
-export default RuleList;
+export default DataSource;
