@@ -20,6 +20,7 @@ const RuleForm = React.lazy(() => import('./views/Base/Rule/RuleForm'));
 const MetaTagList = React.lazy(() => import('./views/Base/Metatag/Metatag'));
 const MetatagPreview = React.lazy(() => import('./views/Base/Metatag/MetatagPreview'));
 const DataSourceList = React.lazy(() => import('./views/Base/DataSource/DataSource'));
+const DataSourceEditForm = React.lazy(() => import('./views/Base/DataSource/DataSourceEditForm'));
 const DataSourceForm = React.lazy(() => import('./views/Base/DataSource/DataSourceForm'));
 const CanonicalList = React.lazy(() => import('./views/Base/Canonical/Canonical'));
 const CanonicalForm = React.lazy(() => import('./views/Base/Canonical/CanonicalForm'));
@@ -30,6 +31,7 @@ const ScripttagList = React.lazy(() => import('./views/Base/Scripttag/Scripttag'
 const ScripttagForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagForm'));
 const LanguageList = React.lazy(() => import('./views/Base/Language/Language'));
 const LanguageForm = React.lazy(() => import('./views/Base/Language/LanguageForm'));
+const LanguageEditForm = React.lazy(() => import('./views/Base/Language/LanguageEditForm'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -56,6 +58,7 @@ const routes = [
   { path: '/base/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
   { path: '/base/datasource', name: 'DataSource', component: DataSourceList },
   { path: '/base/DataSourceForm', name: 'DataSource', component: DataSourceForm },
+  { path: '/base/DataSourceEditForm', name: 'DataSource', component: DataSourceEditForm },
   { path: '/base/canonical', name: 'Canonical', component: CanonicalList },
   { path: '/base/canonicalForm', name: 'Canonical', component: CanonicalForm },
   { path: '/base/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },
@@ -65,7 +68,7 @@ const routes = [
   { path: '/base/ScripttagForm', name: 'Scripttag', component: ScripttagForm },
   { path: '/base/Language', name: 'Language', component: LanguageList },
   { path: '/base/LanguageForm', name: 'Language', component: LanguageForm },
-
+  { path: '/base/LanguageEditForm', name: 'Language', component: LanguageEditForm },
 ];
 
 export default routes;
