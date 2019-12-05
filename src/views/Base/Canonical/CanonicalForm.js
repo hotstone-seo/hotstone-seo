@@ -33,7 +33,7 @@ class CanonicalForm extends Component {
     };
 
     this.handlePreview = this.handlePreview.bind(this);
-
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
   toggle() {
@@ -49,6 +49,10 @@ class CanonicalForm extends Component {
     history.push('/base/MetatagPreview');
   }
 
+  handleCancel() {
+    const { history } = this.props;
+    history.push('/base/canonical');
+  }
   render() {
     return (
       <div className="animated fadeIn">
@@ -90,9 +94,9 @@ class CanonicalForm extends Component {
                 </Form>
               </CardBody>
               <CardFooter>
-                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
+                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }} onClick={this.handleCancel}><i className="fa fa-dot-circle-o"></i> Submit</Button>
                 <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Preview</Button>
-              </CardFooter>
+              </CardFooter>           
             </Card>
           </Col>
         </Row>
