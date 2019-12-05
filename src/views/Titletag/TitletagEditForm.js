@@ -46,7 +46,7 @@ class TitletagEditForm extends Component {
 
     handleCancel() {
         const { history } = this.props;
-        history.push('/base/Titletag');
+        history.push('/titletag');
     }
 
     render() {

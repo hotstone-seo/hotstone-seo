@@ -32,7 +32,7 @@ export default {
     },
     {
       name: 'Title-Tag',
-      url: '/base/titletag',
+      url: '/titletag',
       icon: 'icon-puzzle',
     },
     {

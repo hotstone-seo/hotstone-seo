@@ -22,9 +22,9 @@ const DataSourceForm = React.lazy(() => import('./views/DataSource/DataSourceFor
 const CanonicalList = React.lazy(() => import('./views/Canonical/Canonical'));
 const CanonicalForm = React.lazy(() => import('./views/Canonical/CanonicalForm'));
 const CanonicalEditForm = React.lazy(() => import('./views/Canonical/CanonicalEditForm'));
-const TitletagList = React.lazy(() => import('./views/Base/Titletag/Titletag'));
-const TitletagForm = React.lazy(() => import('./views/Base/Titletag/TitletagForm'));
-const TitletagEditForm = React.lazy(() => import('./views/Base/Titletag/TitletagEditForm'));
+const TitletagList = React.lazy(() => import('./views/Titletag/Titletag'));
+const TitletagForm = React.lazy(() => import('./views/Titletag/TitletagForm'));
+const TitletagEditForm = React.lazy(() => import('./views/Titletag/TitletagEditForm'));
 const ScripttagList = React.lazy(() => import('./views/Base/Scripttag/Scripttag'));
 const ScripttagForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagForm'));
 const ScripttagEditForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagEditForm'));
@@ -58,9 +58,9 @@ const routes = [
   { path: '/canonical', name: 'Canonical', component: CanonicalList },
   { path: '/canonicalForm', name: 'Canonical', component: CanonicalForm },
   { path: '/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },
-  { path: '/base/titletag', name: 'Titletag', component: TitletagList },
-  { path: '/base/titletagForm', name: 'Titletag', component: TitletagForm },
-  { path: '/base/titletagEditForm', name: 'Titletag', component: TitletagEditForm },
+  { path: '/titletag', name: 'Titletag', component: TitletagList },
+  { path: '/titletagForm', name: 'Titletag', component: TitletagForm },
+  { path: '/titletagEditForm', name: 'Titletag', component: TitletagEditForm },
   { path: '/base/scripttag', name: 'Scripttag', component: ScripttagList },
   { path: '/base/scripttagForm', name: 'Scripttag', component: ScripttagForm },
   { path: '/base/scripttagEditForm', name: 'Scripttag', component: ScripttagEditForm },

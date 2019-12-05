@@ -11,11 +11,11 @@ class Titletag extends Component {
     }
     handleClick() {
         const { history } = this.props;
-        history.push('/base/titletagForm');
+        history.push('/titletagForm');
     }
     handleEdit() {
         const { history } = this.props;       
-        history.push('/base/titletagEditForm');
+        history.push('/titletagEditForm');
     }
     render() {
         return (

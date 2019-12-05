@@ -47,7 +47,7 @@ class TitletagForm extends Component {
 
     handlePreview() {
         const { history } = this.props;
-        history.push('/base/TitletagPreview');
+        history.push('/titletagPreview');
     }
 
     render() {
