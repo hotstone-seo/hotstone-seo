@@ -41,51 +41,12 @@ class RuleList extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Pompeius René</td>
-                    <td>2xxx</td>
-                    <td>xx</td>
+                    <td>Rule1</td>
+                    <td>http://xxx</td>
+                    <td>DataSource1</td>
                     <td>Nov 15 2019</td>
                     <td>
                       <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
-                    </td>
-                  </tr>
-                 
-                  <tr>
-                    <td>Paĉjo Jadon</td>
-                    <td>xxx</td>
-                    <td>xx</td>
-                    <td>Nov 15 2019</td>
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
-                    </td>
-
-                  </tr>
-                  <tr>
-                    <td>Micheal Mercurius</td>
-                    <td>ccc</td>
-                    <td>cc</td>
-
-                    <th>Nov 15 2019</th>
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Ganesha Dubhghall</td>
-                    <td>fff</td>
-                    <td>fff</td>
-                    <td>Nov 15 2019</td>
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Hiroto Šimun</td>
-                    <td>2012/01/21</td>
-                    <td>Staff</td>
-                    <td>Nov 15 2019</td>
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
                     </td>
                   </tr>
                 </tbody>

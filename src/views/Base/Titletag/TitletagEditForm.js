@@ -22,6 +22,7 @@ import {
 
 
 class TitletagEditForm extends Component {
+    alert(2);
     constructor(props) {
         super(props);
 

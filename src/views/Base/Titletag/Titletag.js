@@ -6,10 +6,15 @@ class Titletag extends Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
     handleClick() {
         const { history } = this.props;
         history.push('/base/TitletagForm');
+    }
+    handleEdit() {
+        const { history } = this.props;
+        history.push('/base/TitletagEditForm');
     }
     render() {
         return (
@@ -40,16 +45,7 @@ class Titletag extends Component {
                                         <td>.. is located at ..</td>
                                         <td>Nov 16 2019</td>
                                         <td>
-                                            <NavLink href="#">Edit</NavLink>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Airport Detail</td>
-                                        <td>ENG</td>
-                                        <td>.. is located at ..</td>
-                                        <td>Nov 16 2019</td>
-                                        <td>
-                                            <NavLink href="#">Edit</NavLink>
+                                            <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -59,9 +55,6 @@ class Titletag extends Component {
                                 <PaginationItem active>
                                     <PaginationLink tag="button">1</PaginationLink>
                                 </PaginationItem>
-                                <PaginationItem className="page-item"><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                                <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                                <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
                                 <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
                             </Pagination>
                         </CardBody>

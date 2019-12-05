@@ -48,44 +48,6 @@ class Metatag extends Component {
                       <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                     </td>
                   </tr>
-                  <tr>
-                    <td>Paĉjo Jadon</td>
-                    <td>xxx</td>
-                    <td>xx</td>
-                    <td>Nov 16 2019</td>
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
-                    </td>
-
-                  </tr>
-                  <tr>
-                    <td>Micheal Mercurius</td>
-                    <td>ccc</td>
-                    <td>cc</td>
-                    <th>Nov 16 2019</th>
-
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Ganesha Dubhghall</td>
-                    <td>fff</td>
-                    <td>fff</td>
-                    <td>Nov 16 2019</td>
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Hiroto Šimun</td>
-                    <td>xzzzz</td>
-                    <td>Staff</td>
-                    <td>Nov 16 2019</td>
-                    <td>
-                      <NavLink href="#">Edit</NavLink>
-                    </td>
-                  </tr>
                 </tbody>
               </Table>
               <Pagination>
@@ -94,8 +56,6 @@ class Metatag extends Component {
                   <PaginationLink tag="button">1</PaginationLink>
                 </PaginationItem>
                 <PaginationItem className="page-item"><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
                 <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
               </Pagination>
             </CardBody>

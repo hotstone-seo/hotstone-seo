@@ -46,7 +46,7 @@ class MetatagEditForm extends Component {
 
   handleCancel() {
     const { history } = this.props;
-    history.push('/base/MetatagPreview');
+    history.push('/base/Metatag');
   }
 
   render() {
