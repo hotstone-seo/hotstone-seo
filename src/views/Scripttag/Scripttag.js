@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-class Metatag extends Component {
+class Scripttag extends Component {
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
@@ -10,11 +10,11 @@ class Metatag extends Component {
   }
   handleClick() {
     const { history } = this.props;
-    history.push('/base/MetatagForm');
+    history.push('/scripttagForm');
   }
   handleEdit() {
     const { history } = this.props;
-    history.push('/base/MetatagEditForm');
+    history.push('/scripttagEditForm');
   }
   render() {
     return (
@@ -22,7 +22,7 @@ class Metatag extends Component {
         <Col xs="12" lg="12">
           <Card>
             <CardHeader>
-              Meta-Tag
+              Script-Tag
             </CardHeader>
             <CardBody>
               <div style={{ marginBottom: '.5rem' }}>
@@ -31,18 +31,18 @@ class Metatag extends Component {
               <Table responsive bordered>
                 <thead>
                   <tr>
-                    <th>Name</th>
                     <th>Rule</th>
-                    <th>Content</th>
+                    <th>Type</th>
+                    <th>Source</th>
                     <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Pompeius René</td>
-                    <td>2xxx</td>
-                    <td>xx</td>
+                    <td>Airport Detail</td>
+                    <td>Javascript</td>
+                    <td>https://www.google-anayytics.com/analytics.js</td>
                     <td>Nov 16 2019</td>
                     <td>
                       <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
@@ -54,8 +54,7 @@ class Metatag extends Component {
                 <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
                 <PaginationItem active>
                   <PaginationLink tag="button">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem className="page-item"><PaginationLink tag="button">2</PaginationLink></PaginationItem>
+                </PaginationItem>                
                 <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
               </Pagination>
             </CardBody>
@@ -65,10 +64,10 @@ class Metatag extends Component {
     );
   }
 }
-Metatag.propTypes = {
+Scripttag.propTypes = {
   match: PropTypes.shape({
     path: PropTypes.string,
   }).isRequired,
 };
 
-export default Metatag;
+export default Scripttag;

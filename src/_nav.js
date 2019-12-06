@@ -27,7 +27,7 @@ export default {
     },
     {
       name: 'Meta-Tag',
-      url: '/base/metatag',
+      url: '/metatag',
       icon: 'icon-puzzle',
     },
     {
@@ -37,7 +37,7 @@ export default {
     },
     {
       name: 'Script-Tag',
-      url: '/base/scripttag',
+      url: '/scripttag',
       icon: 'icon-puzzle',
     },
   ],

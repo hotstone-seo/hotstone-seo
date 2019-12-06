@@ -36,7 +36,7 @@ class MetatagPreview extends Component {
   }
   handleBack() {
     const { history } = this.props;
-    history.push('/base/MetatagForm');
+    history.push('/metatagForm');
   }
   render() {
     return (

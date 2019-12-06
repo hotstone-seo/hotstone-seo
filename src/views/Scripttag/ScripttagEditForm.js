@@ -23,7 +23,7 @@ class ScripttagEditForm extends Component {
 
     handleCancel() {
         const { history } = this.props;
-        history.push('/base/scripttag');
+        history.push('/scripttag');
     }
 
     render() {

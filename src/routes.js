@@ -1,5 +1,5 @@
 import React from 'react';
-import MetatagForm from './views/Base/Metatag/MetatagForm';
+import MetatagForm from './views/Metatag/MetatagForm';
  
 const BrandButtons = React.lazy(() => import('./views/Buttons/BrandButtons'));
 const ButtonDropdowns = React.lazy(() => import('./views/Buttons/ButtonDropdowns'));
@@ -13,9 +13,9 @@ const User = React.lazy(() => import('./views/Users/User'));
 const RuleList = React.lazy(() => import('./views/Rule/RuleList'));
 const RuleForm = React.lazy(() => import('./views/Rule/RuleForm'));
 const RuleEditForm = React.lazy(() => import('./views/Rule/RuleEditForm'));
-const MetaTagList = React.lazy(() => import('./views/Base/Metatag/Metatag'));
-const MetatagPreview = React.lazy(() => import('./views/Base/Metatag/MetatagPreview'));
-const MetaTagEditForm = React.lazy(() => import('./views/Base/Metatag/MetatagEditForm'));
+const MetaTagList = React.lazy(() => import('./views/Metatag/Metatag'));
+const MetatagPreview = React.lazy(() => import('./views/Metatag/MetatagPreview'));
+const MetaTagEditForm = React.lazy(() => import('./views/Metatag/MetatagEditForm'));
 const DataSourceList = React.lazy(() => import('./views/DataSource/DataSource'));
 const DataSourceEditForm = React.lazy(() => import('./views/DataSource/DataSourceEditForm'));
 const DataSourceForm = React.lazy(() => import('./views/DataSource/DataSourceForm'));
@@ -25,9 +25,9 @@ const CanonicalEditForm = React.lazy(() => import('./views/Canonical/CanonicalEd
 const TitletagList = React.lazy(() => import('./views/Titletag/Titletag'));
 const TitletagForm = React.lazy(() => import('./views/Titletag/TitletagForm'));
 const TitletagEditForm = React.lazy(() => import('./views/Titletag/TitletagEditForm'));
-const ScripttagList = React.lazy(() => import('./views/Base/Scripttag/Scripttag'));
-const ScripttagForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagForm'));
-const ScripttagEditForm = React.lazy(() => import('./views/Base/Scripttag/ScripttagEditForm'));
+const ScripttagList = React.lazy(() => import('./views/Scripttag/Scripttag'));
+const ScripttagForm = React.lazy(() => import('./views/Scripttag/ScripttagForm'));
+const ScripttagEditForm = React.lazy(() => import('./views/Scripttag/ScripttagEditForm'));
 const LanguageList = React.lazy(() => import('./views/Language/Language'));
 const LanguageForm = React.lazy(() => import('./views/Language/LanguageForm'));
 const LanguageEditForm = React.lazy(() => import('./views/Language/LanguageEditForm'));
@@ -48,10 +48,10 @@ const routes = [
   { path: '/rule', name: 'Rules', component: RuleList },
   { path: '/ruleForm', name: 'Rules', component: RuleForm },
   { path: '/ruleEditForm', name: 'Rules', component: RuleEditForm },
-  { path: '/base/metatag', name: 'Metatag', component: MetaTagList },
-  { path: '/base/metatagForm', name: 'Metatag', component: MetatagForm },
-  { path: '/base/metatagEditForm', name: 'Metatag', component: MetaTagEditForm },
-  { path: '/base/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
+  { path: '/metatag', name: 'Metatag', component: MetaTagList },
+  { path: '/metatagForm', name: 'Metatag', component: MetatagForm },
+  { path: '/metatagEditForm', name: 'Metatag', component: MetaTagEditForm },
+  { path: '/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
   { path: '/datasource', name: 'DataSource', component: DataSourceList },
   { path: '/dataSourceForm', name: 'DataSource', component: DataSourceForm },
   { path: '/dataSourceEditForm', name: 'DataSource', component: DataSourceEditForm },
@@ -61,9 +61,9 @@ const routes = [
   { path: '/titletag', name: 'Titletag', component: TitletagList },
   { path: '/titletagForm', name: 'Titletag', component: TitletagForm },
   { path: '/titletagEditForm', name: 'Titletag', component: TitletagEditForm },
-  { path: '/base/scripttag', name: 'Scripttag', component: ScripttagList },
-  { path: '/base/scripttagForm', name: 'Scripttag', component: ScripttagForm },
-  { path: '/base/scripttagEditForm', name: 'Scripttag', component: ScripttagEditForm },
+  { path: '/scripttag', name: 'Scripttag', component: ScripttagList },
+  { path: '/scripttagForm', name: 'Scripttag', component: ScripttagForm },
+  { path: '/scripttagEditForm', name: 'Scripttag', component: ScripttagEditForm },
   { path: '/language', name: 'Language', component: LanguageList },
   { path: '/languageForm', name: 'Language', component: LanguageForm },
   { path: '/languageEditForm', name: 'Language', component: LanguageEditForm },
