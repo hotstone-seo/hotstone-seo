@@ -1,3 +1,4 @@
+import React from 'react';
 import axios from 'axios';
 
 export default function HotStone(host) {
@@ -19,8 +20,14 @@ export default function HotStone(host) {
             this.cache = await this._realize();
           }
           return this.cache;
-        }
-        // TODO: Create function to render tags into React element
+        },
+        async renderElement() {
+          const tags = await this.get();
+          return tags.map(({ type, props, children }) => (
+            React.createElement(type, props, children)
+          ));
+        },
+        // TODO add function for validation rule pattern against existing values
       };
       
       return context;
