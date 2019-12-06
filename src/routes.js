@@ -13,6 +13,7 @@ const User = React.lazy(() => import('./views/Users/User'));
 const RuleList = React.lazy(() => import('./views/Rule/RuleList'));
 const RuleForm = React.lazy(() => import('./views/Rule/RuleForm'));
 const RuleEditForm = React.lazy(() => import('./views/Rule/RuleEditForm'));
+const RuleDetail = React.lazy(() => import('./views/Rule/RuleDetail'));
 const MetaTagList = React.lazy(() => import('./views/Metatag/Metatag'));
 const MetatagPreview = React.lazy(() => import('./views/Metatag/MetatagPreview'));
 const MetaTagEditForm = React.lazy(() => import('./views/Metatag/MetatagEditForm'));
@@ -48,6 +49,7 @@ const routes = [
   { path: '/rule', name: 'Rules', component: RuleList },
   { path: '/ruleForm', name: 'Rules', component: RuleForm },
   { path: '/ruleEditForm', name: 'Rules', component: RuleEditForm },
+  { path: '/ruleDetail/:id', exact: true, name: 'Rule Details', component: RuleDetail },
   { path: '/metatag', name: 'Metatag', component: MetaTagList },
   { path: '/metatagForm', name: 'Metatag', component: MetatagForm },
   { path: '/metatagEditForm', name: 'Metatag', component: MetaTagEditForm },

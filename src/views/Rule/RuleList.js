@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 
@@ -17,7 +18,9 @@ class RuleList extends Component {
     const { history } = this.props;
     history.push('/ruleEditForm');
   }
+
   render() {
+    const ruleLink = '/ruleDetail/100'
     return (
       <div className="animated fadeIn">
         <Col xs="12" lg="12">
@@ -41,7 +44,7 @@ class RuleList extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Rule1</td>
+                    <td><Link to={ruleLink}>Airport Detail</Link></td>
                     <td>http://xxx</td>
                     <td>DataSource1</td>
                     <td>Nov 15 2019</td>
