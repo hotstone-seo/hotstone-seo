@@ -20,25 +20,5 @@ export default {
       url: '/rule',
       icon: 'icon-puzzle',
     },
-    {
-      name: 'Canonical',
-      url: '/canonical',
-      icon: 'icon-puzzle',
-    },
-    {
-      name: 'Meta-Tag',
-      url: '/metatag',
-      icon: 'icon-puzzle',
-    },
-    {
-      name: 'Title-Tag',
-      url: '/titletag',
-      icon: 'icon-puzzle',
-    },
-    {
-      name: 'Script-Tag',
-      url: '/scripttag',
-      icon: 'icon-puzzle',
-    },
   ],
 };
