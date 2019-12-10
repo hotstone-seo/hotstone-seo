@@ -2,7 +2,6 @@ package typical
 
 import (
 	"github.com/hotstone-seo/hotstone-server/app"
-	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-go/pkg/typctx"
 	"github.com/typical-go/typical-go/pkg/typrls"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
@@ -19,14 +18,15 @@ var Context = &typctx.Context{
 	Package:   "github.com/hotstone-seo/hotstone-server",
 	AppModule: app.Module(),
 	Modules: []interface{}{
-		typdocker.Module(),
-		typserver.Module(),
-		typpostgres.Module(),
-		typredis.Module(),
+		&typdocker.Module{},
+		&typserver.Module{},
+		&typredis.Module{},
+		&typpostgres.Module{
+			DBName: "hotstone",
+		},
 	},
-	Releaser: typrls.Releaser{
+	ReadmeGenerator: typreadme.Generator{},
+	Releaser: &typrls.Releaser{
 		Targets: []typrls.Target{"linux/amd64", "darwin/amd64"},
 	},
-	ConfigLoader:    typcfg.DefaultLoader(),
-	ReadmeGenerator: typreadme.Generator{},
 }

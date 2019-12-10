@@ -4,15 +4,13 @@
 
 ### Usage
 
-- `hotstone-server provider`: Start the provider
-- `hotstone-server server`: Start the Server
 
 ### Configuration
 
 | Name | Type | Default | Required |
 |---|---|---|:---:|
 |APP_ADDRESS|string|:8089|Yes|
-|PG_DBNAME|string|typical-rest|Yes|
+|PG_DBNAME|string||Yes|
 |PG_HOST|string|localhost||
 |PG_PASSWORD|string|pgpass|Yes|
 |PG_PORT|int|5432||
@@ -55,6 +53,8 @@ Use `./typicalw release` to make the release. [Learn More](https://typical-go.gi
 	- `./typicalw docker compose`: Generate docker-compose.yaml
 	- `./typicalw docker up`: Spin up docker containers
 	- `./typicalw docker down`: Take down all docker containers
+- `./typicalw redis`: Redis Tool
+	- `./typicalw redis console`: Redis Interactive
 - `./typicalw postgres`: Postgres Database Tool
 	- `./typicalw postgres create`: Create New Database
 	- `./typicalw postgres drop`: Drop Database
@@ -62,5 +62,3 @@ Use `./typicalw release` to make the release. [Learn More](https://typical-go.gi
 	- `./typicalw postgres rollback`: Rollback Database
 	- `./typicalw postgres seed`: Database Seeding
 	- `./typicalw postgres console`: PostgreSQL Interactive
-- `./typicalw redis`: Redis Tool
-	- `./typicalw redis console`: Redis Interactive
