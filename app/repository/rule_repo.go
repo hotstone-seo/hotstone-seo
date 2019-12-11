@@ -21,3 +21,8 @@ type RuleRepo interface {
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, rule Rule) error
 }
+
+// NewRuleRepo return new instance of RuleRepo
+func NewRuleRepo(impl RuleRepoImpl) RuleRepo {
+	return &impl
+}
