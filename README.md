@@ -4,6 +4,8 @@
 
 ### Usage
 
+- `hotstone-server provider`: Start the provider
+- `hotstone-server server`: Start the Server
 
 ### Configuration
 
