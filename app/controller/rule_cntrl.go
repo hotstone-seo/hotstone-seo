@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"net/http"
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
+	"github.com/labstack/echo"
 	"github.com/typical-go/typical-rest-server/pkg/utility/responsekit"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
@@ -14,6 +16,33 @@ import (
 type RuleCntrl struct {
 	dig.In
 	service.RuleService
+}
+
+// List of rule
+func (c *RuleCntrl) List(ctx echo.Context) (err error) {
+	var rules []*repository.Rule
+	ctx0 := ctx.Request().Context()
+	if rules, err = c.RuleService.List(ctx0); err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, rules)
+}
+
+// Get rule
+func (c *RuleCntrl) Get(ctx echo.Context) (err error) {
+	var id int64
+	var rule *repository.Rule
+	ctx0 := ctx.Request().Context()
+	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
+		return responsekit.InvalidID(ctx, err)
+	}
+	if rule, err = c.RuleService.Find(ctx0, id); err != nil {
+		return err
+	}
+	if rule == nil {
+		return responsekit.NotFound(ctx, id)
+	}
+	return ctx.JSON(http.StatusOK, rule)
 }
 
 // Create rule
