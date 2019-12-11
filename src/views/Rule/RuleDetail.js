@@ -126,7 +126,7 @@ class RuleDetail extends Component {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>http://tiket.com/asad</td>
+                                            <td>http://hotstone-seo/asad</td>
 
                                             <td>Nov 15 2019</td>
                                             <td>

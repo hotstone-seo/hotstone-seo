@@ -65,7 +65,7 @@ class CanonicalEditForm extends Component {
                                             <Label htmlFor="text-input">Canonical-Tag</Label>
                                         </Col>
                                         <Col xs="12" md="9">
-                                            <Input type="text" id="name" name="name" placeholder="Canonical-Tag" value="http://tiket.com/asad" />
+                                            <Input type="text" id="name" name="name" placeholder="Canonical-Tag" value="http://hotstone-seo/asad" />
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>

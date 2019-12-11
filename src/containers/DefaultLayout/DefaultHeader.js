@@ -3,8 +3,8 @@ import { UncontrolledDropdown, DropdownItem, DropdownMenu, DropdownToggle, Nav }
 import PropTypes from 'prop-types';
 
 import { AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import logo from '../../assets/img/brand/logotiket.png'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+import logo from '../../assets/img/brand/hotstoneseo_header.png'
+import hostoneseo_logo from '../../assets/img/brand/hotstoneseo_logo.png'
 
 const propTypes = {
   children: PropTypes.node,
@@ -23,8 +23,8 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppNavbarBrand
-          full={{ src: logo, width: 89, height: 21, alt: 'TIKET Logo' }}
-          minimized={{ src: sygnet, width: 30, height: 30, alt: 'TIKET Logo' }}
+          full={{ src: logo, width: 89, height: 21, alt: 'HotStone Logo' }}
+          minimized={{ src: hostoneseo_logo, width: 30, height: 30, alt: 'HotStone Logo' }}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
   
