@@ -15,6 +15,42 @@ type RuleRepoImpl struct {
 	*sql.DB
 }
 
+// Find rule
+func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err error) {
+	var rows *sql.Rows
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
+		From("rule").
+		Where(sq.Eq{"id": id})
+	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
+		return
+	}
+	if rows.Next() {
+		rule, err = scanRule(rows)
+	}
+	return
+}
+
+// List rule
+func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
+	var rows *sql.Rows
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
+		From("rule")
+	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
+		return
+	}
+	list = make([]*Rule, 0)
+	for rows.Next() {
+		var rule *Rule
+		if rule, err = scanRule(rows); err != nil {
+			return
+		}
+		list = append(list, rule)
+	}
+	return
+}
+
 // Insert rule
 func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error) {
 	query := sq.Insert("rules").
@@ -58,40 +94,4 @@ func scanRule(rows *sql.Rows) (*Rule, error) {
 		return nil, err
 	}
 	return &rule, nil
-}
-
-// Find rule
-func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err error) {
-	var rows *sql.Rows
-	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
-		From("rule").
-		Where(sq.Eq{"id": id})
-	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
-		return
-	}
-	if rows.Next() {
-		rule, err = scanRule(rows)
-	}
-	return
-}
-
-// List rule
-func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
-	var rows *sql.Rows
-	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
-		From("rule")
-	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
-		return
-	}
-	list = make([]*Rule, 0)
-	for rows.Next() {
-		var rule *Rule
-		if rule, err = scanRule(rows); err != nil {
-			return
-		}
-		list = append(list, rule)
-	}
-	return
 }
