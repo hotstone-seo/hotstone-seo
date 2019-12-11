@@ -18,6 +18,15 @@ type RuleCntrl struct {
 	service.RuleService
 }
 
+// Route to define API Route
+func (c *RuleCntrl) Route(e *echo.Echo) {
+	e.GET("rules", c.List)
+	e.POST("rules", c.Create)
+	e.GET("rules/:id", c.Get)
+	e.PUT("rules", c.Update)
+	e.DELETE("rules/:id", c.Delete)
+}
+
 // List of rule
 func (c *RuleCntrl) List(ctx echo.Context) (err error) {
 	var rules []*repository.Rule
