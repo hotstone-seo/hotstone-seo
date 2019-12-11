@@ -152,9 +152,13 @@ class RuleDetail extends Component {
                                     </thead>
                                     <tbody>
                                         <tr>
+<<<<<<< HEAD
                                             <td>Canonical</td>
                                             <td>xxx</td>
                                             <td>http://tiket.com/asad</td>
+=======
+                                            <td>http://hotstone-seo/asad</td>
+>>>>>>> 66f6786f1dfff735101127dfef630879fcff0a37
 
                                             
                                             <td>
