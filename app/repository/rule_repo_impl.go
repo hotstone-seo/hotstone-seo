@@ -20,7 +20,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err erro
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
-		From("rule").
+		From("rules").
 		Where(sq.Eq{"id": id})
 	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
 		return
@@ -36,7 +36,7 @@ func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
-		From("rule")
+		From("rules")
 	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
 		return
 	}
