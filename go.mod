@@ -10,4 +10,5 @@ require (
 	github.com/typical-go/typical-rest-server v0.8.9
 	github.com/urfave/cli/v2 v2.0.0
 	go.uber.org/dig v1.8.0
+	gopkg.in/go-playground/validator.v9 v9.30.2
 )
