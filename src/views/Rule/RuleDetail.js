@@ -33,6 +33,11 @@ class RuleDetail extends Component {
         };
         this.handleBack = this.handleBack.bind(this);
         this.handleEditCanonical = this.handleEditCanonical.bind(this);
+
+        this.handleAddNewCanonical = this.handleAddNewCanonical.bind(this);
+        this.handleAddNewMeta = this.handleAddNewMeta.bind(this);
+        this.handleAddNewScript = this.handleAddNewScript.bind(this);
+        this.handleAddNewTitle = this.handleAddNewTitle.bind(this);
     }
 
     toggle() {
@@ -50,6 +55,23 @@ class RuleDetail extends Component {
         const { history } = this.props;
         history.push('/canonicalEditForm');
     }
+    handleAddNewCanonical(){
+        const { history } = this.props;
+        history.push('/canonicalForm');
+    }
+    handleAddNewMeta(){
+        const { history } = this.props;
+        history.push('/metatagForm');
+    }
+    handleAddNewScript(){
+        const { history } = this.props;
+        history.push('/scripttagForm');
+    }
+    handleAddNewTitle(){
+        const { history } = this.props;
+        history.push('/titletagForm');
+    }
+
     render() {
         const ruleID = this.props.match.params.id;
 
@@ -109,26 +131,32 @@ class RuleDetail extends Component {
                     <Col>
                         <Card>
                             <CardHeader>
-                                <i className="fa fa-align-justify"></i> Canonical
+                                <i className="fa fa-align-justify"></i> 
                             </CardHeader>
                             <CardBody>
                                 <div style={{ marginBottom: '.5rem' }}>
-                                    <Button color="primary" onClick={this.handleClick}>Add New</Button>
+                                    <Button color="primary" onClick={this.handleAddNewCanonical}>Add New Canonical</Button>
+                                    <Button color="primary" onClick={this.handleAddNewMeta}>Add New Meta-Tag</Button>
+                                    <Button color="primary" onClick={this.handleAddNewScript}>Add New Script Tag</Button>
+                                    <Button color="primary" onClick={this.handleAddNewTitle}>Add New Title-Tag</Button>
                                 </div>
                                 <Table responsive bordered>
                                     <thead>
                                         <tr>
-                                            <th>Canonical Tag</th>
-
-                                            <th>Updated Date</th>
+                                            <th>Type</th>
+                                            <th>Attribute</th>
+                                            <th>Value</th>
+                                           
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
+                                            <td>Canonical</td>
+                                            <td>xxx</td>
                                             <td>http://tiket.com/asad</td>
 
-                                            <td>Nov 15 2019</td>
+                                            
                                             <td>
                                                 <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                                             </td>
@@ -149,137 +177,8 @@ class RuleDetail extends Component {
                         </Card>
                     </Col>
                 </Row>
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader>
-                                Meta-Tag
-                            </CardHeader>
-                            <CardBody>
-                                <div style={{ marginBottom: '.5rem' }}>
-                                    <Button color="primary" onClick={this.handleClick}>Add New</Button>
-                                </div>
-                                <Table responsive bordered>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-
-                                            <th>Content</th>
-                                            <th>Updated Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Pompeius René</td>
-
-                                            <td>xx</td>
-                                            <td>Nov 16 2019</td>
-                                            <td>
-                                                <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                                <Pagination>
-                                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                                    <PaginationItem active>
-                                        <PaginationLink tag="button">1</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem className="page-item"><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader>
-                                Title-Tag
-                            </CardHeader>
-                            <CardBody>
-                                <div style={{ marginBottom: '.5rem' }}>
-                                    <Button color="primary" onClick={this.handleClick}>Add New</Button>
-                                </div>
-                                <Table responsive bordered>
-                                    <thead>
-                                        <tr>
-
-                                            <th>Language</th>
-                                            <th>Title</th>
-                                            <th>Updated Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-
-                                            <td>ID</td>
-                                            <td>.. is located at ..</td>
-                                            <td>Nov 16 2019</td>
-                                            <td>
-                                                <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                                <Pagination>
-                                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                                    <PaginationItem active>
-                                        <PaginationLink tag="button">1</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-
-                <Row>
-                    <Col xs="12" lg="12">
-                        <Card>
-                            <CardHeader>
-                                Script-Tag
-                            </CardHeader>
-                            <CardBody>
-                                <div style={{ marginBottom: '.5rem' }}>
-                                    <Button color="primary" onClick={this.handleClick}>Add New</Button>
-                                </div>
-                                <Table responsive bordered>
-                                    <thead>
-                                        <tr>
-
-                                            <th>Type</th>
-                                            <th>Source</th>
-                                            <th>Updated Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-
-                                            <td>Javascript</td>
-                                            <td>https://www.google-anayytics.com/analytics.js</td>
-                                            <td>Nov 16 2019</td>
-                                            <td>
-                                                <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                                <Pagination>
-                                    <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                                    <PaginationItem active>
-                                        <PaginationLink tag="button">1</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-                                </Pagination>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
+                
+                 
             </div>
         );
     }
