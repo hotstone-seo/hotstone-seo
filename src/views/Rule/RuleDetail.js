@@ -3,7 +3,6 @@ import {
     Button,
     Card,
     CardBody,
-    CardFooter,
     CardHeader,
     Col,
     Form,
@@ -31,7 +30,6 @@ class RuleDetail extends Component {
             fadeIn: true,
             timeout: 300
         };
-        this.handleBack = this.handleBack.bind(this);
         this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
         this.handleAddNewCanonical = this.handleAddNewCanonical.bind(this);
@@ -47,10 +45,7 @@ class RuleDetail extends Component {
     toggleFade() {
         this.setState((prevState) => { return { fadeIn: !prevState } });
     }
-    handleBack() {
-        const { history } = this.props;
-        history.push('/rule');
-    }
+
     handleEditCanonical() {
         const { history } = this.props;
         history.push('/canonicalEditForm');
@@ -119,10 +114,6 @@ class RuleDetail extends Component {
                                     </FormGroup>
                                 </Form>
                             </CardBody>
-                            <CardFooter>
-
-                                <Button type="button" size="md" color="secondary" onClick={this.handleBack}> Back</Button>
-                            </CardFooter>
                         </Card>
                     </Col>
                 </Row>
@@ -135,10 +126,10 @@ class RuleDetail extends Component {
                             </CardHeader>
                             <CardBody>
                                 <div style={{ marginBottom: '.5rem' }}>
-                                    <Button color="primary" onClick={this.handleAddNewCanonical}>Add New Canonical</Button>
-                                    <Button color="primary" onClick={this.handleAddNewMeta}>Add New Meta-Tag</Button>
-                                    <Button color="primary" onClick={this.handleAddNewScript}>Add New Script Tag</Button>
-                                    <Button color="primary" onClick={this.handleAddNewTitle}>Add New Title-Tag</Button>
+                                    <Button color="primary" onClick={this.handleAddNewCanonical} style={{ marginRight: "0.4em" }}>Add New Canonical</Button>
+                                    <Button color="primary" onClick={this.handleAddNewMeta} style={{ marginRight: "0.4em" }}>Add New Meta-Tag</Button>
+                                    <Button color="primary" onClick={this.handleAddNewScript} style={{ marginRight: "0.4em" }}>Add New Script Tag</Button>
+                                    <Button color="primary" onClick={this.handleAddNewTitle} style={{ marginRight: "0.4em" }}>Add New Title-Tag</Button>
                                 </div>
                                 <Table responsive bordered>
                                     <thead>
@@ -146,7 +137,6 @@ class RuleDetail extends Component {
                                             <th>Type</th>
                                             <th>Attribute</th>
                                             <th>Value</th>
-
                                             <th>Action</th>
                                         </tr>
                                     </thead>
