@@ -63,10 +63,16 @@ func (c *RuleCntrl) Create(ctx echo.Context) (err error) {
 		return err
 	}
 	if err = validator.New().Struct(rule); err != nil {
-		return responsekit.InvalidRequest(ctx, err)
+		return &echo.HTTPError{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		}
 	}
 	if lastInsertID, err = c.RuleService.Insert(ctx0, rule); err != nil {
-		return err
+		return &echo.HTTPError{
+			Code:    http.StatusUnprocessableEntity,
+			Message: err.Error(),
+		}
 	}
 	return responsekit.InsertSuccess(ctx, lastInsertID)
 }
