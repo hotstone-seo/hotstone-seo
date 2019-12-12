@@ -55,19 +55,19 @@ class RuleDetail extends Component {
         const { history } = this.props;
         history.push('/canonicalEditForm');
     }
-    handleAddNewCanonical(){
+    handleAddNewCanonical() {
         const { history } = this.props;
         history.push('/canonicalForm');
     }
-    handleAddNewMeta(){
+    handleAddNewMeta() {
         const { history } = this.props;
         history.push('/metatagForm');
     }
-    handleAddNewScript(){
+    handleAddNewScript() {
         const { history } = this.props;
         history.push('/scripttagForm');
     }
-    handleAddNewTitle(){
+    handleAddNewTitle() {
         const { history } = this.props;
         history.push('/titletagForm');
     }
@@ -131,7 +131,7 @@ class RuleDetail extends Component {
                     <Col>
                         <Card>
                             <CardHeader>
-                                <i className="fa fa-align-justify"></i> 
+                                <i className="fa fa-align-justify"></i>
                             </CardHeader>
                             <CardBody>
                                 <div style={{ marginBottom: '.5rem' }}>
@@ -146,21 +146,15 @@ class RuleDetail extends Component {
                                             <th>Type</th>
                                             <th>Attribute</th>
                                             <th>Value</th>
-                                           
+
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-<<<<<<< HEAD
                                             <td>Canonical</td>
                                             <td>xxx</td>
                                             <td>http://tiket.com/asad</td>
-=======
-                                            <td>http://hotstone-seo/asad</td>
->>>>>>> 66f6786f1dfff735101127dfef630879fcff0a37
-
-                                            
                                             <td>
                                                 <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                                             </td>
@@ -181,8 +175,8 @@ class RuleDetail extends Component {
                         </Card>
                     </Col>
                 </Row>
-                
-                 
+
+
             </div>
         );
     }
