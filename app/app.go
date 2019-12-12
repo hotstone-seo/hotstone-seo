@@ -15,8 +15,8 @@ type module struct{}
 
 func (module) AppCommands(c typobj.Cli) []*cli.Command {
 	return []*cli.Command{
-		{Name: "provider", Usage: "Start the provider", Action: c.Action(startProvider)},
-		{Name: "server", Usage: "Start the Server", Action: c.Action(startServer)},
+		{Name: "provider", Usage: "Start the provider", Action: c.PreparedAction(startProvider)},
+		{Name: "server", Usage: "Start the Server", Action: c.PreparedAction(startServer)},
 	}
 }
 
