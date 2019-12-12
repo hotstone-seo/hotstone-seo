@@ -7,4 +7,5 @@ import "github.com/hotstone-seo/hotstone-server/typical"
 func init() {
 	typical.Context.MockTargets.Append("app/repository/rule_repo.go")
 	typical.Context.MockTargets.Append("app/service/rule_service.go")
+	typical.Context.MockTargets.Append("app/service/store.go")
 }

@@ -12,18 +12,26 @@ import (
 	"strings"
 )
 
-// store is a radix tree that supports storing data with parametric keys and retrieving them back with concrete keys.
+type URLStore interface {
+	Add(id int, key string, data interface{}) int
+	Get(path string, pvalues []string) (data interface{}, pnames []string)
+	Delete(id int) bool
+	String() string
+	Count() int
+}
+
+// urlStoreImpl is a radix tree that supports storing data with parametric keys and retrieving them back with concrete keys.
 // When retrieving a data item with a concrete key, the matching parameter names and values will be returned as well.
 // A parametric key is a string containing tokens in the format of "<name>", "<name:pattern>", or "<:pattern>".
 // Each token represents a single parameter.
-type store struct {
+type urlStoreImpl struct {
 	root  *node // the root node of the radix tree
 	count int   // the number of data nodes in the tree
 }
 
-// newStore creates a new store.
-func newStore() *store {
-	return &store{
+// NewUrlStore creates a new store.
+func NewUrlStore() URLStore {
+	return &urlStoreImpl{
 		root: &node{
 			static:      true,
 			id:          -1,
@@ -36,9 +44,13 @@ func newStore() *store {
 	}
 }
 
+func (s *urlStoreImpl) Count() int {
+	return s.count
+}
+
 // Add adds a new data item with the given parametric key.
 // The number of parameters in the key is returned.
-func (s *store) Add(id int, key string, data interface{}) int {
+func (s *urlStoreImpl) Add(id int, key string, data interface{}) int {
 	s.count++
 	return s.root.add(id, key, data, s.count)
 }
@@ -46,13 +58,13 @@ func (s *store) Add(id int, key string, data interface{}) int {
 // Get returns the data item matching the given concrete key.
 // If the data item was added to the store with a parametric key before, the matching
 // parameter names and values will be returned as well.
-func (s *store) Get(path string, pvalues []string) (data interface{}, pnames []string) {
+func (s *urlStoreImpl) Get(path string, pvalues []string) (data interface{}, pnames []string) {
 	data, pnames, _ = s.root.get(path, pvalues)
 	return
 }
 
 // Delete deletes the data item matching the given ID. It returns existness of deleted item.
-func (s *store) Delete(id int) bool {
+func (s *urlStoreImpl) Delete(id int) bool {
 	found, _, _, _ := s.root.delete(id)
 	if found {
 		s.count--
@@ -62,7 +74,7 @@ func (s *store) Delete(id int) bool {
 }
 
 // String dumps the radix tree kept in the store as a string.
-func (s *store) String() string {
+func (s *urlStoreImpl) String() string {
 	return s.root.print(0)
 }
 

@@ -50,7 +50,7 @@ func testStorePlay(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := newStore()
+		h := NewUrlStore()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -160,7 +160,7 @@ func TestStoreAdd(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := newStore()
+		h := NewUrlStore()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -191,7 +191,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 		{15, "", "15"},
 		{16, "/all/<:.*>", "16"},
 	}
-	h := newStore()
+	h := NewUrlStore()
 	maxParams := 0
 	for _, pair := range pairs {
 		fmt.Printf("=== ID (by order): %d\n", pair.id)
@@ -242,7 +242,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 	}
 
 	t.Logf("\nBEFORE DELETE:\n%s", h.String())
-	assert.Equal(t, 16, h.count)
+	assert.Equal(t, 16, h.Count())
 
 	t.Run("delete static", func(t *testing.T) {
 		deleted := h.Delete(7)
@@ -293,7 +293,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 		t.Logf("### DATA: %+v\n", data)
 		assert.NotEqual(t, nil, data)
 
-		assert.Equal(t, 11, h.count)
+		assert.Equal(t, 11, h.Count())
 
 	})
 
