@@ -68,7 +68,7 @@ func (c *RuleCntrl) Create(ctx echo.Context) (err error) {
 			Message: err.Error(),
 		}
 	}
-	if lastInsertID, err = c.RuleService.InsertToDBAndStore(ctx0, rule); err != nil {
+	if lastInsertID, err = c.RuleService.Insert(ctx0, rule); err != nil {
 		return &echo.HTTPError{
 			Code:    http.StatusUnprocessableEntity,
 			Message: err.Error(),

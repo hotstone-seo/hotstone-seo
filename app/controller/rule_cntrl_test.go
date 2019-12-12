@@ -28,12 +28,12 @@ func TestRuleController_Create(t *testing.T) {
 		require.EqualError(t, err, "code=400, message=Syntax error: offset=1, error=invalid character 'i' looking for beginning of value")
 	})
 	t.Run("WHEN insert error", func(t *testing.T) {
-		ruleSvcMock.EXPECT().InsertToDBAndStore(gomock.Any(), gomock.Any()).Return(int64(-1), errors.New("some-insert-error"))
+		ruleSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(-1), errors.New("some-insert-error"))
 		_, err := echokit.DoPOST(ruleCntrl.Create, "/", `{ "name": "some-name", "url_pattern": "some-pattern", "data_source_id":1}`)
 		require.EqualError(t, err, "code=422, message=some-insert-error")
 	})
 	t.Run("WHEN insert success", func(t *testing.T) {
-		ruleSvcMock.EXPECT().InsertToDBAndStore(gomock.Any(), gomock.Any()).Return(int64(999), nil)
+		ruleSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(999), nil)
 		rr, err := echokit.DoPOST(ruleCntrl.Create, "/", `{ "name": "some-name", "url_pattern": "some-pattern", "data_source_id":1}`)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusCreated, rr.Code)
