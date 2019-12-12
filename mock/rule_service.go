@@ -106,3 +106,18 @@ func (mr *MockRuleServiceMockRecorder) Update(ctx, rule interface{}) *gomock.Cal
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRuleService)(nil).Update), ctx, rule)
 }
+
+// InsertToDBAndStore mocks base method
+func (m *MockRuleService) InsertToDBAndStore(ctx context.Context, rule repository.Rule) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InsertToDBAndStore", ctx, rule)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InsertToDBAndStore indicates an expected call of InsertToDBAndStore
+func (mr *MockRuleServiceMockRecorder) InsertToDBAndStore(ctx, rule interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertToDBAndStore", reflect.TypeOf((*MockRuleService)(nil).InsertToDBAndStore), ctx, rule)
+}
