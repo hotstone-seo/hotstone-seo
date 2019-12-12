@@ -10,6 +10,6 @@ import (
 
 func TestModule(t *testing.T) {
 	a := app.Module()
-	require.True(t, typobj.IsAppCommander(a))
+	require.True(t, typobj.IsActionable(a))
 	require.True(t, typobj.IsConfigurer(a))
 }
