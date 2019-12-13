@@ -1,13 +1,13 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
 	"github.com/labstack/echo"
-	"github.com/typical-go/typical-rest-server/pkg/utility/responsekit"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -32,7 +32,7 @@ func (c *RuleCntrl) List(ctx echo.Context) (err error) {
 	var rules []*repository.Rule
 	ctx0 := ctx.Request().Context()
 	if rules, err = c.RuleService.List(ctx0); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, rules)
 }
@@ -43,13 +43,13 @@ func (c *RuleCntrl) Get(ctx echo.Context) (err error) {
 	var rule *repository.Rule
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
-		return responsekit.InvalidID(ctx, err)
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 	if rule, err = c.RuleService.Find(ctx0, id); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	if rule == nil {
-		return responsekit.NotFound(ctx, id)
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Rule #%d not found", id))
 	}
 	return ctx.JSON(http.StatusOK, rule)
 }
@@ -63,18 +63,14 @@ func (c *RuleCntrl) Create(ctx echo.Context) (err error) {
 		return err
 	}
 	if err = validator.New().Struct(rule); err != nil {
-		return &echo.HTTPError{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		}
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if lastInsertID, err = c.RuleService.Insert(ctx0, rule); err != nil {
-		return &echo.HTTPError{
-			Code:    http.StatusUnprocessableEntity,
-			Message: err.Error(),
-		}
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return responsekit.InsertSuccess(ctx, lastInsertID)
+	return ctx.JSON(http.StatusCreated, GeneralResponse{
+		Message: fmt.Sprintf("Success create new rule #%d", lastInsertID),
+	})
 }
 
 // Delete rule
@@ -82,12 +78,14 @@ func (c *RuleCntrl) Delete(ctx echo.Context) (err error) {
 	var id int64
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
-		return responsekit.InvalidID(ctx, err)
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 	if err = c.RuleService.Delete(ctx0, id); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return responsekit.DeleteSuccess(ctx, id)
+	return ctx.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Success delete rule #%d", id),
+	})
 }
 
 // Update rule
@@ -98,13 +96,15 @@ func (c *RuleCntrl) Update(ctx echo.Context) (err error) {
 		return err
 	}
 	if rule.ID <= 0 {
-		return responsekit.InvalidID(ctx, err)
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
 	if err = validator.New().Struct(rule); err != nil {
-		return responsekit.InvalidRequest(ctx, err)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if err = c.RuleService.Update(ctx0, rule); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return responsekit.UpdateSuccess(ctx, rule.ID)
+	return ctx.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Success update rule #%d", rule.ID),
+	})
 }

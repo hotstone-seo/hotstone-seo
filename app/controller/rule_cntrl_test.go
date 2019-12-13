@@ -37,6 +37,6 @@ func TestRuleController_Create(t *testing.T) {
 		rr, err := echokit.DoPOST(ruleCntrl.Create, "/", `{ "name": "some-name", "url_pattern": "some-pattern", "data_source_id":1}`)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusCreated, rr.Code)
-		require.Equal(t, "{\"message\":\"Success insert new record #999\"}\n", rr.Body.String())
+		require.Equal(t, "{\"message\":\"Success create new rule #999\"}\n", rr.Body.String())
 	})
 }
