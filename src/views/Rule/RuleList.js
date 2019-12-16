@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
+//import { Link } from 'react-router-dom';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink, Popconfirm, message } from 'reactstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -38,10 +38,8 @@ class RuleList extends Component {
         render: (text, record) => (
           <span>
             <Button type="link" onClick={() => this.handleClick(record)}>Edit</Button>
-            <Divider type="vertical" />
-            <Popconfirm title="Are you sure want to delete?" onConfirm={() => this.handleDelete(record.id)}>
-              <Button type="link">Delete</Button>
-            </Popconfirm>
+           
+            
           </span>
         ),
       },
@@ -52,11 +50,13 @@ class RuleList extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:4000/rules')
+    axios.get('http://localhost:8089/rules')
       .then((res) => {
         const rules = res.data;
         this.setState({ rules });
-      });
+      }).catch((error) => {
+        alert(error.message)
+     });
   }
 
   handleClick() {
@@ -70,13 +70,13 @@ class RuleList extends Component {
   }
 
   handleDelete(id) {
-    axios.delete(`http://localhost:4000/rules/${id}`)
+    axios.delete(`http://localhost:8089/rules/${id}`)
       .then(() => {
         const { rules } = this.state;
         this.setState({ rules: rules.filter((env) => env.id !== id) });
       })
       .catch((error) => {
-        message.error(error.message);
+         alert(error.message)
       });
   }
 
@@ -97,16 +97,10 @@ class RuleList extends Component {
               <Table responsive bordered
                 dataSource={rules}
                 columns={this.columns}
-                rowKey={(record) => record.id}
+               
               />
               
-              <Pagination>
-                <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-                <PaginationItem active>
-                  <PaginationLink tag="button">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-              </Pagination>
+               
             </CardBody>
           </Card>
         </Col>
