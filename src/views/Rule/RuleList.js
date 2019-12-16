@@ -2,13 +2,26 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 class RuleList extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      rules: [],
+    };
     this.handleClick = this.handleClick.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
   }
+
+  componentDidMount() {
+    axios.get('http://localhost:4000/environments')
+      .then((res) => {
+        const rules = res.data;
+        this.setState({ rules });
+      });
+  }
+
   handleClick() {
     const { history } = this.props;
     history.push('/ruleForm');
