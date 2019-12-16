@@ -9,41 +9,7 @@ class RuleList extends Component {
     super(props);
     this.state = {
       rules: [],
-    };
-
-    this.columns = [
-      {
-        title: 'Rule ID',
-        dataIndex: 'id',
-        key: 'id',
-      },
-      {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: 'URL Pattern',
-        dataIndex: 'url_pattern',
-        key: 'url_pattern',
-      },
-      {
-        title: 'Updated At',
-        dataIndex: 'updated_at',
-        key: 'updated_at',
-      },
-      {
-        title: 'Actions',
-        key: 'actions',
-        render: (text, record) => (
-          <span>
-            <Button type="link" onClick={() => this.handleClick(record)}>Edit</Button>
-           
-            
-          </span>
-        ),
-      },
-    ];
+    };   
     this.handleClick = this.handleClick.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -56,14 +22,14 @@ class RuleList extends Component {
         this.setState({ rules });
       }).catch((error) => {
         alert(error.message)
-     });
+      });
   }
 
   handleClick() {
     const { history } = this.props;
     history.push('/ruleForm');
   }
-  
+
   handleEdit() {
     const { history } = this.props;
     history.push('/ruleEditForm');
@@ -76,13 +42,13 @@ class RuleList extends Component {
         this.setState({ rules: rules.filter((env) => env.id !== id) });
       })
       .catch((error) => {
-         alert(error.message)
+        alert(error.message)
       });
   }
 
   render() {
     const { rules } = this.state;
-   
+
     return (
       <div className="animated fadeIn">
         <Col xs="12" lg="12">
@@ -94,13 +60,38 @@ class RuleList extends Component {
               <div style={{ marginBottom: '.5rem' }}>
                 <Button color="primary" onClick={this.handleClick}>Add New</Button>
               </div>
-              <Table responsive bordered
-                dataSource={rules}
-                columns={this.columns}
-               
-              />
-              
-               
+
+              <Table responsive bordered>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>URL Pattern</th>
+                    <th>Updated Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rules.length > 0 ? (
+                    rules.map(rule => (
+                      <tr key={rule.id}>
+                        <td>{rule.id}</td>
+                        <td>{rule.name}</td>
+                        <td>{rule.url_pattern}</td>
+                        <td>{rule.updated_at}</td>
+                        <td>
+                          <button className="button muted-button">Edit</button>
+                          <button className="button muted-button">Delete</button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                      <tr>
+                        <td colSpan={5}>No Rule</td>
+                      </tr>
+                    )}
+                </tbody>
+              </Table>
             </CardBody>
           </Card>
         </Col>
