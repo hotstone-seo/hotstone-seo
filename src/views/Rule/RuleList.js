@@ -1,14 +1,8 @@
+import axios from 'axios';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink
-  , message 
-  , Modal
-  , ModalBody
-  , ModalFooter
-  , ModalHeader,
-} from 'reactstrap';
-import PropTypes from 'prop-types';
-import axios from 'axios';
+import { Button, Card, CardBody, CardHeader, Col, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
 
 class RuleList extends Component {
   constructor(props) {
@@ -43,15 +37,19 @@ class RuleList extends Component {
       });
   }
 
-  handleClick() {
-    
+  handleClick() {   
     const { history } = this.props;
     history.push('/ruleForm');
   }
 
-  handleEdit() {
+  handleEdit(record) {
     const { history } = this.props;
-    history.push('/ruleEditForm');
+    if (record !== undefined) {
+      history.push({
+        pathname: '/ruleEditForm',
+        data: record
+      })
+    }
   }
 
   handleDelete(id) {
@@ -69,7 +67,7 @@ class RuleList extends Component {
 
   render() {
     const { rules } = this.state;
-
+  
     return (
       <div className="animated fadeIn">
         <Col xs="12" lg="12">
@@ -101,7 +99,7 @@ class RuleList extends Component {
                         <td>{rule.url_pattern}</td>
                         <td>{rule.updated_at}</td>
                         <td>
-                          <button className="button muted-button">Edit</button>
+                          <button className="button muted-button" onClick={() => this.handleEdit(rule)}>Edit</button>
                           <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>
                           <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
                               className={'modal-warning ' + this.props.className}>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-
   Button,
   Card,
   CardBody,
@@ -8,13 +7,8 @@ import {
   CardHeader,
   Col,
   Form,
-  FormGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
+  FormGroup,  
   Input,
-  InputGroup,
-  InputGroupButtonDropdown,
   Label,
   Row,
 } from 'reactstrap';
@@ -47,6 +41,8 @@ class RuleEditForm extends Component {
   }
 
   render() {
+    const { data } = this.props.location
+     
     return (
       <div className="animated fadeIn">
         <Row>
@@ -56,13 +52,14 @@ class RuleEditForm extends Component {
                 <strong>Edit Rule</strong>
               </CardHeader>
               <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                <Form method="post" className="form-horizontal">
                   <FormGroup row>
                     <Col md="3">
                       <Label htmlFor="text-input">Name</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
+                      <Input type="hidden" id="id" name="id" value={data.id} />
+                      <Input type="text" id="name" name="name" placeholder="Name" value={data.name}/>
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -70,16 +67,7 @@ class RuleEditForm extends Component {
                       <Label htmlFor="text-input">URL Pattern</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="textarea-input">Exclusion</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" name="exclusion" id="exclusion" rows="3"
-                        placeholder="Exclusion" />
+                      <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" value={data.url_pattern} />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -87,18 +75,9 @@ class RuleEditForm extends Component {
                       <Label htmlFor="text-input">Data Source</Label>
                     </Col>
                     <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupButtonDropdown addonType="prepend"
-                          isOpen={this.state.first}
-                          toggle={() => { this.setState({ first: !this.state.first }); }}>
-                          <DropdownToggle caret color="primary">
-                            -Choose-
-                          </DropdownToggle>
-                          <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>Airport</DropdownItem>
-                          </DropdownMenu>
-                        </InputGroupButtonDropdown>
-                      </InputGroup>
+                      <Input type="select" name="datasource" id="datasource">
+                        <option value="1">Airport</option>
+                      </Input>                      
                     </Col>
                   </FormGroup>
                 </Form>
