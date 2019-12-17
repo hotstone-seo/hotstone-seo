@@ -1,112 +1,68 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Col,
   Form,
-  FormGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Input,
-  InputGroup,
-  InputGroupButtonDropdown,
+  Col,
+  FormGroup,
   Label,
-  Row,
 } from 'reactstrap';
 
-class RuleForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.toggle = this.toggle.bind(this);
-    this.toggleFade = this.toggleFade.bind(this);
-    this.state = {
-      collapse: true,
-      fadeIn: true,
-      timeout: 300
-    };
-  }
-
-  toggle() {
-    this.setState({ collapse: !this.state.collapse });
-  }
-
-  toggleFade() {
-    this.setState((prevState) => { return { fadeIn: !prevState } });
-  }
-
+/* eslint-disable react/prefer-stateless-function */
+class RuleForm extends React.Component {
   render() {
+    const {
+      visible, onCancel, onSave, rule
+    } = this.props;
+
     return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" md="9" lg="6">
-            <Card>
-              <CardHeader>
-                <strong>Add New Rule</strong>
-              </CardHeader>
-              <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">URL Pattern</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="textarea-input">Exclusion</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" name="exclusion" id="exclusion" rows="3"
-                        placeholder="Exclusion" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Data Source</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupButtonDropdown addonType="prepend"
-                          isOpen={this.state.first}
-                          toggle={() => { this.setState({ first: !this.state.first }); }}>
-                          <DropdownToggle caret color="primary">
-                            -Choose-
-                          </DropdownToggle>
-                          <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>Airport</DropdownItem>
-                          </DropdownMenu>
-                        </InputGroupButtonDropdown>
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-                </Form>
-              </CardBody>
-              <CardFooter>
-              <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Verify</Button>
-              </CardFooter>
-            </Card>
-          </Col>
-        </Row>
-      </div>
+      <Modal
+        isOpen={visible}
+        title="Create a new Rule"
+        okText="Save"
+        onCancel={onCancel}
+        onOk={onSave}
+      >
+        <Form className="form-horizontal"
+
+        //props.addRule(rule)
+        //setRule(initialFormState)
+        >
+          <FormGroup row>
+            <Col md="3">
+              <Label htmlFor="text-input">Name</Label>
+            </Col>
+            <Col xs="12" md="9">
+              <Input type="hidden" id="id" name="id" />
+              <Input type="text" id="name" name="name" placeholder="Name" value={rule.name} />
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Col md="3">
+              <Label htmlFor="text-input">URL Pattern</Label>
+            </Col>
+            <Col xs="12" md="9">
+              <Input type="text" id="urlPattern" name="urlPattern" placeholder="URL Pattern" />
+            </Col>
+          </FormGroup>
+          <FormGroup row>
+            <Col md="3">
+              <Label htmlFor="text-input">Data Source</Label>
+            </Col>
+            <Col xs="12" md="9">
+              <Input type="select" name="datasource" id="datasource">
+                <option value="1">Airport</option>
+              </Input>
+            </Col>
+          </FormGroup>
+        </Form>
+      </Modal>
     );
   }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 export default RuleForm;

@@ -1,21 +1,27 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-//import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardHeader, Col, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
+import RuleForm from './RuleForm';
 
 class RuleList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rules: [], 
+      rules: [],
+      record: {}, 
       modal: false,
       warning: false,
+      formVisible: false,
     };   
     this.handleClick = this.handleClick.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.toggleWarning = this.toggleWarning.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+
+    this.showForm = this.showForm.bind(this);
+    this.saveFormRef = this.saveFormRef.bind(this);
   }
   toggle() {
     this.setState({
@@ -53,7 +59,6 @@ class RuleList extends Component {
   }
 
   handleDelete(id) {
-     
       axios.delete(`http://localhost:8089/rules/${id}`)
        .then(() => {
         const { rules } = this.state;
@@ -64,10 +69,24 @@ class RuleList extends Component {
       });
       this.toggleWarning()
   }
+  showForm(record) {
+    if (record !== undefined) {
+      this.setState({ record: record });
+    }
+    this.setState({ formVisible: true });
+  }
 
+  saveFormRef(formRef) {
+    this.formRef = formRef;
+  }
+  handleCancel() {
+    const { form } = this.formRef.props;
+
+    form.resetFields();
+    this.setState({ formVisible: false });
+  }
   render() {
     const { rules } = this.state;
-  
     return (
       <div className="animated fadeIn">
         <Col xs="12" lg="12">
@@ -99,7 +118,7 @@ class RuleList extends Component {
                         <td>{rule.url_pattern}</td>
                         <td>{rule.updated_at}</td>
                         <td>
-                          <button className="button muted-button" onClick={() => this.handleEdit(rule)}>Edit</button>
+                          <button className="button muted-button" onClick={() => this.showForm(rule)}>Edit</button>
                           <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>
                           <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
                               className={'modal-warning ' + this.props.className}>
@@ -124,6 +143,14 @@ class RuleList extends Component {
               </Table>
             </CardBody>
           </Card>
+
+          <RuleForm
+          wrappedComponentRef={this.saveFormRef}
+          visible={this.state.formVisible}
+          onCancel={this.handleCancel}
+          onSave={this.handleSave}
+          rule={this.state.record}
+        />
         </Col>
       </div>
     );
