@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 //import { Link } from 'react-router-dom';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink, Popconfirm, message } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink
+  , message 
+  , Modal
+  , ModalBody
+  , ModalFooter
+  , ModalHeader,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
@@ -8,13 +14,25 @@ class RuleList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rules: [],
+      rules: [], 
+      modal: false,
+      warning: false,
     };   
     this.handleClick = this.handleClick.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.toggleWarning = this.toggleWarning.bind(this);
   }
-
+  toggle() {
+    this.setState({
+      modal: !this.state.modal,
+    });
+  }
+  toggleWarning() {
+    this.setState({
+      warning: !this.state.warning,
+    });
+  }
   componentDidMount() {
     axios.get('http://localhost:8089/rules')
       .then((res) => {
@@ -26,6 +44,7 @@ class RuleList extends Component {
   }
 
   handleClick() {
+    
     const { history } = this.props;
     history.push('/ruleForm');
   }
@@ -36,14 +55,16 @@ class RuleList extends Component {
   }
 
   handleDelete(id) {
-    axios.delete(`http://localhost:8089/rules/${id}`)
-      .then(() => {
+     
+      axios.delete(`http://localhost:8089/rules/${id}`)
+       .then(() => {
         const { rules } = this.state;
-        this.setState({ rules: rules.filter((env) => env.id !== id) });
+        this.setState({ rules: rules.filter((rul) => rul.id !== id) });
       })
       .catch((error) => {
         alert(error.message)
       });
+      this.toggleWarning()
   }
 
   render() {
@@ -81,7 +102,18 @@ class RuleList extends Component {
                         <td>{rule.updated_at}</td>
                         <td>
                           <button className="button muted-button">Edit</button>
-                          <button className="button muted-button" onClick={() => this.handleDelete(rule.id)}>Delete</button>
+                          <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>
+                          <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                              className={'modal-warning ' + this.props.className}>
+                          <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
+                          <ModalBody>
+                            Are you sure want to delete {rule.name} ?
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button color="warning" onClick={() => this.handleDelete(rule.id)}>YES</Button>{' '}
+                            <Button color="secondary" onClick={this.toggleWarning}>NO</Button>
+                          </ModalFooter>
+                        </Modal>
                         </td>
                       </tr>
                     ))
