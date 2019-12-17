@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/hotstone-seo/hotstone-server/app/config"
-	"github.com/typical-go/typical-go/pkg/typobj"
+	"github.com/typical-go/typical-go/pkg/typcore"
 )
 
 // Module of application
@@ -19,7 +19,7 @@ func (*module) Action() interface{} {
 func (*module) Configure() (prefix string, spec, loadFn interface{}) {
 	prefix = "APP"
 	spec = &config.Config{}
-	loadFn = func(loader typobj.Loader) (cfg config.Config, err error) {
+	loadFn = func(loader typcore.ConfigLoader) (cfg config.Config, err error) {
 		err = loader.Load(prefix, &cfg)
 		return
 	}

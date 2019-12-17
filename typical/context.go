@@ -2,17 +2,16 @@ package typical
 
 import (
 	"github.com/hotstone-seo/hotstone-server/app"
-	"github.com/typical-go/typical-go/pkg/typctx"
+	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typrls"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
-	"github.com/typical-go/typical-rest-server/pkg/typreadme"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
 	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
 // Context of Project
-var Context = &typctx.Context{
+var Context = &typcore.Context{
 	Name:      "hotstone-server",
 	Version:   "0.0.1",
 	Package:   "github.com/hotstone-seo/hotstone-server",
@@ -25,7 +24,7 @@ var Context = &typctx.Context{
 			DBName: "hotstone",
 		},
 	},
-	ReadmeGenerator: typreadme.Generator{},
+	// ReadmeGenerator: typreadme.Generator{},
 	Releaser: &typrls.Releaser{
 		Targets: []typrls.Target{"linux/amd64", "darwin/amd64"},
 	},
