@@ -81,7 +81,7 @@ class RuleList extends Component {
                         <td>{rule.updated_at}</td>
                         <td>
                           <button className="button muted-button">Edit</button>
-                          <button className="button muted-button">Delete</button>
+                          <button className="button muted-button" onClick={() => this.handleDelete(rule.id)}>Delete</button>
                         </td>
                       </tr>
                     ))
