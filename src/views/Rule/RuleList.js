@@ -18,7 +18,7 @@ class RuleList extends Component {
         name: null,
         urlPattern: null
       },
-      URL_API:process.env.REACT_APP_API_URL+'rules'
+      URL_API: process.env.REACT_APP_API_URL + 'rules'
     };
 
     this.handleDelete = this.handleDelete.bind(this);
@@ -27,7 +27,7 @@ class RuleList extends Component {
 
     this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
-    
+
   }
   toggle() {
     this.setState({
@@ -45,18 +45,18 @@ class RuleList extends Component {
         const rules = res.data;
         this.setState({ rules });
       }).catch((error) => {
-        
+
       });
   }
 
   handleDelete(id) {
-    axios.delete(this.state.URL_API+`${id}`)
+    axios.delete(this.state.URL_API + `${id}`)
       .then(() => {
         const { rules } = this.state;
         this.setState({ rules: rules.filter((rul) => rul.id !== id) });
       })
       .catch((error) => {
-        
+
       });
     this.toggleWarning()
   }
@@ -80,14 +80,31 @@ class RuleList extends Component {
 
   handleSave() {
     const { ruleFormValues } = this.state;
-    axios.post(this.state.URL_API, ruleFormValues)
-      .then((response) => {
-        this.setState({ ruleFormValues: [...ruleFormValues, response.data] });
-        //message.success('Environment created');
-      })
-      .catch((error) => {
+    const isUpdate = false;//values.id !== undefined;
+    if (isUpdate) {
+      axios.put(this.state.URL_API +`${values.id}`, values)
+        .then(() => {
+          const { rules } = this.state;
+          const index = rules.findIndex((env) => env.id === values.id);
+          if (index > -1) {
+            rules[index] = values;
+            this.setState({ rules });
+          }
+        })
+        .catch((error) => {
+          message.error(error.message);
+        });
+    }
+    else {
+      axios.post(this.state.URL_API, ruleFormValues)
+        .then((response) => {
+          this.setState({ ruleFormValues: [...ruleFormValues, response.data] });
+          //message.success('Environment created');
+        })
+        .catch((error) => {
 
-      });
+        });
+    }
     this.setState({ formVisible: false });
   }
 
