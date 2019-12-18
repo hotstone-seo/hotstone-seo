@@ -9,20 +9,24 @@ class RuleList extends Component {
     super(props);
     this.state = {
       rules: [],
-      record: {}, 
+      record: {},
       modal: false,
       warning: false,
       formVisible: false,
-      actionForm: ""
-    };   
-    
-    this.handleEdit = this.handleEdit.bind(this);
+      actionForm: "",
+      ruleFormValues: {
+        name: null,
+        urlPattern: null
+      }
+    };
+
     this.handleDelete = this.handleDelete.bind(this);
-    this.toggleWarning = this.toggleWarning.bind(this);
+    this.handleSave = this.handleSave.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
 
-    this.showForm = this.showForm.bind(this);
+    this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
+    
   }
   toggle() {
     this.setState({
@@ -40,38 +44,27 @@ class RuleList extends Component {
         const rules = res.data;
         this.setState({ rules });
       }).catch((error) => {
-        alert(error.message)
+        
       });
   }
 
-  handleEdit(record) {
-    const { history } = this.props;
-    if (record !== undefined) {
-      history.push({
-        pathname: '/ruleEditForm',
-        data: record
-      })
-    }
-  }
-
   handleDelete(id) {
-      axios.delete(`http://localhost:8089/rules/${id}`)
-       .then(() => {
+    axios.delete(`http://localhost:8089/rules/${id}`)
+      .then(() => {
         const { rules } = this.state;
         this.setState({ rules: rules.filter((rul) => rul.id !== id) });
       })
       .catch((error) => {
-        alert(error.message)
+        
       });
-      this.toggleWarning()
+    this.toggleWarning()
   }
   showForm(record) {
     if (record !== undefined) {
       this.setState({ record: record });
       this.setState({ actionForm: "Edit" });
     }
-    else
-    {
+    else {
       this.setState({ actionForm: "Add" });
     }
     this.setState({ formVisible: true });
@@ -83,8 +76,37 @@ class RuleList extends Component {
   handleCancel() {
     this.setState({ formVisible: false });
   }
+
+  handleSave() {
+    const { ruleFormValues } = this.state;
+    axios.post('http://localhost:8089/rules', ruleFormValues)
+      .then((response) => {
+        this.setState({ ruleFormValues: [...ruleFormValues, response.data] });
+        //message.success('Environment created');
+      })
+      .catch((error) => {
+
+      });
+    this.setState({ formVisible: false });
+  }
+
+  handleOnChange(type, e) {
+    const { target } = e || {};
+    const { value } = target || {};
+    const { ruleFormValues } = this.state;
+
+    this.setState({
+      ruleFormValues: {
+        ...ruleFormValues,
+        [type]: value
+      }
+    });
+  }
+
   render() {
-    const { rules } = this.state;
+    const { rules, ruleFormValues } = this.state;
+
+    console.log(ruleFormValues, 'pasrender')
     return (
       <div className="animated fadeIn">
         <Col xs="12" lg="12">
@@ -119,16 +141,16 @@ class RuleList extends Component {
                           <button className="button muted-button" onClick={() => this.showForm(rule)}>Edit</button>
                           <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>
                           <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
-                              className={'modal-warning ' + this.props.className}>
-                          <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
-                          <ModalBody>
-                            Are you sure want to delete {rule.name} ?
+                            className={'modal-warning ' + this.props.className}>
+                            <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
+                            <ModalBody>
+                              Are you sure want to delete {rule.name} ?
                           </ModalBody>
-                          <ModalFooter>
-                            <Button color="warning" onClick={() => this.handleDelete(rule.id)}>YES</Button>{' '}
-                            <Button color="secondary" onClick={this.toggleWarning}>NO</Button>
-                          </ModalFooter>
-                        </Modal>
+                            <ModalFooter>
+                              <Button color="warning" onClick={() => this.handleDelete(rule.id)}>YES</Button>{' '}
+                              <Button color="secondary" onClick={this.toggleWarning}>NO</Button>
+                            </ModalFooter>
+                          </Modal>
                         </td>
                       </tr>
                     ))
@@ -143,13 +165,14 @@ class RuleList extends Component {
           </Card>
 
           <RuleForm
-          wrappedComponentRef={this.saveFormRef}
-          visible={this.state.formVisible}
-          onCancel={this.handleCancel}
-          onSave={this.handleSave}
-          rule={this.state.record}
-          action={this.state.actionForm}
-        />
+            wrappedComponentRef={this.saveFormRef}
+            visible={this.state.formVisible}
+            onCancel={this.handleCancel}
+            onSave={this.handleSave}
+            rule={this.state.record}
+            action={this.state.actionForm}
+            onChange={this.handleOnChange.bind(this)}
+          />
         </Col>
       </div>
     );
