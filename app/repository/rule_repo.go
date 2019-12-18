@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -20,6 +21,7 @@ type RuleRepo interface {
 	Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error)
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, rule Rule) error
+	DB() *sql.DB
 }
 
 // NewRuleRepo return new instance of RuleRepo

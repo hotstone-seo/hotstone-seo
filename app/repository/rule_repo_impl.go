@@ -12,7 +12,11 @@ import (
 // RuleRepoImpl is implementation rule repository
 type RuleRepoImpl struct {
 	dig.In
-	*sql.DB
+	SqlDB *sql.DB
+}
+
+func (r *RuleRepoImpl) DB() *sql.DB {
+	return r.SqlDB
 }
 
 // Find rule
@@ -22,7 +26,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err erro
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
 		From("rules").
 		Where(sq.Eq{"id": id})
-	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(r.DB()).QueryContext(ctx); err != nil {
 		return
 	}
 	if rows.Next() {
@@ -37,7 +41,7 @@ func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
 		From("rules")
-	if rows, err = builder.RunWith(r.DB).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(r.DB()).QueryContext(ctx); err != nil {
 		return
 	}
 	list = make([]*Rule, 0)
@@ -53,11 +57,17 @@ func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
 
 // Insert rule
 func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error) {
+	// tx, err := NewTxIfNotExist(ctx, r.DB())
+	tx, err := GetTx(ctx)
+	if err != nil {
+		return
+	}
+
 	query := sq.Insert("rules").
 		Columns("data_source_id", "name", "url_pattern").
 		Values(rule.DataSourceID, rule.Name, rule.UrlPattern).
 		Suffix("RETURNING \"id\"").
-		RunWith(r.DB).
+		RunWith(tx).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&rule.ID); err != nil {
 		return
@@ -70,7 +80,7 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Delete("rules").Where(sq.Eq{"id": id})
-	_, err = builder.RunWith(r.DB).ExecContext(ctx)
+	_, err = builder.RunWith(r.DB()).ExecContext(ctx)
 	return
 }
 
@@ -83,7 +93,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 		Set("url_pattern", rule.UrlPattern).
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": rule.ID})
-	_, err = builder.RunWith(r.DB).ExecContext(ctx)
+	_, err = builder.RunWith(r.DB()).ExecContext(ctx)
 	return
 }
 
