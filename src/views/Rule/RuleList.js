@@ -13,8 +13,9 @@ class RuleList extends Component {
       modal: false,
       warning: false,
       formVisible: false,
+      actionForm: ""
     };   
-    this.handleClick = this.handleClick.bind(this);
+    
     this.handleEdit = this.handleEdit.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.toggleWarning = this.toggleWarning.bind(this);
@@ -43,11 +44,6 @@ class RuleList extends Component {
       });
   }
 
-  handleClick() {   
-    const { history } = this.props;
-    history.push('/ruleForm');
-  }
-
   handleEdit(record) {
     const { history } = this.props;
     if (record !== undefined) {
@@ -72,6 +68,11 @@ class RuleList extends Component {
   showForm(record) {
     if (record !== undefined) {
       this.setState({ record: record });
+      this.setState({ actionForm: "Edit" });
+    }
+    else
+    {
+      this.setState({ actionForm: "Add" });
     }
     this.setState({ formVisible: true });
   }
@@ -80,9 +81,6 @@ class RuleList extends Component {
     this.formRef = formRef;
   }
   handleCancel() {
-    const { form } = this.formRef.props;
-
-    form.resetFields();
     this.setState({ formVisible: false });
   }
   render() {
@@ -96,7 +94,7 @@ class RuleList extends Component {
             </CardHeader>
             <CardBody>
               <div style={{ marginBottom: '.5rem' }}>
-                <Button color="primary" onClick={this.handleClick}>Add New</Button>
+                <Button color="primary" onClick={() => this.showForm()}>Add New</Button>
               </div>
 
               <Table responsive bordered>
@@ -150,6 +148,7 @@ class RuleList extends Component {
           onCancel={this.handleCancel}
           onSave={this.handleSave}
           rule={this.state.record}
+          action={this.state.actionForm}
         />
         </Col>
       </div>
