@@ -15,8 +15,9 @@ class RuleList extends Component {
       formVisible: false,
       actionForm: "",
       ruleFormValues: {
+        id: null,
         name: null,
-        urlPattern: null
+        url_pattern: null
       },
       URL_API: process.env.REACT_APP_API_URL + 'rules'
     };
@@ -79,26 +80,25 @@ class RuleList extends Component {
   }
 
   handleSave() {
-    const { ruleFormValues } = this.state;
-    const isUpdate = false;//values.id !== undefined;
+    const { ruleFormValues,rules,actionForm } = this.state;
+    const isUpdate = actionForm !== "Add";
     if (isUpdate) {
-      axios.put(this.state.URL_API +`${values.id}`, values)
+      axios.put(this.state.URL_API +`${ruleFormValues.id}`, ruleFormValues)
         .then(() => {
-          const { rules } = this.state;
-          const index = rules.findIndex((env) => env.id === values.id);
+          const index = rules.findIndex((rul) => rul.id === ruleFormValues.id);
           if (index > -1) {
-            rules[index] = values;
+            rules[index] = ruleFormValues;
             this.setState({ rules });
           }
         })
         .catch((error) => {
-          message.error(error.message);
+          console.log(error.message)
         });
     }
     else {
       axios.post(this.state.URL_API, ruleFormValues)
         .then((response) => {
-          this.setState({ ruleFormValues: [...ruleFormValues, response.data] });
+          this.setState({ rules: [...rules, response.data] });
           //message.success('Environment created');
         })
         .catch((error) => {

@@ -29,7 +29,7 @@ class RuleForm extends React.Component {
                 <Label htmlFor="text-input">Name</Label>
               </Col>
               <Col xs="12" md="9">
-                {rule !== undefined? (<Input type="hidden" id="id" name="id" />):""}
+                {rule !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={rule !== undefined?rule.id:""} />):""}
                 
                 <Input
                   type="text"
@@ -52,7 +52,7 @@ class RuleForm extends React.Component {
                   name="urlPattern"
                   placeholder="URL Pattern"
                   defaultValue={rule !== undefined?rule.url_pattern:""}
-                  onChange={onChange.bind(this, 'urlPattern')}
+                  onChange={onChange.bind(this, 'url_pattern')}
                 />
               </Col>
             </FormGroup>
@@ -62,7 +62,7 @@ class RuleForm extends React.Component {
               </Col>
               <Col xs="12" md="9">
                 <Input type="select" name="datasource" id="datasource" onChange={onChange.bind(this, 'datasource')}>
-                  <option value="1" selected>Airport</option>
+                  <option value="1">Airport</option>
                 </Input>
               </Col>
             </FormGroup>
