@@ -17,7 +17,8 @@ class RuleList extends Component {
       ruleFormValues: {
         name: null,
         urlPattern: null
-      }
+      },
+      URL_API:process.env.REACT_APP_API_URL+'rules'
     };
 
     this.handleDelete = this.handleDelete.bind(this);
@@ -39,7 +40,7 @@ class RuleList extends Component {
     });
   }
   componentDidMount() {
-    axios.get('http://localhost:8089/rules')
+    axios.get(this.state.URL_API)
       .then((res) => {
         const rules = res.data;
         this.setState({ rules });
@@ -49,7 +50,7 @@ class RuleList extends Component {
   }
 
   handleDelete(id) {
-    axios.delete(`http://localhost:8089/rules/${id}`)
+    axios.delete(this.state.URL_API+`${id}`)
       .then(() => {
         const { rules } = this.state;
         this.setState({ rules: rules.filter((rul) => rul.id !== id) });
@@ -79,7 +80,7 @@ class RuleList extends Component {
 
   handleSave() {
     const { ruleFormValues } = this.state;
-    axios.post('http://localhost:8089/rules', ruleFormValues)
+    axios.post(this.state.URL_API, ruleFormValues)
       .then((response) => {
         this.setState({ ruleFormValues: [...ruleFormValues, response.data] });
         //message.success('Environment created');
@@ -104,9 +105,7 @@ class RuleList extends Component {
   }
 
   render() {
-    const { rules, ruleFormValues } = this.state;
-
-    console.log(ruleFormValues, 'pasrender')
+    const { rules } = this.state;
     return (
       <div className="animated fadeIn">
         <Col xs="12" lg="12">
