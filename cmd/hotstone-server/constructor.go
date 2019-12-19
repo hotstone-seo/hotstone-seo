@@ -11,6 +11,7 @@ import (
 func init() {
 	typical.Context.Constructors.Append(repository.NewRuleRepo)
 	typical.Context.Constructors.Append(repository.NewTxIfNotExist)
+	typical.Context.Constructors.Append(repository.NewURLStoreSyncRepo)
 	typical.Context.Constructors.Append(service.NewRuleService)
 	typical.Context.Constructors.Append(service.NewUrlStore)
 }
