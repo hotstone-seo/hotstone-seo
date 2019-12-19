@@ -20,13 +20,13 @@ func (r *RuleRepoImpl) DB() *sql.DB {
 }
 
 // Find rule
-func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err error) {
+func (r *RuleRepoImpl) Find(ctx context.Context, tx *sql.Tx, id int64) (rule *Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
 		From("rules").
 		Where(sq.Eq{"id": id})
-	if rows, err = builder.RunWith(r.DB()).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
 		return
 	}
 	if rows.Next() {
@@ -36,12 +36,12 @@ func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err erro
 }
 
 // List rule
-func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
+func (r *RuleRepoImpl) List(ctx context.Context, tx *sql.Tx) (list []*Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
 		From("rules")
-	if rows, err = builder.RunWith(r.DB()).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
 		return
 	}
 	list = make([]*Rule, 0)
@@ -56,12 +56,7 @@ func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
 }
 
 // Insert rule
-func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error) {
-	// tx, err := NewTxIfNotExist(ctx, r.DB())
-	tx, err := GetTx(ctx)
-	if err != nil {
-		return
-	}
+func (r *RuleRepoImpl) Insert(ctx context.Context, tx *sql.Tx, rule Rule) (lastInsertID int64, err error) {
 
 	query := sq.Insert("rules").
 		Columns("data_source_id", "name", "url_pattern").
@@ -77,15 +72,15 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 }
 
 // Delete rule
-func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+func (r *RuleRepoImpl) Delete(ctx context.Context, tx *sql.Tx, id int64) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Delete("rules").Where(sq.Eq{"id": id})
-	_, err = builder.RunWith(r.DB()).ExecContext(ctx)
+	_, err = builder.RunWith(tx).ExecContext(ctx)
 	return
 }
 
 // Update rule
-func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
+func (r *RuleRepoImpl) Update(ctx context.Context, tx *sql.Tx, rule Rule) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Update("rules").
 		Set("data_source_id", rule.DataSourceID).
@@ -93,7 +88,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 		Set("url_pattern", rule.UrlPattern).
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": rule.ID})
-	_, err = builder.RunWith(r.DB()).ExecContext(ctx)
+	_, err = builder.RunWith(tx).ExecContext(ctx)
 	return
 }
 

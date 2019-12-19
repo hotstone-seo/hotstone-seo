@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"go.uber.org/dig"
 )
@@ -33,31 +31,9 @@ func NewRuleService(impl RuleServiceImpl) RuleService {
 
 // Find rule
 func (r *RuleServiceImpl) Find(ctx context.Context, id int64) (rule *repository.Rule, err error) {
-	return r.RuleRepo.Find(ctx, id)
-}
 
-// List rule
-func (r *RuleServiceImpl) List(ctx context.Context) (list []*repository.Rule, err error) {
-	return r.RuleRepo.List(ctx)
-}
-
-// Insert rule
-func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (lastInsertID int64, err error) {
-	log.Warn(">>> rule.INSERT")
 	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
-		lastInsertID, err = r.RuleRepo.Insert(ctx, rule)
-		log.Warnf("#1 lastInsertID: %d", lastInsertID)
-		if err != nil {
-			return err
-		}
-
-		// if true {
-		// 	return errors.New("DUMMY ERROR")
-		// }
-
-		lastInsertID, err = r.RuleRepo.Insert(repository.SetTx(ctx, tx), rule)
-		// lastInsertID, err = r.RuleRepo.Insert(ctx, rule)
-		log.Warnf("#2 lastInsertID: %d", lastInsertID)
+		rule, err = r.RuleRepo.Find(ctx, tx, id)
 		if err != nil {
 			return err
 		}
@@ -65,26 +41,62 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (las
 		return nil
 	})
 
-	// lastInsertID, err = r.RuleRepo.Insert(ctx, rule)
-	// log.Warnf("#1 lastInsertID: %d", lastInsertID)
-	// if err != nil {
-	// 	return
-	// }
+	return
+}
 
-	// if true {
-	// 	err = errors.New("DUMMY ERROR")
-	// 	return
-	// }
+// List rule
+func (r *RuleServiceImpl) List(ctx context.Context) (list []*repository.Rule, err error) {
+	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
+		list, err = r.RuleRepo.List(ctx, tx)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return
+}
+
+// Insert rule
+func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (lastInsertID int64, err error) {
+	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
+		lastInsertID, err = r.RuleRepo.Insert(ctx, tx, rule)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 
 	return
 }
 
 // Delete rule
 func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	return r.RuleRepo.Delete(ctx, id)
+	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
+		err = r.RuleRepo.Delete(ctx, tx, id)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return
 }
 
 // Update rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
-	return r.RuleRepo.Update(ctx, rule)
+
+	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
+		err = r.RuleRepo.Update(ctx, tx, rule)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return
 }
