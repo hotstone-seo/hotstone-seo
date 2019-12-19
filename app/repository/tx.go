@@ -52,12 +52,12 @@ func WithTransaction(db *sql.DB, fn TxFn) (err error) {
 		if p := recover(); p != nil {
 			log.Println("will rollback & repanic")
 			// a panic occurred, rollback and repanic
-			tx.Rollback()
+			_ = tx.Rollback()
 			panic(p)
 		} else if err != nil {
 			log.Println("will rollback")
 			// something went wrong, rollback
-			tx.Rollback()
+			_ = tx.Rollback()
 		} else {
 			log.Println("will commit")
 			// all good, commit
