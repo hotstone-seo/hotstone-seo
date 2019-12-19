@@ -1,8 +1,8 @@
 {
   "name": "hotstone-client",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0",
   "description": "Client side module for interacting with a HotStone service",
-  "main": "./lib/index.js",
+  "main": "./lib/hotstone-client.js",
   "scripts": {
     "build": "webpack --mode=production --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,6 +27,7 @@
     "@babel/preset-env": "^7.7.4",
     "babel-loader": "^8.0.6",
     "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2"
   }
 }

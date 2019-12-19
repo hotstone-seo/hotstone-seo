@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-export default function HotStone(host) {
+function HotStone(host) {
   const client = axios.create({ baseURL: `${host}/tags` });
   return {
     tags(path) {
@@ -34,3 +34,5 @@ export default function HotStone(host) {
     }
   }
 }
+
+export default HotStone;

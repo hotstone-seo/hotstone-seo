@@ -1,10 +1,15 @@
+const path = require('path');
+const webpackNodeExternals = require('webpack-node-externals');
+
 module.exports = {
-  entry: [
-    './src/index.js'
-  ],
+  target: 'node',
+  mode: 'production',
+  entry: './src/index.js',
+  externals: [webpackNodeExternals()],
   output: {
-    path: __dirname + '/lib',
-    filename: "index.js"
+    path: path.resolve(__dirname + '/lib'),
+    filename: 'hotstone-client.js',
+    libraryTarget: 'umd'
   },
   module: {
     rules: [
@@ -12,13 +17,12 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env']
           }
         }
       }
     ]
-  },
-  // plugins: []
+  }
 };
