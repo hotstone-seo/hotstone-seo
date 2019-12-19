@@ -28,7 +28,6 @@ class RuleList extends Component {
 
     this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
-
   }
   toggle() {
     this.setState({
@@ -40,7 +39,7 @@ class RuleList extends Component {
       warning: !this.state.warning,
     });
   }
-  componentDidMount() {
+  getRuleList() {
     axios.get(this.state.URL_API)
       .then((res) => {
         const rules = res.data;
@@ -48,6 +47,9 @@ class RuleList extends Component {
       }).catch((error) => {
 
       });
+  }
+  componentDidMount() {
+    this.getRuleList();
   }
 
   handleDelete(id) {
@@ -81,11 +83,11 @@ class RuleList extends Component {
   }
 
   handleSave() {
-    const { ruleFormValues,rules,actionForm,record } = this.state;
+    const { ruleFormValues, rules, actionForm, record } = this.state;
     const isUpdate = actionForm !== "Add";
 
     ruleFormValues.id = record.id;
-    
+
     if (isUpdate) {
       axios.put(this.state.URL_API, ruleFormValues)
         .then(() => {
@@ -95,6 +97,9 @@ class RuleList extends Component {
             this.setState({ rules });
           }
         })
+        .then(() => {
+          this.getRuleList();
+        })
         .catch((error) => {
           console.log(error.message)
         });
@@ -102,12 +107,16 @@ class RuleList extends Component {
     else {
       axios.post(this.state.URL_API, ruleFormValues)
         .then((response) => {
-          this.setState({ rules: [...rules, response.data] });
+          this.setState({ rules: [...rules, ruleFormValues] });
           //message.success('Environment created');
+        })
+        .then(() => {
+          this.getRuleList();
         })
         .catch((error) => {
 
         });
+      this.setState({ ruleFormValues: {} });
     }
     this.setState({ formVisible: false });
   }
@@ -116,7 +125,7 @@ class RuleList extends Component {
     const { target } = e || {};
     const { value } = target || {};
     const { ruleFormValues } = this.state;
-    
+
     this.setState({
       ruleFormValues: {
         ...ruleFormValues,
