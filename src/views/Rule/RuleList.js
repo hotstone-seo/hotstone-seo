@@ -17,7 +17,8 @@ class RuleList extends Component {
       ruleFormValues: {
         id: null,
         name: null,
-        url_pattern: null
+        url_pattern: null,
+        data_source_id: null
       },
       URL_API: process.env.REACT_APP_API_URL + 'rules'
     };
@@ -28,7 +29,7 @@ class RuleList extends Component {
 
     this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
-    
+
   }
   toggle() {
     this.setState({
@@ -136,7 +137,10 @@ class RuleList extends Component {
 
   handleDetail(record) {
     const { history } = this.props;
-    history.push('/ruleDetail/'+record.id);
+    history.push({
+      pathname: '/ruleDetail/1',
+      data: record
+    });
   }
   render() {
     const { rules } = this.state;

@@ -68,15 +68,15 @@ class RuleDetail extends Component {
     }
 
     render() {
-        const ruleID = this.props.match.params.id;
-
+         
+        const { data } = this.props.location;
         return (
             <div className="animated fadeIn">
                 <Row>
                     <Col xs="12" md="9" lg="6">
                         <Card>
                             <CardHeader>
-                                <strong>Detail Rule ID {ruleID}</strong>
+                                <strong>Detail Rule ID {data.id}</strong>
                             </CardHeader>
                             <CardBody>
                                 <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -85,7 +85,7 @@ class RuleDetail extends Component {
                                             <Label htmlFor="text-input">Name</Label>
                                         </Col>
                                         <Col xs="12" md="9">
-                                            Airport Detail
+                                            {data.name}
                                         </Col>
                                     </FormGroup>
                                     <FormGroup row>
@@ -93,17 +93,10 @@ class RuleDetail extends Component {
                                             <Label htmlFor="text-input">URL Pattern</Label>
                                         </Col>
                                         <Col xs="12" md="9">
-                                            http://xxx
+                                            {data.url_pattern}
                                         </Col>
                                     </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="textarea-input">Exclusion</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            -
-                                        </Col>
-                                    </FormGroup>
+                                   
                                     <FormGroup row>
                                         <Col md="3">
                                             <Label htmlFor="text-input">Data Source</Label>
