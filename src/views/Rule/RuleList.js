@@ -51,7 +51,7 @@ class RuleList extends Component {
   }
 
   handleDelete(id) {
-    axios.delete(this.state.URL_API + `${id}`)
+    axios.delete(this.state.URL_API + `/${id}`)
       .then(() => {
         const { rules } = this.state;
         this.setState({ rules: rules.filter((rul) => rul.id !== id) });
@@ -80,12 +80,14 @@ class RuleList extends Component {
   }
 
   handleSave() {
-    const { ruleFormValues,rules,actionForm } = this.state;
+    const { ruleFormValues,rules,actionForm,record } = this.state;
     const isUpdate = actionForm !== "Add";
+
+    ruleFormValues.id = record.id;
     if (isUpdate) {
-      axios.put(this.state.URL_API +`${ruleFormValues.id}`, ruleFormValues)
+      axios.put(this.state.URL_API, ruleFormValues)
         .then(() => {
-          const index = rules.findIndex((rul) => rul.id === ruleFormValues.id);
+          const index = rules.findIndex((rul) => rul.id === record.id);
           if (index > -1) {
             rules[index] = ruleFormValues;
             this.setState({ rules });
@@ -112,7 +114,7 @@ class RuleList extends Component {
     const { target } = e || {};
     const { value } = target || {};
     const { ruleFormValues } = this.state;
-
+    console.log(ruleFormValues);
     this.setState({
       ruleFormValues: {
         ...ruleFormValues,

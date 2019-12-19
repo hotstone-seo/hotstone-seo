@@ -29,7 +29,7 @@ class RuleForm extends React.Component {
                 <Label htmlFor="text-input">Name</Label>
               </Col>
               <Col xs="12" md="9">
-                {rule !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={rule !== undefined?rule.id:""} />):""}
+                {rule !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={rule !== undefined?rule.id:""} onChange={onChange.bind(this, 'id')}/>):""}
                 
                 <Input
                   type="text"
@@ -76,5 +76,4 @@ class RuleForm extends React.Component {
     );
   }
 }
-//export default Form.create()(RuleForm)
 export default RuleForm;
