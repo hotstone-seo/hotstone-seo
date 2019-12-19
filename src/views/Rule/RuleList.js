@@ -1,7 +1,7 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button, Card, CardBody, CardHeader, Col, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Modal, ModalBody, ModalFooter, ModalHeader, Table, NavLink } from 'reactstrap';
 import RuleForm from './RuleForm';
 
 class RuleList extends Component {
@@ -28,6 +28,7 @@ class RuleList extends Component {
 
     this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
+    
   }
   toggle() {
     this.setState({
@@ -108,7 +109,6 @@ class RuleList extends Component {
       axios.post(this.state.URL_API, ruleFormValues)
         .then((response) => {
           this.setState({ rules: [...rules, ruleFormValues] });
-          //message.success('Environment created');
         })
         .then(() => {
           this.getRuleList();
@@ -134,6 +134,10 @@ class RuleList extends Component {
     });
   }
 
+  handleDetail(record) {
+    const { history } = this.props;
+    history.push('/ruleDetail/'+record.id);
+  }
   render() {
     const { rules } = this.state;
     return (
@@ -163,7 +167,7 @@ class RuleList extends Component {
                     rules.map(rule => (
                       <tr key={rule.id}>
                         <td>{rule.id}</td>
-                        <td>{rule.name}</td>
+                        <td><NavLink href="#" onClick={() => this.handleDetail(rule)}>{rule.name}</NavLink></td>
                         <td>{rule.url_pattern}</td>
                         <td>{rule.updated_at}</td>
                         <td>
