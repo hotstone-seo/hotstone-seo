@@ -67,6 +67,7 @@ class RuleList extends Component {
       this.setState({ actionForm: "Edit" });
     }
     else {
+      this.setState({ record: {} });
       this.setState({ actionForm: "Add" });
     }
     this.setState({ formVisible: true });
@@ -84,6 +85,7 @@ class RuleList extends Component {
     const isUpdate = actionForm !== "Add";
 
     ruleFormValues.id = record.id;
+    
     if (isUpdate) {
       axios.put(this.state.URL_API, ruleFormValues)
         .then(() => {
@@ -114,7 +116,7 @@ class RuleList extends Component {
     const { target } = e || {};
     const { value } = target || {};
     const { ruleFormValues } = this.state;
-    console.log(ruleFormValues);
+    
     this.setState({
       ruleFormValues: {
         ...ruleFormValues,
