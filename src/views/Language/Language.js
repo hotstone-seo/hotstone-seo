@@ -149,7 +149,7 @@ class Language extends Component {
                         </CardHeader>
                         <CardBody>
                             <div style={{ marginBottom: '.5rem' }}>
-                                <Button color="primary" onClick={this.handleClick}>Add New</Button>
+                                <Button color="primary" onClick={() => this.showForm()}>Add New</Button>
                             </div>
                             <Table responsive bordered>
                                 <thead>
@@ -160,11 +160,34 @@ class Language extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Indonesia</td>
-                                        <td>ID</td>
-                                        <td><NavLink href="#" onClick={this.handleEdit}>Edit</NavLink></td>
-                                    </tr>
+                                    {languages.length > 0 ? (
+                                        languages.map(language => (
+                                            <tr key={language.id}>
+                                                <td>{language.name}</td>
+                                                <td>{language.code}</td>
+                                                
+                                                <td>
+                                                    <button className="button muted-button" onClick={() => this.showForm(language)}>Edit</button>
+                                                    <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>
+                                                    <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                                                        className={'modal-warning ' + this.props.className}>
+                                                        <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
+                                                        <ModalBody>
+                                                            Are you sure want to delete language {datasource.name} ?
+                                                        </ModalBody>
+                                                        <ModalFooter>
+                                                            <Button color="warning" onClick={() => this.handleDelete(language.id)}>YES</Button>{' '}
+                                                            <Button color="secondary" onClick={this.toggleWarning}>NO</Button>
+                                                        </ModalFooter>
+                                                    </Modal>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                            <tr>
+                                                <td colSpan={5}>No Data Language</td>
+                                            </tr>
+                                        )}
                                 </tbody>
                             </Table>
                             <Pagination>
