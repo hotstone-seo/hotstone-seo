@@ -1,6 +1,8 @@
 package app
 
 import (
+	"context"
+
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
 	"github.com/robfig/cron/v3"
@@ -15,6 +17,9 @@ type URLStoreServer interface {
 }
 
 func NewURLStoreServer(impl URLStoreServerImpl) URLStoreServer {
+	impl.urlStore = repository.InitURLStore()
+	impl.latestVersion = -1
+
 	return &impl
 }
 
@@ -22,8 +27,8 @@ type URLStoreServerImpl struct {
 	dig.In
 	URLStoreSyncService service.URLStoreSyncService
 
-	URLStoreTree  repository.URLStoreTree
-	latestVersion int64
+	urlStore      repository.URLStore
+	latestVersion int
 }
 
 func (s *URLStoreServerImpl) Start() error {
@@ -49,11 +54,45 @@ func (s *URLStoreServerImpl) Start() error {
 }
 
 func (s *URLStoreServerImpl) FullSync() error {
-	// TODO: FullSync implementation
-	// list, err := s.URLStoreSyncService.List()
+
+	list, err := s.URLStoreSyncService.List(context.Background())
+	if err != nil {
+		return err
+	}
+
+	if len(list) == 0 {
+		return nil
+	}
+
+	newURLStore := repository.InitURLStore()
+	if err = s.buildURLStore(newURLStore, list); err != nil {
+		return err
+	}
+
+	oldestURLStoreSync := list[len(list)-1]
+
+	s.urlStore = newURLStore
+	s.latestVersion = int(oldestURLStoreSync.Version)
+
 	return nil
 }
 
 func (s *URLStoreServerImpl) Sync() error {
+	return nil
+}
+
+func (s *URLStoreServerImpl) buildURLStore(urlStore repository.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
+
+	for _, urlStoreSync := range listURLStoreSync {
+		switch urlStoreSync.Operation {
+		case "INSERT":
+			urlStore.AddURL(int(urlStoreSync.RuleID), urlStoreSync.LatestURLPattern)
+		case "UPDATE":
+			urlStore.UpdateURL(int(urlStoreSync.RuleID), urlStoreSync.LatestURLPattern)
+		case "DELETE":
+			urlStore.DeleteURL(int(urlStoreSync.RuleID))
+		}
+	}
+
 	return nil
 }
