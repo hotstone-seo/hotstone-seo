@@ -10,11 +10,10 @@ import (
 )
 
 func init() {
-	typical.Context.Constructors.Append(repository.NewRuleRepo)
-	typical.Context.Constructors.Append(repository.NewTxIfNotExist)
-	typical.Context.Constructors.Append(repository.NewURLStoreSyncRepo)
-	typical.Context.Constructors.Append(repository.NewURLStoreTree)
-	typical.Context.Constructors.Append(service.NewRuleService)
-	typical.Context.Constructors.Append(service.NewURLStoreSyncService)
-	typical.Context.Constructors.Append(app.NewURLStoreServer)
+	typical.Descriptor.Constructors.Append(repository.NewRuleRepo)
+	typical.Descriptor.Constructors.Append(repository.NewTxIfNotExist)
+	typical.Descriptor.Constructors.Append(repository.NewURLStoreSyncRepo)
+	typical.Descriptor.Constructors.Append(service.NewRuleService)
+	typical.Descriptor.Constructors.Append(service.NewURLStoreSyncService)
+	typical.Descriptor.Constructors.Append(app.NewURLStoreServer)
 }

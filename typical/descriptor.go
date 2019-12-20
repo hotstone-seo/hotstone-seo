@@ -10,19 +10,17 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
-// Context of Project
-var Context = &typcore.Context{
+// Descriptor of hotstone-server
+var Descriptor = &typcore.ProjectDescriptor{
 	Name:      "hotstone-server",
 	Version:   "0.0.1",
 	Package:   "github.com/hotstone-seo/hotstone-server",
 	AppModule: app.Module(),
 	Modules: []interface{}{
-		&typdocker.Module{},
-		&typserver.Module{},
-		&typredis.Module{},
-		&typpostgres.Module{
-			DBName: "hotstone",
-		},
+		typdocker.Module(),
+		typserver.Module(),
+		typredis.Module(),
+		typpostgres.Module("hotstone"),
 	},
 	// ReadmeGenerator: typreadme.Generator{},
 	Releaser: &typrls.Releaser{
