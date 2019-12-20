@@ -1,12 +1,26 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink,  Table, Button, NavLink } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 class DataSource extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      datasources: [],
+      record: {},
+      modal: false,
+      warning: false,
+      formVisible: false,
+      actionForm: "",
+      datasourceFormValues: {
+        id: null,
+        name: null,
+      },
+      URL_API: process.env.REACT_APP_API_URL + 'datasources'
+    }
     this.handleAdd = this.handleAdd.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
+
   }
   handleAdd() {
     const { history } = this.props;
