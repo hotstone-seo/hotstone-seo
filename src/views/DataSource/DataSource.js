@@ -19,8 +19,12 @@ class DataSource extends Component {
       },
       URL_API: process.env.REACT_APP_API_URL + 'datasources'
     }
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+
+    this.toggleWarning = this.toggleWarning.bind(this);
+    this.saveFormRef = this.saveFormRef.bind(this);
 
   }
   toggle() {
@@ -164,7 +168,7 @@ class DataSource extends Component {
                             className={'modal-warning ' + this.props.className}>
                             <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
                             <ModalBody>
-                              Are you sure want to delete {datasource.name} ?
+                              Are you sure want to delete data source name {datasource.name} ?
                           </ModalBody>
                             <ModalFooter>
                               <Button color="warning" onClick={() => this.handleDelete(datasource.id)}>YES</Button>{' '}
