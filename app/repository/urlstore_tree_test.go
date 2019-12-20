@@ -50,7 +50,7 @@ func testStorePlay(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := NewURLStoreTree()
+		h := newURLStoreTree()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -160,7 +160,7 @@ func TestStoreAdd(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := NewURLStoreTree()
+		h := newURLStoreTree()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -191,7 +191,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 		{15, "", "15"},
 		{16, "/all/<:.*>", "16"},
 	}
-	h := NewURLStoreTree()
+	h := newURLStoreTree()
 	maxParams := 0
 	for _, pair := range pairs {
 		fmt.Printf("=== ID (by order): %d\n", pair.id)

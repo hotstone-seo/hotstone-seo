@@ -29,8 +29,8 @@ type urlStoreTreeImpl struct {
 	count int   // the number of data nodes in the tree
 }
 
-// NewURLStoreTree creates a new store.
-func NewURLStoreTree() URLStoreTree {
+// newURLStoreTree creates a new store.
+func newURLStoreTree() URLStoreTree {
 	return &urlStoreTreeImpl{
 		root: &node{
 			static:      true,
