@@ -13,7 +13,11 @@ func Module() interface{} {
 type module struct{}
 
 func (*module) Action() interface{} {
-	return startServer
+	return func(s server) error {
+		s.Middleware()
+		s.Route()
+		return s.Start()
+	}
 }
 
 func (*module) Configure() (prefix string, spec, loadFn interface{}) {

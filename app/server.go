@@ -15,10 +15,14 @@ type server struct {
 	controller.RuleCntrl
 }
 
-func startServer(s server) error {
+func (s *server) Middleware() {
 	s.Use(middleware.Recover())
+}
 
+func (s *server) Route() {
 	s.RuleCntrl.Route(s.Echo)
+}
 
+func (s *server) Start() error {
 	return s.Echo.Start(s.Config.Address)
 }
