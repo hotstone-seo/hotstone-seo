@@ -21,8 +21,8 @@ type URLStoreImpl struct {
 	store URLStoreTree
 }
 
-// NewURLStore return new instance of URLStore
-func NewURLStore() URLStore {
+// InitURLStore return new instance of URLStore
+func InitURLStore() URLStore {
 	return &URLStoreImpl{store: newURLStoreTree()}
 }
 
