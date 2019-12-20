@@ -78,6 +78,22 @@ func (s *URLStoreServerImpl) FullSync() error {
 }
 
 func (s *URLStoreServerImpl) Sync() error {
+	ctx := context.Background()
+
+	latestVersionSync, err := s.URLStoreSyncService.GetLatestVersion(ctx)
+	if err != nil {
+		return err
+	}
+
+	if s.latestVersion > int(latestVersionSync) {
+		return s.FullSync()
+	}
+
+	if s.latestVersion < int(latestVersionSync) {
+		// TODO: Sync implementation
+		// diffChanges, err := s.URLStoreSyncService.GetListDiff(ctx, s.latestVersion)
+	}
+
 	return nil
 }
 

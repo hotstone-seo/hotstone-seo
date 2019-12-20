@@ -71,6 +71,36 @@ func (r *URLStoreSyncRepoImpl) Insert(ctx context.Context, tx *sql.Tx, urlStoreS
 	return
 }
 
+func (r *URLStoreSyncRepoImpl) GetLatestVersion(ctx context.Context, tx *sql.Tx) (latestVersion int64, err error) {
+	builder := psql.Select("version").From("urlstore_sync").OrderBy("version DESC").Limit(1)
+	if err = builder.RunWith(tx).QueryRowContext(ctx).Scan(&latestVersion); err != nil {
+		return
+	}
+
+	return
+}
+
+func (r *URLStoreSyncRepoImpl) GetListDiff(ctx context.Context, tx *sql.Tx, offsetVersion int64) (list []*URLStoreSync, err error) {
+	//TODO: GetListDiff: where clause
+	var rows *sql.Rows
+	builder := psql.Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
+		From("urlstore_sync").
+		// Where().
+		OrderBy("version")
+	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
+		return
+	}
+
+	for rows.Next() {
+		var urlStoreSync *URLStoreSync
+		if urlStoreSync, err = scanURLStoreSync(rows); err != nil {
+			return
+		}
+		list = append(list, urlStoreSync)
+	}
+	return
+}
+
 func scanURLStoreSync(rows *sql.Rows) (*URLStoreSync, error) {
 	var urlStoreSync URLStoreSync
 	var err error
