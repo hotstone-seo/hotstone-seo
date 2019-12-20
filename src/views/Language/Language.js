@@ -19,8 +19,12 @@ class Language extends Component {
             },
             URL_API: process.env.REACT_APP_API_URL + 'languages'
         }
-        this.handleClick = this.handleClick.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+
+        this.toggleWarning = this.toggleWarning.bind(this);
+        this.saveFormRef = this.saveFormRef.bind(this);
     }
 
     toggle() {
