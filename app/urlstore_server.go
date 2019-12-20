@@ -16,11 +16,12 @@ type URLStoreServer interface {
 	Sync() error
 }
 
-func NewURLStoreServer(impl URLStoreServerImpl) URLStoreServer {
-	impl.urlStore = repository.InitURLStore()
-	impl.latestVersion = -1
-
-	return &impl
+func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
+	return &URLStoreServerImpl{
+		URLStoreSyncService: svc,
+		urlStore:            repository.InitURLStore(),
+		latestVersion:       -1,
+	}
 }
 
 type URLStoreServerImpl struct {
