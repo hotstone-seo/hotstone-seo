@@ -39,7 +39,8 @@ func (r *URLStoreSyncRepoImpl) List(ctx context.Context, tx *sql.Tx) (list []*UR
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
-		From("urlstore_sync")
+		From("urlstore_sync").
+		OrderBy("version")
 	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
 		return
 	}
