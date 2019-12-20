@@ -76,7 +76,7 @@ class DataSource extends Component {
   }
 
   handleSave() {
-    const { datasourcesFormValues, rules, actionForm, record } = this.state;
+    const { datasourcesFormValues, datasources, actionForm, record } = this.state;
     const isUpdate = actionForm !== "Add";
 
     datasourcesFormValues.id = record.id;
@@ -84,10 +84,10 @@ class DataSource extends Component {
     if (isUpdate) {
       axios.put(this.state.URL_API, datasourcesFormValues)
         .then(() => {
-          const index = rules.findIndex((rul) => rul.id === record.id);
+          const index = datasources.findIndex((rul) => rul.id === record.id);
           if (index > -1) {
-            rules[index] = datasourcesFormValues;
-            this.setState({ rules });
+            datasources[index] = datasourcesFormValues;
+            this.setState({ datasources });
           }
         })
         .then(() => {
@@ -100,7 +100,7 @@ class DataSource extends Component {
     else {
       axios.post(this.state.URL_API, datasourcesFormValues)
         .then((response) => {
-          this.setState({ rules: [...datasources, datasourcesFormValues] });
+          this.setState({ datasources: [...datasources, datasourcesFormValues] });
         })
         .then(() => {
           this.getDataSourceList();
@@ -108,7 +108,7 @@ class DataSource extends Component {
         .catch((error) => {
 
         });
-      this.setState({ datasourcesFormValuess: {} });
+      this.setState({ datasourcesFormValues: {} });
     }
     this.setState({ formVisible: false });
   }
@@ -120,7 +120,7 @@ class DataSource extends Component {
 
     this.setState({
       datasourcesFormValues: {
-        ...datasourcesFormValuess,
+        ...datasourcesFormValues,
         [type]: value
       }
     });
@@ -137,7 +137,7 @@ class DataSource extends Component {
             </CardHeader>
             <CardBody>
               <div style={{ marginBottom: '.5rem' }}>
-                <Button color="primary" onClick={this.handleAdd}>Add New</Button>
+                <Button color="primary" onClick={() => this.showForm()}>Add New</Button>
               </div>
               <Table responsive bordered>
                 <thead>
@@ -150,16 +150,35 @@ class DataSource extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Airport</td>
-                    <td>http://fligh-service/airport</td>
-                    <td>Id, name, address, province</td>
-                    <td>Nov 15 2019</td>
-                    <td>
-                      <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
-                    </td>
-                  </tr>
-
+                  {datasources.length > 0 ? (
+                    datasources.map(datasource => (
+                      <tr key={datasource.id}>
+                        <td>{datasource.id}</td>
+                        <td>{datasource.name}</td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          <button className="button muted-button" onClick={() => this.showForm(datasource)}>Edit</button>
+                          <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>
+                          <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
+                            className={'modal-warning ' + this.props.className}>
+                            <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
+                            <ModalBody>
+                              Are you sure want to delete {datasource.name} ?
+                          </ModalBody>
+                            <ModalFooter>
+                              <Button color="warning" onClick={() => this.handleDelete(datasource.id)}>YES</Button>{' '}
+                              <Button color="secondary" onClick={this.toggleWarning}>NO</Button>
+                            </ModalFooter>
+                          </Modal>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                      <tr>
+                        <td colSpan={5}>No Data Source</td>
+                      </tr>
+                    )}
                 </tbody>
               </Table>
               <Pagination>
