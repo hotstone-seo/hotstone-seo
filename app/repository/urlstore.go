@@ -16,12 +16,12 @@ type URLStore interface {
 	Count() int
 }
 
-// URLStoreImpl is implementation of RuleService
+// URLStoreImpl is implementation of URLStore
 type URLStoreImpl struct {
 	store URLStoreTree
 }
 
-// NewURLStore return new instance of RuleService
+// NewURLStore return new instance of URLStore
 func NewURLStore() URLStore {
 	return &URLStoreImpl{store: newURLStoreTree()}
 }
