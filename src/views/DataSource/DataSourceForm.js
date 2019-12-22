@@ -48,6 +48,9 @@ class DataSourceForm extends Component {
   }
 
   render() {
+    const {
+      visible, onCancel, onSave, datasource, action, onChange
+    } = this.props;
     return (
       <div className="animated fadeIn">
         <Row>

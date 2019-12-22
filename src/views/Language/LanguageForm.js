@@ -43,6 +43,10 @@ class LanguageForm extends Component {
   }
 
   render() {
+    const {
+      visible, onCancel, onSave, language, action, onChange
+    } = this.props;
+
     return (
       <div className="animated fadeIn">
         <Row>
