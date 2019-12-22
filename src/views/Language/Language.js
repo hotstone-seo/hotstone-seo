@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
 import PropTypes from 'prop-types';
+import LanguageForm from './LanguageForm';
 
 class Language extends Component {
     constructor(props) {
@@ -199,6 +200,16 @@ class Language extends Component {
                             </Pagination>
                         </CardBody>
                     </Card>
+
+                    <LanguageForm
+                        wrappedComponentRef={this.saveFormRef}
+                        visible={this.state.formVisible}
+                        onCancel={this.handleCancel}
+                        onSave={this.handleSave}
+                        language={this.state.record}
+                        action={this.state.actionForm}
+                        onChange={this.handleOnChange.bind(this)}
+                    />
                 </Col>
             </div>
         );

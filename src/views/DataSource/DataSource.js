@@ -194,6 +194,15 @@ class DataSource extends Component {
               </Pagination>
             </CardBody>
           </Card>
+          <DataSourceForm
+            wrappedComponentRef={this.saveFormRef}
+            visible={this.state.formVisible}
+            onCancel={this.handleCancel}
+            onSave={this.handleSave}
+            datasource={this.state.record}
+            action={this.state.actionForm}
+            onChange={this.handleOnChange.bind(this)}
+          />
         </Col>
       </div>
     );
