@@ -116,8 +116,8 @@ github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJy
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/typical-go/typical-go v0.9.19 h1:9q07swZxeq0pQ+C4Bj166U16Zc5XqR3IyzrZsL0G9tk=
 github.com/typical-go/typical-go v0.9.19/go.mod h1:SgFrdjE8a34ocrVpzm26cLWQg5VjbNci/0/TbVx1QCQ=
-github.com/typical-go/typical-rest-server v0.8.11 h1:Zq7DmV05QcvDG7QXYz59nIMKAXzCBUBlpif6mo/FK8c=
-github.com/typical-go/typical-rest-server v0.8.11/go.mod h1:Js0zESR9Y+eHydI5FAVrOmgmQFDy0/S2j9LA7toC6Ws=
+github.com/typical-go/typical-rest-server v0.8.12 h1:TVqIr6+JAPJXUmbbNjroEibp9rRPZ2VQ6G5sk4isBh4=
+github.com/typical-go/typical-rest-server v0.8.12/go.mod h1:Js0zESR9Y+eHydI5FAVrOmgmQFDy0/S2j9LA7toC6Ws=
 github.com/urfave/cli/v2 v2.0.0 h1:+HU9SCbu8GnEUFtIBfuUNXN39ofWViIEJIp6SURMpCg=
 github.com/urfave/cli/v2 v2.0.0/go.mod h1:SE9GqnLQmjVa0iPEY0f1w3ygNIYcIJ0OKPMoW2caLfQ=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

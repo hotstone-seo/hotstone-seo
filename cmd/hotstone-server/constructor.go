@@ -10,9 +10,13 @@ import (
 )
 
 func init() {
+	typical.Descriptor.Constructors.Append(repository.NewDataSourceRepo)
+	typical.Descriptor.Constructors.Append(repository.NewLocaleRepo)
 	typical.Descriptor.Constructors.Append(repository.NewRuleRepo)
 	typical.Descriptor.Constructors.Append(repository.NewTxIfNotExist)
 	typical.Descriptor.Constructors.Append(repository.NewURLStoreSyncRepo)
+	typical.Descriptor.Constructors.Append(service.NewDataSourceService)
+	typical.Descriptor.Constructors.Append(service.NewLocaleService)
 	typical.Descriptor.Constructors.Append(service.NewRuleService)
 	typical.Descriptor.Constructors.Append(service.NewURLStoreSyncService)
 	typical.Descriptor.Constructors.Append(app.NewURLStoreServer)

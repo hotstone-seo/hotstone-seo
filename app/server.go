@@ -13,6 +13,8 @@ type server struct {
 	*echo.Echo
 	config.Config
 	controller.RuleCntrl
+	controller.LocaleCntrl
+	controller.DataSourceCntrl
 }
 
 func (s *server) Middleware() {
@@ -21,6 +23,8 @@ func (s *server) Middleware() {
 
 func (s *server) Route() {
 	s.RuleCntrl.Route(s.Echo)
+	s.LocaleCntrl.Route(s.Echo)
+	s.DataSourceCntrl.Route(s.Echo)
 }
 
 func (s *server) Start() error {
