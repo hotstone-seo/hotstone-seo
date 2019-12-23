@@ -17,7 +17,6 @@ const MetaTagList = React.lazy(() => import('./views/Metatag/Metatag'));
 const MetatagPreview = React.lazy(() => import('./views/Metatag/MetatagPreview'));
 const MetaTagEditForm = React.lazy(() => import('./views/Metatag/MetatagEditForm'));
 const DataSourceList = React.lazy(() => import('./views/DataSource/DataSource'));
-const DataSourceEditForm = React.lazy(() => import('./views/DataSource/DataSourceEditForm'));
 const DataSourceForm = React.lazy(() => import('./views/DataSource/DataSourceForm'));
 const CanonicalList = React.lazy(() => import('./views/Canonical/Canonical'));
 const CanonicalForm = React.lazy(() => import('./views/Canonical/CanonicalForm'));
@@ -53,7 +52,6 @@ const routes = [
   { path: '/metatagPreview', name: 'MetatagPreview', component: MetatagPreview },
   { path: '/datasource', name: 'DataSource', component: DataSourceList },
   { path: '/dataSourceForm', name: 'DataSource', component: DataSourceForm },
-  { path: '/dataSourceEditForm', name: 'DataSource', component: DataSourceEditForm },
   { path: '/canonical', name: 'Canonical', component: CanonicalList },
   { path: '/canonicalForm', name: 'Canonical', component: CanonicalForm },
   { path: '/canonicalEditForm', name: 'Canonical', component: CanonicalEditForm },
