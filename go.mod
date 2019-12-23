@@ -3,7 +3,9 @@ module github.com/hotstone-seo/hotstone-server
 go 1.13
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.3.3
 	github.com/Masterminds/squirrel v1.1.0
+	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/golang/mock v1.3.1
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.2.8
