@@ -25,14 +25,12 @@ class LanguageForm extends Component {
         <ModalHeader>{action} Language</ModalHeader>
         <ModalBody>
           <Form className="form-horizontal">
- 
             <FormGroup row>
               <Col md="3">
                 <Label htmlFor="text-input">Name</Label>
               </Col>
               <Col xs="12" md="9">
                 {language !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={language !== undefined?language.id:""} onChange={onChange.bind(this, 'id')}/>):""}
-                
                 <Input
                   type="text"
                   id="lang_code"

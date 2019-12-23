@@ -30,7 +30,6 @@ const ScripttagForm = React.lazy(() => import('./views/Scripttag/ScripttagForm')
 const ScripttagEditForm = React.lazy(() => import('./views/Scripttag/ScripttagEditForm'));
 const LanguageList = React.lazy(() => import('./views/Language/Language'));
 const LanguageForm = React.lazy(() => import('./views/Language/LanguageForm'));
-const LanguageEditForm = React.lazy(() => import('./views/Language/LanguageEditForm'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -66,7 +65,6 @@ const routes = [
   { path: '/scripttagEditForm', name: 'Scripttag', component: ScripttagEditForm },
   { path: '/language', name: 'Language', component: LanguageList },
   { path: '/languageForm', name: 'Language', component: LanguageForm },
-  { path: '/languageEditForm', name: 'Language', component: LanguageEditForm },
 ];
 
 export default routes;
