@@ -155,11 +155,10 @@ class Language extends Component {
                                 </thead>
                                 <tbody>
                                     {languages.length > 0 ? (
-                                        languages.map(language => (
-                                            <tr key={language.id}>
+                                        languages.map((language,index) => (
+                                            <tr key={index}>
                                                 <td>{language.lang_code}</td>
                                                 <td>{language.country_code}</td>
-                                                
                                                 <td>
                                                     <button className="button muted-button" onClick={() => this.showForm(language)}>Edit</button>
                                                     <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>

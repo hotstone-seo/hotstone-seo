@@ -8,10 +8,10 @@ import {
   FormGroup,
   Input,
   Label,
-  Modal, 
+  Modal,
   ModalHeader,
-  ModalBody, 
-  ModalFooter, 
+  ModalBody,
+  ModalFooter,
 } from 'reactstrap';
 
 class DataSourceForm extends Component {
@@ -23,25 +23,25 @@ class DataSourceForm extends Component {
       <Modal isOpen={visible}>
         <ModalHeader>{action} Data Source</ModalHeader>
         <ModalBody>
-        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="textarea-input">Fields</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="textarea" name="fields" id="fields" rows="3"
-                        placeholder="Fields" />
-                    </Col>
-                  </FormGroup>
-                </Form>
+          <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+            <FormGroup row>
+              {datasource !== undefined ? (<Input type="hidden" id="id" name="id" defaultValue={datasource.id} onChange={onChange.bind(this, 'id')} />) : ""}
+              <Col md="3">
+                <Label htmlFor="text-input">Name</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="text" id="name" name="name" placeholder="Name" onChange={onChange.bind(this, 'name')} />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="textarea-input">URL</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="textarea" name="fields" id="fields" rows="3" placeholder="Fields" onChange={onChange.bind(this, 'url')} />
+              </Col>
+            </FormGroup>
+          </Form>
         </ModalBody>
         <ModalFooter>
           <Button color="warning" onClick={onSave}>Save</Button>{' '}
@@ -51,9 +51,9 @@ class DataSourceForm extends Component {
     );
   }
 }
-DataSourceForm.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string,
-  }).isRequired,
-};
+// DataSourceForm.propTypes = {
+//   match: PropTypes.shape({
+//     path: PropTypes.string,
+//   }).isRequired,
+// };
 export default DataSourceForm;

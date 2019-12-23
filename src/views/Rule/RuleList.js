@@ -168,8 +168,8 @@ class RuleList extends Component {
                 </thead>
                 <tbody>
                   {rules.length > 0 ? (
-                    rules.map(rule => (
-                      <tr key={rule.id}>
+                    rules.map((rule,index) => (
+                      <tr key={index}>
                         <td>{rule.id}</td>
                         <td><NavLink href="#" onClick={() => this.handleDetail(rule)}>{rule.name}</NavLink></td>
                         <td>{rule.url_pattern}</td>

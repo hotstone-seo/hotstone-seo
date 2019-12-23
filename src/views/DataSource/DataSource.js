@@ -17,6 +17,7 @@ class DataSource extends Component {
       datasourceFormValues: {
         id: null,
         name: null,
+        url: null,
       },
       URL_API: process.env.REACT_APP_API_URL + 'data_sources'
     }
@@ -44,7 +45,7 @@ class DataSource extends Component {
         const datasources = res.data;
         this.setState({ datasources });
       }).catch((error) => {
-
+        // TODO: show error in dialog box
       });
   }
   componentDidMount() {
@@ -57,7 +58,7 @@ class DataSource extends Component {
         this.setState({ datasources: datasources.filter((rul) => rul.id !== id) });
       })
       .catch((error) => {
-
+        // TODO: show error in dialog box
       });
     this.toggleWarning()
   }
@@ -105,13 +106,16 @@ class DataSource extends Component {
     else {
       axios.post(this.state.URL_API, datasourcesFormValues)
         .then((response) => {
+          console.log("1")
           this.setState({ datasources: [...datasources, datasourcesFormValues] });
         })
         .then(() => {
+          console.log("2")
           this.getDataSourceList();
         })
         .catch((error) => {
-
+          console.log("3")
+          // TODO: show error in dialog box
         });
       this.setState({ datasourcesFormValues: {} });
     }
@@ -147,20 +151,18 @@ class DataSource extends Component {
               <Table responsive bordered>
                 <thead>
                   <tr>
-                    <th>Data Source Name</th>
-                    <th>Webhook</th>
-                    <th>Fields</th>
+                    <th>ID</th>
+                    <th>Name</th>
                     <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {datasources.length > 0 ? (
-                    datasources.map(datasource => (
-                      <tr key={datasource.id}>
+                    datasources.map((datasource,index) => (
+                      <tr key={index}>
                         <td>{datasource.id}</td>
                         <td>{datasource.name}</td>
-                        <td></td>
                         <td></td>
                         <td>
                           <button className="button muted-button" onClick={() => this.showForm(datasource)}>Edit</button>
@@ -209,10 +211,10 @@ class DataSource extends Component {
     );
   }
 }
-DataSource.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string,
-  }).isRequired,
-};
+// DataSource.propTypes = {
+//   match: PropTypes.shape({
+//     path: PropTypes.string,
+//   }).isRequired,
+// };
 
 export default DataSource;
