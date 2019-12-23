@@ -98,6 +98,9 @@ func (s *URLStoreServerImpl) Sync() error {
 		if err = s.buildURLStore(s.urlStore, listDiffURLStoreSync); err != nil {
 			return err
 		}
+
+		oldestURLStoreSync := listDiffURLStoreSync[len(listDiffURLStoreSync)-1]
+		s.latestVersion = int(oldestURLStoreSync.Version)
 	}
 
 	return nil
