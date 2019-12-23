@@ -81,11 +81,10 @@ func (r *URLStoreSyncRepoImpl) GetLatestVersion(ctx context.Context, tx *sql.Tx)
 }
 
 func (r *URLStoreSyncRepoImpl) GetListDiff(ctx context.Context, tx *sql.Tx, offsetVersion int64) (list []*URLStoreSync, err error) {
-	//TODO: GetListDiff: where clause
 	var rows *sql.Rows
 	builder := psql.Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("urlstore_sync").
-		// Where().
+		Where(sq.Gt{"version": offsetVersion}).
 		OrderBy("version")
 	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
 		return

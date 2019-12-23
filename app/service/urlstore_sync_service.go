@@ -15,6 +15,7 @@ type URLStoreSyncService interface {
 	List(ctx context.Context) ([]*repository.URLStoreSync, error)
 	Insert(ctx context.Context, urlStoreSync repository.URLStoreSync) (lastInsertID int64, err error)
 	GetLatestVersion(ctx context.Context) (latestVersion int64, err error)
+	GetListDiff(ctx context.Context, offsetVersion int64) ([]*repository.URLStoreSync, error)
 }
 
 // URLStoreSyncServiceImpl is implementation of URLStoreSyncService
@@ -74,6 +75,19 @@ func (r *URLStoreSyncServiceImpl) Insert(ctx context.Context, urlStoreSync repos
 func (r *URLStoreSyncServiceImpl) GetLatestVersion(ctx context.Context) (latestVersion int64, err error) {
 	err = repository.WithTransaction(r.URLStoreSyncRepo.DB(), func(tx *sql.Tx) error {
 		latestVersion, err = r.URLStoreSyncRepo.GetLatestVersion(ctx, tx)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return
+}
+
+func (r *URLStoreSyncServiceImpl) GetListDiff(ctx context.Context, offsetVersion int64) (list []*repository.URLStoreSync, err error) {
+	err = repository.WithTransaction(r.URLStoreSyncRepo.DB(), func(tx *sql.Tx) error {
+		list, err = r.URLStoreSyncRepo.GetListDiff(ctx, tx, offsetVersion)
 		if err != nil {
 			return err
 		}

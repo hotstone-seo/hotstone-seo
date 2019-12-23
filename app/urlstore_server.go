@@ -91,8 +91,13 @@ func (s *URLStoreServerImpl) Sync() error {
 	}
 
 	if s.latestVersion < int(latestVersionSync) {
-		// TODO: Sync implementation
-		// diffChanges, err := s.URLStoreSyncService.GetListDiff(ctx, s.latestVersion)
+		listDiffURLStoreSync, err := s.URLStoreSyncService.GetListDiff(ctx, int64(s.latestVersion))
+		if err != nil {
+			return err
+		}
+		if err = s.buildURLStore(s.urlStore, listDiffURLStoreSync); err != nil {
+			return err
+		}
 	}
 
 	return nil
