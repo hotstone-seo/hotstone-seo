@@ -29,7 +29,13 @@ class DataSourceForm extends Component {
                 <Label htmlFor="text-input">Name</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" id="name" name="name" placeholder="Name" onChange={onChange.bind(this, 'name')} />
+                <Input type="text" 
+                id="name" 
+                name="name" 
+                placeholder="Name" 
+                onChange={onChange.bind(this, 'name')} 
+                defaultValue={datasource !== undefined?datasource.name:""}
+                />
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -37,7 +43,14 @@ class DataSourceForm extends Component {
                 <Label htmlFor="textarea-input">URL</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="textarea" name="fields" id="fields" rows="3" placeholder="Fields" onChange={onChange.bind(this, 'url')} />
+                <Input type="textarea" 
+                name="url" 
+                id="url" 
+                rows="3" 
+                placeholder="URL" 
+                onChange={onChange.bind(this, 'url')} 
+                defaultValue={datasource !== undefined?datasource.url:""}
+                />
               </Col>
             </FormGroup>
           </Form>

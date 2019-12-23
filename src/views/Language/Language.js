@@ -90,14 +90,11 @@ class Language extends Component {
         if (isUpdate) {
             axios.put(this.state.URL_API, languageFormValues)
                 .then(() => {
-                    const index = languages.findIndex((rul) => rul.id === record.id);
+                    const index = languages.findIndex((lg) => lg.id === record.id);
                     if (index > -1) {
                         languages[index] = languageFormValues;
                         this.setState({ languages });
                     }
-                })
-                .then(() => {
-                    this.getLanguageList();
                 })
                 .catch((error) => {
                     console.log(error.message)
@@ -109,7 +106,7 @@ class Language extends Component {
                     this.setState({ languages: [...languages, languageFormValues] });
                 })
                 .then(() => {
-                    this.getLanguageList();
+                    //this.getLanguageList();
                 })
                 .catch((error) => {
 

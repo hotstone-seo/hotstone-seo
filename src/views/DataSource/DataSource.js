@@ -89,14 +89,11 @@ class DataSource extends Component {
     if (isUpdate) {
       axios.put(this.state.URL_API, datasourcesFormValues)
         .then(() => {
-          const index = datasources.findIndex((rul) => rul.id === record.id);
+          const index = datasources.findIndex((ds) => ds.id === record.id);
           if (index > -1) {
             datasources[index] = datasourcesFormValues;
             this.setState({ datasources });
           }
-        })
-        .then(() => {
-          this.getDataSourceList();
         })
         .catch((error) => {
           console.log(error.message)
