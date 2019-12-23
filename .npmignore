@@ -9,6 +9,7 @@ package-lock.json
 
 # Project files
 src/
+examples/
 .travis.yml
 .eslintrc
 .babelrc
