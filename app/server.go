@@ -18,6 +18,7 @@ type server struct {
 }
 
 func (s *server) Middleware() {
+	s.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	s.Use(middleware.Recover())
 }
 
