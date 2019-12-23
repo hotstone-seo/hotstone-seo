@@ -17,7 +17,7 @@ class DataSource extends Component {
         id: null,
         name: null,
       },
-      URL_API: process.env.REACT_APP_API_URL + 'datasources'
+      URL_API: process.env.REACT_APP_API_URL + 'data_sources'
     }
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSave = this.handleSave.bind(this);
