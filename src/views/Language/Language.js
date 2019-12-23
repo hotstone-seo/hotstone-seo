@@ -18,7 +18,7 @@ class Language extends Component {
                 name: null,
                 code: null
             },
-            URL_API: process.env.REACT_APP_API_URL + 'languages'
+            URL_API: process.env.REACT_APP_API_URL + 'locales'
         }
         this.handleDelete = this.handleDelete.bind(this);
         this.handleSave = this.handleSave.bind(this);
