@@ -33,57 +33,57 @@ func (m *MockURLStore) EXPECT() *MockURLStoreMockRecorder {
 	return m.recorder
 }
 
-// GetURL mocks base method
-func (m *MockURLStore) GetURL(path string) (int, urlstore.VarMap) {
+// Get mocks base method
+func (m *MockURLStore) Get(path string) (int, urlstore.VarMap) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetURL", path)
+	ret := m.ctrl.Call(m, "Get", path)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(urlstore.VarMap)
 	return ret0, ret1
 }
 
-// GetURL indicates an expected call of GetURL
-func (mr *MockURLStoreMockRecorder) GetURL(path interface{}) *gomock.Call {
+// Get indicates an expected call of Get
+func (mr *MockURLStoreMockRecorder) Get(path interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetURL", reflect.TypeOf((*MockURLStore)(nil).GetURL), path)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockURLStore)(nil).Get), path)
 }
 
-// AddURL mocks base method
-func (m *MockURLStore) AddURL(id int, key string) {
+// Add mocks base method
+func (m *MockURLStore) Add(id int, key string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "AddURL", id, key)
+	m.ctrl.Call(m, "Add", id, key)
 }
 
-// AddURL indicates an expected call of AddURL
-func (mr *MockURLStoreMockRecorder) AddURL(id, key interface{}) *gomock.Call {
+// Add indicates an expected call of Add
+func (mr *MockURLStoreMockRecorder) Add(id, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddURL", reflect.TypeOf((*MockURLStore)(nil).AddURL), id, key)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockURLStore)(nil).Add), id, key)
 }
 
-// UpdateURL mocks base method
-func (m *MockURLStore) UpdateURL(id int, key string) {
+// Update mocks base method
+func (m *MockURLStore) Update(id int, key string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "UpdateURL", id, key)
+	m.ctrl.Call(m, "Update", id, key)
 }
 
-// UpdateURL indicates an expected call of UpdateURL
-func (mr *MockURLStoreMockRecorder) UpdateURL(id, key interface{}) *gomock.Call {
+// Update indicates an expected call of Update
+func (mr *MockURLStoreMockRecorder) Update(id, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateURL", reflect.TypeOf((*MockURLStore)(nil).UpdateURL), id, key)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockURLStore)(nil).Update), id, key)
 }
 
-// DeleteURL mocks base method
-func (m *MockURLStore) DeleteURL(id int) bool {
+// Delete mocks base method
+func (m *MockURLStore) Delete(id int) bool {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteURL", id)
+	ret := m.ctrl.Call(m, "Delete", id)
 	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
-// DeleteURL indicates an expected call of DeleteURL
-func (mr *MockURLStoreMockRecorder) DeleteURL(id interface{}) *gomock.Call {
+// Delete indicates an expected call of Delete
+func (mr *MockURLStoreMockRecorder) Delete(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteURL", reflect.TypeOf((*MockURLStore)(nil).DeleteURL), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockURLStore)(nil).Delete), id)
 }
 
 // Count mocks base method

@@ -11,7 +11,7 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 	t.Run("WHEN static url not exist", func(t *testing.T) {
 		store := buildStore(t)
 
-		id, varMap := store.GetURL("/gopher/doc.jpg")
+		id, varMap := store.Get("/gopher/doc.jpg")
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
 	})
@@ -19,7 +19,7 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 	t.Run("WHEN static url exist", func(t *testing.T) {
 		store := buildStore(t)
 
-		id, varMap := store.GetURL("/gopher/doc.png")
+		id, varMap := store.Get("/gopher/doc.png")
 		require.Equal(t, 6, id)
 		require.Empty(t, varMap)
 	})
@@ -27,7 +27,7 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 	t.Run("WHEN param url not exist", func(t *testing.T) {
 		store := buildStore(t)
 
-		id, varMap := store.GetURL("/users/def/abc")
+		id, varMap := store.Get("/users/def/abc")
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
 	})
@@ -35,7 +35,7 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 	t.Run("WHEN param url exist", func(t *testing.T) {
 		store := buildStore(t)
 
-		id, varMap := store.GetURL("/users/def/123")
+		id, varMap := store.Get("/users/def/123")
 		require.Equal(t, 12, id)
 
 		require.Equal(t, 2, len(varMap))
@@ -50,9 +50,9 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 		store := buildStore(t)
 
 		url := "/gopher/doc.jpg"
-		store.AddURL(20, url)
+		store.Add(20, url)
 
-		id, varMap := store.GetURL(url)
+		id, varMap := store.Get(url)
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
 		require.Equal(t, 10, store.Count())
@@ -64,14 +64,14 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 		oldUrl := "/gopher/doc.jpg"
 		newUrl := "/gopher/doc.img"
 
-		store.AddURL(20, oldUrl)
-		store.AddURL(20, newUrl)
+		store.Add(20, oldUrl)
+		store.Add(20, newUrl)
 
-		id, varMap := store.GetURL(newUrl)
+		id, varMap := store.Get(newUrl)
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
 
-		id, varMap = store.GetURL(oldUrl)
+		id, varMap = store.Get(oldUrl)
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
 
@@ -85,13 +85,13 @@ func TestURLStoreImpl_UpdateURL(t *testing.T) {
 
 		oldUrl := "/gopher/doc.png"
 		updatedUrl := "/gopher/doc.bmp"
-		store.UpdateURL(6, updatedUrl)
+		store.Update(6, updatedUrl)
 
-		id, varMap := store.GetURL(oldUrl)
+		id, varMap := store.Get(oldUrl)
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
 
-		id, varMap = store.GetURL(updatedUrl)
+		id, varMap = store.Get(updatedUrl)
 		require.Equal(t, 6, id)
 		require.Equal(t, 0, len(varMap))
 
@@ -103,13 +103,13 @@ func TestURLStoreImpl_DeleteURL(t *testing.T) {
 	t.Run("WHEN existing static url deleted", func(t *testing.T) {
 		store := buildStore(t)
 
-		require.Equal(t, true, store.DeleteURL(6))
+		require.Equal(t, true, store.Delete(6))
 
-		id, varMap := store.GetURL("/gopher/doc.png")
+		id, varMap := store.Get("/gopher/doc.png")
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
 
-		require.Equal(t, false, store.DeleteURL(6))
+		require.Equal(t, false, store.Delete(6))
 
 		require.Equal(t, 8, store.Count())
 	})
