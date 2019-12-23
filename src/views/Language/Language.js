@@ -1,5 +1,6 @@
+import axios from 'axios';
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Modal, ModalBody, ModalFooter, ModalHeader, Table, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 import LanguageForm from './LanguageForm';
 
@@ -15,8 +16,8 @@ class Language extends Component {
             actionForm: "",
             languageFormValues: {
                 id: null,
-                name: null,
-                code: null
+                lang_code: null,
+                country_code: null
             },
             URL_API: process.env.REACT_APP_API_URL + 'locales'
         }
@@ -131,14 +132,6 @@ class Language extends Component {
         });
     }
 
-    /*handleClick() {
-        const { history } = this.props;
-        history.push('/languageForm');
-    }
-    handleEdit() {
-        const { history } = this.props;
-        history.push('/languageEditForm');
-    }*/
     render() {
         const { languages } = this.state;
         return (
@@ -155,8 +148,8 @@ class Language extends Component {
                             <Table responsive bordered>
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
                                         <th>Language Code</th>
+                                        <th>Country Code</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -164,8 +157,8 @@ class Language extends Component {
                                     {languages.length > 0 ? (
                                         languages.map(language => (
                                             <tr key={language.id}>
-                                                <td>{language.name}</td>
-                                                <td>{language.code}</td>
+                                                <td>{language.lang_code}</td>
+                                                <td>{language.country_code}</td>
                                                 
                                                 <td>
                                                     <button className="button muted-button" onClick={() => this.showForm(language)}>Edit</button>
@@ -174,7 +167,7 @@ class Language extends Component {
                                                         className={'modal-warning ' + this.props.className}>
                                                         <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
                                                         <ModalBody>
-                                                            Are you sure want to delete language {datasource.name} ?
+                                                            Are you sure want to delete language {language.lang_code} ?
                                                         </ModalBody>
                                                         <ModalFooter>
                                                             <Button color="warning" onClick={() => this.handleDelete(language.id)}>YES</Button>{' '}

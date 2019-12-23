@@ -1,5 +1,6 @@
+import axios from 'axios';
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Table, Button, NavLink } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Modal, ModalBody, ModalFooter, ModalHeader, Table, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 import DataSourceForm from './DataSourceForm';
 
