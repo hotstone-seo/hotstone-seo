@@ -2,6 +2,18 @@ import React from 'react';
 import axios from 'axios';
 
 /**
+ * Returns a tag object after its string values have been interpolated with data
+ *
+ * @param {Object} tag - Tag object which contains values which may be a string template
+ * @param {Object} data - The mapping for interpolating tag's string placeholders
+ *
+ * TODO: Provide implementation by iterating through all of tag's value
+ */
+function interpolate(tag, data) {
+  
+}
+
+/**
  * A client that is used as the main building blocks for interacting with HotStone provider.
  * @typedef {Object} HotStoneClient
  */
@@ -31,20 +43,36 @@ function HotStone(host) {
           }
           return this.rule;
         },
+        async retrieveData() {
+          try {
+            const rule = await this.rule();
+            const { data } = await apiCaller.post('/provider/retrieveData', { path, rule })
+            return data;
+          } catch(error) {
+            return undefined;
+          }
+        },
         async tags() {
           try {
-            const { data } = await apiCaller.get('/provider/tags', { params: { ruleID: this.rule().id } });
+            const rule = await this.rule();
+            const { data } = await apiCaller.get('/provider/tags', { params: { ruleID: rule.id } });
             return data;
           } catch (error) {
             return undefined;
           }
         },
-        renderTags(data) {
-          const tags = data.filter((element) => element.type === 'tags');
-          return this._render(tags);
+        async articles() {
+          try {
+            const rule = await this.rule();
+            const { data } = await apiCaller.get('provider/articles', { params: { ruleID: rule.id } });
+            return data;
+          } catch (error) {
+            return undefined;
+          }
         },
-        _render(data) {
-          return data.map(({ type, props, children }) => (
+        render(template, data) {
+          const tags = template.map((tag) => interpolate(tag, data))
+          return tags.map(({ type, props, children }) => (
             React.createElement(type, props, children)
           ));
         },
