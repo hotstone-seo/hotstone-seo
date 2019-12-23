@@ -23,14 +23,12 @@ class RuleForm extends React.Component {
         <ModalHeader>{action} Rule</ModalHeader>
         <ModalBody>
           <Form className="form-horizontal">
- 
             <FormGroup row>
               <Col md="3">
                 <Label htmlFor="text-input">Name</Label>
               </Col>
               <Col xs="12" md="9">
                 {rule !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={rule !== undefined?rule.id:""} onChange={onChange.bind(this, 'id')}/>):""}
-                
                 <Input
                   type="text"
                   id="name"
