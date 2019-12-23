@@ -45,7 +45,7 @@ class Language extends Component {
                 const languages = res.data;
                 this.setState({ languages });
             }).catch((error) => {
-
+                console.log("Error get data")
             });
     }
     componentDidMount() {

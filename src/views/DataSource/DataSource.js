@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
 import { Card, CardBody, CardHeader, Col, Pagination, PaginationItem, PaginationLink, Modal, ModalBody, ModalFooter, ModalHeader, Table, Button } from 'reactstrap';
-import PropTypes from 'prop-types';
 import DataSourceForm from './DataSourceForm';
 
 class DataSource extends Component {
@@ -106,15 +105,12 @@ class DataSource extends Component {
     else {
       axios.post(this.state.URL_API, datasourcesFormValues)
         .then((response) => {
-          console.log("1")
           this.setState({ datasources: [...datasources, datasourcesFormValues] });
         })
         .then(() => {
-          console.log("2")
           this.getDataSourceList();
         })
         .catch((error) => {
-          console.log("3")
           // TODO: show error in dialog box
         });
       this.setState({ datasourcesFormValues: {} });
@@ -211,10 +207,5 @@ class DataSource extends Component {
     );
   }
 }
-// DataSource.propTypes = {
-//   match: PropTypes.shape({
-//     path: PropTypes.string,
-//   }).isRequired,
-// };
 
 export default DataSource;

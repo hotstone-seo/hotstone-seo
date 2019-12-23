@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Form,
@@ -66,9 +65,5 @@ class LanguageForm extends Component {
     );
   }
 }
-LanguageForm.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string,
-  }).isRequired,
-};
+
 export default LanguageForm;
