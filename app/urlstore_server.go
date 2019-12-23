@@ -5,6 +5,7 @@ import (
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/robfig/cron/v3"
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
@@ -19,7 +20,7 @@ type URLStoreServer interface {
 func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
 	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,
-		urlStore:            repository.InitURLStore(),
+		urlStore:            urlstore.InitURLStore(),
 		latestVersion:       -1,
 	}
 }
@@ -28,7 +29,7 @@ type URLStoreServerImpl struct {
 	dig.In
 	URLStoreSyncService service.URLStoreSyncService
 
-	urlStore      repository.URLStore
+	urlStore      urlstore.URLStore
 	latestVersion int
 }
 
@@ -65,7 +66,7 @@ func (s *URLStoreServerImpl) FullSync() error {
 		return nil
 	}
 
-	newURLStore := repository.InitURLStore()
+	newURLStore := urlstore.InitURLStore()
 	if err = s.buildURLStore(newURLStore, list); err != nil {
 		return err
 	}
@@ -106,7 +107,7 @@ func (s *URLStoreServerImpl) Sync() error {
 	return nil
 }
 
-func (s *URLStoreServerImpl) buildURLStore(urlStore repository.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
+func (s *URLStoreServerImpl) buildURLStore(urlStore urlstore.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
 
 	for _, urlStoreSync := range listURLStoreSync {
 		switch urlStoreSync.Operation {

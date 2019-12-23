@@ -1,4 +1,4 @@
-package repository
+package urlstore
 
 // Copyright 2019 Tiket.Com. Modifications: 1) 'id' of node 2) Delete node by ID
 // Copyright 2016 Qiang Xue. All rights reserved.
