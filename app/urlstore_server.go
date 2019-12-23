@@ -11,6 +11,10 @@ import (
 	"go.uber.org/dig"
 )
 
+// TODO: 1) move & rename to task/URLStoreScheduler
+// TODO: 2) modify CRUD operation of Rule to include URLStoreSync data operation (in same transaction)
+// TODO: 3) implement Provider (FindURL, etc)
+
 type URLStoreServer interface {
 	Start() error
 	FullSync() error
