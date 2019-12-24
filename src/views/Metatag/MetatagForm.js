@@ -17,6 +17,10 @@ import {
   InputGroup,
   InputGroupButtonDropdown,
   Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
 } from 'reactstrap';
 
@@ -50,73 +54,78 @@ class MetatagForm extends Component {
   }
 
   render() {
+    const {
+      visible, onCancel, onSave, meta, action, onChange
+    } = this.props;
     return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" md="9" lg="6">
-            <Card>
-              <CardHeader>
-                <strong>Add New Meta-Tag</strong>
-              </CardHeader>
-              <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+      <Modal isOpen={visible}>
+        <ModalHeader>{action} Meta-Tag</ModalHeader>
+        <ModalBody>
+          <Form className="form-horizontal">
+            <FormGroup row>
+              {canonical !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={meta.id} onChange={onChange.bind(this, 'id')}/>):""}
+              <Col md="3">
+                <Label htmlFor="text-input">Name</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Name"
+                  defaultValue={canonical !== undefined?canonical.name:""}
+                  onChange={onChange.bind(this, 'name')}
+                />
+              </Col>
+            </FormGroup>
 
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Name</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Name" />
-
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Content</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="content" name="content" placeholder="Content" />
-
-                    </Col>
-                  </FormGroup>
-
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Default Content</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="defaultcontent" name="defaultcontent" placeholder="Default Content" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Rule</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupButtonDropdown addonType="prepend"
-                          isOpen={this.state.first}
-                          toggle={() => { this.setState({ first: !this.state.first }); }}>
-                          <DropdownToggle caret color="primary">
-                            -Choose-
-                          </DropdownToggle>
-                          <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>Airport Detail</DropdownItem>
-                          </DropdownMenu>
-                        </InputGroupButtonDropdown>
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-                </Form>
-              </CardBody>
-              <CardFooter>
-                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Preview</Button>
-              </CardFooter>
-            </Card>
-          </Col>
-        </Row>
-      </div>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">Content</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input
+                  type="text"
+                  id="content"
+                  name="content"
+                  placeholder="content"
+                  defaultValue={meta !== undefined?meta.content:""}
+                  onChange={onChange.bind(this, 'content')}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">Default Content</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input
+                  type="text"
+                  id="default_content"
+                  name="default_content"
+                  placeholder="default content"
+                  defaultValue={meta !== undefined?meta.default_content:""}
+                  onChange={onChange.bind(this, 'default_content')}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">Rule</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="select" name="rule_id" id="rule_id" onChange={onChange.bind(this, 'rule_id')}>
+                  <option value="1">xxxxx</option>
+                </Input>
+              </Col>
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="warning" onClick={onSave}>Save</Button>{' '}
+          <Button color="secondary" onClick={onCancel}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
     );
   }
 }
