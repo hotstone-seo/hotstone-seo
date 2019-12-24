@@ -9,7 +9,7 @@ import (
 	"github.com/hotstone-seo/hotstone-server/app/controller"
 	"github.com/hotstone-seo/hotstone-server/mock"
 	"github.com/stretchr/testify/require"
-	"github.com/typical-go/typical-rest-server/pkg/utility/echokit"
+	"github.com/typical-go/typical-rest-server/pkg/echokit"
 )
 
 func TestRuleController_Create(t *testing.T) {

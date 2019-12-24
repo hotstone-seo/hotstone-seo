@@ -5,7 +5,7 @@ import (
 
 	"github.com/hotstone-seo/hotstone-server/app/controller"
 	"github.com/stretchr/testify/require"
-	"github.com/typical-go/typical-rest-server/pkg/utility/echokit"
+	"github.com/typical-go/typical-rest-server/pkg/echokit"
 )
 
 func TestCenterCntrl_AddMetaTag(t *testing.T) {
