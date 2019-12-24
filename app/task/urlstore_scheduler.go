@@ -15,6 +15,8 @@ type URLStoreScheduler interface {
 	Start() error
 	FullSync() error
 	Sync() error
+
+	Match(url string) (int, urlstore.VarMap)
 }
 
 func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreScheduler {
@@ -105,6 +107,10 @@ func (s *URLStoreSchedulerImpl) Sync() error {
 	}
 
 	return nil
+}
+
+func (s *URLStoreSchedulerImpl) Match(url string) (int, urlstore.VarMap) {
+	return s.urlStore.Get(url)
 }
 
 func (s *URLStoreSchedulerImpl) buildURLStore(urlStore urlstore.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
