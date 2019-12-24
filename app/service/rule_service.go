@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"go.uber.org/dig"
@@ -21,7 +20,9 @@ type RuleService interface {
 // RuleServiceImpl is implementation of RuleService
 type RuleServiceImpl struct {
 	dig.In
-	RuleRepo repository.RuleRepo
+	RuleRepo    repository.RuleRepo
+	URLSyncRepo repository.URLStoreSyncRepo
+	*repository.Transactional
 }
 
 // NewRuleService return new instance of RuleService
@@ -31,72 +32,73 @@ func NewRuleService(impl RuleServiceImpl) RuleService {
 
 // Find rule
 func (r *RuleServiceImpl) Find(ctx context.Context, id int64) (rule *repository.Rule, err error) {
-
-	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
-		rule, err = r.RuleRepo.Find(ctx, tx, id)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	return
+	return r.RuleRepo.Find(ctx, id)
 }
 
 // List rule
 func (r *RuleServiceImpl) List(ctx context.Context) (list []*repository.Rule, err error) {
-	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
-		list, err = r.RuleRepo.List(ctx, tx)
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
-
-	return
+	return r.RuleRepo.List(ctx)
 }
 
 // Insert rule
-func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (lastInsertID int64, err error) {
-	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
-		lastInsertID, err = r.RuleRepo.Insert(ctx, tx, rule)
-		if err != nil {
-			return err
-		}
+func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (newRuleID int64, err error) {
+	defer r.CommitMe(&ctx)()
 
-		return nil
-	})
+	newRuleID, err = r.RuleRepo.Insert(ctx, rule)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
 
-	return
+	urlSync := repository.URLStoreSync{Operation: "INSERT", RuleID: newRuleID, LatestURLPattern: rule.UrlPattern}
+
+	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return newRuleID, err
+	}
+
+	return newRuleID, nil
 }
 
 // Delete rule
 func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
-		err = r.RuleRepo.Delete(ctx, tx, id)
-		if err != nil {
-			return err
-		}
+	defer r.CommitMe(&ctx)()
 
-		return nil
-	})
+	err = r.RuleRepo.Delete(ctx, id)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
 
-	return
+	urlSync := repository.URLStoreSync{Operation: "DELETE", RuleID: id, LatestURLPattern: ""}
+
+	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+
+	return nil
 }
 
 // Update rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
+	defer r.CommitMe(&ctx)()
 
-	err = repository.WithTransaction(r.RuleRepo.DB(), func(tx *sql.Tx) error {
-		err = r.RuleRepo.Update(ctx, tx, rule)
-		if err != nil {
-			return err
-		}
+	err = r.RuleRepo.Update(ctx, rule)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
 
-		return nil
-	})
+	urlSync := repository.URLStoreSync{Operation: "UPDATE", RuleID: rule.ID, LatestURLPattern: rule.UrlPattern}
 
-	return
+	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+
+	return nil
 }

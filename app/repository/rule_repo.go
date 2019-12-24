@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -16,12 +15,11 @@ type Rule struct {
 }
 
 type RuleRepo interface {
-	Find(ctx context.Context, tx *sql.Tx, id int64) (*Rule, error)
-	List(ctx context.Context, tx *sql.Tx) ([]*Rule, error)
-	Insert(ctx context.Context, tx *sql.Tx, rule Rule) (lastInsertID int64, err error)
-	Delete(ctx context.Context, tx *sql.Tx, id int64) error
-	Update(ctx context.Context, tx *sql.Tx, rule Rule) error
-	DB() *sql.DB
+	Find(ctx context.Context, id int64) (*Rule, error)
+	List(ctx context.Context) ([]*Rule, error)
+	Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error)
+	Delete(ctx context.Context, id int64) error
+	Update(ctx context.Context, rule Rule) error
 }
 
 // NewRuleRepo return new instance of RuleRepo

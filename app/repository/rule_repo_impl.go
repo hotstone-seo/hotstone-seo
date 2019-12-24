@@ -6,27 +6,24 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
 // RuleRepoImpl is implementation rule repository
 type RuleRepoImpl struct {
 	dig.In
-	SqlDB *sql.DB
-}
-
-func (r *RuleRepoImpl) DB() *sql.DB {
-	return r.SqlDB
+	*sql.DB
 }
 
 // Find rule
-func (r *RuleRepoImpl) Find(ctx context.Context, tx *sql.Tx, id int64) (rule *Rule, err error) {
+func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
 		From("rules").
 		Where(sq.Eq{"id": id})
-	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	if rows.Next() {
@@ -36,12 +33,12 @@ func (r *RuleRepoImpl) Find(ctx context.Context, tx *sql.Tx, id int64) (rule *Ru
 }
 
 // List rule
-func (r *RuleRepoImpl) List(ctx context.Context, tx *sql.Tx) (list []*Rule, err error) {
+func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
 		From("rules")
-	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	list = make([]*Rule, 0)
@@ -56,13 +53,13 @@ func (r *RuleRepoImpl) List(ctx context.Context, tx *sql.Tx) (list []*Rule, err 
 }
 
 // Insert rule
-func (r *RuleRepoImpl) Insert(ctx context.Context, tx *sql.Tx, rule Rule) (lastInsertID int64, err error) {
+func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error) {
 
 	query := sq.Insert("rules").
 		Columns("data_source_id", "name", "url_pattern").
 		Values(rule.DataSourceID, rule.Name, rule.UrlPattern).
 		Suffix("RETURNING \"id\"").
-		RunWith(tx).
+		RunWith(dbkit.TxCtx(ctx, r)).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&rule.ID); err != nil {
 		return
@@ -72,15 +69,15 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, tx *sql.Tx, rule Rule) (lastI
 }
 
 // Delete rule
-func (r *RuleRepoImpl) Delete(ctx context.Context, tx *sql.Tx, id int64) (err error) {
+func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Delete("rules").Where(sq.Eq{"id": id})
-	_, err = builder.RunWith(tx).ExecContext(ctx)
+	_, err = builder.RunWith(dbkit.TxCtx(ctx, r)).ExecContext(ctx)
 	return
 }
 
 // Update rule
-func (r *RuleRepoImpl) Update(ctx context.Context, tx *sql.Tx, rule Rule) (err error) {
+func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Update("rules").
 		Set("data_source_id", rule.DataSourceID).
@@ -88,7 +85,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, tx *sql.Tx, rule Rule) (err e
 		Set("url_pattern", rule.UrlPattern).
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": rule.ID})
-	_, err = builder.RunWith(tx).ExecContext(ctx)
+	_, err = builder.RunWith(dbkit.TxCtx(ctx, r)).ExecContext(ctx)
 	return
 }
 
