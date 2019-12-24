@@ -1,4 +1,4 @@
-package task 
+package task
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestURLStoreServerImpl_Sync(t *testing.T) {
+func TestURLStoreSchedulerImpl_Sync(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -27,69 +27,69 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 	urlStoreSyncSvcMock := mock.NewMockURLStoreSyncService(ctrl)
 
-	urlStoreServer := &URLStoreServerImpl{
+	urlStoreScheduler := &URLStoreSchedulerImpl{
 		URLStoreSyncService: urlStoreSyncSvcMock,
 		urlStore:            urlstore.InitURLStore(),
 		latestVersion:       -1,
 	}
 
 	t.Run("WHEN first sync (s.latestVersion < latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, -1, urlStoreServer.latestVersion)
-		require.Equal(t, 0, urlStoreServer.urlStore.Count())
+		require.Equal(t, -1, urlStoreScheduler.latestVersion)
+		require.Equal(t, 0, urlStoreScheduler.urlStore.Count())
 
 		ctx := context.Background()
 		urlStoreSyncSvcMock.EXPECT().GetLatestVersion(ctx).Return(int64(len(list1And2URLStoreSync)), nil)
 		urlStoreSyncSvcMock.EXPECT().GetListDiff(ctx, gomock.Eq(int64(-1))).Return(list1And2URLStoreSync, nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreScheduler.Sync()
 		require.NoError(t, err)
 
-		require.Equal(t, 2, urlStoreServer.latestVersion)
-		require.Equal(t, 1, urlStoreServer.urlStore.Count())
+		require.Equal(t, 2, urlStoreScheduler.latestVersion)
+		require.Equal(t, 1, urlStoreScheduler.urlStore.Count())
 	})
 
 	t.Run("WHEN second sync (s.latestVersion == latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, 2, urlStoreServer.latestVersion)
-		require.Equal(t, 1, urlStoreServer.urlStore.Count())
+		require.Equal(t, 2, urlStoreScheduler.latestVersion)
+		require.Equal(t, 1, urlStoreScheduler.urlStore.Count())
 
 		ctx := context.Background()
 		urlStoreSyncSvcMock.EXPECT().GetLatestVersion(ctx).Return(int64(2), nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreScheduler.Sync()
 		require.NoError(t, err)
 
-		require.Equal(t, 2, urlStoreServer.latestVersion)
-		require.Equal(t, 1, urlStoreServer.urlStore.Count())
+		require.Equal(t, 2, urlStoreScheduler.latestVersion)
+		require.Equal(t, 1, urlStoreScheduler.urlStore.Count())
 	})
 
 	t.Run("WHEN third sync (s.latestVersion < latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, 2, urlStoreServer.latestVersion)
-		require.Equal(t, 1, urlStoreServer.urlStore.Count())
+		require.Equal(t, 2, urlStoreScheduler.latestVersion)
+		require.Equal(t, 1, urlStoreScheduler.urlStore.Count())
 
 		ctx := context.Background()
 		urlStoreSyncSvcMock.EXPECT().GetLatestVersion(ctx).Return(int64(4), nil)
 		urlStoreSyncSvcMock.EXPECT().GetListDiff(ctx, gomock.Eq(int64(2))).Return(list3And4URLStoreSync, nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreScheduler.Sync()
 		require.NoError(t, err)
 
-		require.Equal(t, 4, urlStoreServer.latestVersion)
-		require.Equal(t, 2, urlStoreServer.urlStore.Count())
+		require.Equal(t, 4, urlStoreScheduler.latestVersion)
+		require.Equal(t, 2, urlStoreScheduler.urlStore.Count())
 	})
 
 	t.Run("WHEN outlier case (s.latestVersion > latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, 4, urlStoreServer.latestVersion)
-		require.Equal(t, 2, urlStoreServer.urlStore.Count())
+		require.Equal(t, 4, urlStoreScheduler.latestVersion)
+		require.Equal(t, 2, urlStoreScheduler.urlStore.Count())
 
 		ctx := context.Background()
 		urlStoreSyncSvcMock.EXPECT().GetLatestVersion(ctx).Return(int64(2), nil) // latestVersion from DB = 2 (somehow some rows has been deleted)
 		urlStoreSyncSvcMock.EXPECT().List(ctx).Return(list1And2URLStoreSync, nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreScheduler.Sync()
 		require.NoError(t, err)
 
-		require.Equal(t, 2, urlStoreServer.latestVersion)
-		require.Equal(t, 1, urlStoreServer.urlStore.Count())
+		require.Equal(t, 2, urlStoreScheduler.latestVersion)
+		require.Equal(t, 1, urlStoreScheduler.urlStore.Count())
 	})
 
 }

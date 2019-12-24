@@ -1,4 +1,4 @@
-package task 
+package task
 
 import (
 	"context"
@@ -11,21 +11,21 @@ import (
 	"go.uber.org/dig"
 )
 
-type URLStoreServer interface {
+type URLStoreScheduler interface {
 	Start() error
 	FullSync() error
 	Sync() error
 }
 
-func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
-	return &URLStoreServerImpl{
+func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreScheduler {
+	return &URLStoreSchedulerImpl{
 		URLStoreSyncService: svc,
 		urlStore:            urlstore.InitURLStore(),
 		latestVersion:       -1,
 	}
 }
 
-type URLStoreServerImpl struct {
+type URLStoreSchedulerImpl struct {
 	dig.In
 	URLStoreSyncService service.URLStoreSyncService
 
@@ -33,7 +33,7 @@ type URLStoreServerImpl struct {
 	latestVersion int
 }
 
-func (s *URLStoreServerImpl) Start() error {
+func (s *URLStoreSchedulerImpl) Start() error {
 	if err := s.FullSync(); err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (s *URLStoreServerImpl) Start() error {
 	return nil
 }
 
-func (s *URLStoreServerImpl) FullSync() error {
+func (s *URLStoreSchedulerImpl) FullSync() error {
 
 	list, err := s.URLStoreSyncService.List(context.Background())
 	if err != nil {
@@ -79,7 +79,7 @@ func (s *URLStoreServerImpl) FullSync() error {
 	return nil
 }
 
-func (s *URLStoreServerImpl) Sync() error {
+func (s *URLStoreSchedulerImpl) Sync() error {
 	ctx := context.Background()
 
 	latestVersionSync, err := s.URLStoreSyncService.GetLatestVersion(ctx)
@@ -107,7 +107,7 @@ func (s *URLStoreServerImpl) Sync() error {
 	return nil
 }
 
-func (s *URLStoreServerImpl) buildURLStore(urlStore urlstore.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
+func (s *URLStoreSchedulerImpl) buildURLStore(urlStore urlstore.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
 
 	for _, urlStoreSync := range listURLStoreSync {
 		switch urlStoreSync.Operation {
