@@ -28,8 +28,30 @@ class RuleDetail extends Component {
         this.state = {
             collapse: true,
             fadeIn: true,
-            timeout: 300
+            timeout: 300,
+            canonicalFormValues: {
+                id: null,
+                name: null,
+                rule_id: null,
+            },
+            metaTagFormValues: {
+                id: null,
+                name: null,
+                rule_id: null,
+            },
+            scriptTagFormValues: {
+                id: null,
+                name: null,
+                rule_id: null,
+            },
+            titleTagFormValues: {
+                id: null,
+                name: null,
+                rule_id: null,
+            },
         };
+
+        
         this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
         this.handleAddNewCanonical = this.handleAddNewCanonical.bind(this);
