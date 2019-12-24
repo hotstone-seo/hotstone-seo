@@ -22,7 +22,7 @@ type RuleServiceImpl struct {
 	dig.In
 	RuleRepo    repository.RuleRepo
 	URLSyncRepo repository.URLStoreSyncRepo
-	*repository.Transactional
+	repository.Transactional
 }
 
 // NewRuleService return new instance of RuleService
