@@ -3,25 +3,15 @@ import PropTypes from 'prop-types';
 
 import {
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   Col,
   Form,
   FormGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   Input,
-  InputGroup,
-  InputGroupButtonDropdown,
   Label,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
-  Row,
 } from 'reactstrap';
 
 class MetatagForm extends Component {

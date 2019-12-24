@@ -51,6 +51,9 @@ class TitletagForm extends Component {
     }
 
     render() {
+        const {
+            visible, onCancel, onSave, titletag, action, onChange
+        } = this.props;
         return (
             <div className="animated fadeIn">
                 <Row>
