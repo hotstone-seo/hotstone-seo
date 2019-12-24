@@ -3,21 +3,15 @@ import PropTypes from 'prop-types';
 
 import {
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   Col,
   Form,
   FormGroup,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Input,
-  InputGroup,
-  InputGroupButtonDropdown,
   Label,
-  Row,
 } from 'reactstrap';
 
 class CanonicalForm extends Component {
@@ -54,53 +48,47 @@ class CanonicalForm extends Component {
     history.push('/canonical');
   }
   render() {
+    const {
+      visible, onCancel, onSave, canonical, action, onChange
+    } = this.props;
     return (
-      <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" md="9" lg="6">
-            <Card>
-              <CardHeader>
-                <strong>Add New Canonical</strong>
-              </CardHeader>
-              <CardBody>
-                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Canonical-Tag</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <Input type="text" id="name" name="name" placeholder="Canonical-Tag" />
-                    </Col>
-                  </FormGroup>
-                  <FormGroup row>
-                    <Col md="3">
-                      <Label htmlFor="text-input">Rule</Label>
-                    </Col>
-                    <Col xs="12" md="9">
-                      <InputGroup>
-                        <InputGroupButtonDropdown addonType="prepend"
-                          isOpen={this.state.first}
-                          toggle={() => { this.setState({ first: !this.state.first }); }}>
-                          <DropdownToggle caret color="primary">
-                            -Choose-
-                          </DropdownToggle>
-                          <DropdownMenu className={this.state.first ? 'show' : ''}>
-                            <DropdownItem>Airport Detail</DropdownItem>
-                          </DropdownMenu>
-                        </InputGroupButtonDropdown>
-                      </InputGroup>
-                    </Col>
-                  </FormGroup>
-                </Form>
-              </CardBody>
-              <CardFooter>
-                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }} onClick={this.handleCancel}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Preview</Button>
-              </CardFooter>           
-            </Card>
-          </Col>
-        </Row>
-      </div>
+      <Modal isOpen={visible}>
+        <ModalHeader>{action} Canonical</ModalHeader>
+        <ModalBody>
+          <Form className="form-horizontal">
+            <FormGroup row>
+              {canonical !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={canonical.id} onChange={onChange.bind(this, 'id')}/>):""}
+              <Col md="3">
+                <Label htmlFor="text-input">Name</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Name"
+                  defaultValue={canonical !== undefined?canonical.name:""}
+                  onChange={onChange.bind(this, 'name')}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">Rule</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="select" name="rule_id" id="rule_id" onChange={onChange.bind(this, 'rule_id')}>
+                  <option value="1">xxxxx</option>
+                </Input>
+              </Col>
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="warning" onClick={onSave}>Save</Button>{' '}
+          <Button color="secondary" onClick={onCancel}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
     );
   }
 }
