@@ -5,27 +5,24 @@ import (
 	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
 // URLStoreSyncRepoImpl is implementation urlStoreSync repository
 type URLStoreSyncRepoImpl struct {
 	dig.In
-	SqlDB *sql.DB
-}
-
-func (r *URLStoreSyncRepoImpl) DB() *sql.DB {
-	return r.SqlDB
+	*sql.DB
 }
 
 // Find urlStoreSync
-func (r *URLStoreSyncRepoImpl) Find(ctx context.Context, tx *sql.Tx, version int64) (urlStoreSync *URLStoreSync, err error) {
+func (r *URLStoreSyncRepoImpl) Find(ctx context.Context, version int64) (urlStoreSync *URLStoreSync, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("urlstore_sync").
 		Where(sq.Eq{"version": version})
-	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	if rows.Next() {
@@ -35,13 +32,13 @@ func (r *URLStoreSyncRepoImpl) Find(ctx context.Context, tx *sql.Tx, version int
 }
 
 // List urlStoreSync
-func (r *URLStoreSyncRepoImpl) List(ctx context.Context, tx *sql.Tx) (list []*URLStoreSync, err error) {
+func (r *URLStoreSyncRepoImpl) List(ctx context.Context) (list []*URLStoreSync, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("urlstore_sync").
 		OrderBy("version")
-	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	list = make([]*URLStoreSync, 0)
@@ -56,13 +53,13 @@ func (r *URLStoreSyncRepoImpl) List(ctx context.Context, tx *sql.Tx) (list []*UR
 }
 
 // Insert urlStoreSync
-func (r *URLStoreSyncRepoImpl) Insert(ctx context.Context, tx *sql.Tx, urlStoreSync URLStoreSync) (lastInsertID int64, err error) {
+func (r *URLStoreSyncRepoImpl) Insert(ctx context.Context, urlStoreSync URLStoreSync) (lastInsertID int64, err error) {
 
 	query := sq.Insert("urlstore_sync").
 		Columns("operation", "rule_id", "latest_url_pattern").
 		Values(urlStoreSync.Operation, urlStoreSync.RuleID, urlStoreSync.LatestURLPattern).
 		Suffix("RETURNING \"version\"").
-		RunWith(tx).
+		RunWith(dbkit.TxCtx(ctx, r)).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&urlStoreSync.Version); err != nil {
 		return
@@ -71,22 +68,22 @@ func (r *URLStoreSyncRepoImpl) Insert(ctx context.Context, tx *sql.Tx, urlStoreS
 	return
 }
 
-func (r *URLStoreSyncRepoImpl) GetLatestVersion(ctx context.Context, tx *sql.Tx) (latestVersion int64, err error) {
+func (r *URLStoreSyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion int64, err error) {
 	builder := psql.Select("version").From("urlstore_sync").OrderBy("version DESC").Limit(1)
-	if err = builder.RunWith(tx).QueryRowContext(ctx).Scan(&latestVersion); err != nil {
+	if err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryRowContext(ctx).Scan(&latestVersion); err != nil {
 		return
 	}
 
 	return
 }
 
-func (r *URLStoreSyncRepoImpl) GetListDiff(ctx context.Context, tx *sql.Tx, offsetVersion int64) (list []*URLStoreSync, err error) {
+func (r *URLStoreSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) (list []*URLStoreSync, err error) {
 	var rows *sql.Rows
 	builder := psql.Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("urlstore_sync").
 		Where(sq.Gt{"version": offsetVersion}).
 		OrderBy("version")
-	if rows, err = builder.RunWith(tx).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
@@ -15,12 +14,11 @@ type URLStoreSync struct {
 }
 
 type URLStoreSyncRepo interface {
-	Find(ctx context.Context, tx *sql.Tx, id int64) (*URLStoreSync, error)
-	List(ctx context.Context, tx *sql.Tx) ([]*URLStoreSync, error)
-	Insert(ctx context.Context, tx *sql.Tx, URLStoreSync URLStoreSync) (lastInsertID int64, err error)
-	GetLatestVersion(ctx context.Context, tx *sql.Tx) (latestVersion int64, err error)
-	GetListDiff(ctx context.Context, tx *sql.Tx, offsetVersion int64) ([]*URLStoreSync, error)
-	DB() *sql.DB
+	Find(ctx context.Context, id int64) (*URLStoreSync, error)
+	List(ctx context.Context) ([]*URLStoreSync, error)
+	Insert(ctx context.Context, URLStoreSync URLStoreSync) (lastInsertID int64, err error)
+	GetLatestVersion(ctx context.Context) (latestVersion int64, err error)
+	GetListDiff(ctx context.Context, offsetVersion int64) ([]*URLStoreSync, error)
 }
 
 // NewURLStoreSyncRepo return new instance of URLStoreSyncRepo
