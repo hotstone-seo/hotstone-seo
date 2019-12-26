@@ -93,4 +93,18 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		require.Equal(t, 1, urlStoreServer.urlStore.Count())
 	})
 
+	t.Run("WHEN outlier case (no data in urlstore_sync)", func(t *testing.T) {
+		require.Equal(t, 2, urlStoreServer.latestVersion)
+		require.Equal(t, 1, urlStoreServer.urlStore.Count())
+
+		ctx := context.Background()
+		urlStoreSyncSvcMock.EXPECT().GetLatestVersion(ctx).Return(int64(0), nil) // latestVersion from DB = 0 (all data have been deleted)
+
+		err := urlStoreServer.Sync()
+		require.NoError(t, err)
+
+		require.Equal(t, 0, urlStoreServer.latestVersion)
+		require.Equal(t, 0, urlStoreServer.urlStore.Count())
+	})
+
 }

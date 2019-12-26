@@ -71,6 +71,9 @@ func (r *URLStoreSyncRepoImpl) Insert(ctx context.Context, urlStoreSync URLStore
 func (r *URLStoreSyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion int64, err error) {
 	builder := psql.Select("version").From("urlstore_sync").OrderBy("version DESC").Limit(1)
 	if err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryRowContext(ctx).Scan(&latestVersion); err != nil {
+		if err == sql.ErrNoRows {
+			return 0, nil
+		}
 		return
 	}
 

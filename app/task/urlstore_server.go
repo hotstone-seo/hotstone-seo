@@ -20,7 +20,7 @@ func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
 	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,
 		urlStore:            urlstore.InitURLStore(),
-		latestVersion:       -1,
+		latestVersion:       0,
 	}
 }
 
@@ -62,6 +62,16 @@ func (s *URLStoreServerImpl) Sync() error {
 	latestVersionSync, err := s.URLStoreSyncService.GetLatestVersion(ctx)
 	if err != nil {
 		return err
+	}
+
+	if s.latestVersion == int(latestVersionSync) {
+		return nil
+	}
+
+	if s.latestVersion != 0 && latestVersionSync == 0 {
+		s.urlStore = urlstore.InitURLStore()
+		s.latestVersion = int(latestVersionSync)
+		return nil
 	}
 
 	if s.latestVersion > int(latestVersionSync) {
