@@ -6,13 +6,10 @@ import (
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
 	"github.com/hotstone-seo/hotstone-server/app/urlstore"
-	"github.com/robfig/cron/v3"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
 type URLStoreServer interface {
-	Start() error
 	FullSync() error
 	Sync() error
 
@@ -33,28 +30,6 @@ type URLStoreServerImpl struct {
 
 	urlStore      urlstore.URLStore
 	latestVersion int
-}
-
-func (s *URLStoreServerImpl) Start() error {
-	if err := s.FullSync(); err != nil {
-		return err
-	}
-
-	c := cron.New()
-	_, err := c.AddFunc("* * * * *", func() {
-		err := s.Sync()
-		if err != nil {
-			log.Warnf("Failed to sync url store: %+v", err)
-		}
-	})
-
-	if err != nil {
-		return err
-	}
-
-	c.Start()
-
-	return nil
 }
 
 func (s *URLStoreServerImpl) FullSync() error {

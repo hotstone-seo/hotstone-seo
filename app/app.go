@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/hotstone-seo/hotstone-server/app/config"
+	"github.com/hotstone-seo/hotstone-server/app/task"
 	"github.com/typical-go/typical-go/pkg/typcore"
 )
 
@@ -13,7 +14,11 @@ func Module() interface{} {
 type module struct{}
 
 func (*module) Action() interface{} {
-	return func(s server) error {
+	return func(s server, urlStoreTask task.URLStoreTask) error {
+		if err := urlStoreTask.Start(); err != nil {
+			return err
+		}
+
 		s.Middleware()
 		s.Route()
 		return s.Start()
