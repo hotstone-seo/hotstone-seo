@@ -18,6 +18,7 @@ import {
 
 import PropTypes from 'prop-types';
 
+import CanonicalForm from '../Canonical/CanonicalForm';
 
 class RuleDetail extends Component {
     constructor(props) {
@@ -49,9 +50,9 @@ class RuleDetail extends Component {
                 name: null,
                 rule_id: null,
             },
+            canonicalFormVisible: false,
+            actionCanonicalForm: "",
         };
-
-        
         this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
         this.handleAddNewCanonical = this.handleAddNewCanonical.bind(this);
@@ -88,9 +89,31 @@ class RuleDetail extends Component {
         const { history } = this.props;
         history.push('/titletagForm');
     }
+    showForm(record) {
+        if (record !== undefined) {
+          this.setState({ record: record });
+          this.setState({ actionForm: "Edit" });
+        }
+        else {
+          this.setState({ record: {} });
+          this.setState({ actionForm: "Add" });
+        }
+        this.setState({ canonicalFormVisible: true });
+    }
+    handleOnChange(type, e) {
+        const { target } = e || {};
+        const { value } = target || {};
+        const { canonicalFormValues } = this.state;
+    
+        this.setState({
+            canonicalFormValues: {
+            ...canonicalFormValues,
+            [type]: value
+          }
+        });
+      }
 
     render() {
-         
         const { data } = this.props.location;
         return (
             <div className="animated fadeIn">
@@ -141,7 +164,7 @@ class RuleDetail extends Component {
                             </CardHeader>
                             <CardBody>
                                 <div style={{ marginBottom: '.5rem' }}>
-                                    <Button color="primary" onClick={this.handleAddNewCanonical} style={{ marginRight: "0.4em" }}>Add New Canonical</Button>
+                                    <Button color="primary" onClick={() => this.showForm()} style={{ marginRight: "0.4em" }}>Add New Canonical</Button>
                                     <Button color="primary" onClick={this.handleAddNewMeta} style={{ marginRight: "0.4em" }}>Add New Meta-Tag</Button>
                                     <Button color="primary" onClick={this.handleAddNewScript} style={{ marginRight: "0.4em" }}>Add New Script Tag</Button>
                                     <Button color="primary" onClick={this.handleAddNewTitle} style={{ marginRight: "0.4em" }}>Add New Title-Tag</Button>
@@ -178,10 +201,16 @@ class RuleDetail extends Component {
                                 </nav>
                             </CardBody>
                         </Card>
+                        <CanonicalForm
+                            visible={this.state.canonicalFormVisible}
+                            onCancel={this.handleCancel}
+                            onSave={this.handleSave}
+                            canonical={this.state.record}
+                            action={this.state.actionForm}
+                            onChange={this.handleOnChange.bind(this)}
+                        />
                     </Col>
                 </Row>
-
-
             </div>
         );
     }
