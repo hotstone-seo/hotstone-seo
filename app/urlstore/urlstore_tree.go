@@ -110,7 +110,7 @@ func (n *node) add(id int, key string, data interface{}, order int) int {
 		}
 	}
 
-	fmt.Printf("[%s] add - key: %s - matched:%d - len(n.key):%d - len(key):%d \n", n.key, key, matched, len(n.key), len(key))
+	// fmt.Printf("[%s] add - key: %s - matched:%d - len(n.key):%d - len(key):%d \n", n.key, key, matched, len(n.key), len(key))
 
 	// ME: n.key as base chars. It will compare key with n.key. If common key < n.key: split.
 
@@ -130,24 +130,24 @@ func (n *node) add(id int, key string, data interface{}, order int) int {
 
 		// the node key is a prefix of the key: create a child node
 		newKey := key[matched:]
-		fmt.Printf("[%s] newKey: %s\n", n.key, newKey)
+		// fmt.Printf("[%s] newKey: %s\n", n.key, newKey)
 
 		// try adding to a static child
 		if child := n.children[newKey[0]]; child != nil {
-			fmt.Printf("[%s] static children[%c]: %s - newKey: %s\n", n.key, newKey[0], child.key, newKey)
+			// fmt.Printf("[%s] static children[%c]: %s - newKey: %s\n", n.key, newKey[0], child.key, newKey)
 			if pn := child.add(id, newKey, data, order); pn >= 0 {
 				return pn
 			}
 		}
 		// try adding to a param child
 		for _, child := range n.pchildren {
-			fmt.Printf("[%s] param child: %s\n", n.key, child.key)
+			// fmt.Printf("[%s] param child: %s\n", n.key, child.key)
 			if pn := child.add(id, newKey, data, order); pn >= 0 {
 				return pn
 			}
 		}
 
-		fmt.Printf("[%s] before addChild\n", n.key)
+		// fmt.Printf("[%s] before addChild\n", n.key)
 		return n.addChild(id, newKey, data, order)
 	}
 
@@ -156,7 +156,7 @@ func (n *node) add(id int, key string, data interface{}, order int) int {
 		return -1
 	}
 
-	fmt.Printf("[%s] before add (split)\n", n.key)
+	// fmt.Printf("[%s] before add (split)\n", n.key)
 
 	// the node key shares a partial prefix with the key: split the node key
 	n1 := &node{
@@ -203,7 +203,7 @@ func (n *node) addChild(id int, key string, data interface{}, order int) int {
 		}
 	}
 
-	fmt.Printf("[%s] addChild - new childkey: %s - p0:%d p1:%d\n", n.key, key, p0, p1)
+	// fmt.Printf("[%s] addChild - new childkey: %s - p0:%d p1:%d\n", n.key, key, p0, p1)
 
 	if p0 > 0 && p1 > 0 || p1 < 0 {
 		// param token occurs after a static string, or no param token: create a static node
@@ -233,7 +233,7 @@ func (n *node) addChild(id int, key string, data interface{}, order int) int {
 		}
 	}
 
-	fmt.Printf("[%s] before add param node - new childkey: %s\n", n.key, key)
+	// fmt.Printf("[%s] before add param node - new childkey: %s\n", n.key, key)
 
 	// add param node
 	child := &node{
@@ -385,11 +385,11 @@ func (n *node) delete(id int) (found, foundInThisNode bool, numChildStatic, numC
 		return true, true, len(n.childrenMap), len(n.pchildren)
 	}
 
-	fmt.Printf("ID: %d key:%s children: %d childrenMap: %d\n", n.id, n.key, len(n.children), len(n.childrenMap))
+	// fmt.Printf("ID: %d key:%s children: %d childrenMap: %d\n", n.id, n.key, len(n.children), len(n.childrenMap))
 
 	// Delete child static
 	for indexByte, child := range n.childrenMap {
-		fmt.Printf("ID: %d key:%s - CHILD: %d key:%s\n", n.id, n.key, child.id, child.key)
+		// fmt.Printf("ID: %d key:%s - CHILD: %d key:%s\n", n.id, n.key, child.id, child.key)
 		found, foundInTheChild, numChildStatic, numChildParam := child.delete(id)
 		if foundInTheChild || found {
 			if numChildStatic == 0 && numChildParam == 0 {
@@ -419,7 +419,7 @@ func (n *node) delete(id int) (found, foundInThisNode bool, numChildStatic, numC
 	}
 
 	if foundInTheChildParam || found {
-		fmt.Printf(">>> ID TARGET DELETE:%d CURRENT ID:%d CURRENT KEY:%s IDX DELETED:%d numChildParam:%d\n", id, n.id, n.key, idxDeleted, numChildParam)
+		// fmt.Printf(">>> ID TARGET DELETE:%d CURRENT ID:%d CURRENT KEY:%s IDX DELETED:%d numChildParam:%d\n", id, n.id, n.key, idxDeleted, numChildParam)
 
 		if idxDeleted != -1 && numChildStatic == 0 && numChildParam == 0 {
 
@@ -432,6 +432,6 @@ func (n *node) delete(id int) (found, foundInThisNode bool, numChildStatic, numC
 		return true, false, len(n.childrenMap), len(n.pchildren)
 	}
 
-	fmt.Printf("ID NOT FOUND:%d KEY: %s FOUNDINTHECHILD: %t\n", n.id, n.key, foundInTheChildParam)
+	// fmt.Printf("ID NOT FOUND:%d KEY: %s FOUNDINTHECHILD: %t\n", n.id, n.key, foundInTheChildParam)
 	return false, false, len(n.childrenMap), len(n.pchildren)
 }

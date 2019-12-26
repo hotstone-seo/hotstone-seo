@@ -72,7 +72,7 @@ func TestStorePlay2(t *testing.T) {
 		if val == nil {
 			value = &null
 		}
-		fmt.Printf("i:%d val:%s\n", i, *value)
+		// fmt.Printf("i:%d val:%s\n", i, *value)
 	}
 	elapsed1 := time.Since(start)
 
@@ -85,12 +85,12 @@ func TestStorePlay2(t *testing.T) {
 		if val == nil {
 			value = &null
 		}
-		fmt.Printf("i:%d val:%s\n", i, *value)
+		// fmt.Printf("i:%d val:%s\n", i, *value)
 	}
 	elapsed2 := time.Since(start)
 
-	fmt.Printf("Children1 %s\n", elapsed1)
-	fmt.Printf("Children2 %s\n", elapsed2)
+	// fmt.Printf("Children1 %s\n", elapsed1)
+	// fmt.Printf("Children2 %s\n", elapsed2)
 }
 
 func TestStoreAdd(t *testing.T) {
@@ -194,7 +194,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 	h := newURLStoreTree()
 	maxParams := 0
 	for _, pair := range pairs {
-		fmt.Printf("=== ID (by order): %d\n", pair.id)
+		// fmt.Printf("=== ID (by order): %d\n", pair.id)
 		n := h.Add(pair.id, pair.key, pair.value)
 		if n > maxParams {
 			maxParams = n
