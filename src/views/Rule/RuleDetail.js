@@ -59,6 +59,8 @@ class RuleDetail extends Component {
         this.handleAddNewMeta = this.handleAddNewMeta.bind(this);
         this.handleAddNewScript = this.handleAddNewScript.bind(this);
         this.handleAddNewTitle = this.handleAddNewTitle.bind(this);
+
+        this.handleCancelAddCanonical = this.handleCancelAddCanonical.bind(this);
     }
 
     toggle() {
@@ -91,12 +93,12 @@ class RuleDetail extends Component {
     }
     showForm(record) {
         if (record !== undefined) {
-          this.setState({ record: record });
-          this.setState({ actionForm: "Edit" });
+            this.setState({ record: record });
+            this.setState({ actionForm: "Edit" });
         }
         else {
-          this.setState({ record: {} });
-          this.setState({ actionForm: "Add" });
+            this.setState({ record: {} });
+            this.setState({ actionForm: "Add" });
         }
         this.setState({ canonicalFormVisible: true });
     }
@@ -104,15 +106,17 @@ class RuleDetail extends Component {
         const { target } = e || {};
         const { value } = target || {};
         const { canonicalFormValues } = this.state;
-    
+
         this.setState({
             canonicalFormValues: {
-            ...canonicalFormValues,
-            [type]: value
-          }
+                ...canonicalFormValues,
+                [type]: value
+            }
         });
-      }
-
+    }
+    handleCancelAddCanonical() {
+        this.setState({ canonicalFormVisible: false });
+    }
     render() {
         const { data } = this.props.location;
         return (
@@ -141,7 +145,7 @@ class RuleDetail extends Component {
                                             {data.url_pattern}
                                         </Col>
                                     </FormGroup>
-                                   
+
                                     <FormGroup row>
                                         <Col md="3">
                                             <Label htmlFor="text-input">Data Source</Label>
@@ -175,6 +179,7 @@ class RuleDetail extends Component {
                                             <th>Type</th>
                                             <th>Attribute</th>
                                             <th>Value</th>
+                                            <td>Language</td>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -183,6 +188,7 @@ class RuleDetail extends Component {
                                             <td>Canonical</td>
                                             <td>xxx</td>
                                             <td>http://tiket.com/asad</td>
+                                            <td>ID</td>
                                             <td>
                                                 <NavLink href="#" onClick={this.handleEdit}>Edit</NavLink>
                                             </td>
@@ -203,7 +209,7 @@ class RuleDetail extends Component {
                         </Card>
                         <CanonicalForm
                             visible={this.state.canonicalFormVisible}
-                            onCancel={this.handleCancel}
+                            onCancel={this.handleCancelAddCanonical}
                             onSave={this.handleSave}
                             canonical={this.state.record}
                             action={this.state.actionForm}
