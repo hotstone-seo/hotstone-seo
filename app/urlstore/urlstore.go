@@ -8,7 +8,7 @@ import (
 
 type VarMap map[string]string
 
-// URLStore [nomock]
+// URLStore
 type URLStore interface {
 	Get(path string) (int, VarMap)
 	Add(id int, key string)

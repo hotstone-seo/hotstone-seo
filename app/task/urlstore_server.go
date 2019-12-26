@@ -9,7 +9,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// URLStoreServer [nomock]
+// URLStoreServer
 type URLStoreServer interface {
 	FullSync() error
 	Sync() error
