@@ -20,7 +20,9 @@ class RuleList extends Component {
         url_pattern: null,
         data_source_id: null
       },
-      URL_API: process.env.REACT_APP_API_URL + 'rules'
+      URL_API: process.env.REACT_APP_API_URL + 'rules',
+      warningAPI: false,
+      errorMessage: "",
     };
 
     this.handleDelete = this.handleDelete.bind(this);
@@ -30,6 +32,8 @@ class RuleList extends Component {
     this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
 
+    this.handleCloseWarningAPI=this.handleCloseWarningAPI.bind(this);
+    this.toggleWarningAPI = this.toggleWarningAPI.bind(this);
   }
   toggle() {
     this.setState({
@@ -41,13 +45,19 @@ class RuleList extends Component {
       warning: !this.state.warning,
     });
   }
+  toggleWarningAPI(errmsg) {
+    this.setState({
+      warningAPI: !this.state.warningAPI,
+      errorMessage: errmsg
+    });
+  }
   getRuleList() {
     axios.get(this.state.URL_API)
       .then((res) => {
         const rules = res.data;
         this.setState({ rules });
       }).catch((error) => {
-
+        this.toggleWarningAPI(error.message)
       });
   }
   componentDidMount() {
@@ -142,6 +152,10 @@ class RuleList extends Component {
       data: record
     });
   }
+
+  handleCloseWarningAPI() {
+    this.state.warningAPI = false;
+  }
   render() {
     const { rules } = this.state;
     return (
@@ -168,7 +182,7 @@ class RuleList extends Component {
                 </thead>
                 <tbody>
                   {rules.length > 0 ? (
-                    rules.map((rule,index) => (
+                    rules.map((rule, index) => (
                       <tr key={index}>
                         <td>{rule.id}</td>
                         <td><NavLink href="#" onClick={() => this.handleDetail(rule)}>{rule.name}</NavLink></td>
@@ -210,6 +224,15 @@ class RuleList extends Component {
             action={this.state.actionForm}
             onChange={this.handleOnChange.bind(this)}
           />
+
+          <Modal isOpen={this.state.warningAPI} toggle={this.toggleWarningAPI}
+            className={'modal-warning ' + this.props.className}>
+            <ModalHeader toggle={this.toggleWarningAPI}>Information</ModalHeader>
+            <ModalBody>
+              <span>{this.state.errorMessage}</span><br></br>
+              <span>Sorry, failed to connect API. API currently not available/API in problem</span>
+            </ModalBody>
+          </Modal>
         </Col>
       </div>
     );
