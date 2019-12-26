@@ -5,6 +5,7 @@ type CenterService interface {
 	AddMetaTag(req AddMetaTagRequest) (int64, error)
 	AddTitleTag(req AddTitleTagRequest) (int64, error)
 	AddCanonicalTag(req AddCanonicalTagRequest) (int64, error)
+	AddScriptTag(req AddScriptTagRequest) (int64, error)
 }
 
 // CenterServiceImpl implementation of CenterService
@@ -28,5 +29,10 @@ func (*CenterServiceImpl) AddTitleTag(req AddTitleTagRequest) (lastInsertedID in
 
 // AddCanonicalTag to add canonicalTag
 func (*CenterServiceImpl) AddCanonicalTag(req AddCanonicalTagRequest) (lastInsertedID int64, err error) {
+	return
+}
+
+// AddScriptTag to add scriptTag
+func (*CenterServiceImpl) AddScriptTag(req AddScriptTagRequest) (lastInsertedID int64, err error) {
 	return
 }

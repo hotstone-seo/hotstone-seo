@@ -88,9 +88,28 @@ func TestCenterCntrl_AddCanoncicalTag(t *testing.T) {
 }
 
 func TestCenterCntrl_AddScriptTag(t *testing.T) {
-	centerCntrl := controller.CenterCntrl{}
-	_, err := echokit.DoPOST(centerCntrl.AddScriptTag, "/", `invalid`)
-	require.EqualError(t, err, "code=501, message=Not implemented")
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	svc := mock.NewMockCenterService(ctrl)
+	cntrl := controller.CenterCntrl{
+		CenterService: svc,
+	}
+	t.Run("WHEN invalid json body", func(t *testing.T) {
+		_, err := echokit.DoPOST(cntrl.AddScriptTag, "/", `invalid`)
+		require.EqualError(t, err, "code=400, message=Syntax error: offset=1, error=invalid character 'i' looking for beginning of value")
+	})
+	t.Run("WHEN okay", func(t *testing.T) {
+		svc.EXPECT().AddScriptTag(gomock.Any()).Return(int64(0), errors.New("some-error"))
+		_, err := echokit.DoPOST(cntrl.AddScriptTag, "/", `{"type":"javascript","rule_ud":1,"datasource_id":1}`)
+		require.EqualError(t, err, "code=422, message=some-error")
+	})
+	t.Run("WHEN okay", func(t *testing.T) {
+		svc.EXPECT().AddScriptTag(gomock.Any()).Return(int64(102), nil)
+		rr, err := echokit.DoPOST(cntrl.AddScriptTag, "/", `{"type":"javascript","rule_ud":1,"datasource_id":1}`)
+		require.NoError(t, err)
+		require.Equal(t, 201, rr.Code)
+		require.Equal(t, "{\"message\":\"Success insert new canonical tag #102\"}\n", rr.Body.String())
+	})
 }
 
 func TestCenterCntrl_AddArticle(t *testing.T) {

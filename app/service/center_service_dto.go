@@ -16,3 +16,10 @@ type AddCanonicalTagRequest struct {
 	Canonical string `json:"canonical"`
 	RuleID    int64  `json:"rule_id"`
 }
+
+// AddScriptTagRequest is request model for addScriptTag method
+type AddScriptTagRequest struct {
+	Type         string `json:"type"`
+	RuleID       int64  `json:"rule_id"`
+	DataSourceID int64  `json:"datasource_id"`
+}
