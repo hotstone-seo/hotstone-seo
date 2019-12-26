@@ -10,7 +10,14 @@ import axios from 'axios';
  * TODO: Provide implementation by iterating through all of tag's value
  */
 function interpolate(tag, data) {
-  
+  // NOTE: This implementation is O(n2), please provide better implementation in the future
+  for(let [key, value] of Object.entries(tag)) {
+    tag[key] = value.replace(/{(\w+)}/g, function(match, capture) {
+      return data[capture] || '';
+    });
+  }
+
+  return tag;
 }
 
 /**
@@ -29,7 +36,7 @@ function HotStone(host) {
   const client = {
     match: function(path) {
       const context = {
-        async _getRule() {
+        async _matchRule() {
           try {
             const { data } = await apiCaller.post('/provider/matchRule', { path });
             return data;
@@ -39,7 +46,7 @@ function HotStone(host) {
         },
         async rule() {
           if (this.rule === undefined) {
-            this.rule = await this._getRule();
+            this.rule = await this._matchRule();
           }
           return this.rule;
         },
