@@ -43,62 +43,53 @@ func (r *RuleServiceImpl) List(ctx context.Context) (list []*repository.Rule, er
 // Insert rule
 func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (newRuleID int64, err error) {
 	defer r.CommitMe(&ctx)()
-
-	newRuleID, err = r.RuleRepo.Insert(ctx, rule)
-	if err != nil {
+	if newRuleID, err = r.RuleRepo.Insert(ctx, rule); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-
-	urlSync := repository.URLStoreSync{Operation: "INSERT", RuleID: newRuleID, LatestURLPattern: &rule.UrlPattern}
-
-	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
-	if err != nil {
+	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLStoreSync{
+		Operation:        "INSERT",
+		RuleID:           newRuleID,
+		LatestURLPattern: &rule.UrlPattern,
+	}); err != nil {
 		r.CancelMe(ctx, err)
 		return newRuleID, err
 	}
-
 	return newRuleID, nil
 }
 
 // Delete rule
 func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 	defer r.CommitMe(&ctx)()
-
-	err = r.RuleRepo.Delete(ctx, id)
-	if err != nil {
+	if err = r.RuleRepo.Delete(ctx, id); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-
-	urlSync := repository.URLStoreSync{Operation: "DELETE", RuleID: id, LatestURLPattern: nil}
-
-	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
-	if err != nil {
+	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLStoreSync{
+		Operation:        "DELETE",
+		RuleID:           id,
+		LatestURLPattern: nil,
+	}); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-
 	return nil
 }
 
 // Update rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
 	defer r.CommitMe(&ctx)()
-
-	err = r.RuleRepo.Update(ctx, rule)
-	if err != nil {
+	if err = r.RuleRepo.Update(ctx, rule); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-
-	urlSync := repository.URLStoreSync{Operation: "UPDATE", RuleID: rule.ID, LatestURLPattern: &rule.UrlPattern}
-
-	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
-	if err != nil {
+	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLStoreSync{
+		Operation:        "UPDATE",
+		RuleID:           rule.ID,
+		LatestURLPattern: &rule.UrlPattern,
+	}); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-
 	return nil
 }
