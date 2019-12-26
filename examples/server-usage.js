@@ -1,14 +1,25 @@
-import HotStone from '../src';
+import HotStone from 'hotstone-client';
 
 (async function() {
+  // Instantiate the client by providing the URL of HotStone provider
   const client = HotStone('http://localhost:4000');
-  const pathContext = client.match('/any/path');
 
-  // We can retrieve tags data using tags() method on a context object,
-  // please note that retrieving tags is a Promise.
-  const tags = await pathContext.tags()
+  // Retrieve a Page SEO Rule by mathing its path
+  // A rule is a colelction of tags or content that are tailored specifically
+  // for the page
+  const rule = client.match('/any/path');
 
-  // After getting the data you can render the tags. This is done by
-  // using React.
-  const tagElements = pathContext.renderTags(tags);
+  // Get the tags associated with the rule
+  // A tags is an array of tag object containing info of a specific HTML tag
+  // Example:
+  // [
+  //   { type: "title", attributes: {}, value: "Page Title" },
+  //   { type: "meta", attributes: { name: "description", content: "Page Description" } }
+  // ]
+  const tags = await rule.tags();
+
+  // Return a React element in order to be rendered
+  const tagElements = tags.element();
+
+  // Rendering tag element...
 })();
