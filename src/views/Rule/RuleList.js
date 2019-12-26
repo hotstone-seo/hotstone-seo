@@ -71,7 +71,7 @@ class RuleList extends Component {
         this.setState({ rules: rules.filter((rul) => rul.id !== id) });
       })
       .catch((error) => {
-
+        this.toggleWarningAPI(error.message)
       });
     this.toggleWarning()
   }
@@ -113,7 +113,7 @@ class RuleList extends Component {
           this.getRuleList();
         })
         .catch((error) => {
-          console.log(error.message)
+          this.toggleWarningAPI(error.message)
         });
     }
     else {
@@ -125,7 +125,7 @@ class RuleList extends Component {
           this.getRuleList();
         })
         .catch((error) => {
-
+          this.toggleWarningAPI(error.message)
         });
       this.setState({ ruleFormValues: {} });
     }

@@ -18,7 +18,9 @@ class DataSource extends Component {
         name: null,
         url: null,
       },
-      URL_API: process.env.REACT_APP_API_URL + 'data_sources'
+      URL_API: process.env.REACT_APP_API_URL + 'data_sources',
+      warningAPI: false,
+      errorMessage: "",
     }
     this.handleDelete = this.handleDelete.bind(this);
     this.handleSave = this.handleSave.bind(this);
@@ -27,6 +29,8 @@ class DataSource extends Component {
     this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
 
+    this.handleCloseWarningAPI=this.handleCloseWarningAPI.bind(this);
+    this.toggleWarningAPI = this.toggleWarningAPI.bind(this);
   }
   toggle() {
     this.setState({
@@ -38,13 +42,21 @@ class DataSource extends Component {
       warning: !this.state.warning,
     });
   }
+
+  toggleWarningAPI(errmsg) {
+    this.setState({
+      warningAPI: !this.state.warningAPI,
+      errorMessage: errmsg
+    });
+  }
+
   getDataSourceList() {
     axios.get(this.state.URL_API)
       .then((res) => {
         const datasources = res.data;
         this.setState({ datasources });
       }).catch((error) => {
-        // TODO: show error in dialog box
+        this.toggleWarningAPI(error.message)
       });
   }
   componentDidMount() {
@@ -57,7 +69,7 @@ class DataSource extends Component {
         this.setState({ datasources: datasources.filter((rul) => rul.id !== id) });
       })
       .catch((error) => {
-        // TODO: show error in dialog box
+        this.toggleWarningAPI(error.message)
       });
     this.toggleWarning()
   }
@@ -96,7 +108,7 @@ class DataSource extends Component {
           }
         })
         .catch((error) => {
-          console.log(error.message)
+          this.toggleWarningAPI(error.message)
         });
     }
     else {
@@ -108,7 +120,7 @@ class DataSource extends Component {
           this.getDataSourceList();
         })
         .catch((error) => {
-          // TODO: show error in dialog box
+          this.toggleWarningAPI(error.message)
         });
       this.setState({ datasourcesFormValues: {} });
     }
@@ -127,7 +139,9 @@ class DataSource extends Component {
       }
     });
   }
-
+  handleCloseWarningAPI() {
+    this.state.warningAPI = false;
+  }
   render() {
     const { datasources } = this.state;
     return (
