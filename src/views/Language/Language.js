@@ -19,7 +19,9 @@ class Language extends Component {
                 lang_code: null,
                 country_code: null
             },
-            URL_API: process.env.REACT_APP_API_URL + 'locales'
+            URL_API: process.env.REACT_APP_API_URL + 'locales',
+            warningAPI: false,
+            errorMessage: "",
         }
         this.handleDelete = this.handleDelete.bind(this);
         this.handleSave = this.handleSave.bind(this);
@@ -27,6 +29,9 @@ class Language extends Component {
 
         this.toggleWarning = this.toggleWarning.bind(this);
         this.saveFormRef = this.saveFormRef.bind(this);
+
+        this.handleCloseWarningAPI = this.handleCloseWarningAPI.bind(this);
+        this.toggleWarningAPI = this.toggleWarningAPI.bind(this);
     }
 
     toggle() {
@@ -39,13 +44,19 @@ class Language extends Component {
             warning: !this.state.warning,
         });
     }
+    toggleWarningAPI(errmsg) {
+        this.setState({
+            warningAPI: !this.state.warningAPI,
+            errorMessage: errmsg
+        });
+    }
     getLanguageList() {
         axios.get(this.state.URL_API)
             .then((res) => {
                 const languages = res.data;
                 this.setState({ languages });
             }).catch((error) => {
-                console.log("Error get data")
+                this.toggleWarningAPI(error.message)
             });
     }
     componentDidMount() {
@@ -58,7 +69,7 @@ class Language extends Component {
                 this.setState({ languages: languages.filter((rul) => rul.id !== id) });
             })
             .catch((error) => {
-
+                this.toggleWarningAPI(error.message)
             });
         this.toggleWarning()
     }
@@ -97,7 +108,7 @@ class Language extends Component {
                     }
                 })
                 .catch((error) => {
-                    console.log(error.message)
+                    this.toggleWarningAPI(error.message)
                 });
         }
         else {
@@ -109,7 +120,7 @@ class Language extends Component {
                     //this.getLanguageList();
                 })
                 .catch((error) => {
-
+                    this.toggleWarningAPI(error.message)
                 });
             this.setState({ languageFormValues: {} });
         }
@@ -128,7 +139,9 @@ class Language extends Component {
             }
         });
     }
-
+    handleCloseWarningAPI() {
+        this.state.warningAPI = false;
+    }
     render() {
         const { languages } = this.state;
         return (
@@ -152,7 +165,7 @@ class Language extends Component {
                                 </thead>
                                 <tbody>
                                     {languages.length > 0 ? (
-                                        languages.map((language,index) => (
+                                        languages.map((language, index) => (
                                             <tr key={index}>
                                                 <td>{language.lang_code}</td>
                                                 <td>{language.country_code}</td>
@@ -199,6 +212,14 @@ class Language extends Component {
                         action={this.state.actionForm}
                         onChange={this.handleOnChange.bind(this)}
                     />
+                    <Modal isOpen={this.state.warningAPI} toggle={this.toggleWarningAPI}
+                        className={'modal-warning ' + this.props.className}>
+                        <ModalHeader toggle={this.toggleWarningAPI}>Information</ModalHeader>
+                        <ModalBody>
+                            <span>{this.state.errorMessage}</span><br></br>
+                            <span>Sorry, failed to connect API. API currently not available/API in problem</span>
+                        </ModalBody>
+                    </Modal>
                 </Col>
             </div>
         );
