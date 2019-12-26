@@ -140,7 +140,7 @@ class Language extends Component {
         });
     }
     handleCloseWarningAPI() {
-        this.state.warningAPI = false;
+        this.setState({ warningAPI: false });
     }
     render() {
         const { languages } = this.state;

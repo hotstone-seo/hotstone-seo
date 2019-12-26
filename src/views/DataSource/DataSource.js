@@ -140,7 +140,7 @@ class DataSource extends Component {
     });
   }
   handleCloseWarningAPI() {
-    this.state.warningAPI = false;
+    this.setState({ warningAPI: false });
   }
   render() {
     const { datasources } = this.state;

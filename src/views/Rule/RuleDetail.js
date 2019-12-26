@@ -19,6 +19,7 @@ import {
 import PropTypes from 'prop-types';
 
 import CanonicalForm from '../Canonical/CanonicalForm';
+import MetaTagForm from '../Metatag/MetatagForm';
 
 class RuleDetail extends Component {
     constructor(props) {
@@ -52,6 +53,9 @@ class RuleDetail extends Component {
             },
             canonicalFormVisible: false,
             actionCanonicalForm: "",
+            metaTagFormVisible: false,
+            scriptTagFormVisible: false,
+            titleTagFormVisible: false,
         };
         this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -59,8 +63,8 @@ class RuleDetail extends Component {
         this.handleAddNewMeta = this.handleAddNewMeta.bind(this);
         this.handleAddNewScript = this.handleAddNewScript.bind(this);
         this.handleAddNewTitle = this.handleAddNewTitle.bind(this);
-
         this.handleCancelAddCanonical = this.handleCancelAddCanonical.bind(this);
+        this.handleCancelAddMetaTag = this.handleCancelAddMetaTag.bind(this);
     }
 
     toggle() {
@@ -102,6 +106,45 @@ class RuleDetail extends Component {
         }
         this.setState({ canonicalFormVisible: true });
     }
+    showFormMetaTag(record)
+    {
+        if (record !== undefined) {
+            this.setState({ record: record });
+            this.setState({ actionForm: "Edit" });
+        }
+        else {
+            this.setState({ record: {} });
+            this.setState({ actionForm: "Add" });
+        }
+        this.setState({ metaTagFormVisible: true });
+    }
+
+    showFormScriptTag(record)
+    {
+        if (record !== undefined) {
+            this.setState({ record: record });
+            this.setState({ actionForm: "Edit" });
+        }
+        else {
+            this.setState({ record: {} });
+            this.setState({ actionForm: "Add" });
+        }
+        this.setState({ scriptTagFormVisible: true });
+    }
+
+    showFormTitleTag(record)
+    {
+        if (record !== undefined) {
+            this.setState({ record: record });
+            this.setState({ actionForm: "Edit" });
+        }
+        else {
+            this.setState({ record: {} });
+            this.setState({ actionForm: "Add" });
+        }
+        this.setState({ titleTagFormVisible: true });
+    }
+
     handleOnChange(type, e) {
         const { target } = e || {};
         const { value } = target || {};
@@ -116,6 +159,9 @@ class RuleDetail extends Component {
     }
     handleCancelAddCanonical() {
         this.setState({ canonicalFormVisible: false });
+    }
+    handleCancelAddMetaTag() {
+        this.setState({ metaTagFormVisible: false });
     }
     render() {
         const { data } = this.props.location;
@@ -169,7 +215,7 @@ class RuleDetail extends Component {
                             <CardBody>
                                 <div style={{ marginBottom: '.5rem' }}>
                                     <Button color="primary" onClick={() => this.showForm()} style={{ marginRight: "0.4em" }}>Add New Canonical</Button>
-                                    <Button color="primary" onClick={this.handleAddNewMeta} style={{ marginRight: "0.4em" }}>Add New Meta-Tag</Button>
+                                    <Button color="primary" onClick={() => this.showFormMetaTag()} style={{ marginRight: "0.4em" }}>Add New Meta-Tag</Button>
                                     <Button color="primary" onClick={this.handleAddNewScript} style={{ marginRight: "0.4em" }}>Add New Script Tag</Button>
                                     <Button color="primary" onClick={this.handleAddNewTitle} style={{ marginRight: "0.4em" }}>Add New Title-Tag</Button>
                                 </div>
@@ -210,6 +256,14 @@ class RuleDetail extends Component {
                         <CanonicalForm
                             visible={this.state.canonicalFormVisible}
                             onCancel={this.handleCancelAddCanonical}
+                            onSave={this.handleSave}
+                            canonical={this.state.record}
+                            action={this.state.actionForm}
+                            onChange={this.handleOnChange.bind(this)}
+                        />
+                        <MetaTagForm
+                            visible={this.state.metaTagFormVisible}
+                            onCancel={this.handleCancelAddMetaTag}
                             onSave={this.handleSave}
                             canonical={this.state.record}
                             action={this.state.actionForm}

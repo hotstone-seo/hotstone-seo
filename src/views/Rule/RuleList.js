@@ -154,7 +154,7 @@ class RuleList extends Component {
   }
 
   handleCloseWarningAPI() {
-    this.state.warningAPI = false;
+    this.setState({ warningAPI: false });
   }
   render() {
     const { rules } = this.state;
