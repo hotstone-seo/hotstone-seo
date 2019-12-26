@@ -45,7 +45,7 @@ class MetatagForm extends Component {
 
   render() {
     const {
-      visible, onCancel, onSave, meta, action, onChange
+      visible, onCancel, onSave, metatag, action, onChange
     } = this.props;
     return (
       <Modal isOpen={visible}>
@@ -53,7 +53,7 @@ class MetatagForm extends Component {
         <ModalBody>
           <Form className="form-horizontal">
             <FormGroup row>
-              {canonical !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={meta.id} onChange={onChange.bind(this, 'id')}/>):""}
+              {metatag !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={metatag.id} onChange={onChange.bind(this, 'id')}/>):""}
               <Col md="3">
                 <Label htmlFor="text-input">Name</Label>
               </Col>
@@ -63,7 +63,7 @@ class MetatagForm extends Component {
                   id="name"
                   name="name"
                   placeholder="Name"
-                  defaultValue={canonical !== undefined?canonical.name:""}
+                  defaultValue={metatag !== undefined?metatag.name:""}
                   onChange={onChange.bind(this, 'name')}
                 />
               </Col>
@@ -79,7 +79,7 @@ class MetatagForm extends Component {
                   id="content"
                   name="content"
                   placeholder="content"
-                  defaultValue={meta !== undefined?meta.content:""}
+                  defaultValue={metatag !== undefined?metatag.content:""}
                   onChange={onChange.bind(this, 'content')}
                 />
               </Col>
@@ -94,7 +94,7 @@ class MetatagForm extends Component {
                   id="default_content"
                   name="default_content"
                   placeholder="default content"
-                  defaultValue={meta !== undefined?meta.default_content:""}
+                  defaultValue={metatag !== undefined?metatag.default_content:""}
                   onChange={onChange.bind(this, 'default_content')}
                 />
               </Col>
