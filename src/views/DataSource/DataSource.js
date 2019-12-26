@@ -199,6 +199,14 @@ class DataSource extends Component {
             action={this.state.actionForm}
             onChange={this.handleOnChange.bind(this)}
           />
+          <Modal isOpen={this.state.warningAPI} toggle={this.toggleWarningAPI}
+            className={'modal-warning ' + this.props.className}>
+            <ModalHeader toggle={this.toggleWarningAPI}>Information</ModalHeader>
+            <ModalBody>
+              <span>{this.state.errorMessage}</span><br></br>
+              <span>Sorry, failed to connect API. API currently not available/API in problem</span>
+            </ModalBody>
+          </Modal>
         </Col>
       </div>
     );
