@@ -11,7 +11,7 @@ import (
 	"go.uber.org/dig"
 )
 
-type URLStoreScheduler interface {
+type URLStoreServer interface {
 	Start() error
 	FullSync() error
 	Sync() error
@@ -19,15 +19,15 @@ type URLStoreScheduler interface {
 	Match(url string) (int, urlstore.VarMap)
 }
 
-func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreScheduler {
-	return &URLStoreSchedulerImpl{
+func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
+	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,
 		urlStore:            urlstore.InitURLStore(),
 		latestVersion:       -1,
 	}
 }
 
-type URLStoreSchedulerImpl struct {
+type URLStoreServerImpl struct {
 	dig.In
 	URLStoreSyncService service.URLStoreSyncService
 
@@ -35,7 +35,7 @@ type URLStoreSchedulerImpl struct {
 	latestVersion int
 }
 
-func (s *URLStoreSchedulerImpl) Start() error {
+func (s *URLStoreServerImpl) Start() error {
 	if err := s.FullSync(); err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (s *URLStoreSchedulerImpl) Start() error {
 	return nil
 }
 
-func (s *URLStoreSchedulerImpl) FullSync() error {
+func (s *URLStoreServerImpl) FullSync() error {
 
 	list, err := s.URLStoreSyncService.List(context.Background())
 	if err != nil {
@@ -81,7 +81,7 @@ func (s *URLStoreSchedulerImpl) FullSync() error {
 	return nil
 }
 
-func (s *URLStoreSchedulerImpl) Sync() error {
+func (s *URLStoreServerImpl) Sync() error {
 	ctx := context.Background()
 
 	latestVersionSync, err := s.URLStoreSyncService.GetLatestVersion(ctx)
@@ -109,11 +109,11 @@ func (s *URLStoreSchedulerImpl) Sync() error {
 	return nil
 }
 
-func (s *URLStoreSchedulerImpl) Match(url string) (int, urlstore.VarMap) {
+func (s *URLStoreServerImpl) Match(url string) (int, urlstore.VarMap) {
 	return s.urlStore.Get(url)
 }
 
-func (s *URLStoreSchedulerImpl) buildURLStore(urlStore urlstore.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
+func (s *URLStoreServerImpl) buildURLStore(urlStore urlstore.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
 
 	for _, urlStoreSync := range listURLStoreSync {
 		switch urlStoreSync.Operation {
