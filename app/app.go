@@ -14,8 +14,8 @@ func Module() interface{} {
 type module struct{}
 
 func (*module) Action() interface{} {
-	return func(s server, urlStoreTask task.URLStoreTask) error {
-		if err := urlStoreTask.Start(); err != nil {
+	return func(s server, urlStoreServer task.URLStoreServer) error {
+		if err := task.StartScheduler(urlStoreServer.Sync); err != nil {
 			return err
 		}
 
