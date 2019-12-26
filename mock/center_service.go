@@ -47,3 +47,18 @@ func (mr *MockCenterServiceMockRecorder) AddMetaTag(req interface{}) *gomock.Cal
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMetaTag", reflect.TypeOf((*MockCenterService)(nil).AddMetaTag), req)
 }
+
+// AddTitleTag mocks base method
+func (m *MockCenterService) AddTitleTag(req service.AddTitleTagRequest) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddTitleTag", req)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddTitleTag indicates an expected call of AddTitleTag
+func (mr *MockCenterServiceMockRecorder) AddTitleTag(req interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTitleTag", reflect.TypeOf((*MockCenterService)(nil).AddTitleTag), req)
+}

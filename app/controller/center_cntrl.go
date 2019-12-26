@@ -42,8 +42,20 @@ func (c *CenterCntrl) AddMetaTag(ctx echo.Context) (err error) {
 }
 
 // AddTitleTag add title tag
-func (*CenterCntrl) AddTitleTag(ctx echo.Context) error {
-	return echo.NewHTTPError(http.StatusNotImplemented, "Not implemented")
+func (c *CenterCntrl) AddTitleTag(ctx echo.Context) (err error) {
+	var (
+		req            service.AddTitleTagRequest
+		lastInsertedID int64
+	)
+	if err = ctx.Bind(&req); err != nil {
+		return
+	}
+	if lastInsertedID, err = c.CenterService.AddTitleTag(req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ctx.JSON(http.StatusCreated, GeneralResponse{
+		Message: fmt.Sprintf("Success insert new title tag #%d", lastInsertedID),
+	})
 }
 
 // AddCanoncicalTag add canonical tag
