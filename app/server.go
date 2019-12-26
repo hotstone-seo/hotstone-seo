@@ -17,6 +17,7 @@ type server struct {
 	controller.DataSourceCntrl
 	controller.TagCntrl
 	controller.ProviderCntrl
+	controller.CenterCntrl
 }
 
 func (s *server) Middleware() {
@@ -29,7 +30,7 @@ func (s *server) Route() {
 	s.LocaleCntrl.Route(s.Echo)
 	s.DataSourceCntrl.Route(s.Echo)
 	s.TagCntrl.Route(s.Echo)
-	s.ProviderCntrl.Route(s.Echo)
+	s.CenterCntrl.Route(s.Echo)
 }
 
 func (s *server) Start() error {

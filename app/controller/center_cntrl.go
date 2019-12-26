@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/hotstone-seo/hotstone-server/app/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
@@ -10,6 +12,7 @@ import (
 // CenterCntrl is controller to rule entity
 type CenterCntrl struct {
 	dig.In
+	service.CenterService
 }
 
 // Route to define API Route
@@ -22,8 +25,20 @@ func (c *CenterCntrl) Route(e *echo.Echo) {
 }
 
 // AddMetaTag add meta tag
-func (*CenterCntrl) AddMetaTag(ctx echo.Context) error {
-	return echo.NewHTTPError(http.StatusNotImplemented, "Not implemented")
+func (c *CenterCntrl) AddMetaTag(ctx echo.Context) (err error) {
+	var (
+		req            service.AddMetaTagRequest
+		lastInsertedID int64
+	)
+	if err = ctx.Bind(&req); err != nil {
+		return
+	}
+	if lastInsertedID, err = c.CenterService.AddMetaTag(req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ctx.JSON(http.StatusCreated, GeneralResponse{
+		Message: fmt.Sprintf("Success insert new meta tag #%d", lastInsertedID),
+	})
 }
 
 // AddTitleTag add title tag
