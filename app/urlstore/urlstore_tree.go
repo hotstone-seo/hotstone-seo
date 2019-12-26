@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// URLStoreTree [nomock]
 type URLStoreTree interface {
 	Add(id int, key string, data interface{}) int
 	Get(path string, pvalues []string) (data interface{}, pnames []string)

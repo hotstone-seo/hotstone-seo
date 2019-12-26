@@ -1,7 +1,8 @@
 package task
 
 import (
-	"github.com/labstack/gommon/log"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/robfig/cron/v3"
 )
 

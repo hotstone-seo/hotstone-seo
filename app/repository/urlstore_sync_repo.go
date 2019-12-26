@@ -13,6 +13,7 @@ type URLStoreSync struct {
 	CreatedAt        time.Time `json:"-"`
 }
 
+// URLStoreSyncRepo [nomock]
 type URLStoreSyncRepo interface {
 	Find(ctx context.Context, id int64) (*URLStoreSync, error)
 	List(ctx context.Context) ([]*URLStoreSync, error)

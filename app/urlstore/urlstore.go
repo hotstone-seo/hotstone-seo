@@ -3,11 +3,12 @@ package urlstore
 import (
 	"strconv"
 
-	"github.com/labstack/gommon/log"
+	log "github.com/sirupsen/logrus"
 )
 
 type VarMap map[string]string
 
+// URLStore [nomock]
 type URLStore interface {
 	Get(path string) (int, VarMap)
 	Add(id int, key string)

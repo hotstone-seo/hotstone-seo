@@ -6,7 +6,6 @@ package mock
 
 import (
 	context "context"
-	sql "database/sql"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-server/app/repository"
 	reflect "reflect"
@@ -36,88 +35,74 @@ func (m *MockRuleRepo) EXPECT() *MockRuleRepoMockRecorder {
 }
 
 // Find mocks base method
-func (m *MockRuleRepo) Find(ctx context.Context, tx *sql.Tx, id int64) (*repository.Rule, error) {
+func (m *MockRuleRepo) Find(ctx context.Context, id int64) (*repository.Rule, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", ctx, tx, id)
+	ret := m.ctrl.Call(m, "Find", ctx, id)
 	ret0, _ := ret[0].(*repository.Rule)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find
-func (mr *MockRuleRepoMockRecorder) Find(ctx, tx, id interface{}) *gomock.Call {
+func (mr *MockRuleRepoMockRecorder) Find(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockRuleRepo)(nil).Find), ctx, tx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockRuleRepo)(nil).Find), ctx, id)
 }
 
 // List mocks base method
-func (m *MockRuleRepo) List(ctx context.Context, tx *sql.Tx) ([]*repository.Rule, error) {
+func (m *MockRuleRepo) List(ctx context.Context) ([]*repository.Rule, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", ctx, tx)
+	ret := m.ctrl.Call(m, "List", ctx)
 	ret0, _ := ret[0].([]*repository.Rule)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // List indicates an expected call of List
-func (mr *MockRuleRepoMockRecorder) List(ctx, tx interface{}) *gomock.Call {
+func (mr *MockRuleRepoMockRecorder) List(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockRuleRepo)(nil).List), ctx, tx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockRuleRepo)(nil).List), ctx)
 }
 
 // Insert mocks base method
-func (m *MockRuleRepo) Insert(ctx context.Context, tx *sql.Tx, rule repository.Rule) (int64, error) {
+func (m *MockRuleRepo) Insert(ctx context.Context, rule repository.Rule) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Insert", ctx, tx, rule)
+	ret := m.ctrl.Call(m, "Insert", ctx, rule)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Insert indicates an expected call of Insert
-func (mr *MockRuleRepoMockRecorder) Insert(ctx, tx, rule interface{}) *gomock.Call {
+func (mr *MockRuleRepoMockRecorder) Insert(ctx, rule interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockRuleRepo)(nil).Insert), ctx, tx, rule)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockRuleRepo)(nil).Insert), ctx, rule)
 }
 
 // Delete mocks base method
-func (m *MockRuleRepo) Delete(ctx context.Context, tx *sql.Tx, id int64) error {
+func (m *MockRuleRepo) Delete(ctx context.Context, id int64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", ctx, tx, id)
+	ret := m.ctrl.Call(m, "Delete", ctx, id)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Delete indicates an expected call of Delete
-func (mr *MockRuleRepoMockRecorder) Delete(ctx, tx, id interface{}) *gomock.Call {
+func (mr *MockRuleRepoMockRecorder) Delete(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRuleRepo)(nil).Delete), ctx, tx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRuleRepo)(nil).Delete), ctx, id)
 }
 
 // Update mocks base method
-func (m *MockRuleRepo) Update(ctx context.Context, tx *sql.Tx, rule repository.Rule) error {
+func (m *MockRuleRepo) Update(ctx context.Context, rule repository.Rule) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, tx, rule)
+	ret := m.ctrl.Call(m, "Update", ctx, rule)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockRuleRepoMockRecorder) Update(ctx, tx, rule interface{}) *gomock.Call {
+func (mr *MockRuleRepoMockRecorder) Update(ctx, rule interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRuleRepo)(nil).Update), ctx, tx, rule)
-}
-
-// DB mocks base method
-func (m *MockRuleRepo) DB() *sql.DB {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DB")
-	ret0, _ := ret[0].(*sql.DB)
-	return ret0
-}
-
-// DB indicates an expected call of DB
-func (mr *MockRuleRepoMockRecorder) DB() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DB", reflect.TypeOf((*MockRuleRepo)(nil).DB))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRuleRepo)(nil).Update), ctx, rule)
 }

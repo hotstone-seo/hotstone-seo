@@ -8,7 +8,6 @@ package urlstore
 import (
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -60,37 +59,37 @@ func testStorePlay(t *testing.T) {
 }
 
 func TestStorePlay2(t *testing.T) {
-	var children []*string = make([]*string, 256)
-	hello := "hello"
-	children[0] = &hello
+	// var children []*string = make([]*string, 256)
+	// hello := "hello"
+	// children[0] = &hello
 
-	null := "NIL"
+	// null := "NIL"
 
-	start := time.Now()
-	for i, val := range children {
-		value := val
-		if val == nil {
-			value = &null
-		}
-		// fmt.Printf("i:%d val:%s\n", i, *value)
-	}
-	elapsed1 := time.Since(start)
+	// start := time.Now()
+	// for i, val := range children {
+	// 	value := val
+	// 	if val == nil {
+	// 		value = &null
+	// 	}
+	// 	// fmt.Printf("i:%d val:%s\n", i, *value)
+	// }
+	// elapsed1 := time.Since(start)
 
-	var children2 map[int]*string = map[int]*string{}
-	children2[0] = &hello
+	// var children2 map[int]*string = map[int]*string{}
+	// children2[0] = &hello
 
-	start = time.Now()
-	for i, val := range children2 {
-		value := val
-		if val == nil {
-			value = &null
-		}
-		// fmt.Printf("i:%d val:%s\n", i, *value)
-	}
-	elapsed2 := time.Since(start)
+	// start = time.Now()
+	// for i, val := range children2 {
+	// 	value := val
+	// 	if val == nil {
+	// 		value = &null
+	// 	}
+	// 	// fmt.Printf("i:%d val:%s\n", i, *value)
+	// }
+	// elapsed2 := time.Since(start)
 
-	// fmt.Printf("Children1 %s\n", elapsed1)
-	// fmt.Printf("Children2 %s\n", elapsed2)
+	// // fmt.Printf("Children1 %s\n", elapsed1)
+	// // fmt.Printf("Children2 %s\n", elapsed2)
 }
 
 func TestStoreAdd(t *testing.T) {

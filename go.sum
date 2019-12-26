@@ -118,12 +118,10 @@ github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
-github.com/typical-go/typical-go v0.9.19 h1:9q07swZxeq0pQ+C4Bj166U16Zc5XqR3IyzrZsL0G9tk=
-github.com/typical-go/typical-go v0.9.19/go.mod h1:SgFrdjE8a34ocrVpzm26cLWQg5VjbNci/0/TbVx1QCQ=
 github.com/typical-go/typical-go v0.9.20 h1:esMj9CznlJ6tMIyOFwfNbqyD3BVpKG/sUbhp48SMsGk=
 github.com/typical-go/typical-go v0.9.20/go.mod h1:gjm9j+c0sqmIal3XFTmPxxPBg5kEUb1lm2fa01cjYrQ=
-github.com/typical-go/typical-rest-server v0.8.12 h1:TVqIr6+JAPJXUmbbNjroEibp9rRPZ2VQ6G5sk4isBh4=
-github.com/typical-go/typical-rest-server v0.8.12/go.mod h1:Js0zESR9Y+eHydI5FAVrOmgmQFDy0/S2j9LA7toC6Ws=
+github.com/typical-go/typical-go v0.9.21 h1:27ZJ4S4psC2ex0dbSmHO9xYTTJk4Bt0j32SFYX5/L8Q=
+github.com/typical-go/typical-go v0.9.21/go.mod h1:I+GyieMVhSW2EgnBS4YzO74ljywO7GseujTI6AHPvMw=
 github.com/typical-go/typical-rest-server v0.8.13 h1:F840DlZ6Fr9oZwEvq81a6wmksk0xHccWMjH3YTKCXOM=
 github.com/typical-go/typical-rest-server v0.8.13/go.mod h1:/vkCo+Yy253ctBDMjw5ZAO6G3szHBEGsBQQDbYe0+uY=
 github.com/urfave/cli/v2 v2.0.0 h1:+HU9SCbu8GnEUFtIBfuUNXN39ofWViIEJIp6SURMpCg=
@@ -133,8 +131,6 @@ github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyC
 github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4/go.mod h1:50wTf68f99/Zt14pr046Tgt3Lp2vLyFZKzbFXTOabXw=
 github.com/valyala/fasttemplate v1.1.0 h1:RZqt0yGBsps8NGvLSGW804QQqCUYYLsaOjTVHy1Ocw4=
 github.com/valyala/fasttemplate v1.1.0/go.mod h1:UQGH1tvbgY+Nz5t2n7tXsz52dQxojPUpymEIMZ47gx8=
-github.com/xorcare/pointer v1.0.0 h1:3SkLWSjQTDSFR5lRy+JZu3/2VMEVXWQCo38j3U2r770=
-github.com/xorcare/pointer v1.0.0/go.mod h1:6KLhkOh6YbuvZkT4YbxIbR/wzLBjyMxOiNzZhJTor2Y=
 github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036 h1:1b6PAtenNyhsmo/NKXVe34h7JEZKva1YB/ne7K7mqKM=
 github.com/yuin/gopher-lua v0.0.0-20190514113301-1cd887cd7036/go.mod h1:gqRgreBUhTSL0GeU64rtZ3Uq3wtjOa/TB2YfrtkCbVQ=
 go.uber.org/dig v1.8.0 h1:1rR6hnL/bu1EVcjnRDN5kx1vbIjEJDTGhSQ2B3ddpcI=

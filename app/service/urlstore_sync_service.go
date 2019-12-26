@@ -5,7 +5,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// URLStoreSyncService contain logic for URLStoreSync Controller
+// URLStoreSyncService contain logic for URLStoreSync Controller [nomock]
 type URLStoreSyncService interface {
 	repository.URLStoreSyncRepo
 }
