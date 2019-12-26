@@ -9,6 +9,7 @@ import (
 	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/hotstone-seo/hotstone-server/mock"
 	"github.com/stretchr/testify/require"
+	"github.com/xorcare/pointer"
 )
 
 func TestURLStoreServerImpl_Sync(t *testing.T) {
@@ -16,13 +17,13 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 	defer ctrl.Finish()
 
 	list1And2URLStoreSync := []*repository.URLStoreSync{
-		&repository.URLStoreSync{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: "/url/1"},
-		&repository.URLStoreSync{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: "/url/1update"},
+		&repository.URLStoreSync{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: pointer.String("/url/1")},
+		&repository.URLStoreSync{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: pointer.String("/url/1update")},
 	}
 
 	list3And4URLStoreSync := []*repository.URLStoreSync{
-		&repository.URLStoreSync{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: "/url/b"},
-		&repository.URLStoreSync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: "/url/bupdate"},
+		&repository.URLStoreSync{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: pointer.String("/url/b")},
+		&repository.URLStoreSync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
 	}
 
 	urlStoreSyncSvcMock := mock.NewMockURLStoreSyncService(ctrl)

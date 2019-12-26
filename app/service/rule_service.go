@@ -50,7 +50,7 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 		return
 	}
 
-	urlSync := repository.URLStoreSync{Operation: "INSERT", RuleID: newRuleID, LatestURLPattern: rule.UrlPattern}
+	urlSync := repository.URLStoreSync{Operation: "INSERT", RuleID: newRuleID, LatestURLPattern: &rule.UrlPattern}
 
 	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
 	if err != nil {
@@ -71,7 +71,7 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		return
 	}
 
-	urlSync := repository.URLStoreSync{Operation: "DELETE", RuleID: id, LatestURLPattern: ""}
+	urlSync := repository.URLStoreSync{Operation: "DELETE", RuleID: id, LatestURLPattern: nil}
 
 	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
 	if err != nil {
@@ -92,7 +92,7 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 		return
 	}
 
-	urlSync := repository.URLStoreSync{Operation: "UPDATE", RuleID: rule.ID, LatestURLPattern: rule.UrlPattern}
+	urlSync := repository.URLStoreSync{Operation: "UPDATE", RuleID: rule.ID, LatestURLPattern: &rule.UrlPattern}
 
 	_, err = r.URLSyncRepo.Insert(ctx, urlSync)
 	if err != nil {

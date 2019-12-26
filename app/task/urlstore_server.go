@@ -93,9 +93,9 @@ func (s *URLStoreServerImpl) buildURLStore(urlStore urlstore.URLStore, listURLSt
 	for _, urlStoreSync := range listURLStoreSync {
 		switch urlStoreSync.Operation {
 		case "INSERT":
-			urlStore.Add(int(urlStoreSync.RuleID), urlStoreSync.LatestURLPattern)
+			urlStore.Add(int(urlStoreSync.RuleID), *urlStoreSync.LatestURLPattern)
 		case "UPDATE":
-			urlStore.Update(int(urlStoreSync.RuleID), urlStoreSync.LatestURLPattern)
+			urlStore.Update(int(urlStoreSync.RuleID), *urlStoreSync.LatestURLPattern)
 		case "DELETE":
 			urlStore.Delete(int(urlStoreSync.RuleID))
 		}

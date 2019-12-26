@@ -9,7 +9,7 @@ type URLStoreSync struct {
 	Version          int64     `json:"version"`
 	Operation        string    `json:"operation" validate:"required"`
 	RuleID           int64     `json:"rule_id"`
-	LatestURLPattern string    `json:"latest_url_pattern"`
+	LatestURLPattern *string   `json:"latest_url_pattern"`
 	CreatedAt        time.Time `json:"-"`
 }
 
