@@ -19,7 +19,7 @@ type CenterCntrl struct {
 func (c *CenterCntrl) Route(e *echo.Echo) {
 	e.POST("center/addMetaTag", c.AddMetaTag)
 	e.POST("center/addTitleTag", c.AddTitleTag)
-	e.POST("center/addCanonicalTag", c.AddCanoncicalTag)
+	e.POST("center/addCanonicalTag", c.AddCanonicalTag)
 	e.POST("center/addScriptTag", c.AddScriptTag)
 	e.POST("center/addArticle", c.AddArticle)
 }
@@ -59,8 +59,20 @@ func (c *CenterCntrl) AddTitleTag(ctx echo.Context) (err error) {
 }
 
 // AddCanoncicalTag add canonical tag
-func (*CenterCntrl) AddCanoncicalTag(ctx echo.Context) error {
-	return echo.NewHTTPError(http.StatusNotImplemented, "Not implemented")
+func (c *CenterCntrl) AddCanonicalTag(ctx echo.Context) (err error) {
+	var (
+		req            service.AddCanonicalTagRequest
+		lastInsertedID int64
+	)
+	if err = ctx.Bind(&req); err != nil {
+		return
+	}
+	if lastInsertedID, err = c.CenterService.AddCanonicalTag(req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ctx.JSON(http.StatusCreated, GeneralResponse{
+		Message: fmt.Sprintf("Success insert new canonical tag #%d", lastInsertedID),
+	})
 }
 
 // AddScriptTag add script tag

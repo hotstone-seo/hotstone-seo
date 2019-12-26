@@ -10,3 +10,9 @@ type AddMetaTagRequest struct {
 type AddTitleTagRequest struct {
 	Title string `json:"title"`
 }
+
+// AddCanonicalTagRequest is request model for addCanonicalTag method
+type AddCanonicalTagRequest struct {
+	Canonical string `json:"canonical"`
+	RuleID    int64  `json:"rule_id"`
+}

@@ -62,3 +62,18 @@ func (mr *MockCenterServiceMockRecorder) AddTitleTag(req interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTitleTag", reflect.TypeOf((*MockCenterService)(nil).AddTitleTag), req)
 }
+
+// AddCanonicalTag mocks base method
+func (m *MockCenterService) AddCanonicalTag(req service.AddCanonicalTagRequest) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddCanonicalTag", req)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddCanonicalTag indicates an expected call of AddCanonicalTag
+func (mr *MockCenterServiceMockRecorder) AddCanonicalTag(req interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).AddCanonicalTag), req)
+}
