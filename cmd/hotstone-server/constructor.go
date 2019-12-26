@@ -17,6 +17,7 @@ func init() {
 	typical.Descriptor.Constructors.Append(repository.NewURLStoreSyncRepo)
 	typical.Descriptor.Constructors.Append(service.NewDataSourceService)
 	typical.Descriptor.Constructors.Append(service.NewLocaleService)
+	typical.Descriptor.Constructors.Append(service.NewProviderService)
 	typical.Descriptor.Constructors.Append(service.NewRuleService)
 	typical.Descriptor.Constructors.Append(service.NewTagService)
 	typical.Descriptor.Constructors.Append(service.NewURLStoreSyncService)

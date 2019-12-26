@@ -10,8 +10,8 @@ type Rule struct {
 	Name         string    `json:"name" validate:"required"`
 	UrlPattern   string    `json:"url_pattern" validate:"required"`
 	DataSourceID *int64    `json:"data_source_id"`
-	UpdatedAt    time.Time `json:"-"`
-	CreatedAt    time.Time `json:"-"`
+	UpdatedAt    time.Time `json:"updated_at"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 type RuleRepo interface {
