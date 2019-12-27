@@ -6,7 +6,6 @@ package mock
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	urlstore "github.com/hotstone-seo/hotstone-server/app/urlstore"
 	reflect "reflect"
 )
 
@@ -34,11 +33,11 @@ func (m *MockURLStore) EXPECT() *MockURLStoreMockRecorder {
 }
 
 // Get mocks base method
-func (m *MockURLStore) Get(path string) (int, urlstore.VarMap) {
+func (m *MockURLStore) Get(path string) (int, map[string]string) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", path)
 	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].(urlstore.VarMap)
+	ret1, _ := ret[1].(map[string]string)
 	return ret0, ret1
 }
 
