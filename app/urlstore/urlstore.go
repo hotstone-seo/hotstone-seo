@@ -6,11 +6,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type VarMap map[string]string
-
 // URLStore
 type URLStore interface {
-	Get(path string) (int, VarMap)
+	Get(path string) (int, map[string]string)
 	Add(id int, key string)
 	Update(id int, key string)
 	Delete(id int) bool
@@ -27,12 +25,12 @@ func InitURLStore() URLStore {
 	return &URLStoreImpl{store: newURLStoreTree()}
 }
 
-func (s *URLStoreImpl) Get(path string) (int, VarMap) {
+func (s *URLStoreImpl) Get(path string) (int, map[string]string) {
 	maxParams := 256
 
 	pvalues := make([]string, maxParams)
 
-	varValue := VarMap{}
+	varValue := map[string]string{}
 
 	data, pnames := s.store.Get(path, pvalues)
 	if data == nil {

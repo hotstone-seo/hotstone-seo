@@ -13,7 +13,7 @@ type URLStoreServer interface {
 	FullSync() error
 	Sync() error
 
-	Match(url string) (int, VarMap)
+	Match(url string) (int, map[string]string)
 }
 
 func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
@@ -94,7 +94,7 @@ func (s *URLStoreServerImpl) Sync() error {
 	return nil
 }
 
-func (s *URLStoreServerImpl) Match(url string) (int, VarMap) {
+func (s *URLStoreServerImpl) Match(url string) (int, map[string]string) {
 	return s.urlStore.Get(url)
 }
 
