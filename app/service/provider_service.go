@@ -8,6 +8,7 @@ import (
 // ProviderService contain logic for ProviderController
 type ProviderService interface {
 	MatchRule(MatchRuleRequest) (*repository.Rule, error)
+	RetrieveData(RetrieveDataRequest) (interface{}, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
@@ -18,6 +19,10 @@ type ProviderServiceImpl struct {
 // MatchRuleRequest is request for match rule
 type MatchRuleRequest struct {
 	Path string `json:"path"`
+}
+
+type RetrieveDataRequest struct {
+	RuleID int64 `json:"rule_id"`
 }
 
 // NewProviderService return new instance of ProviderService
@@ -33,6 +38,17 @@ func (*ProviderServiceImpl) MatchRule(req MatchRuleRequest) (rule *repository.Ru
 		Name:         "sample-rule",
 		UrlPattern:   "some-url-pattern",
 		DataSourceID: &dataSourceID,
+	}
+	return
+}
+
+func (*ProviderServiceImpl) RetrieveData(req RetrieveDataRequest) (data interface{}, err error) {
+	data = struct {
+		Name     string `json:"name"`
+		Province string `json:"province"`
+	}{
+		Name:     "CGK",
+		Province: "Banten",
 	}
 	return
 }

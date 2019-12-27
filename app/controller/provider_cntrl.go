@@ -34,3 +34,17 @@ func (c *ProviderCntrl) MatchRule(ctx echo.Context) (err error) {
 	}
 	return ctx.JSON(http.StatusOK, rule)
 }
+
+func (c *ProviderCntrl) RetrieveData(ctx echo.Context) (err error) {
+	var (
+		req  service.RetrieveDataRequest
+		data interface{}
+	)
+	if err = ctx.Bind(&req); err != nil {
+		return err
+	}
+	if data, err = c.ProviderService.RetrieveData(req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, data)
+}

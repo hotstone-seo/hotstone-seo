@@ -48,3 +48,18 @@ func (mr *MockProviderServiceMockRecorder) MatchRule(arg0 interface{}) *gomock.C
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MatchRule", reflect.TypeOf((*MockProviderService)(nil).MatchRule), arg0)
 }
+
+// RetrieveData mocks base method
+func (m *MockProviderService) RetrieveData(arg0 service.RetrieveDataRequest) (interface{}, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RetrieveData", arg0)
+	ret0, _ := ret[0].(interface{})
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RetrieveData indicates an expected call of RetrieveData
+func (mr *MockProviderServiceMockRecorder) RetrieveData(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveData", reflect.TypeOf((*MockProviderService)(nil).RetrieveData), arg0)
+}
