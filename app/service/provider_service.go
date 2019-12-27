@@ -16,15 +16,6 @@ type ProviderServiceImpl struct {
 	dig.In
 }
 
-// MatchRuleRequest is request for match rule
-type MatchRuleRequest struct {
-	Path string `json:"path"`
-}
-
-type RetrieveDataRequest struct {
-	RuleID int64 `json:"rule_id"`
-}
-
 // NewProviderService return new instance of ProviderService
 func NewProviderService() ProviderService {
 	return &ProviderServiceImpl{}
