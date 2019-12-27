@@ -8,6 +8,10 @@ import {
     FormGroup,
     Input,
     Label,
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
 } from 'reactstrap';
 
 
