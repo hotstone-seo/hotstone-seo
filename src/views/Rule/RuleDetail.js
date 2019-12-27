@@ -20,6 +20,24 @@ import PropTypes from 'prop-types';
 
 import CanonicalForm from '../Canonical/CanonicalForm';
 import MetaTagForm from '../Metatag/MetatagForm';
+import ScriptTagForm from '../Scripttag/ScripttagForm';
+import TitleTagForm from '../Titletag/TitletagForm';
+
+import axios from 'axios';
+import queryString from 'query-string';
+
+export const parseQuery = (subject) => {
+  const results = {};
+  const parser = /[^&?]+/g;
+  let match = parser.exec(subject);
+  while (match !== null) {
+    const parts = match[0].split('=');
+    results[parts[0]] = parts[1];
+    match = parser.exec(subject);
+  }
+  return results;
+};
+
 
 class RuleDetail extends Component {
     constructor(props) {
@@ -31,6 +49,7 @@ class RuleDetail extends Component {
             collapse: true,
             fadeIn: true,
             timeout: 300,
+            URL_API: process.env.REACT_APP_API_URL + 'rules',
             canonicalFormValues: {
                 id: null,
                 name: null,
@@ -65,6 +84,30 @@ class RuleDetail extends Component {
         this.handleAddNewTitle = this.handleAddNewTitle.bind(this);
         this.handleCancelAddCanonical = this.handleCancelAddCanonical.bind(this);
         this.handleCancelAddMetaTag = this.handleCancelAddMetaTag.bind(this);
+    }
+    getQueryStringParams = query => {
+        return query
+            ? (/^[?#]/.test(query) ? query.slice(1) : query)
+                .split('&')
+                .reduce((params, param) => {
+                        let [key, value] = param.split('=');
+                        params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+                        return params;
+                    }, {}
+                )
+            : {}
+    };
+    componentDidMount() {
+        /*axios.get(this.state.URL_API)
+            .then((res) => {
+                const rules = res.data;
+                this.setState({ rules });
+            }).catch((error) => {
+                //this.toggleWarningAPI(error.message)
+            });*/
+            //console.log(this.props.location.search,"search")
+            const values = queryString.parse(this.props.location.search)
+            console.log(values,"hasill")
     }
 
     toggle() {
@@ -106,8 +149,7 @@ class RuleDetail extends Component {
         }
         this.setState({ canonicalFormVisible: true });
     }
-    showFormMetaTag(record)
-    {
+    showFormMetaTag(record) {
         if (record !== undefined) {
             this.setState({ record: record });
             this.setState({ actionForm: "Edit" });
@@ -119,8 +161,7 @@ class RuleDetail extends Component {
         this.setState({ metaTagFormVisible: true });
     }
 
-    showFormScriptTag(record)
-    {
+    showFormScriptTag(record) {
         if (record !== undefined) {
             this.setState({ record: record });
             this.setState({ actionForm: "Edit" });
@@ -132,8 +173,7 @@ class RuleDetail extends Component {
         this.setState({ scriptTagFormVisible: true });
     }
 
-    showFormTitleTag(record)
-    {
+    showFormTitleTag(record) {
         if (record !== undefined) {
             this.setState({ record: record });
             this.setState({ actionForm: "Edit" });
@@ -163,8 +203,25 @@ class RuleDetail extends Component {
     handleCancelAddMetaTag() {
         this.setState({ metaTagFormVisible: false });
     }
+    handleCancelAddScriptTag() {
+        this.setState({ scriptTagFormVisible: false });
+    }
+    handleCancelTitleScriptTag() {
+        this.setState({ titleTagFormVisible: false });
+    }
     render() {
+        console.log(this.props.location, 'propsloc')
+        const query = this.getQueryStringParams((this.props.location || {}).search || '');
+        console.log(query,"query");
+        const {ruleId } = query || {};
+
+        //const search = this.props.location.search; // could be '?foo=bar'
+        //const params = new URLSearchParams(search);
+        //const ruleId = params.get('ruleId'); // bar
+
+        console.log(ruleId,"ruleId");
         const { data } = this.props.location;
+    
         return (
             <div className="animated fadeIn">
                 <Row>
@@ -216,8 +273,8 @@ class RuleDetail extends Component {
                                 <div style={{ marginBottom: '.5rem' }}>
                                     <Button color="primary" onClick={() => this.showForm()} style={{ marginRight: "0.4em" }}>Add New Canonical</Button>
                                     <Button color="primary" onClick={() => this.showFormMetaTag()} style={{ marginRight: "0.4em" }}>Add New Meta-Tag</Button>
-                                    <Button color="primary" onClick={this.handleAddNewScript} style={{ marginRight: "0.4em" }}>Add New Script Tag</Button>
-                                    <Button color="primary" onClick={this.handleAddNewTitle} style={{ marginRight: "0.4em" }}>Add New Title-Tag</Button>
+                                    <Button color="primary" onClick={() => this.showFormScriptTag()} style={{ marginRight: "0.4em" }}>Add New Script Tag</Button>
+                                    <Button color="primary" onClick={() => this.showFormTitleTag()} style={{ marginRight: "0.4em" }}>Add New Title-Tag</Button>
                                 </div>
                                 <Table responsive bordered>
                                     <thead>
@@ -265,7 +322,23 @@ class RuleDetail extends Component {
                             visible={this.state.metaTagFormVisible}
                             onCancel={this.handleCancelAddMetaTag}
                             onSave={this.handleSave}
-                            canonical={this.state.record}
+                            metatag={this.state.record}
+                            action={this.state.actionForm}
+                            onChange={this.handleOnChange.bind(this)}
+                        />
+                        <ScriptTagForm
+                            visible={this.state.scriptTagFormVisible}
+                            onCancel={this.handleCancelAddScriptTag}
+                            onSave={this.handleSave}
+                            scripttag={this.state.record}
+                            action={this.state.actionForm}
+                            onChange={this.handleOnChange.bind(this)}
+                        />
+                        <TitleTagForm
+                            visible={this.state.titleTagFormVisible}
+                            onCancel={this.handleCancelAddTitleTag}
+                            onSave={this.handleSave}
+                            titletag={this.state.record}
                             action={this.state.actionForm}
                             onChange={this.handleOnChange.bind(this)}
                         />

@@ -29,7 +29,7 @@ class ScripttagForm extends Component {
 
     render() {
         const {
-            //visible, onCancel, onSave, scripttag, action, onChange
+            visible, onCancel, onSave, scripttag, action, onChange
         } = this.props;
         return (
 

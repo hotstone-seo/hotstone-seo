@@ -45,7 +45,7 @@ const routes = [
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/rule', name: 'Rules', component: RuleList },
   { path: '/ruleForm', name: 'Rules', component: RuleForm },
-  { path: '/ruleDetail/', exact: true, name: 'Rule Details', component: RuleDetail },
+  { path: '/ruleDetail?ruleId=:id', exact: true, name: 'Rule Details', component: RuleDetail },
   { path: '/metatag', name: 'Metatag', component: MetaTagList },
   { path: '/metatagForm', name: 'Metatag', component: MetatagForm },
   { path: '/metatagEditForm', name: 'Metatag', component: MetaTagEditForm },
