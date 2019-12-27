@@ -3,16 +3,11 @@ import PropTypes from 'prop-types';
 
 import {
     Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
     Col,
     Form,
     FormGroup,
     Input,
     Label,
-    Row,
 } from 'reactstrap';
 
 
@@ -32,55 +27,43 @@ class ScripttagForm extends Component {
             visible, onCancel, onSave, scripttag, action, onChange
         } = this.props;
         return (
-
-            <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" md="9" lg="6">
-                        <Card>
-                            <CardHeader>
-                                <strong>Add New Script-Tag</strong>
-                            </CardHeader>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">Rule</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            <Input type="select" name="rule" id="rule">
-                                                <option>Airport Detail</option>
-                                            </Input>
-                                        </Col>
-                                    </FormGroup>
-
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">Type</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            <Input type="select" name="type" id="type">
-                                                <option>Javascript</option>
-                                            </Input>
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">Source</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            <Input type="text" id="content" name="content" placeholder="Source" />
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
-                            </CardBody>
-                            <CardFooter>
-                                <Button type="submit" size="md" color="primary" style={{ marginRight: "0.4em" }}><i className="fa fa-dot-circle-o"></i> Submit</Button>
-                                <Button type="button" size="md" color="secondary" onClick={this.handlePreview}><i className="fa fa-eye"></i> Preview</Button>
-                            </CardFooter>
-                        </Card>
-                    </Col>
-                </Row>
-            </div>
+            <Modal isOpen={visible}>
+                <ModalHeader>{action} Script-Tag</ModalHeader>
+                <ModalBody>
+                    <Form className="form-horizontal">
+                        <FormGroup row>
+                            <Col md="3">
+                                <Label htmlFor="text-input">Type</Label>
+                            </Col>
+                            <Col xs="12" md="9">
+                                {scripttag !== undefined ? (<Input type="hidden" id="id" name="id" defaultValue={scripttag !== undefined ? scripttag.id : ""} onChange={onChange.bind(this, 'id')} />) : ""}
+                                <Input type="select" name="type" id="type">
+                                    <option>Javascript</option>
+                                </Input>
+                            </Col>
+                        </FormGroup>
+                        <FormGroup row>
+                            <Col md="3">
+                                <Label htmlFor="text-input">Source</Label>
+                            </Col>
+                            <Col xs="12" md="9">
+                                <Input
+                                    type="text"
+                                    id="source"
+                                    name="source"
+                                    placeholder="Source"
+                                    defaultValue={scripttag !== undefined ? scripttag.source : ""}
+                                    onChange={onChange.bind(this, 'source')}
+                                />
+                            </Col>
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="warning" onClick={onSave}>Save</Button>{' '}
+                    <Button color="secondary" onClick={onCancel}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
         );
     }
 }
