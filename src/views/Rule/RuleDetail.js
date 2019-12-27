@@ -75,6 +75,7 @@ class RuleDetail extends Component {
             scriptTagFormVisible: false,
             titleTagFormVisible: false,
             ruleIdParam: 0,
+            rules: [],
         };
         this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -88,11 +89,20 @@ class RuleDetail extends Component {
         this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
     }
     componentDidMount() {
-        //const query = parseQuery((window.location || {}).search || '');
-
-        const { ruleId } = this.state;
-
-
+        const query = parseQuery((window.location || {}).search || '');
+        const { ruleId } = query || {};
+                 
+        const { rules } = this.state;
+        axios.get(this.state.URL_API + `/${ruleId}`)
+            .then((res) => {
+                const rulesdata = res.data;
+                
+                
+                this.setState({ rules: [...rules, rulesdata] });
+              
+            }).catch((error) => {
+                //TODO :
+            });
     }
 
     toggle() {
@@ -195,30 +205,18 @@ class RuleDetail extends Component {
         this.setState({ titleTagFormVisible: false });
     }
     render() {
-        const query = parseQuery((window.location || {}).search || '');
-        const { ruleId } = query || {};
-
-        axios.get(this.state.URL_API + `/${ruleId}`)
-            .then((res) => {
-                const rulesdata = res.data;
-                console.log(rulesdata, "rules");
-                //console.log(ruleId,"rules id");
-                this.setState({ rules, rulesdata });
-            }).catch((error) => {
-                //this.toggleWarningAPI(error.message)
-            });
-
-        //const { data } = this.props.location;
+        
+        
         const { rules } = this.state;
         
         return (
             <div className="animated fadeIn">
-                 
-                        <Row>
+                  {rules.map((rule, index) =>  
+                        <Row key={index}>
                             <Col xs="12" md="9" lg="6">
                                 <Card>
                                     <CardHeader>
-                                        <strong>Detail Rule ID {rules.id}</strong>
+                                        <strong>Detail Rule ID {rule.id}</strong>
                                     </CardHeader>
                                     <CardBody>
                                         <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
@@ -227,7 +225,7 @@ class RuleDetail extends Component {
                                                     <Label htmlFor="text-input">Name</Label>
                                                 </Col>
                                                 <Col xs="12" md="9">
-                                                    {rules.name}
+                                                    {rule.name}
                                                 </Col>
                                             </FormGroup>
                                             <FormGroup row>
@@ -235,7 +233,7 @@ class RuleDetail extends Component {
                                                     <Label htmlFor="text-input">URL Pattern</Label>
                                                 </Col>
                                                 <Col xs="12" md="9">
-                                                    {rules.url_pattern}
+                                                    {rule.url_pattern}
                                                 </Col>
                                             </FormGroup>
 
@@ -252,8 +250,8 @@ class RuleDetail extends Component {
                                 </Card>
                             </Col>
                         </Row>
-                   
-
+                   )}
+                        
 
                 <Row>
                     <Col>
