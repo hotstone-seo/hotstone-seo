@@ -24,7 +24,6 @@ import ScriptTagForm from '../Scripttag/ScripttagForm';
 import TitleTagForm from '../Titletag/TitletagForm';
 
 import axios from 'axios';
-import queryString from 'query-string';
 
 export const parseQuery = (subject) => {
   const results = {};
@@ -37,7 +36,7 @@ export const parseQuery = (subject) => {
   }
   return results;
 };
-
+ 
 
 class RuleDetail extends Component {
     constructor(props) {
@@ -87,18 +86,6 @@ class RuleDetail extends Component {
         this.handleCancelAddScriptTag = this.handleCancelAddScriptTag.bind(this);
         this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
     }
-    getQueryStringParams = query => {
-        return query
-            ? (/^[?#]/.test(query) ? query.slice(1) : query)
-                .split('&')
-                .reduce((params, param) => {
-                        let [key, value] = param.split('=');
-                        params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
-                        return params;
-                    }, {}
-                )
-            : {}
-    };
     componentDidMount() {
         /*axios.get(this.state.URL_API)
             .then((res) => {
@@ -107,9 +94,6 @@ class RuleDetail extends Component {
             }).catch((error) => {
                 //this.toggleWarningAPI(error.message)
             });*/
-            //console.log(this.props.location.search,"search")
-            const values = queryString.parse(this.props.location.search)
-            console.log(values,"hasill")
     }
 
     toggle() {
@@ -212,16 +196,9 @@ class RuleDetail extends Component {
         this.setState({ titleTagFormVisible: false });
     }
     render() {
-        console.log(this.props.location, 'propsloc')
-        const query = this.getQueryStringParams((this.props.location || {}).search || '');
+        const query = parseQuery((window.location || {}).search || '');
         console.log(query,"query");
-        const {ruleId } = query || {};
 
-        //const search = this.props.location.search; // could be '?foo=bar'
-        //const params = new URLSearchParams(search);
-        //const ruleId = params.get('ruleId'); // bar
-
-        console.log(ruleId,"ruleId");
         const { data } = this.props.location;
     
         return (
