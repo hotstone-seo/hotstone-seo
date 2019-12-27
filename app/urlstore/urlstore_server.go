@@ -1,11 +1,10 @@
-package task
+package urlstore
 
 import (
 	"context"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
-	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"go.uber.org/dig"
 )
 
@@ -14,13 +13,13 @@ type URLStoreServer interface {
 	FullSync() error
 	Sync() error
 
-	Match(url string) (int, urlstore.VarMap)
+	Match(url string) (int, VarMap)
 }
 
 func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
 	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,
-		urlStore:            urlstore.InitURLStore(),
+		urlStore:            InitURLStore(),
 		latestVersion:       0,
 	}
 }
@@ -29,7 +28,7 @@ type URLStoreServerImpl struct {
 	dig.In
 	URLStoreSyncService service.URLStoreSyncService
 
-	urlStore      urlstore.URLStore
+	urlStore      URLStore
 	latestVersion int
 }
 
@@ -44,7 +43,7 @@ func (s *URLStoreServerImpl) FullSync() error {
 		return nil
 	}
 
-	newURLStore := urlstore.InitURLStore()
+	newURLStore := InitURLStore()
 	if err = s.buildURLStore(newURLStore, list); err != nil {
 		return err
 	}
@@ -70,7 +69,7 @@ func (s *URLStoreServerImpl) Sync() error {
 	}
 
 	if s.latestVersion != 0 && latestVersionSync == 0 {
-		s.urlStore = urlstore.InitURLStore()
+		s.urlStore = InitURLStore()
 		s.latestVersion = int(latestVersionSync)
 		return nil
 	}
@@ -95,11 +94,11 @@ func (s *URLStoreServerImpl) Sync() error {
 	return nil
 }
 
-func (s *URLStoreServerImpl) Match(url string) (int, urlstore.VarMap) {
+func (s *URLStoreServerImpl) Match(url string) (int, VarMap) {
 	return s.urlStore.Get(url)
 }
 
-func (s *URLStoreServerImpl) buildURLStore(urlStore urlstore.URLStore, listURLStoreSync []*repository.URLStoreSync) error {
+func (s *URLStoreServerImpl) buildURLStore(urlStore URLStore, listURLStoreSync []*repository.URLStoreSync) error {
 
 	for _, urlStoreSync := range listURLStoreSync {
 		switch urlStoreSync.Operation {

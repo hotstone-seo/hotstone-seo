@@ -1,4 +1,4 @@
-package task
+package urlstore
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-server/app/repository"
-	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/hotstone-seo/hotstone-server/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/xorcare/pointer"
@@ -30,7 +29,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 	urlStoreServer := &URLStoreServerImpl{
 		URLStoreSyncService: urlStoreSyncSvcMock,
-		urlStore:            urlstore.InitURLStore(),
+		urlStore:            InitURLStore(),
 		latestVersion:       -1,
 	}
 

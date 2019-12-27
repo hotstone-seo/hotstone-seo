@@ -5,7 +5,7 @@ package main
 import (
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
-	"github.com/hotstone-seo/hotstone-server/app/task"
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/hotstone-seo/hotstone-server/typical"
 )
 
@@ -22,5 +22,5 @@ func init() {
 	typical.Descriptor.Constructors.Append(service.NewRuleService)
 	typical.Descriptor.Constructors.Append(service.NewTagService)
 	typical.Descriptor.Constructors.Append(service.NewURLStoreSyncService)
-	typical.Descriptor.Constructors.Append(task.NewURLStoreServer)
+	typical.Descriptor.Constructors.Append(urlstore.NewURLStoreServer)
 }

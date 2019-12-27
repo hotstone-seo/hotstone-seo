@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/hotstone-seo/hotstone-server/app/config"
 	"github.com/hotstone-seo/hotstone-server/app/task"
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/typical-go/typical-go/pkg/typcore"
 )
 
@@ -14,7 +15,7 @@ func Module() interface{} {
 type module struct{}
 
 func (*module) Action() interface{} {
-	return func(s server, urlStoreServer task.URLStoreServer) error {
+	return func(s server, urlStoreServer urlstore.URLStoreServer) error {
 		if err := task.StartScheduler(urlStoreServer.Sync); err != nil {
 			return err
 		}
