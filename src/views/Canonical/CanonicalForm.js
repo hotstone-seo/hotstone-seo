@@ -72,16 +72,6 @@ class CanonicalForm extends Component {
                 />
               </Col>
             </FormGroup>
-            <FormGroup row>
-              <Col md="3">
-                <Label htmlFor="text-input">Rule</Label>
-              </Col>
-              <Col xs="12" md="9">
-                <Input type="select" name="rule_id" id="rule_id" onChange={onChange.bind(this, 'rule_id')}>
-                  <option value="1">xxxxx</option>
-                </Input>
-              </Col>
-            </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
