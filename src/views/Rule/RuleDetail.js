@@ -26,17 +26,17 @@ import TitleTagForm from '../Titletag/TitletagForm';
 import axios from 'axios';
 
 export const parseQuery = (subject) => {
-  const results = {};
-  const parser = /[^&?]+/g;
-  let match = parser.exec(subject);
-  while (match !== null) {
-    const parts = match[0].split('=');
-    results[parts[0]] = parts[1];
-    match = parser.exec(subject);
-  }
-  return results;
+    const results = {};
+    const parser = /[^&?]+/g;
+    let match = parser.exec(subject);
+    while (match !== null) {
+        const parts = match[0].split('=');
+        results[parts[0]] = parts[1];
+        match = parser.exec(subject);
+    }
+    return results;
 };
- 
+
 
 class RuleDetail extends Component {
     constructor(props) {
@@ -74,6 +74,7 @@ class RuleDetail extends Component {
             metaTagFormVisible: false,
             scriptTagFormVisible: false,
             titleTagFormVisible: false,
+            ruleIdParam: 0,
         };
         this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -87,13 +88,11 @@ class RuleDetail extends Component {
         this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
     }
     componentDidMount() {
-        /*axios.get(this.state.URL_API)
-            .then((res) => {
-                const rules = res.data;
-                this.setState({ rules });
-            }).catch((error) => {
-                //this.toggleWarningAPI(error.message)
-            });*/
+        //const query = parseQuery((window.location || {}).search || '');
+
+        const { ruleId } = this.state;
+
+
     }
 
     toggle() {
@@ -197,50 +196,64 @@ class RuleDetail extends Component {
     }
     render() {
         const query = parseQuery((window.location || {}).search || '');
-        console.log(query,"query");
+        const { ruleId } = query || {};
 
-        const { data } = this.props.location;
-    
+        axios.get(this.state.URL_API + `/${ruleId}`)
+            .then((res) => {
+                const rulesdata = res.data;
+                console.log(rulesdata, "rules");
+                //console.log(ruleId,"rules id");
+                this.setState({ rules, rulesdata });
+            }).catch((error) => {
+                //this.toggleWarningAPI(error.message)
+            });
+
+        //const { data } = this.props.location;
+        const { rules } = this.state;
+        
         return (
             <div className="animated fadeIn">
-                <Row>
-                    <Col xs="12" md="9" lg="6">
-                        <Card>
-                            <CardHeader>
-                                <strong>Detail Rule ID {data.id}</strong>
-                            </CardHeader>
-                            <CardBody>
-                                <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">Name</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            {data.name}
-                                        </Col>
-                                    </FormGroup>
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">URL Pattern</Label>
-                                        </Col>
-                                        <Col xs="12" md="9">
-                                            {data.url_pattern}
-                                        </Col>
-                                    </FormGroup>
+                 
+                        <Row>
+                            <Col xs="12" md="9" lg="6">
+                                <Card>
+                                    <CardHeader>
+                                        <strong>Detail Rule ID {rules.id}</strong>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                                            <FormGroup row>
+                                                <Col md="3">
+                                                    <Label htmlFor="text-input">Name</Label>
+                                                </Col>
+                                                <Col xs="12" md="9">
+                                                    {rules.name}
+                                                </Col>
+                                            </FormGroup>
+                                            <FormGroup row>
+                                                <Col md="3">
+                                                    <Label htmlFor="text-input">URL Pattern</Label>
+                                                </Col>
+                                                <Col xs="12" md="9">
+                                                    {rules.url_pattern}
+                                                </Col>
+                                            </FormGroup>
 
-                                    <FormGroup row>
-                                        <Col md="3">
-                                            <Label htmlFor="text-input">Data Source</Label>
+                                            <FormGroup row>
+                                                <Col md="3">
+                                                    <Label htmlFor="text-input">Data Source</Label>
+                                                </Col>
+                                                <Col xs="12" md="9">
+                                                    Airport
                                         </Col>
-                                        <Col xs="12" md="9">
-                                            Airport
-                                        </Col>
-                                    </FormGroup>
-                                </Form>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
+                                            </FormGroup>
+                                        </Form>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        </Row>
+                   
+
 
                 <Row>
                     <Col>
