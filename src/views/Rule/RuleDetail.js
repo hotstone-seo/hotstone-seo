@@ -84,6 +84,8 @@ class RuleDetail extends Component {
         this.handleAddNewTitle = this.handleAddNewTitle.bind(this);
         this.handleCancelAddCanonical = this.handleCancelAddCanonical.bind(this);
         this.handleCancelAddMetaTag = this.handleCancelAddMetaTag.bind(this);
+        this.handleCancelAddScriptTag = this.handleCancelAddScriptTag.bind(this);
+        this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
     }
     getQueryStringParams = query => {
         return query
@@ -206,7 +208,7 @@ class RuleDetail extends Component {
     handleCancelAddScriptTag() {
         this.setState({ scriptTagFormVisible: false });
     }
-    handleCancelTitleScriptTag() {
+    handleCancelAddTitleTag() {
         this.setState({ titleTagFormVisible: false });
     }
     render() {
