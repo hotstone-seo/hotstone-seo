@@ -22,8 +22,5 @@ var Descriptor = &typcore.ProjectDescriptor{
 		typredis.Module(),
 		typpostgres.Module("hotstone"),
 	},
-	// ReadmeGenerator: typreadme.Generator{},
-	Releaser: &typrls.Releaser{
-		Targets: []typrls.Target{"linux/amd64", "darwin/amd64"},
-	},
+	Releaser: typrls.New(),
 }
