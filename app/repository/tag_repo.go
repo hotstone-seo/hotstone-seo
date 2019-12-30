@@ -23,7 +23,7 @@ type Tag struct {
 type TagRepo interface {
 	Find(context.Context, int64) (*Tag, error)
 	List(context.Context) ([]*Tag, error)
-	ListByRuleAndLocale(ctx context.Context, ruleID, localeID string) ([]*Tag, error)
+	ListByRuleAndLocale(ctx context.Context, ruleID, localeID int64) ([]*Tag, error)
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Tag) error

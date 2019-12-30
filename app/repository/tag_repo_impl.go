@@ -58,9 +58,25 @@ func (r *TagRepoImpl) List(ctx context.Context) (list []*Tag, err error) {
 }
 
 // ListByRuleAndLocale to return list of tags based on rule and locale
-func (r *TagRepoImpl) ListByRuleAndLocale(ctx context.Context, ruleID, localeID string) ([]*Tag, error) {
-	// TODO: Create implementation
-	return nil, nil
+func (r *TagRepoImpl) ListByRuleAndLocale(ctx context.Context, ruleID, localeID int64) (list []*Tag, err error) {
+	var rows *sql.Rows
+	builder := sq.
+		Select("id", "rule_id", "locale_id", "type", "attributes", "value", "updated_at", "created_at").
+		From("tags").
+		Where(sq.Eq{"rule_id": ruleID, "locale_id": localeID}).
+		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+	if rows, err = builder.QueryContext(ctx); err != nil {
+		return
+	}
+	list = make([]*Tag, 0)
+	for rows.Next() {
+		var e Tag
+		if err = rows.Scan(&e.ID, &e.RuleID, &e.LocaleID, &e.Type, &e.Attributes, &e.Value, &e.UpdatedAt, &e.CreatedAt); err != nil {
+			return
+		}
+		list = append(list, &e)
+	}
+	return
 }
 
 // Insert tag
