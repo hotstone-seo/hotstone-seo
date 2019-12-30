@@ -1,9 +1,14 @@
-import { ButtonDropdowns, ButtonGroups, Buttons, BrandButtons } from './Buttons';
-import Dashboard from './Dashboard';
-import { CoreUIIcons, Flags, FontAwesome, SimpleLineIcons } from './Icons';
-import { Alerts, Badges, Modals } from './Notifications';
-import { Login } from './Pages';
-import { Colors, Typography } from './Theme';
+import {
+  ButtonDropdowns,
+  ButtonGroups,
+  Buttons,
+  BrandButtons
+} from "./Buttons";
+import Dashboard from "./Dashboard";
+import { CoreUIIcons, Flags, FontAwesome, SimpleLineIcons } from "./Icons";
+import { Alerts, Badges, Modals } from "./Notifications";
+import { Login } from "./Pages";
+import { Colors, Typography } from "./Theme";
 
 export {
   Badges,
@@ -41,6 +46,5 @@ export {
   Carousels,
   Cards,
   Breadcrumbs,
-  Paginations,
+  Paginations
 };
-

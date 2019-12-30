@@ -1,41 +1,33 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node
 };
 
 const defaultProps = {};
 
 class DefaultAside extends Component {
-
   constructor(props) {
     super(props);
-
     this.toggle = this.toggle.bind(this);
     this.state = {
-      activeTab: '1',
+      activeTab: "1"
     };
   }
 
   toggle(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
-        activeTab: tab,
+        activeTab: tab
       });
     }
   }
 
   render() {
-
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-
-    return (
-      <React.Fragment>
-         
-      </React.Fragment>
-    );
+    return <React.Fragment></React.Fragment>;
   }
 }
 
