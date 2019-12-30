@@ -43,8 +43,6 @@ Extensions:
 Settings (`cmd`+`shift`+`p`, type "Preferences:Open Settings (JSON)"):
 ```json
 {
-    // Your current settings
-
     "[javascriptreact]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode"
