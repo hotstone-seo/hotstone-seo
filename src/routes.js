@@ -1,13 +1,7 @@
 import React from 'react';
 import MetatagForm from './views/Metatag/MetatagForm';
- 
-const BrandButtons = React.lazy(() => import('./views/Buttons/BrandButtons'));
-const ButtonDropdowns = React.lazy(() => import('./views/Buttons/ButtonDropdowns'));
-const ButtonGroups = React.lazy(() => import('./views/Buttons/ButtonGroups'));
-const Buttons = React.lazy(() => import('./views/Buttons/Buttons'));
+
 const Dashboard = React.lazy(() => import('./views/Dashboard'));
-const CoreUIIcons = React.lazy(() => import('./views/Icons/CoreUIIcons'));
-const SimpleLineIcons = React.lazy(() => import('./views/Icons/SimpleLineIcons'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 const RuleList = React.lazy(() => import('./views/Rule/RuleList'));
@@ -33,14 +27,6 @@ const LanguageForm = React.lazy(() => import('./views/Language/LanguageForm'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
-  { path: '/buttons', exact: true, name: 'Buttons', component: Buttons },
-  { path: '/buttons/buttons', name: 'Buttons', component: Buttons },
-  { path: '/buttons/button-dropdowns', name: 'Button Dropdowns', component: ButtonDropdowns },
-  { path: '/buttons/button-groups', name: 'Button Groups', component: ButtonGroups },
-  { path: '/buttons/brand-buttons', name: 'Brand Buttons', component: BrandButtons },
-  { path: '/icons', exact: true, name: 'Icons', component: CoreUIIcons },
-  { path: '/icons/coreui-icons', name: 'CoreUI Icons', component: CoreUIIcons },
-  { path: '/icons/simple-line-icons', name: 'Simple Line Icons', component: SimpleLineIcons },
   { path: '/users', exact: true,  name: 'Users', component: Users },
   { path: '/users/:id', exact: true, name: 'User Details', component: User },
   { path: '/rule', name: 'Rules', component: RuleList },
