@@ -6,5 +6,5 @@ type MatchRuleRequest struct {
 }
 
 type RetrieveDataRequest struct {
-	RuleID int64 `json:"rule_id"`
+	RuleID int64 `json:"ruleID"`
 }

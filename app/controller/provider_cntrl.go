@@ -18,6 +18,8 @@ type ProviderCntrl struct {
 // Route to define API Route
 func (c *ProviderCntrl) Route(e *echo.Echo) {
 	e.POST("provider/matchRule", c.MatchRule)
+	e.POST("provider/retrieveData", c.RetrieveData)
+	e.GET("provider/tags", c.Tags)
 }
 
 // MatchRule to match rule
@@ -47,4 +49,13 @@ func (c *ProviderCntrl) RetrieveData(ctx echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, data)
+}
+
+func (c *ProviderCntrl) Tags(ctx echo.Context) (err error) {
+	var tags []*repository.Tag
+	ruleID := ctx.QueryParam("ruleID")
+	if tags, err = c.ProviderService.Tags(ruleID); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, tags)
 }

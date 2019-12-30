@@ -1,6 +1,8 @@
 package service
 
 import (
+	"encoding/json"
+
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"go.uber.org/dig"
 )
@@ -9,6 +11,7 @@ import (
 type ProviderService interface {
 	MatchRule(MatchRuleRequest) (*repository.Rule, error)
 	RetrieveData(RetrieveDataRequest) (interface{}, error)
+	Tags(string) ([]*repository.Tag, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
@@ -40,6 +43,21 @@ func (*ProviderServiceImpl) RetrieveData(req RetrieveDataRequest) (data interfac
 	}{
 		Name:     "CGK",
 		Province: "Banten",
+	}
+	return
+}
+
+func (*ProviderServiceImpl) Tags(ruleID string) (tags []*repository.Tag, err error) {
+	attr := []map[string]string{
+		map[string]string{
+			"type":    "description",
+			"content": "Page Description",
+		},
+	}
+	attrByte, _ := json.Marshal(attr)
+	tags = []*repository.Tag{
+		&repository.Tag{ID: 9999, Type: "title", Value: "Page Title"},
+		&repository.Tag{ID: 8888, Type: "meta", Attributes: attrByte},
 	}
 	return
 }

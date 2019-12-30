@@ -63,3 +63,18 @@ func (mr *MockProviderServiceMockRecorder) RetrieveData(arg0 interface{}) *gomoc
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveData", reflect.TypeOf((*MockProviderService)(nil).RetrieveData), arg0)
 }
+
+// Tags mocks base method
+func (m *MockProviderService) Tags(arg0 string) ([]*repository.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Tags", arg0)
+	ret0, _ := ret[0].([]*repository.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Tags indicates an expected call of Tags
+func (mr *MockProviderServiceMockRecorder) Tags(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tags", reflect.TypeOf((*MockProviderService)(nil).Tags), arg0)
+}
