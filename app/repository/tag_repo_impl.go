@@ -20,7 +20,7 @@ type TagRepoImpl struct {
 func (r *TagRepoImpl) Find(ctx context.Context, id int64) (e *Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("id", "type", "attributes", "value", "updated_at", "created_at").
+		Select("id", "rule_id", "locale_id", "type", "attributes", "value", "updated_at", "created_at").
 		From("tags").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
@@ -29,7 +29,7 @@ func (r *TagRepoImpl) Find(ctx context.Context, id int64) (e *Tag, err error) {
 	}
 	if rows.Next() {
 		e = new(Tag)
-		if err = rows.Scan(&e.ID, &e.Type, &e.Attributes, &e.Value, &e.UpdatedAt, &e.CreatedAt); err != nil {
+		if err = rows.Scan(&e.ID, &e.RuleID, &e.LocaleID, &e.Type, &e.Attributes, &e.Value, &e.UpdatedAt, &e.CreatedAt); err != nil {
 			return nil, err
 		}
 	}
@@ -40,7 +40,7 @@ func (r *TagRepoImpl) Find(ctx context.Context, id int64) (e *Tag, err error) {
 func (r *TagRepoImpl) List(ctx context.Context) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("id", "type", "attributes", "value", "updated_at", "created_at").
+		Select("id", "rule_id", "locale_id", "type", "attributes", "value", "updated_at", "created_at").
 		From("tags").
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
@@ -48,13 +48,19 @@ func (r *TagRepoImpl) List(ctx context.Context) (list []*Tag, err error) {
 	}
 	list = make([]*Tag, 0)
 	for rows.Next() {
-		var e0 Tag
-		if err = rows.Scan(&e0.ID, &e0.Type, &e0.Attributes, &e0.Value, &e0.UpdatedAt, &e0.CreatedAt); err != nil {
+		var e Tag
+		if err = rows.Scan(&e.ID, &e.RuleID, &e.LocaleID, &e.Type, &e.Attributes, &e.Value, &e.UpdatedAt, &e.CreatedAt); err != nil {
 			return
 		}
-		list = append(list, &e0)
+		list = append(list, &e)
 	}
 	return
+}
+
+// ListByRuleAndLocale to return list of tags based on rule and locale
+func (r *TagRepoImpl) ListByRuleAndLocale(ctx context.Context, ruleID, localeID string) ([]*Tag, error) {
+	// TODO: Create implementation
+	return nil, nil
 }
 
 // Insert tag

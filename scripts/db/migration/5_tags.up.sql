@@ -1,7 +1,9 @@
 CREATE TABLE tags (
     id serial PRIMARY KEY,
+    rule_id INTEGER NOT NULL,
+    locale_id INTEGER NOT NULL,
     "type" VARCHAR (255) NOT NULL,
-    attributes JSONB, 
+    attributes JSONB NOT NULL, 
     "value" VARCHAR (255) NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

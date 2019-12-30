@@ -10,6 +10,8 @@ import (
 // Tag represented  tag entity
 type Tag struct {
 	ID         int64      `json:"id"`
+	RuleID     int64      `json:"rule_id"`
+	LocaleID   int64      `json:"locale_id"`
 	Type       string     `json:"type"`
 	Attributes dbkit.JSON `json:"attributes"`
 	Value      string     `json:"value"`
@@ -21,6 +23,7 @@ type Tag struct {
 type TagRepo interface {
 	Find(context.Context, int64) (*Tag, error)
 	List(context.Context) ([]*Tag, error)
+	ListByRuleAndLocale(ctx context.Context, ruleID, localeID string) ([]*Tag, error)
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Tag) error

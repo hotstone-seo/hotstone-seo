@@ -11,7 +11,7 @@ import (
 type ProviderService interface {
 	MatchRule(MatchRuleRequest) (*repository.Rule, error)
 	RetrieveData(RetrieveDataRequest) (interface{}, error)
-	Tags(string) ([]*repository.Tag, error)
+	Tags(ruleID string, data interface{}) ([]*repository.Tag, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
@@ -47,7 +47,7 @@ func (*ProviderServiceImpl) RetrieveData(req RetrieveDataRequest) (data interfac
 	return
 }
 
-func (*ProviderServiceImpl) Tags(ruleID string) (tags []*repository.Tag, err error) {
+func (*ProviderServiceImpl) Tags(ruleID string, data interface{}) (tags []*repository.Tag, err error) {
 	attr := []map[string]string{
 		map[string]string{
 			"type":    "description",

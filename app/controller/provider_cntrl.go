@@ -54,7 +54,7 @@ func (c *ProviderCntrl) RetrieveData(ctx echo.Context) (err error) {
 func (c *ProviderCntrl) Tags(ctx echo.Context) (err error) {
 	var tags []*repository.Tag
 	ruleID := ctx.QueryParam("ruleID")
-	if tags, err = c.ProviderService.Tags(ruleID); err != nil {
+	if tags, err = c.ProviderService.Tags(ruleID, nil); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, tags)

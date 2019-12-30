@@ -6,3 +6,6 @@
 .env
 *.test
 *.out
+
+# MacOS
+.DS_Store
