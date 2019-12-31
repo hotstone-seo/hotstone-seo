@@ -37,8 +37,8 @@ npm start
 It's recommended to using [Visual Studio Code](https://code.visualstudio.com/) as editor for this project
 
 Extensions:
-- (Syntax Highlight)[https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel]
-- (Code Formatter)[https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode]
+- [Syntax Highlight](https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel)
+- [Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 Settings (`cmd`+`shift`+`p`, type "Preferences:Open Settings (JSON)"):
 ```json
