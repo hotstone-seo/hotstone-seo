@@ -20,6 +20,40 @@ function interpolate(tag, data) {
   return tag;
 }
 
+class RuleContext {
+  constructor(rule, apiCaller) {
+    this.rule = rule;
+    this.apiCaller = apiCaller;
+  }
+
+  async tags() {
+    try {
+      const { data } = await this.apiCaller.get('/provider/tags', { params: { rule_id: rule.id } });
+      return data;
+    } catch(e) {
+      console.error(e);
+      return [];
+    }
+  }
+}
+
+class HotStoneClient {
+  constructor(hostURL) {
+    this.apiCaller = axios.create({ baseURL: hostURL });
+  }
+
+  async match(path) {
+    try {
+      const { data } = await this.apiCaller.post('/provider/matchRule', { path });
+      return new RuleContext(data, this.apiCaller);
+    } catch(e) {
+      console.error(e);
+      // TODO: Either return an object to be used as "No Rule" context or throw another
+      // error
+    }
+  }
+}
+
 /**
  * A client that is used as the main building blocks for interacting with HotStone provider.
  * @typedef {Object} HotStoneClient
