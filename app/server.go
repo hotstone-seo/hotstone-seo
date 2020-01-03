@@ -30,6 +30,7 @@ func (s *server) Route() {
 	s.LocaleCntrl.Route(s.Echo)
 	s.DataSourceCntrl.Route(s.Echo)
 	s.TagCntrl.Route(s.Echo)
+	s.ProviderCntrl.Route(s.Echo)
 	s.CenterCntrl.Route(s.Echo)
 }
 
