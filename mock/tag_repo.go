@@ -64,6 +64,21 @@ func (mr *MockTagRepoMockRecorder) List(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTagRepo)(nil).List), arg0)
 }
 
+// ListByRuleAndLocale mocks base method
+func (m *MockTagRepo) ListByRuleAndLocale(ctx context.Context, ruleID, localeID int64) ([]*repository.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByRuleAndLocale", ctx, ruleID, localeID)
+	ret0, _ := ret[0].([]*repository.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByRuleAndLocale indicates an expected call of ListByRuleAndLocale
+func (mr *MockTagRepoMockRecorder) ListByRuleAndLocale(ctx, ruleID, localeID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByRuleAndLocale", reflect.TypeOf((*MockTagRepo)(nil).ListByRuleAndLocale), ctx, ruleID, localeID)
+}
+
 // Insert mocks base method
 func (m *MockTagRepo) Insert(arg0 context.Context, arg1 repository.Tag) (int64, error) {
 	m.ctrl.T.Helper()
