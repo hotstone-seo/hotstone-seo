@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"go.uber.org/dig"
@@ -9,7 +10,7 @@ import (
 
 // ProviderService contain logic for ProviderController
 type ProviderService interface {
-	MatchRule(MatchRuleRequest) (*repository.Rule, error)
+	MatchRule(Matcher, MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(RetrieveDataRequest) (interface{}, error)
 	Tags(ruleID string, data interface{}) ([]*repository.Tag, error)
 }
@@ -19,21 +20,24 @@ type ProviderServiceImpl struct {
 	dig.In
 }
 
+type Matcher interface {
+	Match(url string) (int, map[string]string)
+}
+
 // NewProviderService return new instance of ProviderService
 func NewProviderService() ProviderService {
 	return &ProviderServiceImpl{}
 }
 
 // MatchRule to match rule
-func (*ProviderServiceImpl) MatchRule(req MatchRuleRequest) (rule *repository.Rule, err error) {
-	dataSourceID := int64(88888)
-	rule = &repository.Rule{
-		ID:           999999,
-		Name:         "sample-rule",
-		UrlPattern:   "some-url-pattern",
-		DataSourceID: &dataSourceID,
+func (*ProviderServiceImpl) MatchRule(matcher Matcher, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
+	ruleID, pathParam := matcher.Match(req.Path)
+	if ruleID == -1 {
+		return nil, errors.New("No rule match")
 	}
-	return
+
+	resp = &MatchRuleResponse{RuleID: int64(ruleID), PathParam: pathParam}
+	return resp, nil
 }
 
 func (*ProviderServiceImpl) RetrieveData(req RetrieveDataRequest) (data interface{}, err error) {
