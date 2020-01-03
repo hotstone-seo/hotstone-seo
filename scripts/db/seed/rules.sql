@@ -3,3 +3,5 @@ VALUES
     (1, NULL, 'Airport Rule', '/airports'),
     (2, NULL, 'Hotel Rule', '/hotels'),
     (3, NULL, 'Event Rule', '/events');
+
+SELECT setval('rules_id_seq', (SELECT MAX(id) FROM rules));
