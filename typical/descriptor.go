@@ -6,6 +6,7 @@ import (
 	"github.com/typical-go/typical-go/pkg/typrls"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
+	"github.com/typical-go/typical-rest-server/pkg/typreadme"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
 	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
@@ -17,10 +18,12 @@ var Descriptor = &typcore.ProjectDescriptor{
 	Package:   "github.com/hotstone-seo/hotstone-server",
 	AppModule: app.Module(),
 	Modules: []interface{}{
-		typdocker.Module(),
-		typserver.Module(),
-		typredis.Module(),
-		typpostgres.Module("hotstone"),
+		typdocker.New(),
+		typreadme.New(),
+
+		typserver.New(),
+		typredis.New(),
+		typpostgres.New().WithDBName("hotstone"),
 	},
 	Releaser: typrls.New(),
 }

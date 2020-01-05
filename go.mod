@@ -11,8 +11,8 @@ require (
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
-	github.com/typical-go/typical-go v0.9.22
-	github.com/typical-go/typical-rest-server v0.8.14
+	github.com/typical-go/typical-go v0.9.23
+	github.com/typical-go/typical-rest-server v0.8.15
 	github.com/xorcare/pointer v1.0.0
 	go.uber.org/dig v1.8.0
 	gopkg.in/go-playground/validator.v9 v9.30.2

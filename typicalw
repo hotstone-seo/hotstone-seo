@@ -10,10 +10,10 @@ else
 	CHECKSUM_UPDATED=$([ "$CHECKSUM_DATA" == "$(cat .typical-tmp/checksum )" ] ; echo $?)
 fi
 
-if [ "$CHECKSUM_UPDATED" == "1" ] || ! [[ -f bin/hotstone-server-buildtool ]] ; then 
+if [ "$CHECKSUM_UPDATED" == "1" ] || ! [[ -f bin/hotstone-seo-buildtool ]] ; then 
 	echo $CHECKSUM_DATA > .typical-tmp/checksum
 	echo "Compile Typical-Build"
-	go build -o bin/hotstone-server-buildtool ./cmd/hotstone-server-buildtool
+	go build -o bin/hotstone-seo-buildtool ./cmd/hotstone-seo-buildtool
 fi
 
-./bin/hotstone-server-buildtool $@
+./bin/hotstone-seo-buildtool $@
