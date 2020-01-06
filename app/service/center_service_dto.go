@@ -16,6 +16,7 @@ type AddTitleTagRequest struct {
 // AddCanonicalTagRequest is request model for addCanonicalTag method
 type AddCanonicalTagRequest struct {
 	Canonical string `json:"canonical"`
+	LocaleID  int64  `json:"locale_id"`
 	RuleID    int64  `json:"rule_id"`
 }
 

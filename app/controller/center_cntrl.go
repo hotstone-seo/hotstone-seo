@@ -60,18 +60,19 @@ func (c *CenterCntrl) AddTitleTag(ce echo.Context) (err error) {
 }
 
 // AddCanoncicalTag add canonical tag
-func (c *CenterCntrl) AddCanonicalTag(ctx echo.Context) (err error) {
+func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
 	var (
 		req            service.AddCanonicalTagRequest
 		lastInsertedID int64
+		ctx            = ce.Request().Context()
 	)
-	if err = ctx.Bind(&req); err != nil {
+	if err = ce.Bind(&req); err != nil {
 		return
 	}
-	if lastInsertedID, err = c.CenterService.AddCanonicalTag(req); err != nil {
+	if lastInsertedID, err = c.CenterService.AddCanonicalTag(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ctx.JSON(http.StatusCreated, GeneralResponse{
+	return ce.JSON(http.StatusCreated, GeneralResponse{
 		Message: fmt.Sprintf("Success insert new canonical tag #%d", lastInsertedID),
 	})
 }
