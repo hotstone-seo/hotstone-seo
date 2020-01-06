@@ -16,6 +16,7 @@ type module struct{}
 
 func (*module) Action() interface{} {
 	return func(s server, urlStoreServer urlstore.URLStoreServer) error {
+		// TODO: using task manager instead
 		if err := task.StartScheduler(urlStoreServer.Sync); err != nil {
 			return err
 		}
