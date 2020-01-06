@@ -78,18 +78,19 @@ func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
 }
 
 // AddScriptTag add script tag
-func (c *CenterCntrl) AddScriptTag(ctx echo.Context) (err error) {
+func (c *CenterCntrl) AddScriptTag(ce echo.Context) (err error) {
 	var (
 		req            service.AddScriptTagRequest
 		lastInsertedID int64
+		ctx            = ce.Request().Context()
 	)
-	if err = ctx.Bind(&req); err != nil {
+	if err = ce.Bind(&req); err != nil {
 		return
 	}
-	if lastInsertedID, err = c.CenterService.AddScriptTag(req); err != nil {
+	if lastInsertedID, err = c.CenterService.AddScriptTag(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ctx.JSON(http.StatusCreated, GeneralResponse{
+	return ce.JSON(http.StatusCreated, GeneralResponse{
 		Message: fmt.Sprintf("Success insert new canonical tag #%d", lastInsertedID),
 	})
 }
