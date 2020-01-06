@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"net/http"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
@@ -14,13 +14,14 @@ import (
 type ProviderService interface {
 	MatchRule(Matcher, MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
-	Tags(ruleID string, data interface{}) ([]*repository.Tag, error)
+	Tags(context.Context, ProvideTagsRequest) ([]*InterpolatedTag, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
 type ProviderServiceImpl struct {
 	dig.In
 	repository.DataSourceRepo
+	repository.TagRepo
 }
 
 type Matcher interface {
@@ -51,17 +52,34 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 	return http.Get(dataSource.Url)
 }
 
-func (*ProviderServiceImpl) Tags(ruleID string, data interface{}) (tags []*repository.Tag, err error) {
-	attr := []map[string]string{
-		map[string]string{
-			"type":    "description",
-			"content": "Page Description",
-		},
+func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) (interpolatedTags []*InterpolatedTag, err error) {
+	var (
+		tags []*repository.Tag
+	)
+	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, req.RuleID, req.LocaleID); err != nil {
+		return
 	}
-	attrByte, _ := json.Marshal(attr)
-	tags = []*repository.Tag{
-		&repository.Tag{ID: 9999, Type: "title", Value: "Page Title"},
-		&repository.Tag{ID: 8888, Type: "meta", Attributes: attrByte},
+	for _, tag := range tags {
+		interpolatedTags = append(interpolatedTags, &InterpolatedTag{
+			ID:         tag.ID,
+			RuleID:     tag.RuleID,
+			LocaleID:   tag.LocaleID,
+			Type:       tag.Type,
+			Attributes: interpolateAttribute(tag.Attributes, req.Data),
+			Value:      interpolateValue(tag.Value, req.Data),
+			UpdatedAt:  tag.UpdatedAt,
+			CreatedAt:  tag.CreatedAt,
+		})
 	}
 	return
 }
+
+func interpolateAttribute(ori dbkit.JSON, data interface{}) dbkit.JSON {
+	return ori
+}
+
+func interpolateValue(ori string, data interface{}) string {
+	return ori
+}
+
+type InterpolatedTag repository.Tag

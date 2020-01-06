@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/hotstone-seo/hotstone-server/app/service"
 	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/labstack/echo"
@@ -25,7 +24,7 @@ func (c *ProviderCntrl) Route(e *echo.Echo) {
 }
 
 // MatchRule to match rule
-func (c *ProviderCntrl) MatchRule(ctx echo.Context) (err error) {
+func (p *ProviderCntrl) MatchRule(ctx echo.Context) (err error) {
 	var (
 		req  service.MatchRuleRequest
 		resp *service.MatchRuleResponse
@@ -33,31 +32,36 @@ func (c *ProviderCntrl) MatchRule(ctx echo.Context) (err error) {
 	if err = ctx.Bind(&req); err != nil {
 		return err
 	}
-	if resp, err = c.ProviderService.MatchRule(c.URLStoreServer, req); err != nil {
+	if resp, err = p.ProviderService.MatchRule(p.URLStoreServer, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, resp)
 }
 
-func (c *ProviderCntrl) RetrieveData(ctx echo.Context) (err error) {
+func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	var (
 		req  service.RetrieveDataRequest
 		data interface{}
+		ctx  = c.Request().Context()
 	)
-	if err = ctx.Bind(&req); err != nil {
+	if err = c.Bind(&req); err != nil {
 		return err
 	}
-	if data, err = c.ProviderService.RetrieveData(req); err != nil {
+	if data, err = p.ProviderService.RetrieveData(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, data)
+	return c.JSON(http.StatusOK, data)
 }
 
-func (c *ProviderCntrl) Tags(ctx echo.Context) (err error) {
-	var tags []*repository.Tag
-	ruleID := ctx.QueryParam("ruleID")
-	if tags, err = c.ProviderService.Tags(ruleID, nil); err != nil {
+func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
+	var (
+		tags []*service.InterpolatedTag
+		ctx  = c.Request().Context()
+	)
+	if tags, err = p.ProviderService.Tags(ctx, service.ProvideTagsRequest{
+		RuleID: 0, // TODO: get from body
+	}); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, tags)
+	return c.JSON(http.StatusOK, tags)
 }

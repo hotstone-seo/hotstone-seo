@@ -64,19 +64,19 @@ func (mr *MockTagRepoMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagRepo)(nil).Find), arg0)
 }
 
-// ListByRuleAndLocale mocks base method
-func (m *MockTagRepo) ListByRuleAndLocale(ctx context.Context, ruleID, localeID int64) ([]*repository.Tag, error) {
+// FindByRuleAndLocale mocks base method
+func (m *MockTagRepo) FindByRuleAndLocale(ctx context.Context, ruleID, localeID int64) ([]*repository.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListByRuleAndLocale", ctx, ruleID, localeID)
+	ret := m.ctrl.Call(m, "FindByRuleAndLocale", ctx, ruleID, localeID)
 	ret0, _ := ret[0].([]*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListByRuleAndLocale indicates an expected call of ListByRuleAndLocale
-func (mr *MockTagRepoMockRecorder) ListByRuleAndLocale(ctx, ruleID, localeID interface{}) *gomock.Call {
+// FindByRuleAndLocale indicates an expected call of FindByRuleAndLocale
+func (mr *MockTagRepoMockRecorder) FindByRuleAndLocale(ctx, ruleID, localeID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByRuleAndLocale", reflect.TypeOf((*MockTagRepo)(nil).ListByRuleAndLocale), ctx, ruleID, localeID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByRuleAndLocale", reflect.TypeOf((*MockTagRepo)(nil).FindByRuleAndLocale), ctx, ruleID, localeID)
 }
 
 // Insert mocks base method

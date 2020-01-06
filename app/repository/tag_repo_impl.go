@@ -58,7 +58,7 @@ func (r *TagRepoImpl) Find(ctx context.Context) (list []*Tag, err error) {
 }
 
 // ListByRuleAndLocale to return list of tags based on rule and locale
-func (r *TagRepoImpl) ListByRuleAndLocale(ctx context.Context, ruleID, localeID int64) (list []*Tag, err error) {
+func (r *TagRepoImpl) FindByRuleAndLocale(ctx context.Context, ruleID, localeID int64) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "rule_id", "locale_id", "type", "attributes", "value", "updated_at", "created_at").

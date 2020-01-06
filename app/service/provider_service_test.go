@@ -66,3 +66,21 @@ func TestProvider_RetrieveData(t *testing.T) {
 		require.Nil(t, resp)
 	})
 }
+
+func TestProvider_Tags(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	tagRepo := mock.NewMockTagRepo(ctrl)
+	svc := service.ProviderServiceImpl{TagRepo: tagRepo}
+	ctx := context.Background()
+	t.Run("WHEN can't find tag by rule and locale", func(t *testing.T) {
+		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), int64(888)).
+			Return(nil, errors.New("some-error"))
+		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
+			RuleID:   999,
+			LocaleID: 888,
+		})
+		require.EqualError(t, err, "some-error")
+		require.Nil(t, tags)
+	})
+}
