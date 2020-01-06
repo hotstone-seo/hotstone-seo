@@ -49,12 +49,12 @@ class TitletagForm extends Component {
                 <ModalHeader>{action} Title-Tag</ModalHeader>
                 <ModalBody>
                     <Form className="form-horizontal">
+                        {titletag !== undefined ? (<Input type="hidden" id="id" name="id" defaultValue={titletag !== undefined ? titletag.id : ""} onChange={onChange.bind(this, 'id')} />) : ""}
                         <FormGroup row>
                             <Col md="3">
                                 <Label htmlFor="text-input">Language</Label>
                             </Col>
                             <Col xs="12" md="9">
-                                {titletag !== undefined ? (<Input type="hidden" id="id" name="id" defaultValue={titletag !== undefined ? titletag.id : ""} onChange={onChange.bind(this, 'id')} />) : ""}
                                 <Input type="select" name="language" id="language">
                                     <option>ID</option>
                                 </Input>
