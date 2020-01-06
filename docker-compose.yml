@@ -7,25 +7,52 @@ services:
       POSTGRES: ${PG_USER:-postgres}
       POSTGRES_PASSWORD: ${PG_PASSWORD:-pgpass}
     volumes:
-    - postgres:/data/postgres
+      - postgres:/data/postgres
     ports:
-    - ${PG_PORT:-5432}:5432
+      - ${PG_PORT:-5432}:5432
     networks:
-    - postgres
+      - postgres
     restart: unless-stopped
   redis:
     image: redis:4.0.5-alpine
     command: redis-server --requirepass "${REDIS_PASSOWORD:-redispass}"
     volumes:
-    - redis:/data
+      - redis:/data
     ports:
-    - 6379:6379
+      - 6379:6379
     networks:
-    - redis
+      - redis
+
+  prometheus:
+    image: "prom/prometheus"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./metric/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - net-metrics
+
+  grafana:
+    image: "grafana/grafana"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=pass # user='admin' pass='pass'
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+    # volumes:
+    #   - "$PWD/grafana-data:/var/lib/grafana"
+    ports:
+      - "3000:3000"
+    networks:
+      - net-metrics
+
 networks:
   postgres:
     driver: bridge
   redis: null
+  net-metrics:
+    driver: bridge
 volumes:
   postgres: null
   redis: null
