@@ -83,7 +83,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 		ctx := context.Background()
 		urlStoreSyncSvcMock.EXPECT().GetLatestVersion(ctx).Return(int64(2), nil) // latestVersion from DB = 2 (somehow some rows has been deleted)
-		urlStoreSyncSvcMock.EXPECT().List(ctx).Return(list1And2URLStoreSync, nil)
+		urlStoreSyncSvcMock.EXPECT().Find(ctx).Return(list1And2URLStoreSync, nil)
 
 		err := urlStoreServer.Sync()
 		require.NoError(t, err)
