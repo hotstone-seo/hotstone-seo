@@ -1,8 +1,10 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"go.uber.org/dig"
@@ -11,13 +13,14 @@ import (
 // ProviderService contain logic for ProviderController
 type ProviderService interface {
 	MatchRule(Matcher, MatchRuleRequest) (*MatchRuleResponse, error)
-	RetrieveData(RetrieveDataRequest) (interface{}, error)
+	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
 	Tags(ruleID string, data interface{}) ([]*repository.Tag, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
 type ProviderServiceImpl struct {
 	dig.In
+	repository.DataSourceRepo
 }
 
 type Matcher interface {
@@ -40,15 +43,12 @@ func (*ProviderServiceImpl) MatchRule(matcher Matcher, req MatchRuleRequest) (re
 	return resp, nil
 }
 
-func (*ProviderServiceImpl) RetrieveData(req RetrieveDataRequest) (data interface{}, err error) {
-	data = struct {
-		Name     string `json:"name"`
-		Province string `json:"province"`
-	}{
-		Name:     "CGK",
-		Province: "Banten",
+func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest) (resp *http.Response, err error) {
+	var dataSource *repository.DataSource
+	if dataSource, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
+		return
 	}
-	return
+	return http.Get(dataSource.Url)
 }
 
 func (*ProviderServiceImpl) Tags(ruleID string, data interface{}) (tags []*repository.Tag, err error) {

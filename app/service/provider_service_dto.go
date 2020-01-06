@@ -11,5 +11,5 @@ type MatchRuleResponse struct {
 }
 
 type RetrieveDataRequest struct {
-	RuleID int64 `json:"ruleID"`
+	DataSourceID int64 `json:"data_source_id"`
 }
