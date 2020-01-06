@@ -1,0 +1,16 @@
+*.log
+npm-debug.log*
+
+# Dependency
+node_modules/
+
+# Package lock
+package-lock.json
+
+# Project files
+src/
+examples/
+.travis.yml
+.eslintrc
+.babelrc
+.gitignore
