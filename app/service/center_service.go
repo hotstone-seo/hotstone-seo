@@ -11,7 +11,7 @@ import (
 
 // CenterService is center related logic
 type CenterService interface {
-	AddMetaTag(req AddMetaTagRequest) (int64, error)
+	AddMetaTag(ctx context.Context, req AddMetaTagRequest) (int64, error)
 	AddTitleTag(ctx context.Context, req AddTitleTagRequest) (int64, error)
 	AddCanonicalTag(ctx context.Context, req AddCanonicalTagRequest) (int64, error)
 	AddScriptTag(ctx context.Context, req AddScriptTagRequest) (int64, error)
@@ -29,7 +29,14 @@ func NewCenterService(impl CenterServiceImpl) CenterService {
 }
 
 // AddMetaTag to add metaTag
-func (*CenterServiceImpl) AddMetaTag(req AddMetaTagRequest) (lastInsertedID int64, err error) {
+func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagRequest) (lastInsertedID int64, err error) {
+	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
+		Type:       "meta",
+		Attributes: dbkit.JSON(`{}`),
+		Value:      req.Content,
+		UpdatedAt:  time.Now(),
+		CreatedAt:  time.Now(),
+	})
 	return
 }
 
