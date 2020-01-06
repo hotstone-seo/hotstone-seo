@@ -1,9 +1,11 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"net/http"
+	"text/template"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
@@ -60,13 +62,23 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		return
 	}
 	for _, tag := range tags {
+		var (
+			attribute dbkit.JSON
+			value     string
+		)
+		if attribute, err = interpolateAttribute(tag.Attributes, req.Data); err != nil {
+			return
+		}
+		if value, err = interpolateValue(tag.Value, req.Data); err != nil {
+			return
+		}
 		interpolatedTags = append(interpolatedTags, &InterpolatedTag{
 			ID:         tag.ID,
 			RuleID:     tag.RuleID,
 			LocaleID:   tag.LocaleID,
 			Type:       tag.Type,
-			Attributes: interpolateAttribute(tag.Attributes, req.Data),
-			Value:      interpolateValue(tag.Value, req.Data),
+			Attributes: attribute,
+			Value:      value,
 			UpdatedAt:  tag.UpdatedAt,
 			CreatedAt:  tag.CreatedAt,
 		})
@@ -74,12 +86,32 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 	return
 }
 
-func interpolateAttribute(ori dbkit.JSON, data interface{}) dbkit.JSON {
-	return ori
+func interpolateAttribute(ori dbkit.JSON, data interface{}) (interpolated dbkit.JSON, err error) {
+	var (
+		tmpl *template.Template
+		buf  bytes.Buffer
+	)
+	if tmpl, err = template.New("tmpl").Parse(string(ori)); err != nil {
+		return
+	}
+	if err = tmpl.Execute(&buf, data); err != nil {
+		return
+	}
+	return buf.Bytes(), nil
 }
 
-func interpolateValue(ori string, data interface{}) string {
-	return ori
+func interpolateValue(ori string, data interface{}) (s string, err error) {
+	var (
+		tmpl *template.Template
+		buf  bytes.Buffer
+	)
+	if tmpl, err = template.New("tmpl").Parse(ori); err != nil {
+		return
+	}
+	if err = tmpl.Execute(&buf, data); err != nil {
+		return
+	}
+	return buf.String(), nil
 }
 
 type InterpolatedTag repository.Tag

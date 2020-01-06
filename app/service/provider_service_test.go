@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
 	"github.com/stretchr/testify/require"
 
@@ -82,5 +83,39 @@ func TestProvider_Tags(t *testing.T) {
 		})
 		require.EqualError(t, err, "some-error")
 		require.Nil(t, tags)
+	})
+	t.Run("WHEN success", func(t *testing.T) {
+		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), int64(888)).
+			Return([]*repository.Tag{
+				{
+					ID:         1,
+					RuleID:     1,
+					LocaleID:   1,
+					Type:       "some-type",
+					Attributes: dbkit.JSON(`{"key1": "value1 {{.Data1}}", "key2{{.Data2}}": "value2"}`),
+					Value:      "some-value{{.Data3}}",
+				},
+			}, nil)
+		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
+			RuleID:   999,
+			LocaleID: 888,
+			Data: struct {
+				Data1 string
+				Data2 string
+				Data3 string
+			}{"some-data-1", "some-data-2", "some-data-3"},
+		})
+		require.NoError(t, err)
+		require.EqualValues(t, []*service.InterpolatedTag{
+			{
+				ID:         1,
+				RuleID:     1,
+				LocaleID:   1,
+				Type:       "some-type",
+				Attributes: dbkit.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
+				Value:      "some-valuesome-data-3",
+			},
+		}, tags)
+
 	})
 }
