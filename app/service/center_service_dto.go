@@ -8,7 +8,9 @@ type AddMetaTagRequest struct {
 
 // AddTitleTagRequest is request model for addTitleTag method
 type AddTitleTagRequest struct {
-	Title string `json:"title"`
+	RuleID   int64  `json:"rule_id"`
+	LocaleID int64  `json:"locale_id"`
+	Title    string `json:"title"`
 }
 
 // AddCanonicalTagRequest is request model for addCanonicalTag method
