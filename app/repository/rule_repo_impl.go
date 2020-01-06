@@ -17,7 +17,7 @@ type RuleRepoImpl struct {
 }
 
 // Find rule
-func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err error) {
+func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
@@ -33,7 +33,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, id int64) (rule *Rule, err erro
 }
 
 // List rule
-func (r *RuleRepoImpl) List(ctx context.Context) (list []*Rule, err error) {
+func (r *RuleRepoImpl) Find(ctx context.Context) (list []*Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").

@@ -20,9 +20,9 @@ type TagCntrl struct {
 
 // Route to define API Route
 func (c *TagCntrl) Route(e *echo.Echo) {
-	e.GET("tags", c.List)
+	e.GET("tags", c.Find)
 	e.POST("tags", c.Create)
-	e.GET("tags/:id", c.Get)
+	e.GET("tags/:id", c.FindOne)
 	e.PUT("tags", c.Update)
 	e.DELETE("tags/:id", c.Delete)
 }
@@ -46,25 +46,25 @@ func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 	})
 }
 
-// List of tag
-func (c *TagCntrl) List(ctx echo.Context) (err error) {
+// Find all tag
+func (c *TagCntrl) Find(ctx echo.Context) (err error) {
 	var tags []*repository.Tag
 	ctx0 := ctx.Request().Context()
-	if tags, err = c.TagService.List(ctx0); err != nil {
+	if tags, err = c.TagService.Find(ctx0); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, tags)
 }
 
-// Get tag
-func (c *TagCntrl) Get(ctx echo.Context) (err error) {
+// FindOne tag
+func (c *TagCntrl) FindOne(ctx echo.Context) (err error) {
 	var id int64
 	var tag *repository.Tag
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if tag, err = c.TagService.Find(ctx0, id); err != nil {
+	if tag, err = c.TagService.FindOne(ctx0, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	if tag == nil {

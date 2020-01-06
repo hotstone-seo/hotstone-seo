@@ -16,8 +16,8 @@ type DataSource struct {
 
 // DataSourceRepo to handle data_sources entity
 type DataSourceRepo interface {
-	Find(context.Context, int64) (*DataSource, error)
-	List(context.Context) ([]*DataSource, error)
+	FindOne(context.Context, int64) (*DataSource, error)
+	Find(context.Context) ([]*DataSource, error)
 	Insert(context.Context, DataSource) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, DataSource) error

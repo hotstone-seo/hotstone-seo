@@ -21,25 +21,25 @@ type DataSourceCntrl struct {
 
 // Route to define API Route
 func (c *DataSourceCntrl) Route(e *echo.Echo) {
-	e.GET("data_sources", c.List)
+	e.GET("data_sources", c.Find)
 	e.POST("data_sources", c.Create)
-	e.GET("data_sources/:id", c.Get)
+	e.GET("data_sources/:id", c.FindOne)
 	e.PUT("data_sources", c.Update)
 	e.DELETE("data_sources/:id", c.Delete)
 }
 
 // Create data_source
 func (c *DataSourceCntrl) Create(ctx echo.Context) (err error) {
-	var data_source repository.DataSource
+	var dataSource repository.DataSource
 	var lastInsertID int64
 	ctx0 := ctx.Request().Context()
-	if err = ctx.Bind(&data_source); err != nil {
+	if err = ctx.Bind(&dataSource); err != nil {
 		return err
 	}
-	if err = validator.New().Struct(data_source); err != nil {
+	if err = validator.New().Struct(dataSource); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if lastInsertID, err = c.DataSourceService.Insert(ctx0, data_source); err != nil {
+	if lastInsertID, err = c.DataSourceService.Insert(ctx0, dataSource); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return ctx.JSON(http.StatusCreated, GeneralResponse{
@@ -47,31 +47,31 @@ func (c *DataSourceCntrl) Create(ctx echo.Context) (err error) {
 	})
 }
 
-// List of data_source
-func (c *DataSourceCntrl) List(ctx echo.Context) (err error) {
-	var data_sources []*repository.DataSource
+// Find of data_source
+func (c *DataSourceCntrl) Find(ctx echo.Context) (err error) {
+	var dataSource []*repository.DataSource
 	ctx0 := ctx.Request().Context()
-	if data_sources, err = c.DataSourceService.List(ctx0); err != nil {
+	if dataSource, err = c.DataSourceService.Find(ctx0); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, data_sources)
+	return ctx.JSON(http.StatusOK, dataSource)
 }
 
-// Get data_source
-func (c *DataSourceCntrl) Get(ctx echo.Context) (err error) {
+// FindOne data_source
+func (c *DataSourceCntrl) FindOne(ctx echo.Context) (err error) {
 	var id int64
-	var data_source *repository.DataSource
+	var dataSource *repository.DataSource
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if data_source, err = c.DataSourceService.Find(ctx0, id); err != nil {
+	if dataSource, err = c.DataSourceService.FindOne(ctx0, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	if data_source == nil {
+	if dataSource == nil {
 		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("DataSource#%d not found", id))
 	}
-	return ctx.JSON(http.StatusOK, data_source)
+	return ctx.JSON(http.StatusOK, dataSource)
 }
 
 // Delete data_source
@@ -91,21 +91,21 @@ func (c *DataSourceCntrl) Delete(ctx echo.Context) (err error) {
 
 // Update data_source
 func (c *DataSourceCntrl) Update(ctx echo.Context) (err error) {
-	var data_source repository.DataSource
+	var dataSource repository.DataSource
 	ctx0 := ctx.Request().Context()
-	if err = ctx.Bind(&data_source); err != nil {
+	if err = ctx.Bind(&dataSource); err != nil {
 		return err
 	}
-	if data_source.ID <= 0 {
+	if dataSource.ID <= 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if err = validator.New().Struct(data_source); err != nil {
+	if err = validator.New().Struct(dataSource); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if err = c.DataSourceService.Update(ctx0, data_source); err != nil {
+	if err = c.DataSourceService.Update(ctx0, dataSource); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{
-		Message: fmt.Sprintf("Success update data_source #%d", data_source.ID),
+		Message: fmt.Sprintf("Success update data_source #%d", dataSource.ID),
 	})
 }

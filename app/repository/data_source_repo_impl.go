@@ -17,7 +17,7 @@ type DataSourceRepoImpl struct {
 }
 
 // Find data_source
-func (r *DataSourceRepoImpl) Find(ctx context.Context, id int64) (e *DataSource, err error) {
+func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSource, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "name", "url", "updated_at", "created_at").
@@ -37,7 +37,7 @@ func (r *DataSourceRepoImpl) Find(ctx context.Context, id int64) (e *DataSource,
 }
 
 // List data_source
-func (r *DataSourceRepoImpl) List(ctx context.Context) (list []*DataSource, err error) {
+func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "name", "url", "updated_at", "created_at").

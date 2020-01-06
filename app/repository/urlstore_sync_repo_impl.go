@@ -16,7 +16,7 @@ type URLStoreSyncRepoImpl struct {
 }
 
 // Find urlStoreSync
-func (r *URLStoreSyncRepoImpl) Find(ctx context.Context, version int64) (urlStoreSync *URLStoreSync, err error) {
+func (r *URLStoreSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreSync *URLStoreSync, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
@@ -33,7 +33,7 @@ func (r *URLStoreSyncRepoImpl) Find(ctx context.Context, version int64) (urlStor
 }
 
 // List urlStoreSync
-func (r *URLStoreSyncRepoImpl) List(ctx context.Context) (list []*URLStoreSync, err error) {
+func (r *URLStoreSyncRepoImpl) Find(ctx context.Context) (list []*URLStoreSync, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").

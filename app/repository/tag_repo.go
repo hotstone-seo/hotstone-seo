@@ -21,8 +21,8 @@ type Tag struct {
 
 // TagRepo to handle tags entity
 type TagRepo interface {
-	Find(context.Context, int64) (*Tag, error)
-	List(context.Context) ([]*Tag, error)
+	FindOne(context.Context, int64) (*Tag, error)
+	Find(context.Context) ([]*Tag, error)
 	ListByRuleAndLocale(ctx context.Context, ruleID, localeID int64) ([]*Tag, error)
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error

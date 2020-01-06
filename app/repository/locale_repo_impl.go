@@ -17,7 +17,7 @@ type LocaleRepoImpl struct {
 }
 
 // Find locale
-func (r *LocaleRepoImpl) Find(ctx context.Context, id int64) (e *Locale, err error) {
+func (r *LocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "lang_code", "country_code", "updated_at", "created_at").
@@ -37,7 +37,7 @@ func (r *LocaleRepoImpl) Find(ctx context.Context, id int64) (e *Locale, err err
 }
 
 // List locale
-func (r *LocaleRepoImpl) List(ctx context.Context) (list []*Locale, err error) {
+func (r *LocaleRepoImpl) Find(ctx context.Context) (list []*Locale, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "lang_code", "country_code", "updated_at", "created_at").

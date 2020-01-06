@@ -34,34 +34,34 @@ func (m *MockTagRepo) EXPECT() *MockTagRepoMockRecorder {
 	return m.recorder
 }
 
-// Find mocks base method
-func (m *MockTagRepo) Find(arg0 context.Context, arg1 int64) (*repository.Tag, error) {
+// FindOne mocks base method
+func (m *MockTagRepo) FindOne(arg0 context.Context, arg1 int64) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0, arg1)
+	ret := m.ctrl.Call(m, "FindOne", arg0, arg1)
 	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find
-func (mr *MockTagRepoMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
+// FindOne indicates an expected call of FindOne
+func (mr *MockTagRepoMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagRepo)(nil).Find), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockTagRepo)(nil).FindOne), arg0, arg1)
 }
 
-// List mocks base method
-func (m *MockTagRepo) List(arg0 context.Context) ([]*repository.Tag, error) {
+// Find mocks base method
+func (m *MockTagRepo) Find(arg0 context.Context) ([]*repository.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", arg0)
+	ret := m.ctrl.Call(m, "Find", arg0)
 	ret0, _ := ret[0].([]*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// List indicates an expected call of List
-func (mr *MockTagRepoMockRecorder) List(arg0 interface{}) *gomock.Call {
+// Find indicates an expected call of Find
+func (mr *MockTagRepoMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockTagRepo)(nil).List), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagRepo)(nil).Find), arg0)
 }
 
 // ListByRuleAndLocale mocks base method

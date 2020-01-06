@@ -20,32 +20,32 @@ type RuleCntrl struct {
 
 // Route to define API Route
 func (c *RuleCntrl) Route(e *echo.Echo) {
-	e.GET("rules", c.List)
+	e.GET("rules", c.Find)
 	e.POST("rules", c.Create)
-	e.GET("rules/:id", c.Get)
+	e.GET("rules/:id", c.FindOne)
 	e.PUT("rules", c.Update)
 	e.DELETE("rules/:id", c.Delete)
 }
 
-// List of rule
-func (c *RuleCntrl) List(ctx echo.Context) (err error) {
+// Find all rule
+func (c *RuleCntrl) Find(ctx echo.Context) (err error) {
 	var rules []*repository.Rule
 	ctx0 := ctx.Request().Context()
-	if rules, err = c.RuleService.List(ctx0); err != nil {
+	if rules, err = c.RuleService.Find(ctx0); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, rules)
 }
 
-// Get rule
-func (c *RuleCntrl) Get(ctx echo.Context) (err error) {
+// FindOne rule
+func (c *RuleCntrl) FindOne(ctx echo.Context) (err error) {
 	var id int64
 	var rule *repository.Rule
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if rule, err = c.RuleService.Find(ctx0, id); err != nil {
+	if rule, err = c.RuleService.FindOne(ctx0, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	if rule == nil {

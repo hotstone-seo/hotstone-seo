@@ -21,9 +21,9 @@ type LocaleCntrl struct {
 
 // Route to define API Route
 func (c *LocaleCntrl) Route(e *echo.Echo) {
-	e.GET("locales", c.List)
+	e.GET("locales", c.Find)
 	e.POST("locales", c.Create)
-	e.GET("locales/:id", c.Get)
+	e.GET("locales/:id", c.FindOne)
 	e.PUT("locales", c.Update)
 	e.DELETE("locales/:id", c.Delete)
 }
@@ -47,25 +47,25 @@ func (c *LocaleCntrl) Create(ctx echo.Context) (err error) {
 	})
 }
 
-// List of locale
-func (c *LocaleCntrl) List(ctx echo.Context) (err error) {
+// Find of locale
+func (c *LocaleCntrl) Find(ctx echo.Context) (err error) {
 	var locales []*repository.Locale
 	ctx0 := ctx.Request().Context()
-	if locales, err = c.LocaleService.List(ctx0); err != nil {
+	if locales, err = c.LocaleService.Find(ctx0); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, locales)
 }
 
-// Get locale
-func (c *LocaleCntrl) Get(ctx echo.Context) (err error) {
+// FindOne locale
+func (c *LocaleCntrl) FindOne(ctx echo.Context) (err error) {
 	var id int64
 	var locale *repository.Locale
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if locale, err = c.LocaleService.Find(ctx0, id); err != nil {
+	if locale, err = c.LocaleService.FindOne(ctx0, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	if locale == nil {

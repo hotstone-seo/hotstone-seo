@@ -10,8 +10,8 @@ import (
 // RuleService contain logic for Rule Controller
 type RuleService interface {
 	// repository.RuleRepo
-	Find(ctx context.Context, id int64) (*repository.Rule, error)
-	List(ctx context.Context) ([]*repository.Rule, error)
+	FindOne(ctx context.Context, id int64) (*repository.Rule, error)
+	Find(ctx context.Context) ([]*repository.Rule, error)
 	Insert(ctx context.Context, rule repository.Rule) (lastInsertID int64, err error)
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, rule repository.Rule) error
@@ -31,13 +31,13 @@ func NewRuleService(impl RuleServiceImpl) RuleService {
 }
 
 // Find rule
-func (r *RuleServiceImpl) Find(ctx context.Context, id int64) (rule *repository.Rule, err error) {
-	return r.RuleRepo.Find(ctx, id)
+func (r *RuleServiceImpl) FindOne(ctx context.Context, id int64) (rule *repository.Rule, err error) {
+	return r.RuleRepo.FindOne(ctx, id)
 }
 
 // List rule
-func (r *RuleServiceImpl) List(ctx context.Context) (list []*repository.Rule, err error) {
-	return r.RuleRepo.List(ctx)
+func (r *RuleServiceImpl) Find(ctx context.Context) (list []*repository.Rule, err error) {
+	return r.RuleRepo.Find(ctx)
 }
 
 // Insert rule

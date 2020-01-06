@@ -15,8 +15,8 @@ type Rule struct {
 }
 
 type RuleRepo interface {
-	Find(ctx context.Context, id int64) (*Rule, error)
-	List(ctx context.Context) ([]*Rule, error)
+	FindOne(ctx context.Context, id int64) (*Rule, error)
+	Find(ctx context.Context) ([]*Rule, error)
 	Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error)
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, rule Rule) error

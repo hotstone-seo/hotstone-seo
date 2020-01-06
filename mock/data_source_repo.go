@@ -34,34 +34,34 @@ func (m *MockDataSourceRepo) EXPECT() *MockDataSourceRepoMockRecorder {
 	return m.recorder
 }
 
-// Find mocks base method
-func (m *MockDataSourceRepo) Find(arg0 context.Context, arg1 int64) (*repository.DataSource, error) {
+// FindOne mocks base method
+func (m *MockDataSourceRepo) FindOne(arg0 context.Context, arg1 int64) (*repository.DataSource, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0, arg1)
+	ret := m.ctrl.Call(m, "FindOne", arg0, arg1)
 	ret0, _ := ret[0].(*repository.DataSource)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find
-func (mr *MockDataSourceRepoMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
+// FindOne indicates an expected call of FindOne
+func (mr *MockDataSourceRepoMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockDataSourceRepo)(nil).Find), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockDataSourceRepo)(nil).FindOne), arg0, arg1)
 }
 
-// List mocks base method
-func (m *MockDataSourceRepo) List(arg0 context.Context) ([]*repository.DataSource, error) {
+// Find mocks base method
+func (m *MockDataSourceRepo) Find(arg0 context.Context) ([]*repository.DataSource, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", arg0)
+	ret := m.ctrl.Call(m, "Find", arg0)
 	ret0, _ := ret[0].([]*repository.DataSource)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// List indicates an expected call of List
-func (mr *MockDataSourceRepoMockRecorder) List(arg0 interface{}) *gomock.Call {
+// Find indicates an expected call of Find
+func (mr *MockDataSourceRepoMockRecorder) Find(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockDataSourceRepo)(nil).List), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockDataSourceRepo)(nil).Find), arg0)
 }
 
 // Insert mocks base method

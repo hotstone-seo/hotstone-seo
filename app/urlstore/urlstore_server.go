@@ -34,7 +34,7 @@ type URLStoreServerImpl struct {
 
 func (s *URLStoreServerImpl) FullSync() error {
 
-	list, err := s.URLStoreSyncService.List(context.Background())
+	list, err := s.URLStoreSyncService.Find(context.Background())
 	if err != nil {
 		return err
 	}

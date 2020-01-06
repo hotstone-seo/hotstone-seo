@@ -17,7 +17,7 @@ type TagRepoImpl struct {
 }
 
 // Find tag
-func (r *TagRepoImpl) Find(ctx context.Context, id int64) (e *Tag, err error) {
+func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "rule_id", "locale_id", "type", "attributes", "value", "updated_at", "created_at").
@@ -37,7 +37,7 @@ func (r *TagRepoImpl) Find(ctx context.Context, id int64) (e *Tag, err error) {
 }
 
 // List tag
-func (r *TagRepoImpl) List(ctx context.Context) (list []*Tag, err error) {
+func (r *TagRepoImpl) Find(ctx context.Context) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "rule_id", "locale_id", "type", "attributes", "value", "updated_at", "created_at").

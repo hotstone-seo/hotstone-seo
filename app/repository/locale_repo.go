@@ -16,8 +16,8 @@ type Locale struct {
 
 // LocaleRepo to handle locales entity
 type LocaleRepo interface {
-	Find(context.Context, int64) (*Locale, error)
-	List(context.Context) ([]*Locale, error)
+	FindOne(context.Context, int64) (*Locale, error)
+	Find(context.Context) ([]*Locale, error)
 	Insert(context.Context, Locale) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Locale) error

@@ -20,7 +20,7 @@ type CachedDataSourceRepoImpl struct {
 }
 
 // Find data_source entity
-func (r *CachedDataSourceRepoImpl) Find(ctx context.Context, id int64) (e *DataSource, err error) {
+func (r *CachedDataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSource, err error) {
 	cacheKey := fmt.Sprintf("DATA_SOURCES:FIND:%d", id)
 	e = new(DataSource)
 	redisClient := r.Redis.WithContext(ctx)
@@ -28,7 +28,7 @@ func (r *CachedDataSourceRepoImpl) Find(ctx context.Context, id int64) (e *DataS
 		log.Infof("Using cache %s", cacheKey)
 		return
 	}
-	if e, err = r.DataSourceRepoImpl.Find(ctx, id); err != nil {
+	if e, err = r.DataSourceRepoImpl.FindOne(ctx, id); err != nil {
 		return
 	}
 	if err2 := dbkit.SetCache(redisClient, cacheKey, e, 20*time.Second); err2 != nil {
@@ -38,14 +38,14 @@ func (r *CachedDataSourceRepoImpl) Find(ctx context.Context, id int64) (e *DataS
 }
 
 // List of data_source entity
-func (r *CachedDataSourceRepoImpl) List(ctx context.Context) (list []*DataSource, err error) {
+func (r *CachedDataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err error) {
 	cacheKey := fmt.Sprintf("DATA_SOURCES:LIST")
 	redisClient := r.Redis.WithContext(ctx)
 	if err = dbkit.GetCache(redisClient, cacheKey, &list); err == nil {
 		log.Infof("Using cache %s", cacheKey)
 		return
 	}
-	if list, err = r.DataSourceRepoImpl.List(ctx); err != nil {
+	if list, err = r.DataSourceRepoImpl.Find(ctx); err != nil {
 		return
 	}
 	if err2 := dbkit.SetCache(redisClient, cacheKey, list, 20*time.Second); err2 != nil {

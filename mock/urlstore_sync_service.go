@@ -34,34 +34,34 @@ func (m *MockURLStoreSyncService) EXPECT() *MockURLStoreSyncServiceMockRecorder 
 	return m.recorder
 }
 
-// Find mocks base method
-func (m *MockURLStoreSyncService) Find(ctx context.Context, id int64) (*repository.URLStoreSync, error) {
+// FindOne mocks base method
+func (m *MockURLStoreSyncService) FindOne(ctx context.Context, id int64) (*repository.URLStoreSync, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", ctx, id)
+	ret := m.ctrl.Call(m, "FindOne", ctx, id)
 	ret0, _ := ret[0].(*repository.URLStoreSync)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find
-func (mr *MockURLStoreSyncServiceMockRecorder) Find(ctx, id interface{}) *gomock.Call {
+// FindOne indicates an expected call of FindOne
+func (mr *MockURLStoreSyncServiceMockRecorder) FindOne(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockURLStoreSyncService)(nil).Find), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockURLStoreSyncService)(nil).FindOne), ctx, id)
 }
 
-// List mocks base method
-func (m *MockURLStoreSyncService) List(ctx context.Context) ([]*repository.URLStoreSync, error) {
+// Find mocks base method
+func (m *MockURLStoreSyncService) Find(ctx context.Context) ([]*repository.URLStoreSync, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "List", ctx)
+	ret := m.ctrl.Call(m, "Find", ctx)
 	ret0, _ := ret[0].([]*repository.URLStoreSync)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// List indicates an expected call of List
-func (mr *MockURLStoreSyncServiceMockRecorder) List(ctx interface{}) *gomock.Call {
+// Find indicates an expected call of Find
+func (mr *MockURLStoreSyncServiceMockRecorder) Find(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockURLStoreSyncService)(nil).List), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockURLStoreSyncService)(nil).Find), ctx)
 }
 
 // Insert mocks base method

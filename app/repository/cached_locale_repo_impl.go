@@ -20,7 +20,7 @@ type CachedLocaleRepoImpl struct {
 }
 
 // Find locale entity
-func (r *CachedLocaleRepoImpl) Find(ctx context.Context, id int64) (e *Locale, err error) {
+func (r *CachedLocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale, err error) {
 	cacheKey := fmt.Sprintf("LOCALES:FIND:%d", id)
 	e = new(Locale)
 	redisClient := r.Redis.WithContext(ctx)
@@ -28,7 +28,7 @@ func (r *CachedLocaleRepoImpl) Find(ctx context.Context, id int64) (e *Locale, e
 		log.Infof("Using cache %s", cacheKey)
 		return
 	}
-	if e, err = r.LocaleRepoImpl.Find(ctx, id); err != nil {
+	if e, err = r.LocaleRepoImpl.FindOne(ctx, id); err != nil {
 		return
 	}
 	if err2 := dbkit.SetCache(redisClient, cacheKey, e, 20*time.Second); err2 != nil {
@@ -38,14 +38,14 @@ func (r *CachedLocaleRepoImpl) Find(ctx context.Context, id int64) (e *Locale, e
 }
 
 // List of locale entity
-func (r *CachedLocaleRepoImpl) List(ctx context.Context) (list []*Locale, err error) {
+func (r *CachedLocaleRepoImpl) Find(ctx context.Context) (list []*Locale, err error) {
 	cacheKey := fmt.Sprintf("LOCALES:LIST")
 	redisClient := r.Redis.WithContext(ctx)
 	if err = dbkit.GetCache(redisClient, cacheKey, &list); err == nil {
 		log.Infof("Using cache %s", cacheKey)
 		return
 	}
-	if list, err = r.LocaleRepoImpl.List(ctx); err != nil {
+	if list, err = r.LocaleRepoImpl.Find(ctx); err != nil {
 		return
 	}
 	if err2 := dbkit.SetCache(redisClient, cacheKey, list, 20*time.Second); err2 != nil {
