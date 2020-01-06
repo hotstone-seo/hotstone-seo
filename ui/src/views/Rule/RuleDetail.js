@@ -57,6 +57,7 @@ class RuleDetail extends Component {
             metaTagFormValues: {
                 id: null,
                 name: null,
+                content: null,
                 rule_id: null,
             },
             scriptTagFormValues: {
@@ -192,6 +193,18 @@ class RuleDetail extends Component {
             }
         });
     }
+    handleMetaTagOnChange(type, e) {
+        const { target } = e || {};
+        const { value } = target || {};
+        const { metaTagFormValues } = this.state;
+ 
+        this.setState({
+            metaTagFormValues: {
+                ...metaTagFormValues,
+                [type]: value
+            }
+        });
+    }
     handleCancelAddCanonical() {
         this.setState({ canonicalFormVisible: false });
     }
@@ -314,7 +327,7 @@ class RuleDetail extends Component {
                             onSave={this.handleSave}
                             metatag={this.state.record}
                             action={this.state.actionForm}
-                            onChange={this.handleOnChange.bind(this)}
+                            onChange={this.handleMetaTagOnChange.bind(this)}
                         />
                         <ScriptTagForm
                             visible={this.state.scriptTagFormVisible}
