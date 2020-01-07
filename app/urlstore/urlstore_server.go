@@ -3,8 +3,6 @@ package urlstore
 import (
 	"context"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
-	"github.com/hotstone-seo/hotstone-server/app/service"
 	"go.uber.org/dig"
 )
 
@@ -16,7 +14,7 @@ type URLStoreServer interface {
 	Match(url string) (int, map[string]string)
 }
 
-func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
+func NewURLStoreServer(svc URLStoreSyncService) URLStoreServer {
 	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,
 		urlStore:            InitURLStore(),
@@ -26,7 +24,7 @@ func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
 
 type URLStoreServerImpl struct {
 	dig.In
-	URLStoreSyncService service.URLStoreSyncService
+	URLStoreSyncService URLStoreSyncService
 
 	urlStore      URLStore
 	latestVersion int
@@ -98,7 +96,7 @@ func (s *URLStoreServerImpl) Match(url string) (int, map[string]string) {
 	return s.urlStore.Get(url)
 }
 
-func (s *URLStoreServerImpl) buildURLStore(urlStore URLStore, listURLStoreSync []*repository.URLStoreSync) error {
+func (s *URLStoreServerImpl) buildURLStore(urlStore URLStore, listURLStoreSync []*URLStoreSync) error {
 
 	for _, urlStoreSync := range listURLStoreSync {
 		switch urlStoreSync.Operation {

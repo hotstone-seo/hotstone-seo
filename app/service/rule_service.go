@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"go.uber.org/dig"
 )
 
@@ -21,7 +22,7 @@ type RuleService interface {
 type RuleServiceImpl struct {
 	dig.In
 	RuleRepo    repository.RuleRepo
-	URLSyncRepo repository.URLStoreSyncRepo
+	URLSyncRepo urlstore.URLStoreSyncRepo
 	repository.Transactional
 }
 
@@ -47,7 +48,7 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLStoreSync{
+	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLStoreSync{
 		Operation:        "INSERT",
 		RuleID:           newRuleID,
 		LatestURLPattern: &rule.UrlPattern,
@@ -65,7 +66,7 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLStoreSync{
+	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLStoreSync{
 		Operation:        "DELETE",
 		RuleID:           id,
 		LatestURLPattern: nil,
@@ -83,7 +84,7 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLStoreSync{
+	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLStoreSync{
 		Operation:        "UPDATE",
 		RuleID:           rule.ID,
 		LatestURLPattern: &rule.UrlPattern,

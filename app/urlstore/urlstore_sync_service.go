@@ -1,19 +1,18 @@
-package service
+package urlstore
 
 import (
-	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"go.uber.org/dig"
 )
 
 // URLStoreSyncService contain logic for URLStoreSync Controller
 type URLStoreSyncService interface {
-	repository.URLStoreSyncRepo
+	URLStoreSyncRepo
 }
 
 // URLStoreSyncServiceImpl is implementation of URLStoreSyncService
 type URLStoreSyncServiceImpl struct {
 	dig.In
-	repository.URLStoreSyncRepo
+	URLStoreSyncRepo
 }
 
 // NewURLStoreSyncService return new instance of URLStoreSyncService
