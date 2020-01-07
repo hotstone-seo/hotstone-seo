@@ -36,7 +36,7 @@ func (m *MockProviderService) EXPECT() *MockProviderServiceMockRecorder {
 }
 
 // MatchRule mocks base method
-func (m *MockProviderService) MatchRule(arg0 service.Matcher, arg1 service.MatchRuleRequest) (*service.MatchRuleResponse, error) {
+func (m *MockProviderService) MatchRule(arg0 context.Context, arg1 service.MatchRuleRequest) (*service.MatchRuleResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "MatchRule", arg0, arg1)
 	ret0, _ := ret[0].(*service.MatchRuleResponse)
@@ -78,42 +78,4 @@ func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTag
 func (mr *MockProviderServiceMockRecorder) Tags(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tags", reflect.TypeOf((*MockProviderService)(nil).Tags), arg0, arg1)
-}
-
-// MockMatcher is a mock of Matcher interface
-type MockMatcher struct {
-	ctrl     *gomock.Controller
-	recorder *MockMatcherMockRecorder
-}
-
-// MockMatcherMockRecorder is the mock recorder for MockMatcher
-type MockMatcherMockRecorder struct {
-	mock *MockMatcher
-}
-
-// NewMockMatcher creates a new mock instance
-func NewMockMatcher(ctrl *gomock.Controller) *MockMatcher {
-	mock := &MockMatcher{ctrl: ctrl}
-	mock.recorder = &MockMatcherMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use
-func (m *MockMatcher) EXPECT() *MockMatcherMockRecorder {
-	return m.recorder
-}
-
-// Match mocks base method
-func (m *MockMatcher) Match(url string) (int, map[string]string) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Match", url)
-	ret0, _ := ret[0].(int)
-	ret1, _ := ret[1].(map[string]string)
-	return ret0, ret1
-}
-
-// Match indicates an expected call of Match
-func (mr *MockMatcherMockRecorder) Match(url interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Match", reflect.TypeOf((*MockMatcher)(nil).Match), url)
 }

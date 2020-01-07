@@ -12,23 +12,23 @@ import (
 	"go.uber.org/dig"
 )
 
-// CachedLocaleRepoImpl is cached implementation of locale repository
-type CachedLocaleRepoImpl struct {
+// CachedMetricsUnmatchedRepoImpl is cached implementation of metrics_unmatched repository
+type CachedMetricsUnmatchedRepoImpl struct {
 	dig.In
-	LocaleRepoImpl
+	MetricsUnmatchedRepoImpl
 	Redis *redis.Client
 }
 
-// FindOne locale entity
-func (r *CachedLocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale, err error) {
-	cacheKey := fmt.Sprintf("LOCALES:FIND:%d", id)
-	e = new(Locale)
+// Find metrics_unmatched entity
+func (r *CachedMetricsUnmatchedRepoImpl) Find(ctx context.Context, id int64) (e *MetricsUnmatched, err error) {
+	cacheKey := fmt.Sprintf("METRICS_UNMATCHED:FIND:%d", id)
+	e = new(MetricsUnmatched)
 	redisClient := r.Redis.WithContext(ctx)
 	if err = dbkit.GetCache(redisClient, cacheKey, e); err == nil {
 		log.Infof("Using cache %s", cacheKey)
 		return
 	}
-	if e, err = r.LocaleRepoImpl.FindOne(ctx, id); err != nil {
+	if e, err = r.MetricsUnmatchedRepoImpl.Find(ctx, id); err != nil {
 		return
 	}
 	if err2 := dbkit.SetCache(redisClient, cacheKey, e, 20*time.Second); err2 != nil {
@@ -37,15 +37,15 @@ func (r *CachedLocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale
 	return
 }
 
-// Find of locale entity
-func (r *CachedLocaleRepoImpl) Find(ctx context.Context) (list []*Locale, err error) {
-	cacheKey := fmt.Sprintf("LOCALES:LIST")
+// List of metrics_unmatched entity
+func (r *CachedMetricsUnmatchedRepoImpl) List(ctx context.Context) (list []*MetricsUnmatched, err error) {
+	cacheKey := fmt.Sprintf("METRICS_UNMATCHED:LIST")
 	redisClient := r.Redis.WithContext(ctx)
 	if err = dbkit.GetCache(redisClient, cacheKey, &list); err == nil {
 		log.Infof("Using cache %s", cacheKey)
 		return
 	}
-	if list, err = r.LocaleRepoImpl.Find(ctx); err != nil {
+	if list, err = r.MetricsUnmatchedRepoImpl.List(ctx); err != nil {
 		return
 	}
 	if err2 := dbkit.SetCache(redisClient, cacheKey, list, 20*time.Second); err2 != nil {

@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	service "github.com/hotstone-seo/hotstone-server/app/service"
 	reflect "reflect"
@@ -34,61 +35,61 @@ func (m *MockCenterService) EXPECT() *MockCenterServiceMockRecorder {
 }
 
 // AddMetaTag mocks base method
-func (m *MockCenterService) AddMetaTag(req service.AddMetaTagRequest) (int64, error) {
+func (m *MockCenterService) AddMetaTag(ctx context.Context, req service.AddMetaTagRequest) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddMetaTag", req)
+	ret := m.ctrl.Call(m, "AddMetaTag", ctx, req)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddMetaTag indicates an expected call of AddMetaTag
-func (mr *MockCenterServiceMockRecorder) AddMetaTag(req interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) AddMetaTag(ctx, req interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMetaTag", reflect.TypeOf((*MockCenterService)(nil).AddMetaTag), req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMetaTag", reflect.TypeOf((*MockCenterService)(nil).AddMetaTag), ctx, req)
 }
 
 // AddTitleTag mocks base method
-func (m *MockCenterService) AddTitleTag(req service.AddTitleTagRequest) (int64, error) {
+func (m *MockCenterService) AddTitleTag(ctx context.Context, req service.AddTitleTagRequest) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddTitleTag", req)
+	ret := m.ctrl.Call(m, "AddTitleTag", ctx, req)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddTitleTag indicates an expected call of AddTitleTag
-func (mr *MockCenterServiceMockRecorder) AddTitleTag(req interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) AddTitleTag(ctx, req interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTitleTag", reflect.TypeOf((*MockCenterService)(nil).AddTitleTag), req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTitleTag", reflect.TypeOf((*MockCenterService)(nil).AddTitleTag), ctx, req)
 }
 
 // AddCanonicalTag mocks base method
-func (m *MockCenterService) AddCanonicalTag(req service.AddCanonicalTagRequest) (int64, error) {
+func (m *MockCenterService) AddCanonicalTag(ctx context.Context, req service.AddCanonicalTagRequest) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddCanonicalTag", req)
+	ret := m.ctrl.Call(m, "AddCanonicalTag", ctx, req)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddCanonicalTag indicates an expected call of AddCanonicalTag
-func (mr *MockCenterServiceMockRecorder) AddCanonicalTag(req interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) AddCanonicalTag(ctx, req interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).AddCanonicalTag), req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).AddCanonicalTag), ctx, req)
 }
 
 // AddScriptTag mocks base method
-func (m *MockCenterService) AddScriptTag(req service.AddScriptTagRequest) (int64, error) {
+func (m *MockCenterService) AddScriptTag(ctx context.Context, req service.AddScriptTagRequest) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddScriptTag", req)
+	ret := m.ctrl.Call(m, "AddScriptTag", ctx, req)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // AddScriptTag indicates an expected call of AddScriptTag
-func (mr *MockCenterServiceMockRecorder) AddScriptTag(req interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) AddScriptTag(ctx, req interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddScriptTag", reflect.TypeOf((*MockCenterService)(nil).AddScriptTag), req)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddScriptTag", reflect.TypeOf((*MockCenterService)(nil).AddScriptTag), ctx, req)
 }

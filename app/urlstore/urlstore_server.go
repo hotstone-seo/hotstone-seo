@@ -3,12 +3,10 @@ package urlstore
 import (
 	"context"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
-	"github.com/hotstone-seo/hotstone-server/app/service"
 	"go.uber.org/dig"
 )
 
-// URLStoreServer
+// URLStoreServer [nomock]
 type URLStoreServer interface {
 	FullSync() error
 	Sync() error
@@ -16,20 +14,19 @@ type URLStoreServer interface {
 	Match(url string) (int, map[string]string)
 }
 
-func NewURLStoreServer(svc service.URLStoreSyncService) URLStoreServer {
+func NewURLStoreServer(svc URLStoreSyncService) URLStoreServer {
 	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,
-		urlStore:            InitURLStore(),
-		latestVersion:       0,
+		URLStore:            InitURLStore(),
+		LatestVersion:       0,
 	}
 }
 
 type URLStoreServerImpl struct {
 	dig.In
-	URLStoreSyncService service.URLStoreSyncService
-
-	urlStore      URLStore
-	latestVersion int
+	URLStoreSyncService
+	URLStore
+	LatestVersion int
 }
 
 func (s *URLStoreServerImpl) FullSync() error {
@@ -50,8 +47,8 @@ func (s *URLStoreServerImpl) FullSync() error {
 
 	oldestURLStoreSync := list[len(list)-1]
 
-	s.urlStore = newURLStore
-	s.latestVersion = int(oldestURLStoreSync.Version)
+	s.URLStore = newURLStore
+	s.LatestVersion = int(oldestURLStoreSync.Version)
 
 	return nil
 }
@@ -59,46 +56,46 @@ func (s *URLStoreServerImpl) FullSync() error {
 func (s *URLStoreServerImpl) Sync() error {
 	ctx := context.Background()
 
-	latestVersionSync, err := s.URLStoreSyncService.GetLatestVersion(ctx)
+	LatestVersionSync, err := s.URLStoreSyncService.GetLatestVersion(ctx)
 	if err != nil {
 		return err
 	}
 
-	if s.latestVersion == int(latestVersionSync) {
+	if s.LatestVersion == int(LatestVersionSync) {
 		return nil
 	}
 
-	if s.latestVersion != 0 && latestVersionSync == 0 {
-		s.urlStore = InitURLStore()
-		s.latestVersion = int(latestVersionSync)
+	if s.LatestVersion != 0 && LatestVersionSync == 0 {
+		s.URLStore = InitURLStore()
+		s.LatestVersion = int(LatestVersionSync)
 		return nil
 	}
 
-	if s.latestVersion > int(latestVersionSync) {
+	if s.LatestVersion > int(LatestVersionSync) {
 		return s.FullSync()
 	}
 
-	if s.latestVersion < int(latestVersionSync) {
-		listDiffURLStoreSync, err := s.URLStoreSyncService.GetListDiff(ctx, int64(s.latestVersion))
+	if s.LatestVersion < int(LatestVersionSync) {
+		listDiffURLStoreSync, err := s.URLStoreSyncService.GetListDiff(ctx, int64(s.LatestVersion))
 		if err != nil {
 			return err
 		}
-		if err = s.buildURLStore(s.urlStore, listDiffURLStoreSync); err != nil {
+		if err = s.buildURLStore(s.URLStore, listDiffURLStoreSync); err != nil {
 			return err
 		}
 
 		oldestURLStoreSync := listDiffURLStoreSync[len(listDiffURLStoreSync)-1]
-		s.latestVersion = int(oldestURLStoreSync.Version)
+		s.LatestVersion = int(oldestURLStoreSync.Version)
 	}
 
 	return nil
 }
 
 func (s *URLStoreServerImpl) Match(url string) (int, map[string]string) {
-	return s.urlStore.Get(url)
+	return s.URLStore.Get(url)
 }
 
-func (s *URLStoreServerImpl) buildURLStore(urlStore URLStore, listURLStoreSync []*repository.URLStoreSync) error {
+func (s *URLStoreServerImpl) buildURLStore(urlStore URLStore, listURLStoreSync []*URLStoreSync) error {
 
 	for _, urlStoreSync := range listURLStoreSync {
 		switch urlStoreSync.Operation {

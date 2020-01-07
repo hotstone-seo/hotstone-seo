@@ -2,6 +2,9 @@ package controller_test
 
 import (
 	"errors"
+	"io/ioutil"
+	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/hotstone-seo/hotstone-server/mock"
@@ -17,24 +20,30 @@ func TestProviderCntrl_MatchRule(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	svc := mock.NewMockProviderService(ctrl)
-	urlStoreServerMock := mock.NewMockURLStoreServer(ctrl)
-	cntrl := controller.ProviderCntrl{ProviderService: svc, URLStoreServer: urlStoreServerMock}
+	cntrl := controller.ProviderCntrl{
+		ProviderService: svc,
+	}
 	t.Run("WHEN invalid json body", func(t *testing.T) {
 		_, err := echotest.DoPOST(cntrl.MatchRule, "/", `{invalid`)
 		require.EqualError(t, err, "code=400, message=Syntax error: offset=2, error=invalid character 'i' looking for beginning of object key string")
 	})
 	t.Run("WHEN error match rule", func(t *testing.T) {
-		svc.EXPECT().MatchRule(urlStoreServerMock, gomock.Any()).Return(nil, errors.New("some-error"))
+		svc.EXPECT().MatchRule(gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
 		_, err := echotest.DoPOST(cntrl.MatchRule, "/", `{"path":"some-path"}`)
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().MatchRule(urlStoreServerMock, gomock.Any()).Return(&service.MatchRuleResponse{RuleID: 12345, PathParam: map[string]string{"param01": "value01"}}, nil)
+		svc.EXPECT().MatchRule(gomock.Any(), gomock.Any()).Return(&service.MatchRuleResponse{RuleID: 12345, PathParam: map[string]string{"param01": "value01"}}, nil)
 		rec, err := echotest.DoPOST(cntrl.MatchRule, "/", `{"path":"some-path"}`)
 		require.NoError(t, err)
 		require.Equal(t, 200, rec.Code)
-		require.Equal(t, "{\"ruleID\":12345,\"pathParam\":{\"param01\":\"value01\"}}\n", rec.Body.String())
+		require.Equal(t, "{\"rule_id\":12345,\"pathParam\":{\"param01\":\"value01\"}}\n", rec.Body.String())
 	})
+}
+
+type SomeStruct struct {
+	Name      string
+	Something string
 }
 
 func TestProviderCntrl_RetrieveData(t *testing.T) {
@@ -47,15 +56,16 @@ func TestProviderCntrl_RetrieveData(t *testing.T) {
 		require.EqualError(t, err, "code=400, message=Syntax error: offset=2, error=invalid character 'i' looking for beginning of object key string")
 	})
 	t.Run("WHEN error match rule", func(t *testing.T) {
-		svc.EXPECT().RetrieveData(gomock.Any()).Return(nil, errors.New("some-error"))
+		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
 		_, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{"rule_id": 99999}`)
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().RetrieveData(gomock.Any()).Return(map[string]string{"name": "CGK", "province": "Banten"}, nil)
+		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any()).
+			Return(&http.Response{StatusCode: 200, Body: ioutil.NopCloser(strings.NewReader("some-string"))}, nil)
 		rec, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{"rule_id": 99999}`)
 		require.NoError(t, err)
 		require.Equal(t, 200, rec.Code)
-		require.Equal(t, "{\"name\":\"CGK\",\"province\":\"Banten\"}\n", rec.Body.String())
+		require.Equal(t, "some-string", rec.Body.String())
 	})
 }

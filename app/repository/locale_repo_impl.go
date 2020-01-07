@@ -16,7 +16,7 @@ type LocaleRepoImpl struct {
 	*sql.DB
 }
 
-// Find locale
+// FindOne locale
 func (r *LocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -36,7 +36,7 @@ func (r *LocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale, err 
 	return
 }
 
-// List locale
+// Find locale
 func (r *LocaleRepoImpl) Find(ctx context.Context) (list []*Locale, err error) {
 	var rows *sql.Rows
 	builder := sq.

@@ -19,7 +19,7 @@ type CachedDataSourceRepoImpl struct {
 	Redis *redis.Client
 }
 
-// Find data_source entity
+// FindOne data_source entity
 func (r *CachedDataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSource, err error) {
 	cacheKey := fmt.Sprintf("DATA_SOURCES:FIND:%d", id)
 	e = new(DataSource)
@@ -37,7 +37,7 @@ func (r *CachedDataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *Da
 	return
 }
 
-// List of data_source entity
+// Find of data_source entity
 func (r *CachedDataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err error) {
 	cacheKey := fmt.Sprintf("DATA_SOURCES:LIST")
 	redisClient := r.Redis.WithContext(ctx)

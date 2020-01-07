@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// URLStore
+// URLStore [nomock]
 type URLStore interface {
 	Get(path string) (int, map[string]string)
 	Add(id int, key string)
@@ -17,22 +17,20 @@ type URLStore interface {
 
 // URLStoreImpl is implementation of URLStore
 type URLStoreImpl struct {
-	store URLStoreTree
+	URLStoreTree
 }
 
 // InitURLStore return new instance of URLStore
 func InitURLStore() URLStore {
-	return &URLStoreImpl{store: newURLStoreTree()}
+	return &URLStoreImpl{URLStoreTree: NewURLStoreTree()}
 }
 
 func (s *URLStoreImpl) Get(path string) (int, map[string]string) {
 	maxParams := 256
-
 	pvalues := make([]string, maxParams)
-
 	varValue := map[string]string{}
 
-	data, pnames := s.store.Get(path, pvalues)
+	data, pnames := s.URLStoreTree.Get(path, pvalues)
 	if data == nil {
 		return -1, varValue
 	}
@@ -61,7 +59,7 @@ func (s *URLStoreImpl) Get(path string) (int, map[string]string) {
 func (s *URLStoreImpl) Add(id int, key string) {
 	data := strconv.Itoa(id)
 
-	s.store.Add(id, key, data)
+	s.URLStoreTree.Add(id, key, data)
 }
 
 func (s *URLStoreImpl) Update(id int, key string) {
@@ -70,9 +68,9 @@ func (s *URLStoreImpl) Update(id int, key string) {
 }
 
 func (s *URLStoreImpl) Delete(id int) bool {
-	return s.store.Delete(id)
+	return s.URLStoreTree.Delete(id)
 }
 
 func (s *URLStoreImpl) Count() int {
-	return s.store.Count()
+	return s.URLStoreTree.Count()
 }

@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Rule Entity
 type Rule struct {
 	ID           int64     `json:"id"`
 	Name         string    `json:"name" validate:"required"`
@@ -14,6 +15,7 @@ type Rule struct {
 	CreatedAt    time.Time `json:"created_at"`
 }
 
+// RuleRepo is rule repository
 type RuleRepo interface {
 	FindOne(ctx context.Context, id int64) (*Rule, error)
 	Find(ctx context.Context) ([]*Rule, error)

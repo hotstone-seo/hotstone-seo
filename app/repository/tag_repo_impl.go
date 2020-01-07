@@ -16,7 +16,7 @@ type TagRepoImpl struct {
 	*sql.DB
 }
 
-// Find tag
+// FindOne tag
 func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -36,7 +36,7 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 	return
 }
 
-// List tag
+// Find tags
 func (r *TagRepoImpl) Find(ctx context.Context) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -57,7 +57,7 @@ func (r *TagRepoImpl) Find(ctx context.Context) (list []*Tag, err error) {
 	return
 }
 
-// ListByRuleAndLocale to return list of tags based on rule and locale
+// FindByRuleAndLocale to return list of tags based on rule and locale
 func (r *TagRepoImpl) FindByRuleAndLocale(ctx context.Context, ruleID, localeID int64) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -83,8 +83,8 @@ func (r *TagRepoImpl) FindByRuleAndLocale(ctx context.Context, ruleID, localeID 
 func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, err error) {
 	builder := sq.
 		Insert("tags").
-		Columns("type", "attributes", "value").
-		Values(e.Type, e.Attributes, e.Value).
+		Columns("rule_id", "locale_id", "type", "attributes", "value").
+		Values(e.RuleID, e.LocaleID, e.Type, e.Attributes, e.Value).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
@@ -108,6 +108,8 @@ func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
 	builder := sq.
 		Update("tags").
+		Set("rule_id", e.RuleID).
+		Set("locale_id", e.LocaleID).
 		Set("type", e.Type).
 		Set("attributes", e.Attributes).
 		Set("value", e.Value).

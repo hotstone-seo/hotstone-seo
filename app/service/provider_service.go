@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"text/template"
+
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
@@ -14,7 +17,7 @@ import (
 
 // ProviderService contain logic for ProviderController
 type ProviderService interface {
-	MatchRule(Matcher, MatchRuleRequest) (*MatchRuleResponse, error)
+	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
 	Tags(context.Context, ProvideTagsRequest) ([]*InterpolatedTag, error)
 }
@@ -22,23 +25,24 @@ type ProviderService interface {
 // ProviderServiceImpl is implementation of ProviderService
 type ProviderServiceImpl struct {
 	dig.In
+	MetricsUnmatchedService
 	repository.DataSourceRepo
 	repository.TagRepo
-}
-
-type Matcher interface {
-	Match(url string) (int, map[string]string)
+	urlstore.URLStoreServer
 }
 
 // NewProviderService return new instance of ProviderService
-func NewProviderService() ProviderService {
-	return &ProviderServiceImpl{}
+func NewProviderService(impl ProviderServiceImpl) ProviderService {
+	return &impl
 }
 
 // MatchRule to match rule
-func (*ProviderServiceImpl) MatchRule(matcher Matcher, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
-	ruleID, pathParam := matcher.Match(req.Path)
+func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
+	ruleID, pathParam := p.URLStoreServer.Match(req.Path)
 	if ruleID == -1 {
+		if errRecord := p.MetricsUnmatchedService.Record(ctx, req.Path); errRecord != nil {
+			log.Warnf("Failed to record unmatched metrics: %+v", errRecord)
+		}
 		return nil, errors.New("No rule match")
 	}
 
