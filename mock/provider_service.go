@@ -36,18 +36,18 @@ func (m *MockProviderService) EXPECT() *MockProviderServiceMockRecorder {
 }
 
 // MatchRule mocks base method
-func (m *MockProviderService) MatchRule(arg0 service.MatchRuleRequest) (*service.MatchRuleResponse, error) {
+func (m *MockProviderService) MatchRule(arg0 context.Context, arg1 service.MatchRuleRequest) (*service.MatchRuleResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "MatchRule", arg0)
+	ret := m.ctrl.Call(m, "MatchRule", arg0, arg1)
 	ret0, _ := ret[0].(*service.MatchRuleResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // MatchRule indicates an expected call of MatchRule
-func (mr *MockProviderServiceMockRecorder) MatchRule(arg0 interface{}) *gomock.Call {
+func (mr *MockProviderServiceMockRecorder) MatchRule(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MatchRule", reflect.TypeOf((*MockProviderService)(nil).MatchRule), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MatchRule", reflect.TypeOf((*MockProviderService)(nil).MatchRule), arg0, arg1)
 }
 
 // RetrieveData mocks base method
