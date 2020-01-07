@@ -12,18 +12,51 @@ import (
 )
 
 // Descriptor of hotstone-server
-var Descriptor = &typcore.ProjectDescriptor{
-	Name:      "hotstone-server",
-	Version:   "0.0.1",
-	Package:   "github.com/hotstone-seo/hotstone-server",
-	AppModule: app.Module(),
-	Modules: []interface{}{
-		typdocker.New(),
-		typreadme.New(),
+var (
+	application = app.New()
+	readme      = typreadme.New()
+	server      = typserver.New()
+	redis       = typredis.New()
+	postgres    = typpostgres.New().WithDBName("hotstone")
+	docker      = typdocker.New().WithComposers(redis, postgres)
 
-		typserver.New(),
-		typredis.New(),
-		typpostgres.New().WithDBName("hotstone"),
-	},
-	Releaser: typrls.New(),
-}
+	Descriptor = typcore.ProjectDescriptor{
+		Name:    "hotstone-server",
+		Version: "0.0.1",
+		Package: "github.com/hotstone-seo/hotstone-server",
+
+		App: typcore.NewApp().
+			WithEntryPoint(application).
+			WithProvide(
+				server,
+				redis,
+				postgres,
+			).
+			WithDestroy(
+				server,
+				redis,
+				postgres,
+			).
+			WithPrepare(
+				redis,
+				postgres,
+			),
+
+		BuildCommands: []typcore.BuildCommander{
+			docker,
+			readme,
+			postgres,
+			redis,
+		},
+
+		Configuration: typcore.NewConfiguration().
+			WithConfigure(
+				application,
+				server,
+				redis,
+				postgres,
+			),
+
+		Releaser: typrls.New(),
+	}
+)

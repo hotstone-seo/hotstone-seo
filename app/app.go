@@ -5,14 +5,16 @@ import (
 	"github.com/typical-go/typical-go/pkg/typcore"
 )
 
-// Module of application
-func Module() interface{} {
-	return &module{}
+// New application [nowire]
+func New() *Module {
+	return &Module{}
 }
 
-type module struct{}
+// Module of application
+type Module struct{}
 
-func (*module) Action() interface{} {
+// EntryPoint of application
+func (*Module) EntryPoint() interface{} {
 	return func(s server, m TaskManager) error {
 		if err := m.Start(); err != nil {
 			return err
@@ -24,10 +26,11 @@ func (*module) Action() interface{} {
 	}
 }
 
-func (*module) Configure() (prefix string, spec, loadFn interface{}) {
+// Configure the application
+func (*Module) Configure(loader typcore.ConfigLoader) (prefix string, spec, loadFn interface{}) {
 	prefix = "APP"
 	spec = &config.Config{}
-	loadFn = func(loader typcore.ConfigLoader) (cfg config.Config, err error) {
+	loadFn = func() (cfg config.Config, err error) {
 		err = loader.Load(prefix, &cfg)
 		return
 	}
