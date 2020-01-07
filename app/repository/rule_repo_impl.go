@@ -16,7 +16,7 @@ type RuleRepoImpl struct {
 	*sql.DB
 }
 
-// Find rule
+// FindOne rule
 func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
@@ -32,7 +32,7 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err e
 	return
 }
 
-// List rule
+// Find rule
 func (r *RuleRepoImpl) Find(ctx context.Context) (list []*Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)

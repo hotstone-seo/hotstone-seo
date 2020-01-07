@@ -19,7 +19,7 @@ type CachedLocaleRepoImpl struct {
 	Redis *redis.Client
 }
 
-// Find locale entity
+// FindOne locale entity
 func (r *CachedLocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale, err error) {
 	cacheKey := fmt.Sprintf("LOCALES:FIND:%d", id)
 	e = new(Locale)
@@ -37,7 +37,7 @@ func (r *CachedLocaleRepoImpl) FindOne(ctx context.Context, id int64) (e *Locale
 	return
 }
 
-// List of locale entity
+// Find of locale entity
 func (r *CachedLocaleRepoImpl) Find(ctx context.Context) (list []*Locale, err error) {
 	cacheKey := fmt.Sprintf("LOCALES:LIST")
 	redisClient := r.Redis.WithContext(ctx)

@@ -15,7 +15,7 @@ type URLStoreSyncRepoImpl struct {
 	*sql.DB
 }
 
-// Find urlStoreSync
+// FindOne urlStoreSync
 func (r *URLStoreSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreSync *URLStoreSync, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -32,7 +32,7 @@ func (r *URLStoreSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlS
 	return
 }
 
-// List urlStoreSync
+// Find urlStoreSync
 func (r *URLStoreSyncRepoImpl) Find(ctx context.Context) (list []*URLStoreSync, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -69,6 +69,7 @@ func (r *URLStoreSyncRepoImpl) Insert(ctx context.Context, urlStoreSync URLStore
 	return
 }
 
+// GetLatestVersion of url store
 func (r *URLStoreSyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion int64, err error) {
 	builder := sq.
 		Select("version").

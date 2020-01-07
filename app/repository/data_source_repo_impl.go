@@ -16,7 +16,7 @@ type DataSourceRepoImpl struct {
 	*sql.DB
 }
 
-// Find data_source
+// FindOne data_source
 func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSource, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -36,7 +36,7 @@ func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSour
 	return
 }
 
-// List data_source
+// Find data_source
 func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err error) {
 	var rows *sql.Rows
 	builder := sq.
