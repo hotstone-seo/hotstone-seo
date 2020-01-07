@@ -7,7 +7,7 @@ module.exports = {
   entry: './src/index.js',
   externals: [webpackNodeExternals()],
   output: {
-    path: path.resolve(__dirname + 'lib'),
+    path: path.resolve(__dirname, 'lib'),
     filename: 'hotstone-client.js',
     libraryTarget: 'umd'
   },
