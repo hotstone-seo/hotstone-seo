@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"io/ioutil"
 	"net/http"
 
 	"github.com/hotstone-seo/hotstone-server/app/service"
@@ -41,16 +42,19 @@ func (p *ProviderCntrl) MatchRule(ctx echo.Context) (err error) {
 func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	var (
 		req  service.RetrieveDataRequest
-		data interface{}
+		resp *http.Response
 		ctx  = c.Request().Context()
 	)
 	if err = c.Bind(&req); err != nil {
 		return err
 	}
-	if data, err = p.ProviderService.RetrieveData(ctx, req); err != nil {
+	if resp, err = p.ProviderService.RetrieveData(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return c.JSON(http.StatusOK, data)
+	body, _ := ioutil.ReadAll(resp.Body)
+	c.Response().WriteHeader(resp.StatusCode)
+	_, err = c.Response().Write(body)
+	return
 }
 
 func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
