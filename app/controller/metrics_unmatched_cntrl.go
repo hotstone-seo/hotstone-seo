@@ -22,10 +22,6 @@ type MetricsUnmatchedCntrl struct {
 // Route to define API Route
 func (c *MetricsUnmatchedCntrl) Route(e *echo.Echo) {
 	e.GET("metrics_unmatched", c.List)
-	e.POST("metrics_unmatched", c.Create)
-	e.GET("metrics_unmatched/:id", c.Get)
-	e.PUT("metrics_unmatched", c.Update)
-	e.DELETE("metrics_unmatched/:id", c.Delete)
 }
 
 // Create metrics_unmatched
