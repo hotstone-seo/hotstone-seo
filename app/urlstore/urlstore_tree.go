@@ -1,6 +1,6 @@
 package urlstore
 
-// Copyright 2019 Tiket.Com. Modifications: 1) 'id' of node 2) Delete node by ID
+// Copyright 2019 hotstone-seo. Modifications: 1) 'id' of node 2) Delete node by ID
 // Copyright 2016 Qiang Xue. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-// URLStoreTree
+// URLStoreTree [nomock]
 type URLStoreTree interface {
 	Add(id int, key string, data interface{}) int
 	Get(path string, pvalues []string) (data interface{}, pnames []string)
@@ -30,8 +30,8 @@ type urlStoreTreeImpl struct {
 	count int   // the number of data nodes in the tree
 }
 
-// newURLStoreTree creates a new store.
-func newURLStoreTree() URLStoreTree {
+// NewURLStoreTree creates a new store. [nowire]
+func NewURLStoreTree() URLStoreTree {
 	return &urlStoreTreeImpl{
 		root: &node{
 			static:      true,

@@ -19,7 +19,7 @@ type CachedTagRepoImpl struct {
 	Redis *redis.Client
 }
 
-// Find tag entity
+// FindOne tag
 func (r *CachedTagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error) {
 	cacheKey := fmt.Sprintf("TAGS:FIND:%d", id)
 	e = new(Tag)
@@ -37,7 +37,7 @@ func (r *CachedTagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err 
 	return
 }
 
-// List of tag entity
+// Find tags
 func (r *CachedTagRepoImpl) Find(ctx context.Context) (list []*Tag, err error) {
 	cacheKey := fmt.Sprintf("TAGS:LIST")
 	redisClient := r.Redis.WithContext(ctx)

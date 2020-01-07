@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/hotstone-seo/hotstone-server/app/service"
-	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
@@ -14,7 +13,6 @@ import (
 type ProviderCntrl struct {
 	dig.In
 	service.ProviderService
-	urlstore.URLStoreServer
 }
 
 // Route to define API Route
@@ -33,7 +31,7 @@ func (p *ProviderCntrl) MatchRule(ctx echo.Context) (err error) {
 	if err = ctx.Bind(&req); err != nil {
 		return err
 	}
-	if resp, err = p.ProviderService.MatchRule(p.URLStoreServer, req); err != nil {
+	if resp, err = p.ProviderService.MatchRule(req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, resp)

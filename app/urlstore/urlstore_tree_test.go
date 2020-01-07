@@ -1,14 +1,15 @@
-// Copyright 2019 Tiket.Com. Modifications: 1) 'id' of node 2) Delete node by ID
+package urlstore_test
+
+// Copyright 2019 hotstone-seo. Modifications: 1) 'id' of node 2) Delete node by ID
 // Copyright 2016 Qiang Xue. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-
-package urlstore
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,7 +50,7 @@ func testStorePlay(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := newURLStoreTree()
+		h := urlstore.NewURLStoreTree()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -159,7 +160,7 @@ func TestStoreAdd(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := newURLStoreTree()
+		h := urlstore.NewURLStoreTree()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -190,7 +191,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 		{15, "", "15"},
 		{16, "/all/<:.*>", "16"},
 	}
-	h := newURLStoreTree()
+	h := urlstore.NewURLStoreTree()
 	maxParams := 0
 	for _, pair := range pairs {
 		// fmt.Printf("=== ID (by order): %d\n", pair.id)

@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"text/template"
 
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
+
 	"github.com/hotstone-seo/hotstone-server/app/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
@@ -14,7 +16,7 @@ import (
 
 // ProviderService contain logic for ProviderController
 type ProviderService interface {
-	MatchRule(Matcher, MatchRuleRequest) (*MatchRuleResponse, error)
+	MatchRule(MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
 	Tags(context.Context, ProvideTagsRequest) ([]*InterpolatedTag, error)
 }
@@ -24,10 +26,7 @@ type ProviderServiceImpl struct {
 	dig.In
 	repository.DataSourceRepo
 	repository.TagRepo
-}
-
-type Matcher interface {
-	Match(url string) (int, map[string]string)
+	urlstore.URLStoreServer
 }
 
 // NewProviderService return new instance of ProviderService
@@ -36,8 +35,8 @@ func NewProviderService() ProviderService {
 }
 
 // MatchRule to match rule
-func (*ProviderServiceImpl) MatchRule(matcher Matcher, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
-	ruleID, pathParam := matcher.Match(req.Path)
+func (p *ProviderServiceImpl) MatchRule(req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
+	ruleID, pathParam := p.URLStoreServer.Match(req.Path)
 	if ruleID == -1 {
 		return nil, errors.New("No rule match")
 	}
