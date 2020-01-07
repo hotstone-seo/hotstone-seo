@@ -3,10 +3,12 @@ package service
 import (
 	"bytes"
 	"context"
-	"errors"
-	log "github.com/sirupsen/logrus"
+	"fmt"
 	"net/http"
+	"net/url"
 	"text/template"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 
@@ -38,12 +40,17 @@ func NewProviderService(impl ProviderServiceImpl) ProviderService {
 
 // MatchRule to match rule
 func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
-	ruleID, pathParam := p.URLStoreServer.Match(req.Path)
+	url, err := url.Parse(req.Path)
+	if err != nil {
+		return
+	}
+
+	ruleID, pathParam := p.URLStoreServer.Match(url.Path)
 	if ruleID == -1 {
-		if errRecord := p.MetricsUnmatchedService.Record(ctx, req.Path); errRecord != nil {
+		if errRecord := p.MetricsUnmatchedService.Record(ctx, url.Path); errRecord != nil {
 			log.Warnf("Failed to record unmatched metrics: %+v", errRecord)
 		}
-		return nil, errors.New("No rule match")
+		return nil, fmt.Errorf("No rule match: %s", url.Path)
 	}
 
 	resp = &MatchRuleResponse{RuleID: int64(ruleID), PathParam: pathParam}
