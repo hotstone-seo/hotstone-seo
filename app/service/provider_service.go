@@ -30,8 +30,8 @@ type ProviderServiceImpl struct {
 }
 
 // NewProviderService return new instance of ProviderService
-func NewProviderService() ProviderService {
-	return &ProviderServiceImpl{}
+func NewProviderService(impl ProviderServiceImpl) ProviderService {
+	return &impl
 }
 
 // MatchRule to match rule
