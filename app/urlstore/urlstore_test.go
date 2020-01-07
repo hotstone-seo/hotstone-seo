@@ -1,16 +1,15 @@
-package urlstore
+package urlstore_test
 
 import (
 	"testing"
 
+	"github.com/hotstone-seo/hotstone-server/app/urlstore"
 	"github.com/stretchr/testify/require"
 )
 
 func TestURLStoreImpl_GetURL(t *testing.T) {
-
 	t.Run("WHEN static url not exist", func(t *testing.T) {
 		store := buildStore(t)
-
 		id, varMap := store.Get("/gopher/doc.jpg")
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
@@ -18,7 +17,6 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 
 	t.Run("WHEN static url exist", func(t *testing.T) {
 		store := buildStore(t)
-
 		id, varMap := store.Get("/gopher/doc.png")
 		require.Equal(t, 6, id)
 		require.Empty(t, varMap)
@@ -26,7 +24,6 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 
 	t.Run("WHEN param url not exist", func(t *testing.T) {
 		store := buildStore(t)
-
 		id, varMap := store.Get("/users/def/abc")
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
@@ -34,10 +31,8 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 
 	t.Run("WHEN param url exist", func(t *testing.T) {
 		store := buildStore(t)
-
 		id, varMap := store.Get("/users/def/123")
 		require.Equal(t, 12, id)
-
 		require.Equal(t, 2, len(varMap))
 		require.Equal(t, "def", varMap["id"])
 		require.Equal(t, "123", varMap["accnt"])
@@ -48,10 +43,8 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 
 	t.Run("WHEN new static url added AND id not exist before", func(t *testing.T) {
 		store := buildStore(t)
-
 		url := "/gopher/doc.jpg"
 		store.Add(20, url)
-
 		id, varMap := store.Get(url)
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
@@ -60,21 +53,16 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 
 	t.Run("WHEN new static url added AND id exist before THEN double data added (with same id)", func(t *testing.T) {
 		store := buildStore(t)
+		store.Add(20, "/gopher/old.jpg")
+		store.Add(20, "/gopher/new.img")
 
-		oldUrl := "/gopher/doc.jpg"
-		newUrl := "/gopher/doc.img"
-
-		store.Add(20, oldUrl)
-		store.Add(20, newUrl)
-
-		id, varMap := store.Get(newUrl)
+		id, varMap := store.Get("/gopher/new.img")
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
 
-		id, varMap = store.Get(oldUrl)
+		id, varMap = store.Get("/gopher/old.jpg")
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
-
 		require.Equal(t, 11, store.Count())
 	})
 }
@@ -82,19 +70,15 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 func TestURLStoreImpl_UpdateURL(t *testing.T) {
 	t.Run("WHEN existing static url updated with different url", func(t *testing.T) {
 		store := buildStore(t)
+		store.Update(6, "/gopher/updated.bmp")
 
-		oldUrl := "/gopher/doc.png"
-		updatedUrl := "/gopher/doc.bmp"
-		store.Update(6, updatedUrl)
-
-		id, varMap := store.Get(oldUrl)
+		id, varMap := store.Get("/gopher/old.png")
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
 
-		id, varMap = store.Get(updatedUrl)
+		id, varMap = store.Get("/gopher/updated.bmp")
 		require.Equal(t, 6, id)
 		require.Equal(t, 0, len(varMap))
-
 		require.Equal(t, 9, store.Count())
 	})
 }
@@ -102,20 +86,17 @@ func TestURLStoreImpl_UpdateURL(t *testing.T) {
 func TestURLStoreImpl_DeleteURL(t *testing.T) {
 	t.Run("WHEN existing static url deleted", func(t *testing.T) {
 		store := buildStore(t)
-
 		require.Equal(t, true, store.Delete(6))
 
 		id, varMap := store.Get("/gopher/doc.png")
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
-
 		require.Equal(t, false, store.Delete(6))
-
 		require.Equal(t, 8, store.Count())
 	})
 }
 
-func buildStore(t *testing.T) URLStore {
+func buildStore(t *testing.T) urlstore.URLStore {
 	t.Helper()
 
 	pairs := []struct {
@@ -133,7 +114,7 @@ func buildStore(t *testing.T) URLStore {
 		{14, "/users/abc/<id>/<name>", "14"},
 	}
 
-	store := newURLStoreTree()
+	store := urlstore.NewURLStoreTree()
 
 	for _, pair := range pairs {
 		store.Add(pair.id, pair.key, pair.value)
@@ -141,5 +122,5 @@ func buildStore(t *testing.T) URLStore {
 
 	require.Equal(t, 9, store.Count())
 
-	return &URLStoreImpl{store: store}
+	return &urlstore.URLStoreImpl{URLStoreTree: store}
 }
