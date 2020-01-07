@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"text/template"
 
@@ -16,7 +17,7 @@ import (
 
 // ProviderService contain logic for ProviderController
 type ProviderService interface {
-	MatchRule(MatchRuleRequest) (*MatchRuleResponse, error)
+	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
 	Tags(context.Context, ProvideTagsRequest) ([]*InterpolatedTag, error)
 }
@@ -24,6 +25,7 @@ type ProviderService interface {
 // ProviderServiceImpl is implementation of ProviderService
 type ProviderServiceImpl struct {
 	dig.In
+	MetricsUnmatchedService
 	repository.DataSourceRepo
 	repository.TagRepo
 	urlstore.URLStoreServer
@@ -35,9 +37,12 @@ func NewProviderService(impl ProviderServiceImpl) ProviderService {
 }
 
 // MatchRule to match rule
-func (p *ProviderServiceImpl) MatchRule(req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
+func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
 	ruleID, pathParam := p.URLStoreServer.Match(req.Path)
 	if ruleID == -1 {
+		if errRecord := p.MetricsUnmatchedService.Record(ctx, req.Path); errRecord != nil {
+			log.Warnf("Failed to record unmatched metrics: %+v", errRecord)
+		}
 		return nil, errors.New("No rule match")
 	}
 
