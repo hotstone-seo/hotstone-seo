@@ -37,13 +37,14 @@ services:
   grafana:
     image: "grafana/grafana"
     environment:
+      - GF_SERVER_HTTP_PORT=3001
       - GF_SECURITY_ADMIN_PASSWORD=pass # user='admin' pass='pass'
       - GF_SECURITY_ALLOW_EMBEDDING=true
       - GF_AUTH_ANONYMOUS_ENABLED=true
     # volumes:
     #   - "$PWD/grafana-data:/var/lib/grafana"
     ports:
-      - "3000:3000"
+      - "3001:3001"
     networks:
       - net-metrics
 
