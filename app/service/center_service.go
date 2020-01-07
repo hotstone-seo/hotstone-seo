@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-server/app/repository"
@@ -31,9 +32,11 @@ func NewCenterService(impl CenterServiceImpl) CenterService {
 // AddMetaTag to add metaTag
 func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagRequest) (lastInsertedID int64, err error) {
 	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
+		RuleID:     req.RuleID,
+		LocaleID:   req.LocaleID,
 		Type:       "meta",
-		Attributes: dbkit.JSON(`{}`),
-		Value:      req.Content,
+		Attributes: dbkit.JSON(fmt.Sprintf(`{"name":"%s", "content":"%s"}`, req.Name, req.Content)),
+		Value:      "",
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 	})

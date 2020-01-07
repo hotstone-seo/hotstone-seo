@@ -2,8 +2,10 @@ package service
 
 // AddMetaTagRequest is request model for addMetaTag method
 type AddMetaTagRequest struct {
-	Name    string `json:"name"`
-	Content string `json:"content"`
+	RuleID   int64  `json:"rule_id"`
+	LocaleID int64  `json:"locale_id"`
+	Name     string `json:"name"`
+	Content  string `json:"content"`
 }
 
 // AddTitleTagRequest is request model for addTitleTag method
