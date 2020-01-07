@@ -57,6 +57,37 @@ func (r *MetricsUnmatchedRepoImpl) List(ctx context.Context) (list []*MetricsUnm
 	return
 }
 
+func (r *MetricsUnmatchedRepoImpl) ListCount(ctx context.Context) (list []*MetricsUnmatchedCount, err error) {
+	var rows *sql.Rows
+
+	subQuery := sq.
+		Select("request_path").
+		Column("count(request_path)").
+		Column(sq.Alias(sq.Expr("max(created_at)"), "since")).
+		From("metrics_unmatched").
+		GroupBy("request_path").
+		PlaceholderFormat(sq.Dollar)
+
+	builder := sq.
+		Select("request_path", "count", "since").
+		FromSelect(subQuery, "u").
+		OrderBy("u.since desc", "u.count desc").
+		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+
+	if rows, err = builder.QueryContext(ctx); err != nil {
+		return
+	}
+	list = make([]*MetricsUnmatchedCount, 0)
+	for rows.Next() {
+		var e0 MetricsUnmatchedCount
+		if err = rows.Scan(&e0.RequestPath, &e0.Count, &e0.Since); err != nil {
+			return
+		}
+		list = append(list, &e0)
+	}
+	return
+}
+
 // Insert metrics_unmatched
 func (r *MetricsUnmatchedRepoImpl) Insert(ctx context.Context, e MetricsUnmatched) (lastInsertID int64, err error) {
 	builder := sq.
