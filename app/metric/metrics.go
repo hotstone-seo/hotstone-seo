@@ -38,12 +38,28 @@ func InitializeLatencyTracking(ctx context.Context) context.Context {
 	return context.WithValue(ctx, startTimeKey, time.Now())
 }
 
-// RecordLatency ...
-func RecordLatency(ctx context.Context) {
+// recordLatency ...
+func recordLatency(ctx context.Context) {
 	startTimeVal := ctx.Value(startTimeKey)
 	if startTime, ok := startTimeVal.(time.Time); ok {
 		stats.Record(ctx, MLatencyMs.M(sinceInMilliseconds(startTime)))
 	}
+}
+
+func recordIsMatched(ctx context.Context, isMatched string) {
+	// TODO
+}
+
+func recordMismatchedPath(ctx context.Context, mismatchedPath string) {
+	// TODO
+}
+
+func RecordMatched(ctx context.Context) {
+	recordIsMatched(ctx, "matched")
+}
+
+func RecordMismatched(ctx context.Context, mismatchedPath string) {
+	recordIsMatched(ctx, "mismatched")
 }
 
 // AddIsMatchedTag ...

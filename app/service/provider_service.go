@@ -51,6 +51,8 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 			log.Warnf("Failed to record unmatched metrics: %+v", errRecord)
 		}
 		return nil, fmt.Errorf("No rule match: %s", url.Path)
+	} else {
+
 	}
 
 	resp = &MatchRuleResponse{RuleID: int64(ruleID), PathParam: pathParam}
