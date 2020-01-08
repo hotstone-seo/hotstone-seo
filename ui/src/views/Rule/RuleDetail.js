@@ -298,7 +298,7 @@ class RuleDetail extends Component {
       //           </Card>
       //         </Col>
       //       </Row>
-           ))}
+      //     ))}
 
       //     <Row>
       //       <Col>
