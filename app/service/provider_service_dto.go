@@ -15,7 +15,7 @@ type RetrieveDataRequest struct {
 }
 
 type ProvideTagsRequest struct {
-	RuleID int64       `json:"rule_id"`
-	Locale string      `json:"locale"`
-	Data   interface{} `json:"data"`
+	RuleID   int64       `json:"rule_id"`
+	LocaleID int64       `json:"locale"`
+	Data     interface{} `json:"data"`
 }
