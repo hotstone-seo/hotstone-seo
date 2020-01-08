@@ -1,9 +1,9 @@
 package typical
 
 import (
-	"github.com/hotstone-seo/hotstone-server/app"
-	"github.com/hotstone-seo/hotstone-server/pkg/grafana"
-	"github.com/hotstone-seo/hotstone-server/pkg/prometheus"
+	"github.com/hotstone-seo/hotstone-seo/app"
+	"github.com/hotstone-seo/hotstone-seo/pkg/grafana"
+	"github.com/hotstone-seo/hotstone-seo/pkg/prometheus"
 	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typrls"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
@@ -13,7 +13,7 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
-// Descriptor of hotstone-server
+// Descriptor of hotstone-seo
 var (
 	application = app.New()
 	readme      = typreadme.New()
@@ -30,9 +30,9 @@ var (
 		)
 
 	Descriptor = typcore.ProjectDescriptor{
-		Name:    "hotstone-server",
+		Name:    "hotstone-seo",
 		Version: "0.0.1",
-		Package: "github.com/hotstone-seo/hotstone-server",
+		Package: "github.com/hotstone-seo/hotstone-seo",
 
 		App: typcore.NewApp().
 			WithEntryPoint(application).

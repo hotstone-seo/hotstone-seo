@@ -7,7 +7,7 @@ package mock
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	repository "github.com/hotstone-seo/hotstone-server/app/repository"
+	repository "github.com/hotstone-seo/hotstone-seo/app/repository"
 	reflect "reflect"
 )
 
