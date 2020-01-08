@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/hotstone-seo/hotstone-server/app/config"
+	"github.com/hotstone-seo/hotstone-server/app/metric"
 	"github.com/typical-go/typical-go/pkg/typcore"
 )
 
@@ -15,8 +16,12 @@ type Module struct{}
 
 // EntryPoint of application
 func (*Module) EntryPoint() interface{} {
-	return func(s server, m TaskManager) error {
+	return func(s server, metricServer metric.MetricServer, m TaskManager) error {
 		if err := m.Start(); err != nil {
+			return err
+		}
+
+		if err := metricServer.Start(); err != nil {
 			return err
 		}
 
