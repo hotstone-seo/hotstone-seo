@@ -19,7 +19,7 @@ type ProviderCntrl struct {
 func (c *ProviderCntrl) Route(e *echo.Echo) {
 	e.POST("provider/matchRule", c.MatchRule)
 	e.POST("provider/retrieveData", c.RetrieveData)
-	e.GET("provider/tags", c.Tags)
+	e.POST("provider/tags", c.Tags)
 }
 
 // MatchRule to match rule
@@ -45,7 +45,7 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 		ctx  = c.Request().Context()
 	)
 	if err = c.Bind(&req); err != nil {
-		return err
+		return
 	}
 	if resp, err = p.ProviderService.RetrieveData(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
@@ -58,12 +58,14 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 
 func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	var (
+		req  service.ProvideTagsRequest
 		tags []*service.InterpolatedTag
 		ctx  = c.Request().Context()
 	)
-	if tags, err = p.ProviderService.Tags(ctx, service.ProvideTagsRequest{
-		RuleID: 0, // TODO: get from body
-	}); err != nil {
+	if err = c.Bind(&req); err != nil {
+		return
+	}
+	if tags, err = p.ProviderService.Tags(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, tags)
