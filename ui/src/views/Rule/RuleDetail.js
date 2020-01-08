@@ -79,7 +79,8 @@ class RuleDetail extends Component {
       titleTagFormVisible: false,
       ruleIdParam: 0,
       rules: [],
-      warning: false
+      warning: false,
+      warningAPI: false
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -91,6 +92,8 @@ class RuleDetail extends Component {
     this.handleCancelAddMetaTag = this.handleCancelAddMetaTag.bind(this);
     this.handleCancelAddScriptTag = this.handleCancelAddScriptTag.bind(this);
     this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
+
+    this.handleDelete = this.handleDelete.bind(this);
   }
   componentDidMount() {
     const query = parseQuery((window.location || {}).search || "");
@@ -224,6 +227,25 @@ class RuleDetail extends Component {
       errorMessage: errmsg
     });
   }
+  toggleWarning() {
+    this.setState({
+      warning: !this.state.warning
+    });
+  }
+
+  handleDelete(id) {
+    axios
+      .delete(this.state.URL_API + `/${id}`)
+      .then(() => {
+        const { tags } = this.state;
+        this.setState({ rules: tags.filter(tag => tag.id !== id) });
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
+      });
+    this.toggleWarning();
+  }
+
   render() {
     const { rules } = this.state;
 
@@ -324,13 +346,17 @@ class RuleDetail extends Component {
                   </thead>
                   <tbody>
                     <tr>
-                      <td>Canonical</td>
-                      <td>xxx</td>
-                      <td>http://tiket.com/asad</td>
-                      <td>ID</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
                       <td>
                         <NavLink href="#" onClick={this.handleEdit}>
                           Edit
+                        </NavLink>
+
+                        <NavLink href="#" onClick={this.handleDelete}>
+                          Delete
                         </NavLink>
                       </td>
                     </tr>
