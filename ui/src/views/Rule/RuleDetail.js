@@ -19,8 +19,6 @@ import {
   Table
 } from "reactstrap";
 
-import PropTypes from "prop-types";
-
 import CanonicalForm from "../Canonical/CanonicalForm";
 import MetaTagForm from "../Metatag/MetatagForm";
 import ScriptTagForm from "../Scripttag/ScripttagForm";
@@ -252,197 +250,191 @@ class RuleDetail extends Component {
     const { rules } = this.state;
 
     return (
-      <div>Ini rule details</div>
-      //   <div className="animated fadeIn">
-      //     {rules.map((rule, index) => (
-      //       <Row key={index}>
-      //         <Col xs="12" md="9" lg="6">
-      //           <Card>
-      //             <CardHeader>
-      //               <strong>Detail Rule ID {rule.id}</strong>
-      //             </CardHeader>
-      //             <CardBody>
-      //               <Form
-      //                 action=""
-      //                 method="post"
-      //                 encType="multipart/form-data"
-      //                 className="form-horizontal"
-      //               >
-      //                 <FormGroup row>
-      //                   <Col md="3">
-      //                     <Label htmlFor="text-input">Name</Label>
-      //                   </Col>
-      //                   <Col xs="12" md="9">
-      //                     {rule.name}
-      //                   </Col>
-      //                 </FormGroup>
-      //                 <FormGroup row>
-      //                   <Col md="3">
-      //                     <Label htmlFor="text-input">URL Pattern</Label>
-      //                   </Col>
-      //                   <Col xs="12" md="9">
-      //                     {rule.url_pattern}
-      //                   </Col>
-      //                 </FormGroup>
+      <div className="animated fadeIn">
+        {rules.map((rule, index) => (
+          <Row key={index}>
+            <Col xs="12" md="9" lg="6">
+              <Card>
+                <CardHeader>
+                  <strong>Detail Rule ID {rule.id}</strong>
+                </CardHeader>
+                <CardBody>
+                  <Form
+                    action=""
+                    method="post"
+                    encType="multipart/form-data"
+                    className="form-horizontal"
+                  >
+                    <FormGroup row>
+                      <Col md="3">
+                        <Label htmlFor="text-input">Name</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        {rule.name}
+                      </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                      <Col md="3">
+                        <Label htmlFor="text-input">URL Pattern</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        {rule.url_pattern}
+                      </Col>
+                    </FormGroup>
 
-      //                 <FormGroup row>
-      //                   <Col md="3">
-      //                     <Label htmlFor="text-input">Data Source</Label>
-      //                   </Col>
-      //                   <Col xs="12" md="9">
-      //                     Airport
-      //                   </Col>
-      //                 </FormGroup>
-      //               </Form>
-      //             </CardBody>
-      //           </Card>
-      //         </Col>
-      //       </Row>
-      //     ))}
+                    <FormGroup row>
+                      <Col md="3">
+                        <Label htmlFor="text-input">Data Source</Label>
+                      </Col>
+                      <Col xs="12" md="9">
+                        Airport
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+        ))}
 
-      //     <Row>
-      //       <Col>
-      //         <Card>
-      //           <CardHeader>
-      //             <i className="fa fa-align-justify"></i>
-      //           </CardHeader>
-      //           <CardBody>
-      //             <div style={{ marginBottom: ".5rem" }}>
-      //               <Button
-      //                 color="primary"
-      //                 onClick={() => this.showForm()}
-      //                 style={{ marginRight: "0.4em" }}
-      //               >
-      //                 Add New Canonical
-      //               </Button>
-      //               <Button
-      //                 color="primary"
-      //                 onClick={() => this.showFormMetaTag()}
-      //                 style={{ marginRight: "0.4em" }}
-      //               >
-      //                 Add New Meta-Tag
-      //               </Button>
-      //               <Button
-      //                 color="primary"
-      //                 onClick={() => this.showFormScriptTag()}
-      //                 style={{ marginRight: "0.4em" }}
-      //               >
-      //                 Add New Script Tag
-      //               </Button>
-      //               <Button
-      //                 color="primary"
-      //                 onClick={() => this.showFormTitleTag()}
-      //                 style={{ marginRight: "0.4em" }}
-      //               >
-      //                 Add New Title-Tag
-      //               </Button>
-      //             </div>
-      //             <Table responsive bordered>
-      //               <thead>
-      //                 <tr>
-      //                   <th>Type</th>
-      //                   <th>Attribute</th>
-      //                   <th>Value</th>
-      //                   <td>Language</td>
-      //                   <th>Action</th>
-      //                 </tr>
-      //               </thead>
-      //               <tbody>
-      //                 <tr>
-      //                   <td></td>
-      //                   <td></td>
-      //                   <td></td>
-      //                   <td></td>
-      //                   <td>
-      //                     <NavLink href="#" onClick={this.handleEdit}>
-      //                       Edit
-      //                     </NavLink>
+        <Row>
+          <Col>
+            <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i>
+              </CardHeader>
+              <CardBody>
+                <div style={{ marginBottom: ".5rem" }}>
+                  <Button
+                    color="primary"
+                    onClick={() => this.showForm()}
+                    style={{ marginRight: "0.4em" }}
+                  >
+                    Add New Canonical
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => this.showFormMetaTag()}
+                    style={{ marginRight: "0.4em" }}
+                  >
+                    Add New Meta-Tag
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => this.showFormScriptTag()}
+                    style={{ marginRight: "0.4em" }}
+                  >
+                    Add New Script Tag
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => this.showFormTitleTag()}
+                    style={{ marginRight: "0.4em" }}
+                  >
+                    Add New Title-Tag
+                  </Button>
+                </div>
+                <Table responsive bordered>
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Attribute</th>
+                      <th>Value</th>
+                      <td>Language</td>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <NavLink href="#" onClick={this.handleEdit}>
+                          Edit
+                        </NavLink>
 
-      //                     <NavLink href="#" onClick={this.handleDelete}>
-      //                       Delete
-      //                     </NavLink>
-      //                   </td>
-      //                 </tr>
-      //               </tbody>
-      //             </Table>
-      //             <nav>
-      //               <Pagination>
-      //                 <PaginationItem>
-      //                   <PaginationLink previous tag="button">
-      //                     Prev
-      //                   </PaginationLink>
-      //                 </PaginationItem>
-      //                 <PaginationItem active>
-      //                   <PaginationLink tag="button">1</PaginationLink>
-      //                 </PaginationItem>
-
-      //                 <PaginationItem>
-      //                   <PaginationLink next tag="button">
-      //                     Next
-      //                   </PaginationLink>
-      //                 </PaginationItem>
-      //               </Pagination>
-      //             </nav>
-      //           </CardBody>
-      //         </Card>
-      //         <CanonicalForm
-      //           visible={this.state.canonicalFormVisible}
-      //           onCancel={this.handleCancelAddCanonical}
-      //           onSave={this.handleSave}
-      //           canonical={this.state.record}
-      //           action={this.state.actionForm}
-      //           onChange={this.handleOnChange.bind(this)}
-      //         />
-      //         <MetaTagForm
-      //           visible={this.state.metaTagFormVisible}
-      //           onCancel={this.handleCancelAddMetaTag}
-      //           onSave={this.handleSave}
-      //           metatag={this.state.record}
-      //           action={this.state.actionForm}
-      //           onChange={this.handleMetaTagOnChange.bind(this)}
-      //         />
-      //         <ScriptTagForm
-      //           visible={this.state.scriptTagFormVisible}
-      //           onCancel={this.handleCancelAddScriptTag}
-      //           onSave={this.handleSave}
-      //           scripttag={this.state.record}
-      //           action={this.state.actionForm}
-      //           onChange={this.handleOnChange.bind(this)}
-      //         />
-      //         <TitleTagForm
-      //           visible={this.state.titleTagFormVisible}
-      //           onCancel={this.handleCancelAddTitleTag}
-      //           onSave={this.handleSave}
-      //           titletag={this.state.record}
-      //           action={this.state.actionForm}
-      //           onChange={this.handleOnChange.bind(this)}
-      //         />
-      //         <Modal
-      //           isOpen={this.state.warningAPI}
-      //           toggle={this.toggleWarningAPI}
-      //           className={"modal-warning " + this.props.className}
-      //         >
-      //           <ModalHeader toggle={this.toggleWarningAPI}>
-      //             Information
-      //           </ModalHeader>
-      //           <ModalBody>
-      //             <span>{this.state.errorMessage}</span>
-      //             <br></br>
-      //             <span>
-      //               Sorry, failed to connect API. API currently not available/API
-      //               in problem
-      //             </span>
-      //           </ModalBody>
-      //         </Modal>
-      //       </Col>
-      //     </Row>
-      //   </div>
+                        <NavLink href="#" onClick={this.handleDelete}>
+                          Delete
+                        </NavLink>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+                <nav>
+                  <Pagination>
+                    <PaginationItem>
+                      <PaginationLink previous tag="button">
+                        Prev
+                      </PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem active>
+                      <PaginationLink tag="button">1</PaginationLink>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <PaginationLink next tag="button">
+                        Next
+                      </PaginationLink>
+                    </PaginationItem>
+                  </Pagination>
+                </nav>
+              </CardBody>
+            </Card>
+            <CanonicalForm
+              visible={this.state.canonicalFormVisible}
+              onCancel={this.handleCancelAddCanonical}
+              onSave={this.handleSave}
+              canonical={this.state.record}
+              action={this.state.actionForm}
+              onChange={this.handleOnChange.bind(this)}
+            />
+            <MetaTagForm
+              visible={this.state.metaTagFormVisible}
+              onCancel={this.handleCancelAddMetaTag}
+              onSave={this.handleSave}
+              metatag={this.state.record}
+              action={this.state.actionForm}
+              onChange={this.handleMetaTagOnChange.bind(this)}
+            />
+            <ScriptTagForm
+              visible={this.state.scriptTagFormVisible}
+              onCancel={this.handleCancelAddScriptTag}
+              onSave={this.handleSave}
+              scripttag={this.state.record}
+              action={this.state.actionForm}
+              onChange={this.handleOnChange.bind(this)}
+            />
+            <TitleTagForm
+              visible={this.state.titleTagFormVisible}
+              onCancel={this.handleCancelAddTitleTag}
+              onSave={this.handleSave}
+              titletag={this.state.record}
+              action={this.state.actionForm}
+              onChange={this.handleOnChange.bind(this)}
+            />
+            <Modal
+              isOpen={this.state.warningAPI}
+              toggle={this.toggleWarningAPI}
+              className={"modal-warning " + this.props.className}
+            >
+              <ModalHeader toggle={this.toggleWarningAPI}>
+                Information
+              </ModalHeader>
+              <ModalBody>
+                <span>{this.state.errorMessage}</span>
+                <br></br>
+                <span>
+                  Sorry, failed to connect API. API currently not available/API
+                  in problem
+                </span>
+              </ModalBody>
+            </Modal>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }
-RuleDetail.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string
-  }).isRequired
-};
+
 export default RuleDetail;
