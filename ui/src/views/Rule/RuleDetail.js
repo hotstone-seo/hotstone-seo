@@ -91,7 +91,7 @@ class RuleDetail extends Component {
     this.handleAddNewScript = this.handleAddNewScript.bind(this);
     this.handleAddNewTitle = this.handleAddNewTitle.bind(this);
     this.handleCancelAddCanonical = this.handleCancelAddCanonical.bind(this);
-    this.handleCancelAddMetaTag = this.handleCancelAddMetaTag.bind(this);
+
     this.handleCancelAddScriptTag = this.handleCancelAddScriptTag.bind(this);
     this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
 
@@ -106,8 +106,6 @@ class RuleDetail extends Component {
       .then(res => {
         const { data: resData } = res || {};
         const rulesdata = resData;
-        console.log(rulesdata, "rulesdataInDidMount");
-
         this.setState({ rules: [...rules, rulesdata] });
       })
       .catch(error => {
@@ -257,7 +255,7 @@ class RuleDetail extends Component {
 
     if (isUpdate) {
       /*axios
-        .put(this.state.URL_API, metaTagFormValues)
+        .put(this.state.URL_TAG_API, metaTagFormValues)
         .then(() => {
           const index = rules.findIndex(rul => rul.id === record.id);
           if (index > -1) {
@@ -432,8 +430,8 @@ class RuleDetail extends Component {
             />
             <MetaTagForm
               visible={this.state.metaTagFormVisible}
-              onCancel={this.handleCancelAddMetaTag}
-              onSave={this.handleSaveMetaTag}
+              onCancel={this.handleCancelAddMetaTag.bind(this)}
+              onSave={this.handleSaveMetaTag.bind(this)}
               metatag={this.state.record}
               action={this.state.actionForm}
               onChange={this.handleMetaTagOnChange.bind(this)}
