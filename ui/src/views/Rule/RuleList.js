@@ -1,8 +1,20 @@
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { Button, Card, CardBody, CardHeader, Col, Modal, ModalBody, ModalFooter, ModalHeader, Table, NavLink } from 'reactstrap';
-import RuleForm from './RuleForm';
+import axios from "axios";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Col,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Table,
+  NavLink
+} from "reactstrap";
+import RuleForm from "./RuleForm";
 
 class RuleList extends Component {
   constructor(props) {
@@ -20,9 +32,9 @@ class RuleList extends Component {
         url_pattern: null,
         data_source_id: null
       },
-      URL_API: process.env.REACT_APP_API_URL + 'rules',
+      URL_API: process.env.REACT_APP_API_URL + "rules",
       warningAPI: false,
-      errorMessage: "",
+      errorMessage: ""
     };
 
     this.handleDelete = this.handleDelete.bind(this);
@@ -32,17 +44,17 @@ class RuleList extends Component {
     this.toggleWarning = this.toggleWarning.bind(this);
     this.saveFormRef = this.saveFormRef.bind(this);
 
-    this.handleCloseWarningAPI=this.handleCloseWarningAPI.bind(this);
+    this.handleCloseWarningAPI = this.handleCloseWarningAPI.bind(this);
     this.toggleWarningAPI = this.toggleWarningAPI.bind(this);
   }
   toggle() {
     this.setState({
-      modal: !this.state.modal,
+      modal: !this.state.modal
     });
   }
   toggleWarning() {
     this.setState({
-      warning: !this.state.warning,
+      warning: !this.state.warning
     });
   }
   toggleWarningAPI(errmsg) {
@@ -52,12 +64,14 @@ class RuleList extends Component {
     });
   }
   getRuleList() {
-    axios.get(this.state.URL_API)
-      .then((res) => {
+    axios
+      .get(this.state.URL_API)
+      .then(res => {
         const rules = res.data;
         this.setState({ rules });
-      }).catch((error) => {
-        this.toggleWarningAPI(error.message)
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
       });
   }
   componentDidMount() {
@@ -65,22 +79,22 @@ class RuleList extends Component {
   }
 
   handleDelete(id) {
-    axios.delete(this.state.URL_API + `/${id}`)
+    axios
+      .delete(this.state.URL_API + `/${id}`)
       .then(() => {
         const { rules } = this.state;
-        this.setState({ rules: rules.filter((rul) => rul.id !== id) });
+        this.setState({ rules: rules.filter(rul => rul.id !== id) });
       })
-      .catch((error) => {
-        this.toggleWarningAPI(error.message)
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
       });
-    this.toggleWarning()
+    this.toggleWarning();
   }
   showForm(record) {
     if (record !== undefined) {
       this.setState({ record: record });
       this.setState({ actionForm: "Edit" });
-    }
-    else {
+    } else {
       this.setState({ record: {} });
       this.setState({ actionForm: "Add" });
     }
@@ -101,9 +115,10 @@ class RuleList extends Component {
     ruleFormValues.id = record.id;
 
     if (isUpdate) {
-      axios.put(this.state.URL_API, ruleFormValues)
+      axios
+        .put(this.state.URL_API, ruleFormValues)
         .then(() => {
-          const index = rules.findIndex((rul) => rul.id === record.id);
+          const index = rules.findIndex(rul => rul.id === record.id);
           if (index > -1) {
             rules[index] = ruleFormValues;
             this.setState({ rules });
@@ -112,20 +127,20 @@ class RuleList extends Component {
         .then(() => {
           this.getRuleList();
         })
-        .catch((error) => {
-          this.toggleWarningAPI(error.message)
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
         });
-    }
-    else {
-      axios.post(this.state.URL_API, ruleFormValues)
-        .then((response) => {
+    } else {
+      axios
+        .post(this.state.URL_API, ruleFormValues)
+        .then(response => {
           this.setState({ rules: [...rules, ruleFormValues] });
         })
         .then(() => {
           this.getRuleList();
         })
-        .catch((error) => {
-          this.toggleWarningAPI(error.message)
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
         });
       this.setState({ ruleFormValues: {} });
     }
@@ -148,7 +163,7 @@ class RuleList extends Component {
   handleDetail(record) {
     const { history } = this.props;
     history.push({
-      pathname: '/ruleDetail?ruleId='+ record.id,
+      pathname: "/ruleDetail?ruleId=" + record.id,
       data: record
     });
   }
@@ -162,12 +177,12 @@ class RuleList extends Component {
       <div className="animated fadeIn">
         <Col xs="12" lg="12">
           <Card>
-            <CardHeader>
-              Rule
-            </CardHeader>
+            <CardHeader>Rule</CardHeader>
             <CardBody>
-              <div style={{ marginBottom: '.5rem' }}>
-                <Button color="primary" onClick={() => this.showForm()}>Add New</Button>
+              <div style={{ marginBottom: ".5rem" }}>
+                <Button color="primary" onClick={() => this.showForm()}>
+                  Add New
+                </Button>
               </div>
 
               <Table responsive bordered>
@@ -185,31 +200,64 @@ class RuleList extends Component {
                     rules.map((rule, index) => (
                       <tr key={index}>
                         <td>{rule.id}</td>
-                        <td><NavLink href="#" onClick={() => this.handleDetail(rule)}>{rule.name}</NavLink></td>
+                        <td>
+                          <NavLink
+                            href="#"
+                            onClick={() => this.handleDetail(rule)}
+                          >
+                            {rule.name}
+                          </NavLink>
+                        </td>
                         <td>{rule.url_pattern}</td>
                         <td>{rule.updated_at}</td>
                         <td>
-                          <button className="button muted-button" onClick={() => this.showForm(rule)}>Edit</button>
-                          <button className="button muted-button" onClick={this.toggleWarning}>Delete</button>
-                          <Modal isOpen={this.state.warning} toggle={this.toggleWarning}
-                            className={'modal-warning ' + this.props.className}>
-                            <ModalHeader toggle={this.toggleWarning}>Delete Confirmation</ModalHeader>
+                          <button
+                            className="button muted-button"
+                            onClick={() => this.showForm(rule)}
+                          >
+                            Edit
+                          </button>
+                          {"  "}
+                          <button
+                            className="button muted-button"
+                            onClick={this.toggleWarning}
+                          >
+                            Delete
+                          </button>
+                          <Modal
+                            isOpen={this.state.warning}
+                            toggle={this.toggleWarning}
+                            className={"modal-warning " + this.props.className}
+                          >
+                            <ModalHeader toggle={this.toggleWarning}>
+                              Delete Confirmation
+                            </ModalHeader>
                             <ModalBody>
                               Are you sure want to delete {rule.name} ?
-                          </ModalBody>
+                            </ModalBody>
                             <ModalFooter>
-                              <Button color="warning" onClick={() => this.handleDelete(rule.id)}>YES</Button>{' '}
-                              <Button color="secondary" onClick={this.toggleWarning}>NO</Button>
+                              <Button
+                                color="warning"
+                                onClick={() => this.handleDelete(rule.id)}
+                              >
+                                YES
+                              </Button>{" "}
+                              <Button
+                                color="secondary"
+                                onClick={this.toggleWarning}
+                              >
+                                NO
+                              </Button>
                             </ModalFooter>
                           </Modal>
                         </td>
                       </tr>
                     ))
                   ) : (
-                      <tr>
-                        <td colSpan={5}>No Rule</td>
-                      </tr>
-                    )}
+                    <tr>
+                      <td colSpan={5}>No Rule</td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
             </CardBody>
@@ -225,12 +273,21 @@ class RuleList extends Component {
             onChange={this.handleOnChange.bind(this)}
           />
 
-          <Modal isOpen={this.state.warningAPI} toggle={this.toggleWarningAPI}
-            className={'modal-warning ' + this.props.className}>
-            <ModalHeader toggle={this.toggleWarningAPI}>Information</ModalHeader>
+          <Modal
+            isOpen={this.state.warningAPI}
+            toggle={this.toggleWarningAPI}
+            className={"modal-warning " + this.props.className}
+          >
+            <ModalHeader toggle={this.toggleWarningAPI}>
+              Information
+            </ModalHeader>
             <ModalBody>
-              <span>{this.state.errorMessage}</span><br></br>
-              <span>Sorry, failed to connect API. API currently not available/API in problem</span>
+              <span>{this.state.errorMessage}</span>
+              <br></br>
+              <span>
+                Sorry, failed to connect API. API currently not available/API in
+                problem
+              </span>
             </ModalBody>
           </Modal>
         </Col>
@@ -240,8 +297,8 @@ class RuleList extends Component {
 }
 RuleList.propTypes = {
   match: PropTypes.shape({
-    path: PropTypes.string,
-  }).isRequired,
+    path: PropTypes.string
+  }).isRequired
 };
 
 export default RuleList;
