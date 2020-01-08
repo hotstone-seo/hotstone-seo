@@ -2,6 +2,8 @@ package typical
 
 import (
 	"github.com/hotstone-seo/hotstone-server/app"
+	"github.com/hotstone-seo/hotstone-server/pkg/grafana"
+	"github.com/hotstone-seo/hotstone-server/pkg/prometheus"
 	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typrls"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
@@ -18,7 +20,14 @@ var (
 	server      = typserver.New()
 	redis       = typredis.New()
 	postgres    = typpostgres.New().WithDBName("hotstone")
-	docker      = typdocker.New().WithComposers(redis, postgres)
+
+	docker = typdocker.New().
+		WithComposers(
+			redis,
+			postgres,
+			prometheus.New(),
+			grafana.New(),
+		)
 
 	Descriptor = typcore.ProjectDescriptor{
 		Name:    "hotstone-server",
