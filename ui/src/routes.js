@@ -36,7 +36,9 @@ const ScripttagEditForm = React.lazy(() =>
 const LanguageList = React.lazy(() => import("./views/Language/Language"));
 const LanguageForm = React.lazy(() => import("./views/Language/LanguageForm"));
 
-const MismatchRuleList = React.lazy(() => import("./views/MismatchRule/MismatchRuleList"));
+const MismatchRuleList = React.lazy(() =>
+  import("./views/MismatchRule/MismatchRuleList")
+);
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
@@ -44,8 +46,7 @@ const routes = [
   { path: "/rule", name: "Rules", component: RuleList },
   { path: "/ruleForm", name: "Rules", component: RuleForm },
   {
-    path: "/ruleDetail?ruleId=:id",
-    exact: true,
+    path: "/ruleDetail",
     name: "Rule Details",
     component: RuleDetail
   },
