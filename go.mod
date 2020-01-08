@@ -1,4 +1,4 @@
-module github.com/hotstone-seo/hotstone-server
+module github.com/hotstone-seo/hotstone-seo
 
 go 1.13
 

@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/hotstone-seo/hotstone-server/app/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/robfig/cron/v3"

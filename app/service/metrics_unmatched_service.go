@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
+	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"go.uber.org/dig"
 )
 

@@ -7,13 +7,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hotstone-seo/hotstone-server/mock"
+	"github.com/hotstone-seo/hotstone-seo/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-server/app/controller"
-	"github.com/hotstone-seo/hotstone-server/app/service"
+	"github.com/hotstone-seo/hotstone-seo/app/controller"
+	"github.com/hotstone-seo/hotstone-seo/app/service"
 )
 
 func TestProviderCntrl_MatchRule(t *testing.T) {

@@ -10,9 +10,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/hotstone-seo/hotstone-server/app/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
+	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
-	"github.com/hotstone-seo/hotstone-server/app/service"
+	"github.com/hotstone-seo/hotstone-seo/app/repository"
+	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"

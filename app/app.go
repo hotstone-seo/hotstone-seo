@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/hotstone-seo/hotstone-server/app/config"
-	"github.com/hotstone-seo/hotstone-server/app/metric"
+	"github.com/hotstone-seo/hotstone-seo/app/config"
+	"github.com/hotstone-seo/hotstone-seo/app/metric"
 	"github.com/typical-go/typical-go/pkg/typcore"
 )
 

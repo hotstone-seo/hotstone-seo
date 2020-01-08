@@ -8,14 +8,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
+	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-server/app/service"
-	"github.com/hotstone-seo/hotstone-server/mock"
+	"github.com/hotstone-seo/hotstone-seo/app/service"
+	"github.com/hotstone-seo/hotstone-seo/mock"
 )
 
 func TestProvider_RetrieveData(t *testing.T) {

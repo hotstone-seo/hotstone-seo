@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"contrib.go.opencensus.io/exporter/prometheus"
-	"github.com/hotstone-seo/hotstone-server/app/config"
+	"github.com/hotstone-seo/hotstone-seo/app/config"
 	log "github.com/sirupsen/logrus"
 	"go.opencensus.io/stats"
 	"go.opencensus.io/stats/view"

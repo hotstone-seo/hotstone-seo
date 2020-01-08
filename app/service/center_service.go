@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-server/app/repository"
+	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
