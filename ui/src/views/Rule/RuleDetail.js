@@ -97,11 +97,6 @@ class RuleDetail extends Component {
       tags: []
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
-
-    this.handleAddNewCanonical = this.handleAddNewCanonical.bind(this);
-    this.handleAddNewMeta = this.handleAddNewMeta.bind(this);
-    this.handleAddNewScript = this.handleAddNewScript.bind(this);
-    this.handleAddNewTitle = this.handleAddNewTitle.bind(this);
     this.handleCancelAddCanonical = this.handleCancelAddCanonical.bind(this);
 
     this.handleCancelAddScriptTag = this.handleCancelAddScriptTag.bind(this);
@@ -139,22 +134,7 @@ class RuleDetail extends Component {
     const { history } = this.props;
     history.push("/canonicalEditForm");
   }
-  handleAddNewCanonical() {
-    const { history } = this.props;
-    history.push("/canonicalForm");
-  }
-  handleAddNewMeta() {
-    const { history } = this.props;
-    history.push("/metatagForm");
-  }
-  handleAddNewScript() {
-    const { history } = this.props;
-    history.push("/scripttagForm");
-  }
-  handleAddNewTitle() {
-    const { history } = this.props;
-    history.push("/titletagForm");
-  }
+
   showForm(record) {
     if (record !== undefined) {
       this.setState({ record: record });
