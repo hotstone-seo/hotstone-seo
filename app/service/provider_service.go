@@ -29,6 +29,7 @@ type ProviderServiceImpl struct {
 	dig.In
 	MetricsUnmatchedService
 	repository.DataSourceRepo
+	repository.RuleRepo
 	repository.TagRepo
 	urlstore.URLStoreServer
 }
@@ -70,19 +71,29 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
 		tags []*repository.Tag
+		data = req.Data
 	)
 	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, req.RuleID, req.LocaleID); err != nil {
 		return
+	}
+	if data == nil {
+		var rule *repository.Rule
+		if rule, err = p.RuleRepo.FindOne(ctx, req.RuleID); err != nil {
+			return
+		}
+		if data, err = p.RetrieveData(ctx, RetrieveDataRequest{DataSourceID: *rule.DataSourceID}); err != nil {
+			return
+		}
 	}
 	for _, tag := range tags {
 		var (
 			attribute dbkit.JSON
 			value     string
 		)
-		if attribute, err = interpolateAttribute(tag.Attributes, req.Data); err != nil {
+		if attribute, err = interpolateAttribute(tag.Attributes, data); err != nil {
 			return
 		}
-		if value, err = interpolateValue(tag.Value, req.Data); err != nil {
+		if value, err = interpolateValue(tag.Value, data); err != nil {
 			return
 		}
 		interpolatedTags = append(interpolatedTags, &InterpolatedTag{
