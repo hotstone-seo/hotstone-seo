@@ -56,8 +56,13 @@ class MetatagForm extends Component {
                 <Label htmlFor="text-input">Language</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="select" name="language" id="language">
-                  <option>ID</option>
+                <Input
+                  type="select"
+                  name="language"
+                  id="language"
+                  onChange={onChange.bind(this, "id")}
+                >
+                  <option value="ID">ID</option>
                 </Input>
               </Col>
             </FormGroup>
