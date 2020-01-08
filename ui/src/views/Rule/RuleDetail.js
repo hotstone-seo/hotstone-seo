@@ -37,7 +37,12 @@ export const parseQuery = subject => {
   }
   return results;
 };
-
+/*
+e.POST("center/addMetaTag", c.AddMetaTag)
+	e.POST("center/addTitleTag", c.AddTitleTag)
+	e.POST("center/addCanonicalTag", c.AddCanonicalTag)
+	e.POST("center/addScriptTag", c.AddScriptTag)
+*/
 class RuleDetail extends Component {
   constructor(props) {
     super(props);
@@ -50,6 +55,12 @@ class RuleDetail extends Component {
       timeout: 300,
       URL_API: process.env.REACT_APP_API_URL + "rules",
       URL_TAG_API: process.env.REACT_APP_API_URL + "tags",
+      URL_ADDMETA_API: process.env.REACT_APP_API_URL + "center/addMetaTag",
+      URL_ADDTITLE_API: process.env.REACT_APP_API_URL + "center/addTitleTag",
+      URL_ADDCANONICAL_API:
+        process.env.REACT_APP_API_URL + "center/addCanonicalTag",
+      URL_ADDSCRIPT_API: process.env.REACT_APP_API_URL + "center/addScriptTag",
+
       canonicalFormValues: {
         id: null,
         name: null,
@@ -82,7 +93,8 @@ class RuleDetail extends Component {
       ruleIdParam: 0,
       rules: [],
       warning: false,
-      warningAPI: false
+      warningAPI: false,
+      tags: []
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
