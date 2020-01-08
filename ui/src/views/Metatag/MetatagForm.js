@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import {
   Button,
@@ -11,8 +11,8 @@ import {
   Modal,
   ModalBody,
   ModalFooter,
-  ModalHeader,
-} from 'reactstrap';
+  ModalHeader
+} from "reactstrap";
 
 class MetatagForm extends Component {
   constructor(props) {
@@ -27,7 +27,6 @@ class MetatagForm extends Component {
     };
 
     this.handlePreview = this.handlePreview.bind(this);
-
   }
 
   toggle() {
@@ -35,25 +34,45 @@ class MetatagForm extends Component {
   }
 
   toggleFade() {
-    this.setState((prevState) => { return { fadeIn: !prevState } });
+    this.setState(prevState => {
+      return { fadeIn: !prevState };
+    });
   }
 
   handlePreview() {
     const { history } = this.props;
-    history.push('/metatagPreview');
+    history.push("/metatagPreview");
   }
 
   render() {
-    const {
-      visible, onCancel, onSave, metatag, action, onChange
-    } = this.props;
+    const { visible, onCancel, onSave, metatag, action, onChange } = this.props;
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Meta-Tag</ModalHeader>
         <ModalBody>
           <Form className="form-horizontal">
             <FormGroup row>
-              {metatag !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={metatag.id} onChange={onChange.bind(this, 'id')}/>):""}
+              <Col md="3">
+                <Label htmlFor="text-input">Language</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input type="select" name="language" id="language">
+                  <option>ID</option>
+                </Input>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              {metatag !== undefined ? (
+                <Input
+                  type="hidden"
+                  id="id"
+                  name="id"
+                  defaultValue={metatag.id}
+                  onChange={onChange.bind(this, "id")}
+                />
+              ) : (
+                ""
+              )}
               <Col md="3">
                 <Label htmlFor="text-input">Name</Label>
               </Col>
@@ -63,8 +82,8 @@ class MetatagForm extends Component {
                   id="name"
                   name="name"
                   placeholder="Name"
-                  defaultValue={metatag !== undefined?metatag.name:""}
-                  onChange={onChange.bind(this, 'name')}
+                  defaultValue={metatag !== undefined ? metatag.name : ""}
+                  onChange={onChange.bind(this, "name")}
                 />
               </Col>
             </FormGroup>
@@ -79,8 +98,8 @@ class MetatagForm extends Component {
                   id="content"
                   name="content"
                   placeholder="content"
-                  defaultValue={metatag !== undefined?metatag.content:""}
-                  onChange={onChange.bind(this, 'content')}
+                  defaultValue={metatag !== undefined ? metatag.content : ""}
+                  onChange={onChange.bind(this, "content")}
                 />
               </Col>
             </FormGroup>
@@ -94,16 +113,22 @@ class MetatagForm extends Component {
                   id="default_content"
                   name="default_content"
                   placeholder="default content"
-                  defaultValue={metatag !== undefined?metatag.default_content:""}
-                  onChange={onChange.bind(this, 'default_content')}
+                  defaultValue={
+                    metatag !== undefined ? metatag.default_content : ""
+                  }
+                  onChange={onChange.bind(this, "default_content")}
                 />
               </Col>
-            </FormGroup>           
+            </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="warning" onClick={onSave}>Save</Button>{' '}
-          <Button color="secondary" onClick={onCancel}>Cancel</Button>
+          <Button color="warning" onClick={onSave}>
+            Save
+          </Button>{" "}
+          <Button color="secondary" onClick={onCancel}>
+            Cancel
+          </Button>
         </ModalFooter>
       </Modal>
     );
@@ -111,7 +136,7 @@ class MetatagForm extends Component {
 }
 MetatagForm.propTypes = {
   match: PropTypes.shape({
-    path: PropTypes.string,
-  }).isRequired,
+    path: PropTypes.string
+  }).isRequired
 };
 export default MetatagForm;
