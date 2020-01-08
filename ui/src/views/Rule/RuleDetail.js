@@ -51,6 +51,7 @@ class RuleDetail extends Component {
       fadeIn: true,
       timeout: 300,
       URL_API: process.env.REACT_APP_API_URL + "rules",
+      URL_TAG_API: process.env.REACT_APP_API_URL + "tags",
       canonicalFormValues: {
         id: null,
         name: null,
@@ -235,7 +236,7 @@ class RuleDetail extends Component {
 
   handleDelete(id) {
     axios
-      .delete(this.state.URL_API + `/${id}`)
+      .delete(this.state.URL_TAG_API + `/${id}`)
       .then(() => {
         const { tags } = this.state;
         this.setState({ rules: tags.filter(tag => tag.id !== id) });
