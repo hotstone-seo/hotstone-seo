@@ -74,8 +74,11 @@ class RuleDetail extends Component {
       canonicalFormVisible: false,
       actionCanonicalForm: "",
       metaTagFormVisible: false,
+      actionMetaTagForm: "",
       scriptTagFormVisible: false,
+      actionScriptTagForm: "",
       titleTagFormVisible: false,
+      actionTitleTagForm: "",
       ruleIdParam: 0,
       rules: [],
       warning: false,
@@ -246,6 +249,44 @@ class RuleDetail extends Component {
     this.toggleWarning();
   }
 
+  handleSaveMetaTag() {
+    const { metaTagFormValues, rules, actionMetaTagForm, record } = this.state;
+    const isUpdate = actionMetaTagForm !== "Add";
+
+    metaTagFormValues.id = record.id;
+
+    if (isUpdate) {
+      /*axios
+        .put(this.state.URL_API, metaTagFormValues)
+        .then(() => {
+          const index = rules.findIndex(rul => rul.id === record.id);
+          if (index > -1) {
+            rules[index] = metaTagFormValues;
+            this.setState({ rules });
+          }
+        })
+        .then(() => {
+          this.getRuleList();
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });*/
+    } else {
+      axios
+        .post(this.state.URL_TAG_API, metaTagFormValues)
+        .then(response => {
+          this.setState({ rules: [...rules, metaTagFormValues] });
+        })
+        .then(() => {
+          //this.getRuleList();
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
+      this.setState({ metaTagFormValues: {} });
+    }
+    this.setState({ formMetaTagVisible: false });
+  }
   render() {
     const { rules } = this.state;
 
@@ -392,7 +433,7 @@ class RuleDetail extends Component {
             <MetaTagForm
               visible={this.state.metaTagFormVisible}
               onCancel={this.handleCancelAddMetaTag}
-              onSave={this.handleSave}
+              onSave={this.handleSaveMetaTag}
               metatag={this.state.record}
               action={this.state.actionForm}
               onChange={this.handleMetaTagOnChange.bind(this)}
