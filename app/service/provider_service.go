@@ -31,6 +31,7 @@ type ProviderService interface {
 type ProviderServiceImpl struct {
 	dig.In
 	MetricsUnmatchedService
+	MetricsRuleMatchingService
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo
@@ -45,8 +46,12 @@ func NewProviderService(impl ProviderServiceImpl) ProviderService {
 // MatchRule to match rule
 func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
 	ctx = metric.InitializeLatencyTracking(ctx)
+	mtx := &repository.MetricsRuleMatching{}
 	defer func() {
 		metric.RecordLatency(ctx)
+		if errInsert := p.MetricsRuleMatchingService.Insert(ctx, *mtx); errInsert != nil {
+			log.Warnf("Failed to record rule matching metric: %+v", errInsert)
+		}
 	}()
 
 	url, err := url.Parse(req.Path)
@@ -63,10 +68,13 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 		}
 
 		ctx = metric.SetMismatched(ctx, url.Path)
+		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
+
 		return nil, fmt.Errorf("No rule match: %s", url.Path)
 	} else {
 		// matched
 		ctx = metric.SetMatched(ctx)
+		p.MetricsRuleMatchingService.SetMatched(mtx)
 	}
 
 	resp = &MatchRuleResponse{RuleID: int64(ruleID), PathParam: pathParam}
