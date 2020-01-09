@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/hotstone-seo/hotstone-seo/app/metric"
 	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -28,7 +27,7 @@ func (p *ProviderCntrl) MatchRule(c echo.Context) (err error) {
 	var (
 		req  service.MatchRuleRequest
 		resp *service.MatchRuleResponse
-		ctx  = metric.InitializeLatencyTracking(c.Request().Context())
+		ctx  = c.Request().Context()
 	)
 	if err = c.Bind(&req); err != nil {
 		return err

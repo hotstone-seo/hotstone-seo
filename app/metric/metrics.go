@@ -39,37 +39,38 @@ func InitializeLatencyTracking(ctx context.Context) context.Context {
 }
 
 // recordLatency ...
-func recordLatency(ctx context.Context) {
+func RecordLatency(ctx context.Context) {
 	startTimeVal := ctx.Value(startTimeKey)
 	if startTime, ok := startTimeVal.(time.Time); ok {
 		stats.Record(ctx, MLatencyMs.M(sinceInMilliseconds(startTime)))
 	}
 }
 
-func recordIsMatched(ctx context.Context, isMatched string) {
-	// TODO
+func setIsMatchedTag(ctx context.Context, isMatched string) context.Context {
+	ctx, err := tag.New(ctx, tag.Upsert(KeyIsMatched, isMatched))
+	if err != nil {
+		log.Warn(err)
+	}
+	return ctx
 }
 
-func recordMismatchedPath(ctx context.Context, mismatchedPath string) {
-	// TODO
+func setMismatchedPathTag(ctx context.Context, mismatchedPath string) context.Context {
+	ctx, err := tag.New(ctx, tag.Upsert(KeyMismatchedPath, mismatchedPath))
+	if err != nil {
+		log.Warn(err)
+	}
+	return ctx
 }
 
-func RecordMatched(ctx context.Context) {
-	recordIsMatched(ctx, "matched")
+func SetMatched(ctx context.Context) context.Context {
+	ctx = setIsMatchedTag(ctx, "matched")
+	return ctx
 }
 
-func RecordMismatched(ctx context.Context, mismatchedPath string) {
-	recordIsMatched(ctx, "mismatched")
-}
-
-// AddIsMatchedTag ...
-func AddIsMatchedTag(ctx context.Context, target string) (context.Context, error) {
-	return tag.New(ctx, tag.Upsert(KeyIsMatched, target))
-}
-
-// AddMismatchedTag ...
-func AddMismatchedTag(ctx context.Context, reason string) (context.Context, error) {
-	return tag.New(ctx, tag.Upsert(KeyMismatchedPath, reason))
+func SetMismatched(ctx context.Context, mismatchedPath string) context.Context {
+	ctx = setIsMatchedTag(ctx, "mismatched")
+	ctx = setMismatchedPathTag(ctx, mismatchedPath)
+	return ctx
 }
 
 type MetricServer interface {
