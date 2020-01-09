@@ -37,7 +37,6 @@ func (m *Module) DockerCompose(version typdocker.Version) *typdocker.ComposeObje
 						"GF_SECURITY_ALLOW_EMBEDDING": "true",
 						"GF_AUTH_ANONYMOUS_ENABLED":   "true",
 					},
-					Command: "--config.file=/etc/prometheus/prometheus.yml",
 					// Volumes: []string{
 					// 	"$PWD/grafana-data:/var/lib/grafana",
 					// },
