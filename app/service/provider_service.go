@@ -3,7 +3,9 @@ package service
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"text/template"
@@ -77,11 +79,24 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		return
 	}
 	if data == nil {
-		var rule *repository.Rule
+		// NOTE: We can omit another call to the repository here by including the whole rule object in
+		// ProvideTagsRequest. Will be done later since the change impact is not local.
+		var (
+			rule *repository.Rule
+			resp *http.Response
+			body []byte
+		)
 		if rule, err = p.RuleRepo.FindOne(ctx, req.RuleID); err != nil {
 			return
 		}
-		if data, err = p.RetrieveData(ctx, RetrieveDataRequest{DataSourceID: *rule.DataSourceID}); err != nil {
+		if resp, err = p.RetrieveData(ctx, RetrieveDataRequest{DataSourceID: *rule.DataSourceID}); err != nil {
+			return
+		}
+		if body, err = ioutil.ReadAll(resp.Body); err != nil {
+			return
+		}
+		defer resp.Body.Close()
+		if err = json.Unmarshal(body, &data); err != nil {
 			return
 		}
 	}
