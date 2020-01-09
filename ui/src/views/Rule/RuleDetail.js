@@ -98,6 +98,9 @@ class RuleDetail extends Component {
     this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
 
     this.handleDelete = this.handleDelete.bind(this);
+
+    this.toggleWarning = this.toggleWarning.bind(this);
+    this.toggleWarningAPI = this.toggleWarningAPI.bind(this);
   }
   componentDidMount() {
     const query = parseQuery((window.location || {}).search || "");
@@ -218,9 +221,9 @@ class RuleDetail extends Component {
     });
   }
   toggleWarning() {
-    //this.setState({
-    //  warning: !this.state.warning
-    //});
+    this.setState({
+      warning: !this.state.warning
+    });
   }
 
   handleDelete(id) {
