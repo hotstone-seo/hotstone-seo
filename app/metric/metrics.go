@@ -128,10 +128,13 @@ func (s *MetricServerImpl) Start() (err error) {
 	mux := http.NewServeMux()
 	mux.Handle("/metrics", pe)
 	log.Warnf("Metrics endpoint will be running at: %s", addr)
-	if err = http.ListenAndServe(addr, mux); err != nil {
-		log.Warnf("Failed to run Prometheus scrape endpoint: %v", err)
-		return
-	}
+
+	go func(mux *http.ServeMux, addr string) {
+		if err = http.ListenAndServe(addr, mux); err != nil {
+			log.Warnf("Failed to run Prometheus scrape endpoint: %v", err)
+			return
+		}
+	}(mux, addr)
 
 	return nil
 }
