@@ -2,17 +2,14 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
-  Button,
   Card,
   CardBody,
   CardHeader,
   Col,
   Modal,
   ModalBody,
-  ModalFooter,
   ModalHeader,
-  Table,
-  NavLink
+  Table
 } from "reactstrap";
 
 class MismatchRuleList extends Component {
