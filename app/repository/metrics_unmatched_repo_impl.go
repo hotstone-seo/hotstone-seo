@@ -57,7 +57,7 @@ func (r *MetricsUnmatchedRepoImpl) List(ctx context.Context) (list []*MetricsUnm
 	return
 }
 
-func (r *MetricsUnmatchedRepoImpl) ListCount(ctx context.Context) (list []*MetricsUnmatchedCount, err error) {
+func (r *MetricsUnmatchedRepoImpl) ListCount(ctx context.Context) (list []*MetricsMismatchedCount, err error) {
 	var rows *sql.Rows
 
 	subQuery := sq.
@@ -77,9 +77,9 @@ func (r *MetricsUnmatchedRepoImpl) ListCount(ctx context.Context) (list []*Metri
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
-	list = make([]*MetricsUnmatchedCount, 0)
+	list = make([]*MetricsMismatchedCount, 0)
 	for rows.Next() {
-		var e0 MetricsUnmatchedCount
+		var e0 MetricsMismatchedCount
 		if err = rows.Scan(&e0.RequestPath, &e0.Count, &e0.Since); err != nil {
 			return
 		}

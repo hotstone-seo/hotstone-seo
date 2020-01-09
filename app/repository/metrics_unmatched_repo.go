@@ -17,7 +17,7 @@ type MetricsUnmatched struct {
 type MetricsUnmatchedRepo interface {
 	Find(context.Context, int64) (*MetricsUnmatched, error)
 	List(context.Context) ([]*MetricsUnmatched, error)
-	ListCount(context.Context) ([]*MetricsUnmatchedCount, error)
+	ListCount(context.Context) ([]*MetricsMismatchedCount, error)
 	Insert(context.Context, MetricsUnmatched) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, MetricsUnmatched) error

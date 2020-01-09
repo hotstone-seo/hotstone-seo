@@ -45,7 +45,7 @@ func (c *MetricsUnmatchedCntrl) Create(ctx echo.Context) (err error) {
 
 // List of metrics_unmatched
 func (c *MetricsUnmatchedCntrl) List(ctx echo.Context) (err error) {
-	var metrics_unmatcheds []*repository.MetricsUnmatchedCount
+	var metrics_unmatcheds []*repository.MetricsMismatchedCount
 	ctx0 := ctx.Request().Context()
 	if metrics_unmatcheds, err = c.MetricsUnmatchedService.ListCount(ctx0); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

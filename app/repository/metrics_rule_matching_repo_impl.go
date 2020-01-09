@@ -28,3 +28,35 @@ func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleM
 	}
 	return
 }
+
+func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context) (list []*MetricsMismatchedCount, err error) {
+	var rows *sql.Rows
+
+	subQuery := sq.
+		Select("url_mismatched").
+		Column("count(url_mismatched)").
+		Column(sq.Alias(sq.Expr("max(time)"), "since")).
+		From("metrics_rule_matching").
+		Where(sq.Eq{"is_matched": 0}).
+		GroupBy("url_mismatched").
+		PlaceholderFormat(sq.Dollar)
+
+	builder := sq.
+		Select("url_mismatched", "count", "since").
+		FromSelect(subQuery, "u").
+		OrderBy("u.since desc", "u.count desc").
+		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+
+	if rows, err = builder.QueryContext(ctx); err != nil {
+		return
+	}
+	list = make([]*MetricsMismatchedCount, 0)
+	for rows.Next() {
+		var e0 MetricsMismatchedCount
+		if err = rows.Scan(&e0.RequestPath, &e0.Count, &e0.Since); err != nil {
+			return
+		}
+		list = append(list, &e0)
+	}
+	return
+}

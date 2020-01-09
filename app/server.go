@@ -19,6 +19,7 @@ type server struct {
 	controller.ProviderCntrl
 	controller.CenterCntrl
 	controller.MetricsUnmatchedCntrl
+	controller.MetricsCntrl
 }
 
 func (s *server) Middleware() {
@@ -34,6 +35,7 @@ func (s *server) Route() {
 	s.ProviderCntrl.Route(s.Echo)
 	s.CenterCntrl.Route(s.Echo)
 	s.MetricsUnmatchedCntrl.Route(s.Echo)
+	s.MetricsCntrl.Route(s.Echo)
 }
 
 func (s *server) Start() error {
