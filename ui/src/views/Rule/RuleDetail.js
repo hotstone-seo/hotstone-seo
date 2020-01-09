@@ -218,9 +218,9 @@ class RuleDetail extends Component {
     });
   }
   toggleWarning() {
-    this.setState({
-      warning: !this.state.warning
-    });
+    //this.setState({
+    //  warning: !this.state.warning
+    //});
   }
 
   handleDelete(id) {
@@ -228,7 +228,7 @@ class RuleDetail extends Component {
       .delete(this.state.URL_TAG_API + `/${id}`)
       .then(() => {
         const { tags } = this.state;
-        this.setState({ rules: tags.filter(tag => tag.id !== id) });
+        this.setState({ tags: tags.filter(tag => tag.id !== id) });
       })
       .catch(error => {
         this.toggleWarningAPI(error.message);
@@ -241,7 +241,7 @@ class RuleDetail extends Component {
     const isUpdate = actionMetaTagForm !== "Add";
 
     metaTagFormValues.id = record.id;
-    console.log(isUpdate, "");
+
     if (isUpdate) {
       axios
         .put(this.state.URL_ADDMETA_API, metaTagFormValues)
@@ -259,7 +259,6 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      console.log(this.state.URL_ADDMETA_API, "url");
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
@@ -280,9 +279,7 @@ class RuleDetail extends Component {
     axios
       .get(this.state.URL_TAG_API)
       .then(res => {
-        console.log("masuk", "--");
         const tags = res.data;
-        console.log(tags, "tags");
         this.setState({ tags });
       })
       .catch(error => {
@@ -292,7 +289,6 @@ class RuleDetail extends Component {
 
   render() {
     const { rules, tags } = this.state;
-    console.log(tags, "render");
     return (
       <div className="animated fadeIn">
         {rules.map((rule, index) => (
