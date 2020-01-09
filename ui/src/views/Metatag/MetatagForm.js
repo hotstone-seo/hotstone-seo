@@ -50,6 +50,13 @@ class MetatagForm extends Component {
       <Modal isOpen={visible}>
         <ModalHeader>{action} Meta-Tag</ModalHeader>
         <ModalBody>
+          <Input
+            type="hidden"
+            id="rule_id"
+            name="rule_id"
+            value="1"
+            onChange={onChange.bind(this, "rule_id")}
+          />
           <Form className="form-horizontal">
             <FormGroup row>
               <Col md="3">
@@ -60,9 +67,9 @@ class MetatagForm extends Component {
                   type="select"
                   name="language"
                   id="language"
-                  onChange={onChange.bind(this, "id")}
+                  onChange={onChange.bind(this, "locale_id")}
                 >
-                  <option value="ID">ID</option>
+                  <option value="1">ID</option>
                 </Input>
               </Col>
             </FormGroup>
@@ -121,7 +128,6 @@ class MetatagForm extends Component {
                   defaultValue={
                     metatag !== undefined ? metatag.default_content : ""
                   }
-                  onChange={onChange.bind(this, "default_content")}
                 />
               </Col>
             </FormGroup>
