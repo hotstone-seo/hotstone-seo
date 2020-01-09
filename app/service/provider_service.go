@@ -45,7 +45,9 @@ func NewProviderService(impl ProviderServiceImpl) ProviderService {
 // MatchRule to match rule
 func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
 	ctx = metric.InitializeLatencyTracking(ctx)
-	defer metric.RecordLatency(ctx)
+	defer func() {
+		metric.RecordLatency(ctx)
+	}()
 
 	url, err := url.Parse(req.Path)
 	if err != nil {
