@@ -26,7 +26,7 @@ func (m *Module) DockerCompose(version typdocker.Version) *typdocker.ComposeObje
 				},
 			},
 			Networks: typdocker.Networks{
-				"net-metric": typdocker.Network{
+				"net-metrics": typdocker.Network{
 					Driver: "bridge",
 				},
 			},
