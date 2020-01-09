@@ -89,13 +89,22 @@ func NewMetricServer(server MetricServerImpl) MetricServer {
 func (s *MetricServerImpl) Start() (err error) {
 
 	var (
-		// MatchingOperationCountView provide View for request count grouped by target and reason
+		// MatchingOperationCountView provide View for request count grouped by is_matched
 		MatchingOperationCountView = &view.View{
 			Name:        "matching_operation/count",
 			Measure:     MLatencyMs,
 			Description: "The count of matching operation",
 			Aggregation: view.Count(),
 			TagKeys:     []tag.Key{KeyIsMatched},
+		}
+
+		// MismatchedCountView provide View for request count grouped by mismatched_path
+		MismatchedCountView = &view.View{
+			Name:        "mismatched/count",
+			Measure:     MLatencyMs,
+			Description: "The count of mismatched url",
+			Aggregation: view.Count(),
+			TagKeys:     []tag.Key{KeyMismatchedPath},
 		}
 
 		// MatchingOperationLatencyView provide view for latency count distribution
@@ -110,7 +119,7 @@ func (s *MetricServerImpl) Start() (err error) {
 			TagKeys:     []tag.Key{KeyIsMatched},
 		}
 
-		views = []*view.View{MatchingOperationCountView, MatchingOperationLatencyView}
+		views = []*view.View{MatchingOperationCountView, MatchingOperationLatencyView, MismatchedCountView}
 	)
 
 	if err = view.Register(views...); err != nil {
