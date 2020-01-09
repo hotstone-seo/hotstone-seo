@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/hotstone-seo/hotstone-server/app/service"
+	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )

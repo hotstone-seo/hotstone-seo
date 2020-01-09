@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/hotstone-seo/hotstone-server/app/config"
-	"github.com/hotstone-seo/hotstone-server/app/controller"
+	"github.com/hotstone-seo/hotstone-seo/app/config"
+	"github.com/hotstone-seo/hotstone-seo/app/controller"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"go.uber.org/dig"
