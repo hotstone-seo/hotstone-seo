@@ -397,7 +397,49 @@ class RuleDetail extends Component {
                           <td></td>
                           <td>{tag.value}</td>
                           <td>{tag.locale_id}</td>
-                          <td></td>
+                          <td>
+                            <button
+                              className="button muted-button"
+                              onClick={() => this.showFormMetaTag(tag)}
+                            >
+                              Edit
+                            </button>
+                            {"  "}
+                            <button
+                              className="button muted-button"
+                              onClick={this.toggleWarning}
+                            >
+                              Delete
+                            </button>
+                            <Modal
+                              isOpen={this.state.warning}
+                              toggle={this.toggleWarning}
+                              className={
+                                "modal-warning " + this.props.className
+                              }
+                            >
+                              <ModalHeader toggle={this.toggleWarning}>
+                                Delete Confirmation
+                              </ModalHeader>
+                              <ModalBody>
+                                Are you sure want to delete this row ?
+                              </ModalBody>
+                              <ModalFooter>
+                                <Button
+                                  color="warning"
+                                  onClick={() => this.handleDelete(tag.id)}
+                                >
+                                  YES
+                                </Button>{" "}
+                                <Button
+                                  color="secondary"
+                                  onClick={this.toggleWarning}
+                                >
+                                  NO
+                                </Button>
+                              </ModalFooter>
+                            </Modal>
+                          </td>
                         </tr>
                       ))
                     ) : (
