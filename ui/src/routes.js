@@ -8,9 +8,7 @@ const RuleDetail = React.lazy(() => import("./views/Rule/RuleDetail"));
 const MetatagPreview = React.lazy(() =>
   import("./views/Metatag/MetatagPreview")
 );
-const MetaTagEditForm = React.lazy(() =>
-  import("./views/Metatag/MetatagEditForm")
-);
+
 const DataSourceList = React.lazy(() =>
   import("./views/DataSource/DataSource")
 );
@@ -51,7 +49,6 @@ const routes = [
     component: RuleDetail
   },
   { path: "/metatagForm", name: "Metatag", component: MetatagForm },
-  { path: "/metatagEditForm", name: "Metatag", component: MetaTagEditForm },
   {
     path: "/metatagPreview",
     name: "MetatagPreview",
