@@ -12,7 +12,7 @@ services:
     networks:
     - net-metrics
   postgres:
-    image: postgres
+    image: timescale/timescaledb:latest-pg11
     environment:
       PGDATA: /data/postgres
       POSTGRES: ${PG_USER:-postgres}
