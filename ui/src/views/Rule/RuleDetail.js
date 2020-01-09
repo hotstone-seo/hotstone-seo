@@ -11,7 +11,7 @@ import {
   Modal,
   ModalBody,
   ModalHeader,
-  NavLink,
+  ModalFooter,
   Pagination,
   PaginationItem,
   PaginationLink,
@@ -37,12 +37,7 @@ export const parseQuery = subject => {
   }
   return results;
 };
-/*
-e.POST("center/addMetaTag", c.AddMetaTag)
-	e.POST("center/addTitleTag", c.AddTitleTag)
-	e.POST("center/addCanonicalTag", c.AddCanonicalTag)
-	e.POST("center/addScriptTag", c.AddScriptTag)
-*/
+
 class RuleDetail extends Component {
   constructor(props) {
     super(props);
@@ -118,6 +113,8 @@ class RuleDetail extends Component {
       .catch(error => {
         this.toggleWarningAPI(error.message);
       });
+
+    this.getTagList();
   }
 
   toggle() {
@@ -148,10 +145,10 @@ class RuleDetail extends Component {
   showFormMetaTag(record) {
     if (record !== undefined) {
       this.setState({ record: record });
-      this.setState({ actionForm: "Edit" });
+      this.setState({ actionMetaTagForm: "Edit" });
     } else {
       this.setState({ record: {} });
-      this.setState({ actionForm: "Add" });
+      this.setState({ actionMetaTagForm: "Add" });
     }
     this.setState({ metaTagFormVisible: true });
   }
@@ -240,35 +237,36 @@ class RuleDetail extends Component {
   }
 
   handleSaveMetaTag() {
-    const { metaTagFormValues, rules, actionMetaTagForm, record } = this.state;
+    const { metaTagFormValues, tags, actionMetaTagForm, record } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
 
     metaTagFormValues.id = record.id;
-
+    console.log(isUpdate, "");
     if (isUpdate) {
-      /*axios
-        .put(this.state.URL_TAG_API, metaTagFormValues)
+      axios
+        .put(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(() => {
-          const index = rules.findIndex(rul => rul.id === record.id);
+          const index = tags.findIndex(tg => tg.id === record.id);
           if (index > -1) {
-            rules[index] = metaTagFormValues;
-            this.setState({ rules });
+            tags[index] = metaTagFormValues;
+            this.setState({ tags });
           }
         })
         .then(() => {
-          this.getRuleList();
+          //this.getRuleList(); TO DO:
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
-        });*/
+        });
     } else {
+      console.log(this.state.URL_ADDMETA_API, "url");
       axios
-        .post(this.state.URL_TAG_API, metaTagFormValues)
+        .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
-          this.setState({ rules: [...rules, metaTagFormValues] });
+          this.setState({ rules: [...tags, metaTagFormValues] });
         })
         .then(() => {
-          //this.getRuleList();
+          //this.getRuleList();  TO DO :
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
@@ -277,9 +275,24 @@ class RuleDetail extends Component {
     }
     this.setState({ formMetaTagVisible: false });
   }
-  render() {
-    const { rules } = this.state;
 
+  getTagList() {
+    axios
+      .get(this.state.URL_TAG_API)
+      .then(res => {
+        console.log("masuk", "--");
+        const tags = res.data;
+        console.log(tags, "tags");
+        this.setState({ tags });
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
+      });
+  }
+
+  render() {
+    const { rules, tags } = this.state;
+    console.log(tags, "render");
     return (
       <div className="animated fadeIn">
         {rules.map((rule, index) => (
@@ -375,22 +388,23 @@ class RuleDetail extends Component {
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <NavLink href="#" onClick={this.handleEdit}>
-                          Edit
-                        </NavLink>
 
-                        <NavLink href="#" onClick={this.handleDelete}>
-                          Delete
-                        </NavLink>
-                      </td>
-                    </tr>
+                  <tbody>
+                    {tags.length > 0 ? (
+                      tags.map((tag, index) => (
+                        <tr key={index}>
+                          <td>{tag.type}</td>
+                          <td></td>
+                          <td>{tag.value}</td>
+                          <td>{tag.locale_id}</td>
+                          <td></td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5}>No Tag</td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
                 <nav>
