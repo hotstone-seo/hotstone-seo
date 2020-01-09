@@ -1,9 +1,11 @@
 global:
   scrape_interval: 1s
+  external_labels:
+    monitor: "hotstone-seo-monitor"
 scrape_configs:
   - job_name: "hotstone-seo"
-    metrics_path: "/prometheus"
+    metrics_path: "/metrics"
     static_configs:
       # target_groups:
       # - targets: ["host.docker.internal:8080"]
-      - targets: ["localhost:8089"]
+      - targets: ["host.docker.internal:8091"]
