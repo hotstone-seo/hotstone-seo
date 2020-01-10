@@ -30,7 +30,6 @@ type ProviderService interface {
 // ProviderServiceImpl is implementation of ProviderService
 type ProviderServiceImpl struct {
 	dig.In
-	MetricsUnmatchedService
 	MetricsRuleMatchingService
 	repository.DataSourceRepo
 	repository.RuleRepo
@@ -62,11 +61,6 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 	ruleID, pathParam := p.URLStoreServer.Match(url.Path)
 	if ruleID == -1 {
 		// mismatched
-
-		if errRecord := p.MetricsUnmatchedService.Record(ctx, url.Path); errRecord != nil {
-			log.Warnf("Failed to record unmatched metrics: %+v", errRecord)
-		}
-
 		ctx = metric.SetMismatched(ctx, url.Path)
 		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
 
