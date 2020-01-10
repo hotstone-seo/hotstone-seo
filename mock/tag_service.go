@@ -65,18 +65,18 @@ func (mr *MockTagServiceMockRecorder) Find(arg0 interface{}) *gomock.Call {
 }
 
 // FindByRuleAndLocale mocks base method
-func (m *MockTagService) FindByRuleAndLocale(ctx context.Context, ruleID, localeID int64) ([]*repository.Tag, error) {
+func (m *MockTagService) FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) ([]*repository.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindByRuleAndLocale", ctx, ruleID, localeID)
+	ret := m.ctrl.Call(m, "FindByRuleAndLocale", ctx, ruleID, locale)
 	ret0, _ := ret[0].([]*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindByRuleAndLocale indicates an expected call of FindByRuleAndLocale
-func (mr *MockTagServiceMockRecorder) FindByRuleAndLocale(ctx, ruleID, localeID interface{}) *gomock.Call {
+func (mr *MockTagServiceMockRecorder) FindByRuleAndLocale(ctx, ruleID, locale interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByRuleAndLocale", reflect.TypeOf((*MockTagService)(nil).FindByRuleAndLocale), ctx, ruleID, localeID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByRuleAndLocale", reflect.TypeOf((*MockTagService)(nil).FindByRuleAndLocale), ctx, ruleID, locale)
 }
 
 // Insert mocks base method
