@@ -59,23 +59,27 @@ class RuleDetail extends Component {
       canonicalFormValues: {
         id: null,
         name: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       metaTagFormValues: {
         id: null,
         name: null,
         content: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       scriptTagFormValues: {
         id: null,
         name: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       titleTagFormValues: {
         id: null,
         name: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       canonicalFormVisible: false,
       actionCanonicalForm: "",
@@ -116,7 +120,7 @@ class RuleDetail extends Component {
       .catch(error => {
         this.toggleWarningAPI(error.message);
       });
-
+    this.setState({ ruleId: ruleId });
     this.getTagList();
   }
 
@@ -242,10 +246,8 @@ class RuleDetail extends Component {
   handleSaveMetaTag() {
     const { metaTagFormValues, tags, actionMetaTagForm, record } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
-
-    metaTagFormValues.id = record.id;
-
     if (isUpdate) {
+      metaTagFormValues.id = record.id;
       axios
         .put(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(() => {
@@ -262,20 +264,24 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
+      const { ruleId } = this.state;
+      metaTagFormValues.rule_id = parseInt(ruleId);
+      metaTagFormValues.locale_id = 1;
+
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
-          this.setState({ rules: [...tags, metaTagFormValues] });
+          this.setState({ tags: [...tags, metaTagFormValues] });
         })
         .then(() => {
-          //this.getRuleList();  TO DO :
+          this.getTagList();
         })
         .catch(error => {
-          this.toggleWarningAPI(error.message);
+          this.setState({ metaTagFormValues: {} });
         });
-      this.setState({ metaTagFormValues: {} });
     }
-    this.setState({ formMetaTagVisible: false });
+    this.setState({ metaTagFormValues: {} });
+    this.setState({ metaTagFormVisible: false });
   }
 
   getTagList() {
