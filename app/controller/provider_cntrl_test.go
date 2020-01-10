@@ -37,7 +37,7 @@ func TestProviderCntrl_MatchRule(t *testing.T) {
 		rec, err := echotest.DoPOST(cntrl.MatchRule, "/", `{"path":"some-path"}`)
 		require.NoError(t, err)
 		require.Equal(t, 200, rec.Code)
-		require.Equal(t, "{\"rule_id\":12345,\"pathParam\":{\"param01\":\"value01\"}}\n", rec.Body.String())
+		require.Equal(t, "{\"rule_id\":12345,\"path_param\":{\"param01\":\"value01\"}}\n", rec.Body.String())
 	})
 }
 
