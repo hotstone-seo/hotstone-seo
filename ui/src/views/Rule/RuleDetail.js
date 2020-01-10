@@ -67,7 +67,7 @@ class RuleDetail extends Component {
         name: null,
         content: null,
         rule_id: null,
-        locale_id: null
+        locale: null
       },
       scriptTagFormValues: {
         id: null,
@@ -79,7 +79,7 @@ class RuleDetail extends Component {
         id: null,
         name: null,
         rule_id: null,
-        locale_id: null
+        locale: null
       },
       canonicalFormVisible: false,
       actionCanonicalForm: "",
@@ -163,10 +163,10 @@ class RuleDetail extends Component {
   showFormScriptTag(record) {
     if (record !== undefined) {
       this.setState({ record: record });
-      this.setState({ actionForm: "Edit" });
+      this.setState({ actionScriptTagForm: "Edit" });
     } else {
       this.setState({ record: {} });
-      this.setState({ actionForm: "Add" });
+      this.setState({ actionScriptTagForm: "Add" });
     }
     this.setState({ scriptTagFormVisible: true });
   }
@@ -174,10 +174,10 @@ class RuleDetail extends Component {
   showFormTitleTag(record) {
     if (record !== undefined) {
       this.setState({ record: record });
-      this.setState({ actionForm: "Edit" });
+      this.setState({ actionTitleTagForm: "Edit" });
     } else {
       this.setState({ record: {} });
-      this.setState({ actionForm: "Add" });
+      this.setState({ actionTitleTagForm: "Add" });
     }
     this.setState({ titleTagFormVisible: true });
   }
@@ -206,6 +206,20 @@ class RuleDetail extends Component {
       }
     });
   }
+
+  handleTitleTagOnChange(type, e) {
+    const { target } = e || {};
+    const { value } = target || {};
+    const { titleTagFormValues } = this.state;
+
+    this.setState({
+      titleTagFormValues: {
+        ...titleTagFormValues,
+        [type]: value
+      }
+    });
+  }
+
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
   }
@@ -247,6 +261,7 @@ class RuleDetail extends Component {
     const { metaTagFormValues, tags, actionMetaTagForm, record } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
     if (isUpdate) {
+      // TO DO :
       metaTagFormValues.id = record.id;
       axios
         .put(this.state.URL_ADDMETA_API, metaTagFormValues)
@@ -266,7 +281,7 @@ class RuleDetail extends Component {
     } else {
       const { ruleId } = this.state;
       metaTagFormValues.rule_id = parseInt(ruleId);
-      metaTagFormValues.locale_id = 1;
+      metaTagFormValues.locale = "EN";
 
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
@@ -283,7 +298,30 @@ class RuleDetail extends Component {
     this.setState({ metaTagFormValues: {} });
     this.setState({ metaTagFormVisible: false });
   }
+  handleSaveTitleTag() {
+    const { titleTagFormValues, tags, actionTitleTagForm, record } = this.state;
+    const isUpdate = actionTitleTagForm !== "Add";
 
+    if (isUpdate) {
+    } else {
+      const { ruleId } = this.state;
+      titleTagFormValues.rule_id = parseInt(ruleId);
+      titleTagFormValues.locale = "EN";
+      axios
+        .post(this.state.URL_ADDTITLE_API, titleTagFormValues)
+        .then(response => {
+          this.setState({ tags: [...tags, titleTagFormValues] });
+        })
+        .then(() => {
+          this.getTagList();
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
+    }
+    this.setState({ titleTagFormValues: {} });
+    this.setState({ titleTagFormVisible: false });
+  }
   getTagList() {
     axios
       .get(this.state.URL_TAG_API)
@@ -298,7 +336,7 @@ class RuleDetail extends Component {
 
   render() {
     const { rules, tags } = this.state;
-    console.log(tags);
+
     return (
       <div className="animated fadeIn">
         {rules.map((rule, index) => (
@@ -400,7 +438,7 @@ class RuleDetail extends Component {
                       tags.map((tag, index) => (
                         <tr key={index}>
                           <td>{tag.type}</td>
-                          <td>{}</td>
+                          <td></td>
                           <td>{tag.value}</td>
                           <td>{tag.locale}</td>
                           <td>
@@ -501,10 +539,10 @@ class RuleDetail extends Component {
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
               onCancel={this.handleCancelAddTitleTag}
-              onSave={this.handleSave}
+              onSave={this.handleSaveTitleTag.bind(this)}
               titletag={this.state.record}
               action={this.state.actionForm}
-              onChange={this.handleOnChange.bind(this)}
+              onChange={this.handleTitleTagOnChange.bind(this)}
             />
             <Modal
               isOpen={this.state.warningAPI}
