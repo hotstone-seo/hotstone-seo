@@ -1,7 +1,7 @@
 CREATE TABLE tags (
     id serial PRIMARY KEY,
     rule_id INTEGER NOT NULL,
-    locale_id INTEGER NOT NULL,
+    locale VARCHAR (255) NOT NULL,
     "type" VARCHAR (255) NOT NULL,
     attributes JSONB NOT NULL, 
     "value" VARCHAR (255) NOT NULL,
