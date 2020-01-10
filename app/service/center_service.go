@@ -33,7 +33,7 @@ func NewCenterService(impl CenterServiceImpl) CenterService {
 func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagRequest) (lastInsertedID int64, err error) {
 	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
 		RuleID:     req.RuleID,
-		LocaleID:   req.LocaleID,
+		Locale:     req.Locale,
 		Type:       "meta",
 		Attributes: dbkit.JSON(fmt.Sprintf(`{"name":"%s", "content":"%s"}`, req.Name, req.Content)),
 		Value:      "",
@@ -47,7 +47,7 @@ func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagReques
 func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req AddTitleTagRequest) (lastInsertedID int64, err error) {
 	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
 		RuleID:     req.RuleID,
-		LocaleID:   req.LocaleID,
+		Locale:     req.Locale,
 		Type:       "title",
 		Attributes: dbkit.JSON(`{}`),
 		Value:      req.Title,
@@ -61,7 +61,7 @@ func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req AddTitleTagRequ
 func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonicalTagRequest) (lastInsertedID int64, err error) {
 	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
 		RuleID:     req.RuleID,
-		LocaleID:   req.LocaleID,
+		Locale:     req.Locale,
 		Type:       "canonical",
 		Attributes: dbkit.JSON(`{}`),
 		Value:      req.Canonical,
@@ -75,7 +75,7 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonica
 func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req AddScriptTagRequest) (lastInsertedID int64, err error) {
 	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
 		RuleID:     req.RuleID,
-		LocaleID:   req.LocaleID,
+		Locale:     req.Locale,
 		Type:       "script",
 		Attributes: dbkit.JSON(`{}`),
 		Value:      req.Type,

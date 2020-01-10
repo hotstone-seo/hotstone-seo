@@ -83,7 +83,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		tags []*repository.Tag
 		data = req.Data
 	)
-	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, req.RuleID, req.LocaleID); err != nil {
+	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, req.RuleID, req.Locale); err != nil {
 		return
 	}
 	if data == nil {
@@ -122,7 +122,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		interpolatedTags = append(interpolatedTags, &InterpolatedTag{
 			ID:         tag.ID,
 			RuleID:     tag.RuleID,
-			LocaleID:   tag.LocaleID,
+			Locale:     tag.Locale,
 			Type:       tag.Type,
 			Attributes: attribute,
 			Value:      value,

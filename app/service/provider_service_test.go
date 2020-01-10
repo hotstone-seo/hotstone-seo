@@ -77,22 +77,22 @@ func TestProvider_Tags(t *testing.T) {
 	svc := service.ProviderServiceImpl{TagRepo: tagRepo, RuleRepo: ruleRepo, DataSourceRepo: dataSourceRepo}
 	ctx := context.Background()
 	t.Run("WHEN can't find tag by rule and locale", func(t *testing.T) {
-		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), int64(888)).
+		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en-US").
 			Return(nil, errors.New("some-error"))
 		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
-			RuleID:   999,
-			LocaleID: 888,
+			RuleID: 999,
+			Locale: "en-US",
 		})
 		require.EqualError(t, err, "some-error")
 		require.Nil(t, tags)
 	})
 	t.Run("WHEN requesting external data", func(t *testing.T) {
-		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), int64(888)).
+		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en-US").
 			Return([]*repository.Tag{
 				{
 					ID:         1,
 					RuleID:     999,
-					LocaleID:   1,
+					Locale:     "en-US",
 					Type:       "some-type",
 					Attributes: dbkit.JSON(`{"key1": "value1 {{.Data1}}", "key2{{.Data2}}": "value2"}`),
 					Value:      "some-value{{.Data3}}",
@@ -119,15 +119,15 @@ func TestProvider_Tags(t *testing.T) {
 				Url:  server.URL,
 			}, nil)
 		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
-			RuleID:   999,
-			LocaleID: 888,
+			RuleID: 999,
+			Locale: "en-US",
 		})
 		require.NoError(t, err)
 		require.EqualValues(t, []*service.InterpolatedTag{
 			{
 				ID:         1,
 				RuleID:     999,
-				LocaleID:   1,
+				Locale:     "en-US",
 				Type:       "some-type",
 				Attributes: dbkit.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
 				Value:      "some-valuesome-data-3",
@@ -135,20 +135,20 @@ func TestProvider_Tags(t *testing.T) {
 		}, tags)
 	})
 	t.Run("WHEN success", func(t *testing.T) {
-		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), int64(888)).
+		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en-US").
 			Return([]*repository.Tag{
 				{
 					ID:         1,
 					RuleID:     1,
-					LocaleID:   1,
+					Locale:     "en-US",
 					Type:       "some-type",
 					Attributes: dbkit.JSON(`{"key1": "value1 {{.Data1}}", "key2{{.Data2}}": "value2"}`),
 					Value:      "some-value{{.Data3}}",
 				},
 			}, nil)
 		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
-			RuleID:   999,
-			LocaleID: 888,
+			RuleID: 999,
+			Locale: "en-US",
 			Data: struct {
 				Data1 string
 				Data2 string
@@ -160,7 +160,7 @@ func TestProvider_Tags(t *testing.T) {
 			{
 				ID:         1,
 				RuleID:     1,
-				LocaleID:   1,
+				Locale:     "en-US",
 				Type:       "some-type",
 				Attributes: dbkit.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
 				Value:      "some-valuesome-data-3",

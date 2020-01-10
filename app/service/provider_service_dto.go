@@ -6,8 +6,9 @@ type MatchRuleRequest struct {
 }
 
 type MatchRuleResponse struct {
-	RuleID    int64             `json:"rule_id"`
-	PathParam map[string]string `json:"path_param"`
+	RuleID       int64             `json:"rule_id"`
+	DataSourceID int64             `json:"data_source_id"`
+	PathParam    map[string]string `json:"path_param"`
 }
 
 type RetrieveDataRequest struct {
@@ -15,7 +16,7 @@ type RetrieveDataRequest struct {
 }
 
 type ProvideTagsRequest struct {
-	RuleID   int64       `json:"rule_id"`
-	LocaleID int64       `json:"locale"`
-	Data     interface{} `json:"data"`
+	RuleID int64       `json:"rule_id"`
+	Locale string      `json:"locale"`
+	Data   interface{} `json:"data"`
 }
