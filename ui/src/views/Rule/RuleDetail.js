@@ -277,7 +277,7 @@ class RuleDetail extends Component {
           this.getTagList();
         })
         .catch(error => {
-          this.setState({ metaTagFormValues: {} });
+          this.toggleWarningAPI(error.message);
         });
     }
     this.setState({ metaTagFormValues: {} });
@@ -298,6 +298,7 @@ class RuleDetail extends Component {
 
   render() {
     const { rules, tags } = this.state;
+    console.log(tags);
     return (
       <div className="animated fadeIn">
         {rules.map((rule, index) => (
@@ -399,9 +400,9 @@ class RuleDetail extends Component {
                       tags.map((tag, index) => (
                         <tr key={index}>
                           <td>{tag.type}</td>
-                          <td></td>
+                          <td>{}</td>
                           <td>{tag.value}</td>
-                          <td>{tag.locale_id}</td>
+                          <td>{tag.locale}</td>
                           <td>
                             <button
                               className="button muted-button"
