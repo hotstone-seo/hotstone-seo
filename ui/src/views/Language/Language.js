@@ -269,7 +269,7 @@ class Language extends Component {
             toggle={this.toggleWarningAPI}
             className={"modal-warning " + this.props.className}
           >
-            <ModalHeader toggle={this.toggleWarningAPI}>
+            <ModalHeader toggle={() => this.toggleWarningAPI("")}>
               Information
             </ModalHeader>
             <ModalBody>
