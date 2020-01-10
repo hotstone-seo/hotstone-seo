@@ -59,7 +59,8 @@ class RuleDetail extends Component {
       canonicalFormValues: {
         id: null,
         name: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       metaTagFormValues: {
         id: null,
@@ -71,12 +72,14 @@ class RuleDetail extends Component {
       scriptTagFormValues: {
         id: null,
         name: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       titleTagFormValues: {
         id: null,
         name: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       canonicalFormVisible: false,
       actionCanonicalForm: "",
@@ -271,17 +274,14 @@ class RuleDetail extends Component {
           this.setState({ tags: [...tags, metaTagFormValues] });
         })
         .then(() => {
-          this.setState({ metaTagFormValues: {} });
-          this.setState({ formMetaTagVisible: false });
           this.getTagList();
         })
         .catch(error => {
-          this.toggleWarningAPI(error.message);
           this.setState({ metaTagFormValues: {} });
-          this.setState({ formMetaTagVisible: false });
         });
     }
-    this.setState({ formMetaTagVisible: false });
+    this.setState({ metaTagFormValues: {} });
+    this.setState({ metaTagFormVisible: false });
   }
 
   getTagList() {
