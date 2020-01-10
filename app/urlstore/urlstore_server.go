@@ -6,7 +6,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// URLStoreServer [nomock]
+// URLStoreServer
 type URLStoreServer interface {
 	FullSync() error
 	Sync() error
@@ -14,6 +14,7 @@ type URLStoreServer interface {
 	Match(url string) (int, map[string]string)
 }
 
+// NewURLStoreServer return new instance of URLStoreServer [autowire]
 func NewURLStoreServer(svc URLStoreSyncService) URLStoreServer {
 	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,

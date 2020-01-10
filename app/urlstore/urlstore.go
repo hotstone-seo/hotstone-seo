@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// URLStore [nomock]
+// URLStore
 type URLStore interface {
 	Get(path string) (int, map[string]string)
 	Add(id int, key string)

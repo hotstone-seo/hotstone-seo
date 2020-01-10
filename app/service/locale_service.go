@@ -5,7 +5,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// LocaleService contain logic for LocaleController
+// LocaleService contain logic for LocaleController [mock]
 type LocaleService interface {
 	repository.LocaleRepo
 }
@@ -16,7 +16,7 @@ type LocaleServiceImpl struct {
 	repository.LocaleRepo
 }
 
-// NewLocaleService return new instance of LocaleService
+// NewLocaleService return new instance of LocaleService [autowire]
 func NewLocaleService(impl LocaleServiceImpl) LocaleService {
 	return &impl
 }

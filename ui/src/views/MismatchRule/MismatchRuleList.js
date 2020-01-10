@@ -19,7 +19,7 @@ class MismatchRuleList extends Component {
       mismatchRules: [],
       record: {},
       warning: false,
-      URL_API: process.env.REACT_APP_API_URL + "metrics_unmatched",
+      URL_API: process.env.REACT_APP_API_URL + "metrics/mismatched",
       errorMessage: ""
     };
 

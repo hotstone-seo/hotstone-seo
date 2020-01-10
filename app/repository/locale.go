@@ -14,7 +14,7 @@ type Locale struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-// LocaleRepo to handle locales entity
+// LocaleRepo to handle locales entity [mock]
 type LocaleRepo interface {
 	FindOne(context.Context, int64) (*Locale, error)
 	Find(context.Context) ([]*Locale, error)
@@ -23,7 +23,7 @@ type LocaleRepo interface {
 	Update(context.Context, Locale) error
 }
 
-// NewLocaleRepo return new instance of LocaleRepo
+// NewLocaleRepo return new instance of LocaleRepo [autowire]
 func NewLocaleRepo(impl CachedLocaleRepoImpl) LocaleRepo {
 	return &impl
 }

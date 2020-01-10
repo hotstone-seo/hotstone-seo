@@ -12,7 +12,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/hotstone-seo/hotstone-seo/app/metric"
 	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
 
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
@@ -20,7 +19,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// ProviderService contain logic for ProviderController
+// ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
@@ -30,22 +29,26 @@ type ProviderService interface {
 // ProviderServiceImpl is implementation of ProviderService
 type ProviderServiceImpl struct {
 	dig.In
-	MetricsUnmatchedService
+	MetricsRuleMatchingService
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo
 	urlstore.URLStoreServer
 }
 
-// NewProviderService return new instance of ProviderService
+// NewProviderService return new instance of ProviderService [autowire]
 func NewProviderService(impl ProviderServiceImpl) ProviderService {
 	return &impl
 }
 
 // MatchRule to match rule
 func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
-	ctx = metric.InitializeLatencyTracking(ctx)
-	defer metric.RecordLatency(ctx)
+	mtx := &repository.MetricsRuleMatching{}
+	defer func() {
+		if errInsert := p.MetricsRuleMatchingService.Insert(ctx, *mtx); errInsert != nil {
+			log.Warnf("Failed to record rule matching metric: %+v", errInsert)
+		}
+	}()
 
 	url, err := url.Parse(req.Path)
 	if err != nil {
@@ -55,16 +58,12 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 	ruleID, pathParam := p.URLStoreServer.Match(url.Path)
 	if ruleID == -1 {
 		// mismatched
+		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
 
-		if errRecord := p.MetricsUnmatchedService.Record(ctx, url.Path); errRecord != nil {
-			log.Warnf("Failed to record unmatched metrics: %+v", errRecord)
-		}
-
-		ctx = metric.SetMismatched(ctx, url.Path)
 		return nil, fmt.Errorf("No rule match: %s", url.Path)
 	} else {
 		// matched
-		ctx = metric.SetMatched(ctx)
+		p.MetricsRuleMatchingService.SetMatched(mtx)
 	}
 
 	resp = &MatchRuleResponse{RuleID: int64(ruleID), PathParam: pathParam}

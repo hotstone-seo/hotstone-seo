@@ -6,7 +6,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// URLStoreSyncService contain logic for URLStoreSync Controller
+// URLStoreSyncService contain logic for URLStoreSync Controller [mock]
 type URLStoreSyncService interface {
 	FindOne(ctx context.Context, id int64) (*URLStoreSync, error)
 	Find(ctx context.Context) ([]*URLStoreSync, error)
@@ -21,7 +21,7 @@ type URLStoreSyncServiceImpl struct {
 	URLStoreSyncRepo
 }
 
-// NewURLStoreSyncService return new instance of URLStoreSyncService
+// NewURLStoreSyncService return new instance of URLStoreSyncService [autowire]
 func NewURLStoreSyncService(impl URLStoreSyncServiceImpl) URLStoreSyncService {
 	return &impl
 }

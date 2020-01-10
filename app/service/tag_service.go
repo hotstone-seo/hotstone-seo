@@ -5,7 +5,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// TagService contain logic for TagController
+// TagService contain logic for TagController [mock]
 type TagService interface {
 	repository.TagRepo
 }
@@ -16,7 +16,7 @@ type TagServiceImpl struct {
 	repository.TagRepo
 }
 
-// NewTagService return new instance of TagService
+// NewTagService return new instance of TagService [autowire]
 func NewTagService(impl TagServiceImpl) TagService {
 	return &impl
 }

@@ -8,9 +8,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// RuleService contain logic for Rule Controller
+// RuleService contain logic for Rule Controller [mock]
 type RuleService interface {
-	// repository.RuleRepo
 	FindOne(ctx context.Context, id int64) (*repository.Rule, error)
 	Find(ctx context.Context) ([]*repository.Rule, error)
 	Insert(ctx context.Context, rule repository.Rule) (lastInsertID int64, err error)
@@ -26,7 +25,7 @@ type RuleServiceImpl struct {
 	repository.Transactional
 }
 
-// NewRuleService return new instance of RuleService
+// NewRuleService return new instance of RuleService [autowire]
 func NewRuleService(impl RuleServiceImpl) RuleService {
 	return &impl
 }
