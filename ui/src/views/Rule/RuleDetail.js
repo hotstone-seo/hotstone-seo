@@ -219,7 +219,18 @@ class RuleDetail extends Component {
       }
     });
   }
+  handleScriptTagOnChange(type, e) {
+    const { target } = e || {};
+    const { value } = target || {};
+    const { scriptTagFormValues } = this.state;
 
+    this.setState({
+      scriptTagFormValues: {
+        ...scriptTagFormValues,
+        [type]: value
+      }
+    });
+  }
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
   }
@@ -321,6 +332,35 @@ class RuleDetail extends Component {
     }
     this.setState({ titleTagFormValues: {} });
     this.setState({ titleTagFormVisible: false });
+  }
+  handleSaveScriptTag() {
+    const {
+      scriptTagFormValues,
+      tags,
+      actionScriptTagForm,
+      record
+    } = this.state;
+    const isUpdate = actionScriptTagForm !== "Add";
+
+    if (isUpdate) {
+    } else {
+      const { ruleId } = this.state;
+      scriptTagFormValues.rule_id = parseInt(ruleId);
+      scriptTagFormValues.locale = "EN";
+      axios
+        .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
+        .then(response => {
+          this.setState({ tags: [...tags, scriptTagFormValues] });
+        })
+        .then(() => {
+          this.getTagList();
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
+    }
+    this.setState({ scriptTagFormValues: {} });
+    this.setState({ scriptTagFormVisible: false });
   }
   getTagList() {
     axios
@@ -531,10 +571,10 @@ class RuleDetail extends Component {
             <ScriptTagForm
               visible={this.state.scriptTagFormVisible}
               onCancel={this.handleCancelAddScriptTag}
-              onSave={this.handleSave}
+              onSave={this.handleSaveScriptTag.bind(this)}
               scripttag={this.state.record}
               action={this.state.actionForm}
-              onChange={this.handleOnChange.bind(this)}
+              onChange={this.handleScriptTagOnChange.bind(this)}
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
