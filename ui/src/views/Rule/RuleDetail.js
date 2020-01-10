@@ -116,7 +116,7 @@ class RuleDetail extends Component {
       .catch(error => {
         this.toggleWarningAPI(error.message);
       });
-
+    this.setState({ ruleId: ruleId });
     this.getTagList();
   }
 
@@ -242,10 +242,8 @@ class RuleDetail extends Component {
   handleSaveMetaTag() {
     const { metaTagFormValues, tags, actionMetaTagForm, record } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
-
-    metaTagFormValues.id = record.id;
-
     if (isUpdate) {
+      metaTagFormValues.id = record.id;
       axios
         .put(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(() => {
@@ -262,20 +260,26 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
+      const { ruleId } = this.state;
+      metaTagFormValues.rule_id = ruleId;
+      //this.setState({ metaTagFormValues: metaTagFormValues });
+
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
-          this.setState({ rules: [...tags, metaTagFormValues] });
+          this.setState({ tags: [...tags, metaTagFormValues] });
         })
         .then(() => {
-          //this.getRuleList();  TO DO :
+          this.setState({ metaTagFormValues: {} });
+          this.setState({ formMetaTagVisible: false });
+          this.getTagList();
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
-      this.setState({ metaTagFormValues: {} });
     }
-    this.setState({ formMetaTagVisible: false });
+    //this.setState({ formMetaTagVisible: false });
+    //this.getTagList();
   }
 
   getTagList() {
