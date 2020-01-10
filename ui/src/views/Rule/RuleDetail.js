@@ -65,7 +65,8 @@ class RuleDetail extends Component {
         id: null,
         name: null,
         content: null,
-        rule_id: null
+        rule_id: null,
+        locale_id: null
       },
       scriptTagFormValues: {
         id: null,
@@ -261,8 +262,8 @@ class RuleDetail extends Component {
         });
     } else {
       const { ruleId } = this.state;
-      metaTagFormValues.rule_id = ruleId;
-      //this.setState({ metaTagFormValues: metaTagFormValues });
+      metaTagFormValues.rule_id = parseInt(ruleId);
+      metaTagFormValues.locale_id = 1;
 
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
@@ -276,10 +277,11 @@ class RuleDetail extends Component {
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
+          this.setState({ metaTagFormValues: {} });
+          this.setState({ formMetaTagVisible: false });
         });
     }
-    //this.setState({ formMetaTagVisible: false });
-    //this.getTagList();
+    this.setState({ formMetaTagVisible: false });
   }
 
   getTagList() {
