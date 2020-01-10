@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import {
   Button,
@@ -99,9 +98,5 @@ class ScripttagForm extends Component {
     );
   }
 }
-ScripttagForm.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string
-  }).isRequired
-};
+
 export default ScripttagForm;
