@@ -24,6 +24,11 @@ export default {
       name: "Mismatch Rule",
       url: "/mismatchRule",
       icon: "icon-puzzle"
+    },
+    {
+      name: "Analytic",
+      url: "/analytic",
+      icon: "icon-puzzle"
     }
   ]
 };

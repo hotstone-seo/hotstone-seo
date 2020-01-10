@@ -38,6 +38,8 @@ const MismatchRuleList = React.lazy(() =>
   import("./views/MismatchRule/MismatchRuleList")
 );
 
+const AnalyticPage = React.lazy(() => import("./views/Analytic/AnalyticPage"));
+
 const routes = [
   { path: "/", exact: true, name: "Home" },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
@@ -72,7 +74,8 @@ const routes = [
   },
   { path: "/language", name: "Language", component: LanguageList },
   { path: "/languageForm", name: "Language", component: LanguageForm },
-  { path: "/mismatchRule", name: "MismatchRule", component: MismatchRuleList }
+  { path: "/mismatchRule", name: "MismatchRule", component: MismatchRuleList },
+  { path: "/analytic", name: "Analytic", component: AnalyticPage }
 ];
 
 export default routes;
