@@ -12,7 +12,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/hotstone-seo/hotstone-seo/app/metric"
 	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
 
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
@@ -44,10 +43,8 @@ func NewProviderService(impl ProviderServiceImpl) ProviderService {
 
 // MatchRule to match rule
 func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
-	ctx = metric.InitializeLatencyTracking(ctx)
 	mtx := &repository.MetricsRuleMatching{}
 	defer func() {
-		metric.RecordLatency(ctx)
 		if errInsert := p.MetricsRuleMatchingService.Insert(ctx, *mtx); errInsert != nil {
 			log.Warnf("Failed to record rule matching metric: %+v", errInsert)
 		}
@@ -61,13 +58,11 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 	ruleID, pathParam := p.URLStoreServer.Match(url.Path)
 	if ruleID == -1 {
 		// mismatched
-		ctx = metric.SetMismatched(ctx, url.Path)
 		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
 
 		return nil, fmt.Errorf("No rule match: %s", url.Path)
 	} else {
 		// matched
-		ctx = metric.SetMatched(ctx)
 		p.MetricsRuleMatchingService.SetMatched(mtx)
 	}
 

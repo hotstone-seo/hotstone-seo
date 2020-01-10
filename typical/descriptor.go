@@ -2,8 +2,6 @@ package typical
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/app"
-	"github.com/hotstone-seo/hotstone-seo/pkg/grafana"
-	"github.com/hotstone-seo/hotstone-seo/pkg/prometheus"
 	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typrls"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
@@ -25,8 +23,8 @@ var (
 		WithComposers(
 			redis,
 			postgres,
-			prometheus.New(),
-			grafana.New(),
+			// prometheus.New(),
+			// grafana.New(),
 		)
 
 	Descriptor = typcore.ProjectDescriptor{
