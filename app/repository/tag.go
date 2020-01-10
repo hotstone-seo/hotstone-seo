@@ -19,7 +19,7 @@ type Tag struct {
 	CreatedAt  time.Time  `json:"created_at"`
 }
 
-// TagRepo to handle tags entity
+// TagRepo to handle tags entity [mock]
 type TagRepo interface {
 	FindOne(context.Context, int64) (*Tag, error)
 	Find(context.Context) ([]*Tag, error)
@@ -29,7 +29,7 @@ type TagRepo interface {
 	Update(context.Context, Tag) error
 }
 
-// NewTagRepo return new instance of TagRepo
+// NewTagRepo return new instance of TagRepo [autowire]
 func NewTagRepo(impl CachedTagRepoImpl) TagRepo {
 	return &impl
 }

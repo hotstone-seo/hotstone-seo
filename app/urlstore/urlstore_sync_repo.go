@@ -13,7 +13,7 @@ type URLStoreSync struct {
 	CreatedAt        time.Time `json:"-"`
 }
 
-// URLStoreSyncRepo
+// URLStoreSyncRepo [mock]
 type URLStoreSyncRepo interface {
 	FindOne(ctx context.Context, id int64) (*URLStoreSync, error)
 	Find(ctx context.Context) ([]*URLStoreSync, error)
@@ -22,7 +22,7 @@ type URLStoreSyncRepo interface {
 	GetListDiff(ctx context.Context, offsetVersion int64) ([]*URLStoreSync, error)
 }
 
-// NewURLStoreSyncRepo return new instance of URLStoreSyncRepo
+// NewURLStoreSyncRepo return new instance of URLStoreSyncRepo [autowire]
 func NewURLStoreSyncRepo(impl URLStoreSyncRepoImpl) URLStoreSyncRepo {
 	return &impl
 }

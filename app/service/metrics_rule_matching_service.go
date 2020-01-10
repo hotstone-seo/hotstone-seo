@@ -5,7 +5,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// MetricsRuleMatchingService contain logic for MetricsUnmatchedController
+// MetricsRuleMatchingService contain logic for MetricsUnmatchedController [mock]
 type MetricsRuleMatchingService interface {
 	repository.MetricsRuleMatchingRepo
 
@@ -19,7 +19,7 @@ type MetricsRuleMatchingServiceImpl struct {
 	repository.MetricsRuleMatchingRepo
 }
 
-// NewMetricsRuleMatchingService return new instance of MetricsRuleMatchingService
+// NewMetricsRuleMatchingService return new instance of MetricsRuleMatchingService [autowire]
 func NewMetricsRuleMatchingService(impl MetricsRuleMatchingServiceImpl) MetricsRuleMatchingService {
 	return &impl
 }

@@ -13,7 +13,7 @@ type MetricsUnmatched struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-// MetricsUnmatchedRepo to handle metrics_unmatched entity
+// MetricsUnmatchedRepo to handle metrics_unmatched entity [mock]
 type MetricsUnmatchedRepo interface {
 	Find(context.Context, int64) (*MetricsUnmatched, error)
 	List(context.Context) ([]*MetricsUnmatched, error)
@@ -23,7 +23,7 @@ type MetricsUnmatchedRepo interface {
 	Update(context.Context, MetricsUnmatched) error
 }
 
-// NewMetricsUnmatchedRepo return new instance of MetricsUnmatchedRepo
+// NewMetricsUnmatchedRepo return new instance of MetricsUnmatchedRepo [autowire]
 func NewMetricsUnmatchedRepo(impl CachedMetricsUnmatchedRepoImpl) MetricsUnmatchedRepo {
 	return &impl
 }

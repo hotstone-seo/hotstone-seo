@@ -29,6 +29,7 @@ func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleM
 	return
 }
 
+// ListMismatchedCount list mistached count
 func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context) (list []*MetricsMismatchedCount, err error) {
 	var rows *sql.Rows
 

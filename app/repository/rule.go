@@ -15,7 +15,7 @@ type Rule struct {
 	CreatedAt    time.Time `json:"created_at"`
 }
 
-// RuleRepo is rule repository
+// RuleRepo is rule repository [mock]
 type RuleRepo interface {
 	FindOne(ctx context.Context, id int64) (*Rule, error)
 	Find(ctx context.Context) ([]*Rule, error)
@@ -24,7 +24,7 @@ type RuleRepo interface {
 	Update(ctx context.Context, rule Rule) error
 }
 
-// NewRuleRepo return new instance of RuleRepo
+// NewRuleRepo return new instance of RuleRepo [autowire]
 func NewRuleRepo(impl RuleRepoImpl) RuleRepo {
 	return &impl
 }

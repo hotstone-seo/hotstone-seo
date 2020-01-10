@@ -20,7 +20,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// ProviderService contain logic for ProviderController
+// ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
@@ -38,7 +38,7 @@ type ProviderServiceImpl struct {
 	urlstore.URLStoreServer
 }
 
-// NewProviderService return new instance of ProviderService
+// NewProviderService return new instance of ProviderService [autowire]
 func NewProviderService(impl ProviderServiceImpl) ProviderService {
 	return &impl
 }

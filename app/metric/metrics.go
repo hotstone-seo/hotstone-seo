@@ -82,6 +82,7 @@ type MetricServerImpl struct {
 	config.Config
 }
 
+// NewMetricServer return new instance of MetricServer [autowire]
 func NewMetricServer(server MetricServerImpl) MetricServer {
 	return &server
 }
