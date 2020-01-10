@@ -58,9 +58,9 @@ class MetatagForm extends Component {
               <Col xs="12" md="9">
                 <Input
                   type="select"
-                  name="locale_id"
-                  id="locale_id"
-                  onChange={onChange.bind(this, "locale_id")}
+                  name="locale"
+                  id="locale"
+                  onChange={onChange.bind(this, "locale")}
                 >
                   <option value="ID">ID</option>
                 </Input>
