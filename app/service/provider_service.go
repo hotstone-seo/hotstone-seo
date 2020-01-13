@@ -108,6 +108,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 			return
 		}
 	}
+	interpolatedTags = make([]*InterpolatedTag, 0)
 	for _, tag := range tags {
 		var (
 			attribute dbkit.JSON
