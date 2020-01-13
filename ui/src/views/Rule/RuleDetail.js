@@ -60,7 +60,7 @@ class RuleDetail extends Component {
         id: null,
         name: null,
         rule_id: null,
-        locale_id: null
+        locale: null
       },
       metaTagFormValues: {
         id: null,
@@ -73,7 +73,7 @@ class RuleDetail extends Component {
         id: null,
         name: null,
         rule_id: null,
-        locale_id: null
+        locale: null
       },
       titleTagFormValues: {
         id: null,
@@ -96,7 +96,6 @@ class RuleDetail extends Component {
       tags: []
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
-    this.handleCancelAddCanonical = this.handleCancelAddCanonical.bind(this);
 
     this.handleCancelAddScriptTag = this.handleCancelAddScriptTag.bind(this);
     this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
@@ -231,6 +230,19 @@ class RuleDetail extends Component {
       }
     });
   }
+
+  handleCanonicalTagOnChange(type, e) {
+    const { target } = e || {};
+    const { value } = target || {};
+    const { canonicalFormValues } = this.state;
+
+    this.setState({
+      canonicalFormValues: {
+        ...canonicalFormValues,
+        [type]: value
+      }
+    });
+  }
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
   }
@@ -361,6 +373,35 @@ class RuleDetail extends Component {
     }
     this.setState({ scriptTagFormValues: {} });
     this.setState({ scriptTagFormVisible: false });
+  }
+  handleSaveCanonicalTag() {
+    const {
+      canonicalFormValues,
+      tags,
+      actionCanonicalForm,
+      record
+    } = this.state;
+    const isUpdate = actionCanonicalForm !== "Add";
+
+    if (isUpdate) {
+    } else {
+      const { ruleId } = this.state;
+      canonicalFormValues.rule_id = parseInt(ruleId);
+
+      axios
+        .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
+        .then(response => {
+          this.setState({ tags: [...tags, canonicalFormValues] });
+        })
+        .then(() => {
+          this.getTagList();
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
+    }
+    this.setState({ canonicalFormValues: {} });
+    this.setState({ canonicalFormVisible: false });
   }
   getTagList() {
     axios
@@ -554,11 +595,11 @@ class RuleDetail extends Component {
             </Card>
             <CanonicalForm
               visible={this.state.canonicalFormVisible}
-              onCancel={this.handleCancelAddCanonical}
-              onSave={this.handleSave}
+              onCancel={this.handleCancelAddCanonical.bind(this)}
+              onSave={this.handleSaveCanonicalTag.bind(this)}
               canonical={this.state.record}
               action={this.state.actionForm}
-              onChange={this.handleOnChange.bind(this)}
+              onChange={this.handleCanonicalTagOnChange.bind(this)}
             />
             <MetaTagForm
               visible={this.state.metaTagFormVisible}
