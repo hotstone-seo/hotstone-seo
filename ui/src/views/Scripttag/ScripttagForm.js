@@ -43,8 +43,15 @@ class ScripttagForm extends Component {
                 <Label htmlFor="text-input">Language</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="select" name="language" id="language">
-                  <option>ID</option>
+                <Input
+                  type="select"
+                  name="locale"
+                  id="locale"
+                  onChange={onChange.bind(this, "locale")}
+                >
+                  <option value="-">-CHOOSE-</option>
+                  <option value="ID">ID</option>
+                  <option value="EN">EN</option>
                 </Input>
               </Col>
             </FormGroup>
