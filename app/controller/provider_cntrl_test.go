@@ -41,11 +41,6 @@ func TestProviderCntrl_MatchRule(t *testing.T) {
 	})
 }
 
-type SomeStruct struct {
-	Name      string
-	Something string
-}
-
 func TestProviderCntrl_RetrieveData(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

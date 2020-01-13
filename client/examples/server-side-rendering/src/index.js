@@ -7,7 +7,7 @@ import App from './app';
 
 const server = express()
 // Instantiate the client by providing the URL of HotStone provider
-const client = new HotStone('http://localhost:4000');
+const client = new HotStone('http://localhost:8089');
 
 const template = ({ body, head }) => {
   return `
@@ -27,7 +27,7 @@ const template = ({ body, head }) => {
 }
 
 server.use('/public', express.static('../public'));
-server.get('/', (req, res, next) => {
+server.get('*', (req, res, next) => {
  (async function() {
    try {
      // Retrieve a Page SEO Rule by mathing its path
@@ -58,4 +58,4 @@ server.get('/', (req, res, next) => {
  })();
 });
 
-server.listen(8080)
+server.listen(4000)
