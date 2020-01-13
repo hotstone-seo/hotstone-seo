@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
@@ -6,7 +7,10 @@ import HotStone from 'hotstone-client';
 import serialize from 'serialize-javascript';
 import App from '../component/App';
 
-const server = express()
+const server = express();
+
+server.use(cors());
+ 
 // Instantiate the client by providing the URL of HotStone provider
 const client = new HotStone('http://localhost:8089');
 
@@ -28,7 +32,9 @@ const template = ({ body, head }, data) => {
   `
 }
 
-server.use(express.static('public'));
+const port = process.env.PORT || 3000
+
+server.use('/public', express.static('public'));
 
 server.get('*', (req, res, next) => {
  (async function() {
@@ -59,4 +65,6 @@ server.get('*', (req, res, next) => {
  })();
 });
 
-server.listen(4000)
+server.listen(port, () => {
+  console.log(`Listening on port: ${port}`)
+})

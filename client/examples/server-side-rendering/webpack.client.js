@@ -7,7 +7,8 @@ const config = {
   entry: './src/browser/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'public'),
+    publicPath: '/'
   },
   devtool: 'inline-source-map'
 }

@@ -11,6 +11,7 @@ const config = {
   output: {
     filename: 'server.js',
     path: __dirname,
+    publicPath: '/'
   }
 }
 
