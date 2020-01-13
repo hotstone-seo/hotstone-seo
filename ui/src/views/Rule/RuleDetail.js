@@ -317,7 +317,7 @@ class RuleDetail extends Component {
     } else {
       const { ruleId } = this.state;
       titleTagFormValues.rule_id = parseInt(ruleId);
-      titleTagFormValues.locale = "EN";
+
       axios
         .post(this.state.URL_ADDTITLE_API, titleTagFormValues)
         .then(response => {
@@ -346,7 +346,7 @@ class RuleDetail extends Component {
     } else {
       const { ruleId } = this.state;
       scriptTagFormValues.rule_id = parseInt(ruleId);
-      scriptTagFormValues.locale = "EN";
+
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {
