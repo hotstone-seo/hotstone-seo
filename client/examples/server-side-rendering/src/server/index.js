@@ -3,13 +3,14 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 import HotStone from 'hotstone-client';
-import App from './app';
+import serialize from 'serialize-javascript';
+import App from '../component/App';
 
 const server = express()
 // Instantiate the client by providing the URL of HotStone provider
 const client = new HotStone('http://localhost:8089');
 
-const template = ({ body, head }) => {
+const template = ({ body, head }, data) => {
   return `
     <!DOCTYPE html>
     <html ${head.htmlAttributes.toString()}>
@@ -20,13 +21,15 @@ const template = ({ body, head }) => {
       </head>
       <body ${head.bodyAttributes.toString()}>
         <div id="root">${body}</div>
+        <script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
       </body>
       <script src="/public/bundle.js"></script>
     </html>
   `
 }
 
-server.use('/public', express.static('../public'));
+server.use(express.static('public'));
+
 server.get('*', (req, res, next) => {
  (async function() {
    try {
@@ -44,14 +47,12 @@ server.get('*', (req, res, next) => {
      //   { type: "meta", attributes: { name: "description", content: "Page Description" } }
      // ]
      const tags = await client.tags(rule, "en-US");
+     const data = { rule, tags }
 
      // Rendering element...
+     const appString = renderToString(<App data={data} />);
      const helmet = Helmet.renderStatic();
-     const appString = renderToString(<App rule={rule} tags={tags} />);
-     res.send(template({
-       body: appString,
-       head: helmet,
-     }));
+     res.send(template({ body: appString, head: helmet }, data));
    } catch(error) {
      next(error);
    }

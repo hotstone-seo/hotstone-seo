@@ -4,11 +4,12 @@ const baseConfig = require('./webpack.base');
 
 const config = {
   mode: 'development',
-  entry: './src/app/browser.js',
+  entry: './src/browser/index.js',
   output: {
-    path: path.resolve(__dirname, 'public'),
     filename: 'bundle.js',
-  }
+    path: path.resolve(__dirname, 'public')
+  },
+  devtool: 'inline-source-map'
 }
 
 module.exports = merge (baseConfig, config);

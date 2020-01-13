@@ -5,12 +5,12 @@ const baseConfig = require('./webpack.base.js');
 
 const config = {
   target: 'node',
-  mode: 'development',
-  entry: './src/index.js',
+  mode: 'production',
+  entry: './src/server/index.js',
   externals: [webpackNodeExternals()],
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'server.js'
+    filename: 'server.js',
+    path: __dirname,
   }
 }
 

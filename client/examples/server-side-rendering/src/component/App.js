@@ -13,7 +13,7 @@ const toRows = (tags) => {
       <li key={i}>
         {key}: {attributes[key]}
       </li>
-    ))
+    ));
     return (
       <tr key={index}>
         <td>{type}</td>
@@ -27,7 +27,8 @@ const toRows = (tags) => {
 }
 
 export default function App(props) {
-  const { rule, tags } = props;
+  const { rule, tags=[] } = props.data;
+  console.log('tags:', tags);
   return (
     <div>
       <Helmet>{toElements(tags)}</Helmet>

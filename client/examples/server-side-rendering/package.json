@@ -5,7 +5,7 @@
   "description": "Sample usage of hotstone-client on SSR application",
   "main": "index.js",
   "scripts": {
-    "start": "cd dist && node server",
+    "start": "node server",
     "build": "rm -rf dist && rm -rf public && webpack --config webpack.client.js && webpack --config webpack.server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,7 +19,8 @@
     "hotstone-client": "file:hotstone-client-0.2.0.tgz",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-helmet": "^5.2.1"
+    "react-helmet": "^5.2.1",
+    "serialize-javascript": "^2.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
