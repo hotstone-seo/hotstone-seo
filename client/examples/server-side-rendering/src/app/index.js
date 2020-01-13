@@ -7,12 +7,43 @@ const toElements = (tags) => {
   ));
 }
 
+const toRows = (tags) => {
+  return tags.map(({ type, attributes, value }, index) => {
+    const attrs = Object.keys(attributes).map((key, i) => (
+      <li key={i}>
+        {key}: {attributes[key]}
+      </li>
+    ))
+    return (
+      <tr key={index}>
+        <td>{type}</td>
+        <td>
+          <ul>{attrs}</ul>
+        </td>
+        <td>{value}</td>
+      </tr>
+    );
+  })
+}
+
 export default function App(props) {
   const { rule, tags } = props;
-  // TODO: Create a view for displaying rule and tags
   return (
     <div>
       <Helmet>{toElements(tags)}</Helmet>
+      <h1>Sample Application using HotStone</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Attributes</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {toRows(tags)}
+        </tbody>
+      </table>
     </div> 
   );
 }

@@ -31,7 +31,7 @@ class HotStone {
 
   async tags(rule, locale, contentData={}) {
     const { data } = await this.apiCaller.post('/provider/tags', {
-      rule_id: rule.id,
+      rule_id: rule.rule_id,
       locale: locale,
       data: contentData
     });

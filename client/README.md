@@ -23,7 +23,7 @@ import HotStone from 'hotstone-client';
   // Retrieve a Page SEO Rule by mathing its path
   // A rule is a colelction of tags or content that are tailored specifically
   // for the page
-  const rule = client.match('/any/path');
+  const rule = await client.match('/any/path');
 
   // Get the tags associated with the rule, a tags is specific to a locale.
   // A tags is an array of tag object containing info of a specific HTML tag
@@ -32,10 +32,7 @@ import HotStone from 'hotstone-client';
   //   { type: "title", attributes: {}, value: "Page Title" },
   //   { type: "meta", attributes: { name: "description", content: "Page Description" } }
   // ]
-  const tags = await rule.tags('ID');
-
-  // Return a React element in order to be rendered
-  const tagElements = tags.element();
+  const tags = await rule.tags(rule, 'en-US');
 
   // Rendering tag element...
 })();
