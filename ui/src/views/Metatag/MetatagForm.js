@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import {
   Button,
@@ -138,9 +137,5 @@ class MetatagForm extends Component {
     );
   }
 }
-MetatagForm.propTypes = {
-  match: PropTypes.shape({
-    path: PropTypes.string
-  }).isRequired
-};
+
 export default MetatagForm;
