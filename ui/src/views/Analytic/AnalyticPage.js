@@ -2,8 +2,6 @@ import React from "react";
 import CounterCard from "./CounterCard";
 
 function AnalyticPage() {
-  const HitCounterCard = CounterCard({ counter: 234, label: "Hit" });
-
   return (
     <div class="container">
       <div class="row">
