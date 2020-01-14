@@ -61,3 +61,18 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context) (
 	}
 	return
 }
+
+func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context) (count int64, err error) {
+
+	builder := sq.Select().
+		Column("count(is_matched)").
+		From("metrics_rule_matching").
+		Where(sq.Eq{"is_matched": 1}).
+		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+
+	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
+		return
+	}
+
+	return
+}

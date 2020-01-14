@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo"
 
@@ -20,6 +21,8 @@ type MetricsCntrl struct {
 func (c *MetricsCntrl) Route(e *echo.Echo) {
 
 	e.GET("metrics/mismatched", c.ListMismatched)
+	e.GET("metrics/hit", c.CountHit)
+	// e.GET("metrics/unique-page", c.CountUniquePage)
 }
 
 // ListMismatched of metrics_unmatched
@@ -30,4 +33,13 @@ func (c *MetricsCntrl) ListMismatched(ctx echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, metrics_mismatcheds)
+}
+
+func (c *MetricsCntrl) CountHit(ctx echo.Context) (err error) {
+	var count int64
+	ctx0 := ctx.Request().Context()
+	if count, err = c.MetricsRuleMatchingService.CountMatched(ctx0); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, strconv.Itoa(int(count)))
 }

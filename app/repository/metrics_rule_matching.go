@@ -16,6 +16,7 @@ type MetricsRuleMatching struct {
 type MetricsRuleMatchingRepo interface {
 	Insert(context.Context, MetricsRuleMatching) (err error)
 	ListMismatchedCount(ctx context.Context) (list []*MetricsMismatchedCount, err error)
+	CountMatched(ctx context.Context) (count int64, err error)
 }
 
 // NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [autowire]
