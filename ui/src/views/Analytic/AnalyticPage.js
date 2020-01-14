@@ -1,23 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CounterCard from "./CounterCard";
 import { ResponsiveLine } from "@nivo/line";
 import { useForm } from "react-hook-form";
-
-import data from "./data";
+import useHotstoneAPI from "../../hooks/useHotstoneAPI";
+import dataChart from "./data";
 
 function AnalyticPage() {
+  const [countHit, setCountHit] = useState(0);
+  const [countUniquePage, setCountUniquePage] = useState(0);
+
+  const { data: dataCountHit, loading, timer } = useHotstoneAPI({
+    url: "metrics/hit",
+    pollingInterval: 5000
+  });
+  useEffect(() => {
+    if (dataCountHit !== undefined) {
+      setCountHit(dataCountHit.count);
+    }
+  }, [dataCountHit]);
+  // setCountHit(dataCountHit.count);
+
+  console.log("DATA HIT: ", dataCountHit);
+  console.log("loading: ", loading);
+
   const { register, handleSubmit, errors } = useForm();
   const onChangeRange = data => console.log(data);
-  console.log(errors);
 
   return (
     <div className="container">
       <div className="row">
         <div className="col">
-          <CounterCard counter={234} label="Hit" />
+          <CounterCard counter={countHit} label="Hit" />
         </div>
         <div className="col">
-          <CounterCard counter={45} label="Unique Page" />
+          <CounterCard counter={countUniquePage} label="Unique Page" />
         </div>
         <div className="col"></div>
       </div>
@@ -32,13 +48,13 @@ function AnalyticPage() {
                   onChange={handleSubmit(onChangeRange)}
                 >
                   <option value="last-7days">Last 7 Days</option>
-                  <option value="last-3days">Last 3 Days</option>
+                  <option value="this-month">This Month</option>
                 </select>
               </form>
             </div>
             <div className="card-body">
               <ResponsiveLine
-                data={data}
+                data={dataChart}
                 margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                 xScale={{ type: "point" }}
                 yScale={{
