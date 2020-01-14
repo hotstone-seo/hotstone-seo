@@ -181,6 +181,16 @@ class RuleDetail extends Component {
     this.setState({ titleTagFormVisible: true });
   }
 
+  showFormCanonicalTag(record) {
+    if (record !== undefined) {
+      this.setState({ record: record });
+      this.setState({ actionCanonicalForm: "Edit" });
+    } else {
+      this.setState({ record: {} });
+      this.setState({ actionCanonicalForm: "Add" });
+    }
+    this.setState({ canonicalFormVisible: true });
+  }
   handleOnChange(type, e) {
     const { target } = e || {};
     const { value } = target || {};
@@ -400,7 +410,7 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({ canonicalFormValues: {} });
+    //this.setState({ canonicalFormValues: {} });
     this.setState({ canonicalFormVisible: false });
   }
   getTagList() {
@@ -476,7 +486,7 @@ class RuleDetail extends Component {
                 <div style={{ marginBottom: ".5rem" }}>
                   <Button
                     color="primary"
-                    onClick={() => this.showForm()}
+                    onClick={() => this.showFormCanonicalTag()}
                     style={{ marginRight: "0.4em" }}
                   >
                     Add New Canonical
