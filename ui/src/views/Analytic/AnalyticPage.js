@@ -1,7 +1,22 @@
 import React from "react";
+import CounterCard from "./CounterCard";
 
 function AnalyticPage() {
-  return <div>Hello World</div>;
+  const HitCounterCard = CounterCard({ counter: 234, label: "Hit" });
+
+  return (
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <CounterCard counter={234} label="Hit" />
+        </div>
+        <div class="col-sm">
+          <CounterCard counter={45} label="Unique Page" />
+        </div>
+        <div class="col-sm"></div>
+      </div>
+    </div>
+  );
 }
 
 export default AnalyticPage;
