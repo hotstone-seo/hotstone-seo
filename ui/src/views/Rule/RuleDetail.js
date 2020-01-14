@@ -58,7 +58,7 @@ class RuleDetail extends Component {
 
       canonicalFormValues: {
         id: null,
-        name: null,
+        canonical: null,
         rule_id: null,
         locale: null
       },

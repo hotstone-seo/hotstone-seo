@@ -97,11 +97,11 @@ class CanonicalForm extends Component {
               <Col xs="12" md="9">
                 <Input
                   type="text"
-                  id="name"
-                  name="name"
+                  id="canonical"
+                  name="canonical"
                   placeholder="Name"
                   defaultValue={canonical !== undefined ? canonical.name : ""}
-                  onChange={onChange.bind(this, "name")}
+                  onChange={onChange.bind(this, "canonical")}
                 />
               </Col>
             </FormGroup>
