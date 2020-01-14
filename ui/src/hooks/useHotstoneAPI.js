@@ -1,4 +1,3 @@
-import React from "react";
 import { useAPI } from "@umijs/hooks";
 import urljoin from "url-join";
 
