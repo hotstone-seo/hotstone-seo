@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo"
 
@@ -41,5 +40,5 @@ func (c *MetricsCntrl) CountHit(ctx echo.Context) (err error) {
 	if count, err = c.MetricsRuleMatchingService.CountMatched(ctx0); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, strconv.Itoa(int(count)))
+	return ctx.JSON(http.StatusOK, map[string]int64{"count": count})
 }
