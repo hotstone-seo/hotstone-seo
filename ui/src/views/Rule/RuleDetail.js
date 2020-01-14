@@ -77,7 +77,7 @@ class RuleDetail extends Component {
       },
       titleTagFormValues: {
         id: null,
-        name: null,
+        title: null,
         rule_id: null,
         locale: null
       },

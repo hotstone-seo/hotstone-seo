@@ -90,11 +90,11 @@ class TitletagForm extends Component {
               <Col xs="12" md="9">
                 <Input
                   type="text"
-                  id="name"
-                  name="name"
+                  id="title"
+                  name="title"
                   placeholder="title"
                   defaultValue={titletag !== undefined ? titletag.name : ""}
-                  onChange={onChange.bind(this, "name")}
+                  onChange={onChange.bind(this, "title")}
                 />
               </Col>
             </FormGroup>
