@@ -529,8 +529,8 @@ class RuleDetail extends Component {
                         <tr key={index}>
                           <td>{tag.type}</td>
                           <td>
-                            Name : {tag.attributes.name} Content :
-                            {tag.attributes.content}
+                            {"Name " + tag.attributes.name}
+                            {"Content : " + tag.attributes.content}
                           </td>
                           <td>{tag.value}</td>
                           <td>{tag.locale}</td>
