@@ -61,7 +61,9 @@ class MetatagForm extends Component {
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
                 >
+                  <option value="-">-CHOOSE-</option>
                   <option value="ID">ID</option>
+                  <option value="EN">EN</option>
                 </Input>
               </Col>
             </FormGroup>

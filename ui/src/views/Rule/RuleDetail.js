@@ -314,7 +314,6 @@ class RuleDetail extends Component {
     } else {
       const { ruleId } = this.state;
       metaTagFormValues.rule_id = parseInt(ruleId);
-      metaTagFormValues.locale = "EN";
 
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
@@ -529,7 +528,7 @@ class RuleDetail extends Component {
                       tags.map((tag, index) => (
                         <tr key={index}>
                           <td>{tag.type}</td>
-                          <td></td>
+                          <td>{}</td>
                           <td>{tag.value}</td>
                           <td>{tag.locale}</td>
                           <td>
