@@ -423,7 +423,15 @@ class RuleDetail extends Component {
         this.toggleWarningAPI(error.message);
       });
   }
-
+  handleEdit(record) {
+    if (record !== undefined) {
+      const typeTag = record.type;
+      if (typeTag === "canonical") this.showFormCanonicalTag(record);
+      else if (typeTag === "meta") this.showFormMetaTag(record);
+      else if (typeTag === "script") this.showFormScriptTag(record);
+      else if (typeTag === "title") this.showFormTitleTag(record);
+    }
+  }
   render() {
     const { rules, tags } = this.state;
 
@@ -537,7 +545,7 @@ class RuleDetail extends Component {
                           <td>
                             <button
                               className="button muted-button"
-                              onClick={() => this.showFormMetaTag(tag)}
+                              onClick={() => this.handleEdit(tag)}
                             >
                               Edit
                             </button>
