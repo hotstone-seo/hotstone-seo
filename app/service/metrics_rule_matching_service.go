@@ -30,5 +30,5 @@ func (s *MetricsRuleMatchingServiceImpl) SetMatched(m *repository.MetricsRuleMat
 
 func (s *MetricsRuleMatchingServiceImpl) SetMismatched(m *repository.MetricsRuleMatching, mismatchedURL string) {
 	m.IsMatched = 0
-	m.URLMismatched = &mismatchedURL
+	m.URL = &mismatchedURL
 }

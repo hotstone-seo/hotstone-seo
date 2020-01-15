@@ -7,9 +7,9 @@ import (
 
 // MetricsRuleMatching represented  metrics_rule_matching entity
 type MetricsRuleMatching struct {
-	Time          time.Time
-	IsMatched     int
-	URLMismatched *string
+	Time      time.Time
+	IsMatched int
+	URL       *string
 }
 
 // MetricsRuleMatchingRepo to handle metrics_rule_matching entity [mock]
