@@ -147,7 +147,13 @@ class RuleDetail extends Component {
   }
   showFormMetaTag(record) {
     if (record !== undefined) {
-      this.setState({ record: record });
+      const { metaTagFormValues } = this.state;
+      metaTagFormValues.id = record.id;
+      metaTagFormValues.name = record.attributes.name;
+      metaTagFormValues.locale = record.locale;
+      metaTagFormValues.content = record.attributes.content;
+
+      this.setState({ metaTagFormValues: metaTagFormValues });
       this.setState({ actionMetaTagForm: "Edit" });
     } else {
       this.setState({ record: {} });
@@ -169,7 +175,12 @@ class RuleDetail extends Component {
 
   showFormTitleTag(record) {
     if (record !== undefined) {
-      this.setState({ record: record });
+      const { titleTagFormValues } = this.state;
+      titleTagFormValues.id = record.id;
+      titleTagFormValues.name = record.value;
+      titleTagFormValues.locale = record.locale;
+
+      this.setState({ titleTagFormValues: titleTagFormValues });
       this.setState({ actionTitleTagForm: "Edit" });
     } else {
       this.setState({ record: {} });
@@ -179,14 +190,12 @@ class RuleDetail extends Component {
   }
 
   showFormCanonicalTag(record) {
-    /*
-
-    */
     if (record !== undefined) {
       const { canonicalFormValues } = this.state;
       canonicalFormValues.id = record.id;
       canonicalFormValues.canonical = record.value;
       canonicalFormValues.locale = record.locale;
+
       this.setState({ canonicalFormValues: canonicalFormValues });
       this.setState({ actionCanonicalForm: "Edit" });
     } else {
@@ -633,7 +642,7 @@ class RuleDetail extends Component {
               visible={this.state.metaTagFormVisible}
               onCancel={this.handleCancelAddMetaTag.bind(this)}
               onSave={this.handleSaveMetaTag.bind(this)}
-              metatag={this.state.record}
+              metatag={this.state.metaTagFormValues}
               action={this.state.actionMetaTagForm}
               onChange={this.handleMetaTagOnChange.bind(this)}
             />
@@ -641,7 +650,7 @@ class RuleDetail extends Component {
               visible={this.state.scriptTagFormVisible}
               onCancel={this.handleCancelAddScriptTag.bind(this)}
               onSave={this.handleSaveScriptTag.bind(this)}
-              scripttag={this.state.record}
+              scripttag={this.state.scriptTagFormValues}
               action={this.state.actionScriptTagForm}
               onChange={this.handleScriptTagOnChange.bind(this)}
             />
@@ -649,7 +658,7 @@ class RuleDetail extends Component {
               visible={this.state.titleTagFormVisible}
               onCancel={this.handleCancelAddTitleTag.bind(this)}
               onSave={this.handleSaveTitleTag.bind(this)}
-              titletag={this.state.record}
+              titletag={this.state.titleTagFormValues}
               action={this.state.actionTitleTagForm}
               onChange={this.handleTitleTagOnChange.bind(this)}
             />
