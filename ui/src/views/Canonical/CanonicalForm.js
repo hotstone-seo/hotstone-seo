@@ -57,6 +57,7 @@ class CanonicalForm extends Component {
       action,
       onChange
     } = this.props;
+
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Canonical</ModalHeader>
@@ -72,6 +73,7 @@ class CanonicalForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
+                  defaultValue={canonical.locale}
                 >
                   <option value="-">-CHOOSE-</option>
                   <option value="ID">ID</option>
@@ -100,7 +102,9 @@ class CanonicalForm extends Component {
                   id="canonical"
                   name="canonical"
                   placeholder="Canonical Name"
-                  defaultValue={canonical !== undefined ? canonical.name : ""}
+                  defaultValue={
+                    canonical !== undefined ? canonical.canonical : ""
+                  }
                   onChange={onChange.bind(this, "canonical")}
                 />
               </Col>

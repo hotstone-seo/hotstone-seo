@@ -76,6 +76,7 @@ class TitletagForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
+                  defaultValue={titletag.locale}
                 >
                   <option value="-">-CHOOSE-</option>
                   <option value="ID">ID</option>
