@@ -27,6 +27,7 @@
     "flag-icon-css": "^3.4.5",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
+    "moment": "^2.24.0",
     "node-sass": "4.13.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.9.0",
