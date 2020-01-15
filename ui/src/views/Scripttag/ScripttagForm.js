@@ -48,6 +48,7 @@ class ScripttagForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
+                  defaultValue={scripttag.locale}
                 >
                   <option value="-">-CHOOSE-</option>
                   <option value="ID">ID</option>

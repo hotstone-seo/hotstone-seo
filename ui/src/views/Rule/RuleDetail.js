@@ -165,7 +165,12 @@ class RuleDetail extends Component {
 
   showFormScriptTag(record) {
     if (record !== undefined) {
-      this.setState({ record: record });
+      const { scriptTagFormValues } = this.state;
+      scriptTagFormValues.id = record.id;
+      scriptTagFormValues.name = record.value;
+      scriptTagFormValues.locale = record.locale;
+
+      this.setState({ scriptTagFormValues: scriptTagFormValues });
       this.setState({ actionScriptTagForm: "Edit" });
     } else {
       this.setState({ record: {} });
@@ -551,10 +556,12 @@ class RuleDetail extends Component {
                         <tr key={index}>
                           <td>{tag.type}</td>
                           <td>
-                            {tag.attributes.name !== undefined
+                            {tag.type === "meta" &&
+                            tag.attributes.name !== undefined
                               ? "Name : " + tag.attributes.name
                               : ""}
-                            {tag.attributes.name !== undefined
+                            {tag.type === "meta" &&
+                            tag.attributes.name !== undefined
                               ? " Content :" + tag.attributes.content
                               : ""}
                           </td>
