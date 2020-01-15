@@ -179,12 +179,15 @@ class RuleDetail extends Component {
   }
 
   showFormCanonicalTag(record) {
+    /*
+
+    */
     if (record !== undefined) {
       const { canonicalFormValues } = this.state;
       canonicalFormValues.id = record.id;
       canonicalFormValues.canonical = record.value;
-
-      this.setState({ record: canonicalFormValues });
+      canonicalFormValues.locale = record.locale;
+      this.setState({ canonicalFormValues: canonicalFormValues });
       this.setState({ actionCanonicalForm: "Edit" });
     } else {
       this.setState({ record: {} });
@@ -622,7 +625,7 @@ class RuleDetail extends Component {
               visible={this.state.canonicalFormVisible}
               onCancel={this.handleCancelAddCanonical.bind(this)}
               onSave={this.handleSaveCanonicalTag.bind(this)}
-              canonical={this.state.record}
+              canonical={this.state.canonicalFormValues}
               action={this.state.actionCanonicalForm}
               onChange={this.handleCanonicalTagOnChange.bind(this)}
             />

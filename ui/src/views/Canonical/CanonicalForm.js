@@ -73,6 +73,7 @@ class CanonicalForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
+                  defaultValue={canonical.locale}
                 >
                   <option value="-">-CHOOSE-</option>
                   <option value="ID">ID</option>
