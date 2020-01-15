@@ -9,7 +9,7 @@ import (
 type MetricsRuleMatchingService interface {
 	repository.MetricsRuleMatchingRepo
 
-	SetMatched(m *repository.MetricsRuleMatching)
+	SetMatched(m *repository.MetricsRuleMatching, matchedURL string)
 	SetMismatched(m *repository.MetricsRuleMatching, mismatchedURL string)
 }
 
@@ -24,8 +24,9 @@ func NewMetricsRuleMatchingService(impl MetricsRuleMatchingServiceImpl) MetricsR
 	return &impl
 }
 
-func (s *MetricsRuleMatchingServiceImpl) SetMatched(m *repository.MetricsRuleMatching) {
+func (s *MetricsRuleMatchingServiceImpl) SetMatched(m *repository.MetricsRuleMatching, matchedURL string) {
 	m.IsMatched = 1
+	m.URL = &matchedURL
 }
 
 func (s *MetricsRuleMatchingServiceImpl) SetMismatched(m *repository.MetricsRuleMatching, mismatchedURL string) {
