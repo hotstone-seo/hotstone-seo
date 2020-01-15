@@ -117,7 +117,6 @@ class RuleDetail extends Component {
         this.toggleWarningAPI(error.message);
       });
     this.setState({ ruleId: ruleId });
-    console.log(ruleId, "ruleid");
     this.getTagList(parseInt(ruleId));
   }
 
@@ -310,8 +309,15 @@ class RuleDetail extends Component {
   }
 
   handleSaveMetaTag() {
-    const { metaTagFormValues, tags, actionMetaTagForm, record } = this.state;
+    const {
+      metaTagFormValues,
+      tags,
+      actionMetaTagForm,
+      record,
+      ruleId
+    } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
+
     if (isUpdate) {
       // TO DO :
       metaTagFormValues.id = record.id;
@@ -325,13 +331,12 @@ class RuleDetail extends Component {
           }
         })
         .then(() => {
-          //this.getRuleList(); TO DO:
+          this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      const { ruleId } = this.state;
       metaTagFormValues.rule_id = parseInt(ruleId);
 
       axios
@@ -350,12 +355,17 @@ class RuleDetail extends Component {
     this.setState({ metaTagFormVisible: false });
   }
   handleSaveTitleTag() {
-    const { titleTagFormValues, tags, actionTitleTagForm, record } = this.state;
+    const {
+      titleTagFormValues,
+      tags,
+      actionTitleTagForm,
+      record,
+      ruleId
+    } = this.state;
     const isUpdate = actionTitleTagForm !== "Add";
 
     if (isUpdate) {
     } else {
-      const { ruleId } = this.state;
       titleTagFormValues.rule_id = parseInt(ruleId);
 
       axios
@@ -378,13 +388,13 @@ class RuleDetail extends Component {
       scriptTagFormValues,
       tags,
       actionScriptTagForm,
-      record
+      record,
+      ruleId
     } = this.state;
     const isUpdate = actionScriptTagForm !== "Add";
 
     if (isUpdate) {
     } else {
-      const { ruleId } = this.state;
       scriptTagFormValues.rule_id = parseInt(ruleId);
 
       axios
@@ -407,13 +417,13 @@ class RuleDetail extends Component {
       canonicalFormValues,
       tags,
       actionCanonicalForm,
-      record
+      record,
+      ruleId
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
     if (isUpdate) {
     } else {
-      const { ruleId } = this.state;
       canonicalFormValues.rule_id = parseInt(ruleId);
 
       axios
