@@ -22,9 +22,6 @@ const TitletagForm = React.lazy(() => import("./views/Titletag/TitletagForm"));
 const ScripttagForm = React.lazy(() =>
   import("./views/Scripttag/ScripttagForm")
 );
-const ScripttagEditForm = React.lazy(() =>
-  import("./views/Scripttag/ScripttagEditForm")
-);
 const LanguageList = React.lazy(() => import("./views/Language/Language"));
 const LanguageForm = React.lazy(() => import("./views/Language/LanguageForm"));
 
@@ -55,11 +52,6 @@ const routes = [
   { path: "/canonicalForm", name: "Canonical", component: CanonicalForm },
   { path: "/titletagForm", name: "Titletag", component: TitletagForm },
   { path: "/scripttagForm", name: "Scripttag", component: ScripttagForm },
-  {
-    path: "/scripttagEditForm",
-    name: "Scripttag",
-    component: ScripttagEditForm
-  },
   { path: "/language", name: "Language", component: LanguageList },
   { path: "/languageForm", name: "Language", component: LanguageForm },
   { path: "/mismatchRule", name: "MismatchRule", component: MismatchRuleList },
