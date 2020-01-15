@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from "react";
 import CounterCard from "./CounterCard";
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
+import useInterval from "@use-it/interval";
 
 function UniquePageCounterCard() {
   const [countUniquePage, setCountUniquePage] = useState(0);
-  const { data: dataCountUniquePage, error, params } = useHotstoneAPI({
-    url: "metrics/unique-page",
-    pollingInterval: 5000
+  const [{ data: dataCountUniquePage }, refetch] = useHotstoneAPI({
+    url: "metrics/unique-page"
   });
-  console.log("ERROR unique page: " + error);
-  console.log("PARAMS unique page: " + params);
+
   useEffect(() => {
     if (dataCountUniquePage !== undefined) {
       setCountUniquePage(dataCountUniquePage.count);
     }
   }, [dataCountUniquePage]);
 
-  return <CounterCard counter={countUniquePage} label="Unique Page" />;
+  useInterval(() => {
+    refetch();
+  }, 5_000);
+
+  return <CounterCard counter={countUniquePage} label="Hit" />;
 }
 
 export default UniquePageCounterCard;
