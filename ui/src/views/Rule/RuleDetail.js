@@ -117,7 +117,8 @@ class RuleDetail extends Component {
         this.toggleWarningAPI(error.message);
       });
     this.setState({ ruleId: ruleId });
-    this.getTagList();
+    console.log(ruleId, "ruleid");
+    this.getTagList(parseInt(ruleId));
   }
 
   toggle() {
@@ -334,7 +335,7 @@ class RuleDetail extends Component {
           this.setState({ tags: [...tags, metaTagFormValues] });
         })
         .then(() => {
-          this.getTagList();
+          this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
@@ -358,7 +359,7 @@ class RuleDetail extends Component {
           this.setState({ tags: [...tags, titleTagFormValues] });
         })
         .then(() => {
-          this.getTagList();
+          this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
@@ -387,7 +388,7 @@ class RuleDetail extends Component {
           this.setState({ tags: [...tags, scriptTagFormValues] });
         })
         .then(() => {
-          this.getTagList();
+          this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
@@ -416,7 +417,7 @@ class RuleDetail extends Component {
           this.setState({ tags: [...tags, canonicalFormValues] });
         })
         .then(() => {
-          this.getTagList();
+          this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
@@ -425,9 +426,9 @@ class RuleDetail extends Component {
     //this.setState({ canonicalFormValues: {} });
     this.setState({ canonicalFormVisible: false });
   }
-  getTagList() {
+  getTagList(rule_id) {
     axios
-      .get(this.state.URL_TAG_API)
+      .get(this.state.URL_TAG_API + "?rule_id=" + rule_id)
       .then(res => {
         const tags = res.data;
         this.setState({ tags });
