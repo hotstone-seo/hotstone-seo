@@ -18,13 +18,7 @@ const DataSourceForm = React.lazy(() =>
 const CanonicalForm = React.lazy(() =>
   import("./views/Canonical/CanonicalForm")
 );
-const CanonicalEditForm = React.lazy(() =>
-  import("./views/Canonical/CanonicalEditForm")
-);
 const TitletagForm = React.lazy(() => import("./views/Titletag/TitletagForm"));
-const TitletagEditForm = React.lazy(() =>
-  import("./views/Titletag/TitletagEditForm")
-);
 const ScripttagForm = React.lazy(() =>
   import("./views/Scripttag/ScripttagForm")
 );
@@ -59,13 +53,7 @@ const routes = [
   { path: "/datasource", name: "DataSource", component: DataSourceList },
   { path: "/dataSourceForm", name: "DataSource", component: DataSourceForm },
   { path: "/canonicalForm", name: "Canonical", component: CanonicalForm },
-  {
-    path: "/canonicalEditForm",
-    name: "Canonical",
-    component: CanonicalEditForm
-  },
   { path: "/titletagForm", name: "Titletag", component: TitletagForm },
-  { path: "/titletagEditForm", name: "Titletag", component: TitletagEditForm },
   { path: "/scripttagForm", name: "Scripttag", component: ScripttagForm },
   {
     path: "/scripttagEditForm",

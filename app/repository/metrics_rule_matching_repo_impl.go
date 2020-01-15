@@ -19,8 +19,8 @@ type MetricsRuleMatchingRepoImpl struct {
 func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleMatching) (err error) {
 	builder := sq.
 		Insert("metrics_rule_matching").
-		Columns("is_matched", "url_mismatched").
-		Values(e.IsMatched, e.URLMismatched).
+		Columns("is_matched", "url").
+		Values(e.IsMatched, e.URL).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
@@ -34,16 +34,16 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context) (
 	var rows *sql.Rows
 
 	subQuery := sq.
-		Select("url_mismatched").
-		Column("count(url_mismatched)").
+		Select("url").
+		Column("count(url)").
 		Column(sq.Alias(sq.Expr("max(time)"), "since")).
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 0}).
-		GroupBy("url_mismatched").
+		GroupBy("url").
 		PlaceholderFormat(sq.Dollar)
 
 	builder := sq.
-		Select("url_mismatched", "count", "since").
+		Select("url", "count", "since").
 		FromSelect(subQuery, "u").
 		OrderBy("u.since desc", "u.count desc").
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
@@ -66,6 +66,21 @@ func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context) (count i
 
 	builder := sq.Select().
 		Column("count(is_matched)").
+		From("metrics_rule_matching").
+		Where(sq.Eq{"is_matched": 1}).
+		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+
+	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
+		return
+	}
+
+	return
+}
+
+func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context) (count int64, err error) {
+
+	builder := sq.Select().
+		Column("count(distinct(url))").
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 1}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))

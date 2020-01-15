@@ -1,28 +1,12 @@
 import React, { useState, useEffect } from "react";
-import CounterCard from "./CounterCard";
+import HitCounterCard from "./HitCounterCard";
+import UniquePageCounterCard from "./UniquePageCounterCard";
 import { ResponsiveLine } from "@nivo/line";
 import { useForm } from "react-hook-form";
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
 import dataChart from "./data";
 
 function AnalyticPage() {
-  const [countHit, setCountHit] = useState(0);
-  const [countUniquePage, setCountUniquePage] = useState(0);
-
-  const { data: dataCountHit, loading, timer } = useHotstoneAPI({
-    url: "metrics/hit",
-    pollingInterval: 5000
-  });
-  useEffect(() => {
-    if (dataCountHit !== undefined) {
-      setCountHit(dataCountHit.count);
-    }
-  }, [dataCountHit]);
-  // setCountHit(dataCountHit.count);
-
-  console.log("DATA HIT: ", dataCountHit);
-  console.log("loading: ", loading);
-
   const { register, handleSubmit, errors } = useForm();
   const onChangeRange = data => console.log(data);
 
@@ -30,10 +14,17 @@ function AnalyticPage() {
     <div className="container">
       <div className="row">
         <div className="col">
-          <CounterCard counter={countHit} label="Hit" />
+          <div className="card">
+            <div className="card-header">Rule Analytics</div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">
+          <HitCounterCard />
         </div>
         <div className="col">
-          <CounterCard counter={countUniquePage} label="Unique Page" />
+          <UniquePageCounterCard />
         </div>
         <div className="col"></div>
       </div>

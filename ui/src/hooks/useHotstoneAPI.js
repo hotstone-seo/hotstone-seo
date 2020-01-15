@@ -1,9 +1,8 @@
-import { useAPI } from "@umijs/hooks";
-import urljoin from "url-join";
+import { makeUseAxios } from "axios-hooks";
+import axios from "axios";
 
-function useHotstoneAPI(props) {
-  props.url = urljoin(process.env.REACT_APP_API_URL, props.url);
-  return useAPI(props);
-}
+const useHotstoneAPI = makeUseAxios({
+  axios: axios.create({ baseURL: process.env.REACT_APP_API_URL })
+});
 
 export default useHotstoneAPI;
