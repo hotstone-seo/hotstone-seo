@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import HitCounterCard from "./HitCounterCard";
 import CounterCard from "./CounterCard";
 import { ResponsiveLine } from "@nivo/line";
 import { useForm } from "react-hook-form";
@@ -6,22 +7,7 @@ import useHotstoneAPI from "../../hooks/useHotstoneAPI";
 import dataChart from "./data";
 
 function AnalyticPage() {
-  const [countHit, setCountHit] = useState(0);
   const [countUniquePage, setCountUniquePage] = useState(0);
-
-  const { data: dataCountHit, loading, timer } = useHotstoneAPI({
-    url: "metrics/hit",
-    pollingInterval: 5000
-  });
-  useEffect(() => {
-    if (dataCountHit !== undefined) {
-      setCountHit(dataCountHit.count);
-    }
-  }, [dataCountHit]);
-  // setCountHit(dataCountHit.count);
-
-  console.log("DATA HIT: ", dataCountHit);
-  console.log("loading: ", loading);
 
   const { register, handleSubmit, errors } = useForm();
   const onChangeRange = data => console.log(data);
@@ -37,7 +23,7 @@ function AnalyticPage() {
       </div>
       <div className="row">
         <div className="col">
-          <CounterCard counter={countHit} label="Hit" />
+          <HitCounterCard />
         </div>
         <div className="col">
           <CounterCard counter={countUniquePage} label="Unique Page" />
