@@ -537,8 +537,12 @@ class RuleDetail extends Component {
                         <tr key={index}>
                           <td>{tag.type}</td>
                           <td>
-                            {"Name " + tag.attributes.name}
-                            {"Content : " + tag.attributes.content}
+                            {tag.attributes.name !== undefined
+                              ? "Name : " + tag.attributes.name
+                              : ""}
+                            {tag.attributes.name !== undefined
+                              ? " Content :" + tag.attributes.content
+                              : ""}
                           </td>
                           <td>{tag.value}</td>
                           <td>{tag.locale}</td>
