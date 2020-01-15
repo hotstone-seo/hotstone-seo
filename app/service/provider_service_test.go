@@ -77,7 +77,7 @@ func TestProvider_Tags(t *testing.T) {
 	svc := service.ProviderServiceImpl{TagRepo: tagRepo, RuleRepo: ruleRepo, DataSourceRepo: dataSourceRepo}
 	ctx := context.Background()
 	t.Run("WHEN can't find tag by rule and locale", func(t *testing.T) {
-		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en-US").
+		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).
 			Return(nil, errors.New("some-error"))
 		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
 			RuleID: 999,
@@ -87,7 +87,7 @@ func TestProvider_Tags(t *testing.T) {
 		require.Nil(t, tags)
 	})
 	t.Run("WHEN requesting external data", func(t *testing.T) {
-		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en-US").
+		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).
 			Return([]*repository.Tag{
 				{
 					ID:         1,
@@ -135,7 +135,7 @@ func TestProvider_Tags(t *testing.T) {
 		}, tags)
 	})
 	t.Run("WHEN success", func(t *testing.T) {
-		tagRepo.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en-US").
+		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).
 			Return([]*repository.Tag{
 				{
 					ID:         1,

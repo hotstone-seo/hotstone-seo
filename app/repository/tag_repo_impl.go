@@ -37,34 +37,18 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 }
 
 // Find tags
-func (r *TagRepoImpl) Find(ctx context.Context) (list []*Tag, err error) {
+func (r *TagRepoImpl) Find(ctx context.Context, filter TagFilter) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "rule_id", "locale", "type", "attributes", "value", "updated_at", "created_at").
-		From("tags").
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
-	if rows, err = builder.QueryContext(ctx); err != nil {
-		return
+		From("tags")
+	if filter.RuleID > 0 {
+		builder = builder.Where(sq.Eq{"rule_id": filter.RuleID})
 	}
-	list = make([]*Tag, 0)
-	for rows.Next() {
-		var e Tag
-		if err = rows.Scan(&e.ID, &e.RuleID, &e.Locale, &e.Type, &e.Attributes, &e.Value, &e.UpdatedAt, &e.CreatedAt); err != nil {
-			return
-		}
-		list = append(list, &e)
+	if filter.Locale != "" {
+		builder = builder.Where(sq.Eq{"locale": filter.Locale})
 	}
-	return
-}
-
-// FindByRuleAndLocale to return list of tags based on rule and locale
-func (r *TagRepoImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) (list []*Tag, err error) {
-	var rows *sql.Rows
-	builder := sq.
-		Select("id", "rule_id", "locale", "type", "attributes", "value", "updated_at", "created_at").
-		From("tags").
-		Where(sq.Eq{"rule_id": ruleID, "locale": locale}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+	builder = builder.PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}

@@ -83,7 +83,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		tags []*repository.Tag
 		data = req.Data
 	)
-	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, req.RuleID, req.Locale); err != nil {
+	if tags, err = p.TagRepo.Find(ctx, repository.TagFilter{RuleID: req.RuleID, Locale: req.Locale}); err != nil {
 		return
 	}
 	if data == nil {

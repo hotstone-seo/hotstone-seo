@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -38,14 +39,21 @@ func (r *CachedTagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err 
 }
 
 // Find tags
-func (r *CachedTagRepoImpl) Find(ctx context.Context) (list []*Tag, err error) {
-	cacheKey := fmt.Sprintf("TAGS:LIST")
-	redisClient := r.Redis.WithContext(ctx)
-	if err = dbkit.GetCache(redisClient, cacheKey, &list); err == nil {
-		log.Infof("Using cache %s", cacheKey)
-		return
+func (r *CachedTagRepoImpl) Find(ctx context.Context, filter TagFilter) (list []*Tag, err error) {
+	// TODO: Provide different key for each filter applied
+	var (
+		filterKey   []byte
+		cacheKey    string
+		redisClient = r.Redis.WithContext(ctx)
+	)
+	if filterKey, err = json.Marshal(filter); err == nil {
+		cacheKey = fmt.Sprintf("TAGS:%s", string(filterKey))
+		if err = dbkit.GetCache(redisClient, cacheKey, &list); err == nil {
+			log.Infof("Using cache %s", cacheKey)
+			return
+		}
 	}
-	if list, err = r.TagRepoImpl.Find(ctx); err != nil {
+	if list, err = r.TagRepoImpl.Find(ctx, filter); err != nil {
 		return
 	}
 	if err2 := dbkit.SetCache(redisClient, cacheKey, list, 20*time.Second); err2 != nil {

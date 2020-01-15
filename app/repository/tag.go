@@ -19,11 +19,15 @@ type Tag struct {
 	CreatedAt  time.Time  `json:"created_at"`
 }
 
+type TagFilter struct {
+	RuleID int64  `json:"rule_id"`
+	Locale string `json:"locale"`
+}
+
 // TagRepo to handle tags entity [mock]
 type TagRepo interface {
 	FindOne(context.Context, int64) (*Tag, error)
-	Find(context.Context) ([]*Tag, error)
-	FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) ([]*Tag, error)
+	Find(context.Context, TagFilter) ([]*Tag, error)
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Tag) error

@@ -48,9 +48,20 @@ func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 
 // Find all tag
 func (c *TagCntrl) Find(ctx echo.Context) (err error) {
-	var tags []*repository.Tag
+	var (
+		tags   []*repository.Tag
+		filter repository.TagFilter
+	)
 	ctx0 := ctx.Request().Context()
-	if tags, err = c.TagService.Find(ctx0); err != nil {
+	if ruleParam := ctx.QueryParam("rule_id"); ruleParam != "" {
+		var ruleID int64
+		if ruleID, err = strconv.ParseInt(ruleParam, 10, 64); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, "Invalid Rule ID")
+		}
+		filter.RuleID = ruleID
+	}
+	filter.Locale = ctx.QueryParam("locale")
+	if tags, err = c.TagService.Find(ctx0, filter); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, tags)
