@@ -10,3 +10,8 @@ type MetricsMismatchedCount struct {
 	Count       int64     `json:"count"`
 	Since       time.Time `json:"since"`
 }
+
+type MetricsCountHitPerDay struct {
+	Date  time.Time `json:"date"`
+	Count int64     `json:"count"`
+}

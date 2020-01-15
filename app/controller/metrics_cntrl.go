@@ -21,6 +21,7 @@ func (c *MetricsCntrl) Route(e *echo.Echo) {
 
 	e.GET("metrics/mismatched", c.ListMismatched)
 	e.GET("metrics/hit", c.CountHit)
+	e.GET("metrics/hit/range", c.ListCountHitPerDay)
 	e.GET("metrics/unique-page", c.CountUniquePage)
 }
 
@@ -50,4 +51,21 @@ func (c *MetricsCntrl) CountUniquePage(ctx echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, map[string]int64{"count": count})
+}
+
+func (c *MetricsCntrl) ListCountHitPerDay(ctx echo.Context) (err error) {
+	var counts []*repository.MetricsCountHitPerDay
+	ctx0 := ctx.Request().Context()
+
+	startDate := ctx.QueryParam("start")
+	endDate := ctx.QueryParam("end")
+
+	if startDate == "" || endDate == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "'start' and 'end' query params are required")
+	}
+
+	if counts, err = c.MetricsRuleMatchingService.ListCountHitPerDay(ctx0, startDate, endDate); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, counts)
 }

@@ -18,6 +18,7 @@ type MetricsRuleMatchingRepo interface {
 	ListMismatchedCount(ctx context.Context) (list []*MetricsMismatchedCount, err error)
 	CountMatched(ctx context.Context) (count int64, err error)
 	CountUniquePage(ctx context.Context) (count int64, err error)
+	ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error)
 }
 
 // NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [autowire]

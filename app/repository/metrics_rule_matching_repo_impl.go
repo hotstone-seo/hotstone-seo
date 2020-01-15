@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	log "github.com/sirupsen/logrus"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
@@ -89,5 +90,38 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context) (coun
 		return
 	}
 
+	return
+}
+
+func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error) {
+	var rows *sql.Rows
+
+	log.Warnf("start: %s end: %s", startDate, endDate)
+
+	query := `
+	WITH range_date AS (
+		SELECT generate_series($1::date, $2::date, '1 day') as date
+	),
+	count_per_day AS (
+		select date(time), count(is_matched) from metrics_rule_matching
+		WHERE is_matched = 1
+		GROUP BY date(time)
+	)
+	select rd.date, coalesce(cpd.count, 0) as count from range_date rd
+	left join count_per_day cpd on rd.date = cpd.date
+	`
+
+	if rows, err = r.DB.Query(query, startDate, endDate); err != nil {
+		return
+	}
+
+	list = make([]*MetricsCountHitPerDay, 0)
+	for rows.Next() {
+		var e0 MetricsCountHitPerDay
+		if err = rows.Scan(&e0.Date, &e0.Count); err != nil {
+			return
+		}
+		list = append(list, &e0)
+	}
 	return
 }
