@@ -30,6 +30,13 @@ function AnalyticPage() {
     <div className="container">
       <div className="row">
         <div className="col">
+          <div className="card">
+            <div className="card-header">Rule Analytics</div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">
           <CounterCard counter={countHit} label="Hit" />
         </div>
         <div className="col">
