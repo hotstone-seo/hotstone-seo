@@ -423,7 +423,15 @@ class RuleDetail extends Component {
         this.toggleWarningAPI(error.message);
       });
   }
-
+  handleEdit(record) {
+    if (record !== undefined) {
+      const typeTag = record.type;
+      if (typeTag === "canonical") this.showFormCanonicalTag(record);
+      else if (typeTag === "meta") this.showFormMetaTag(record);
+      else if (typeTag === "script") this.showFormScriptTag(record);
+      else if (typeTag === "title") this.showFormTitleTag(record);
+    }
+  }
   render() {
     const { rules, tags } = this.state;
 
@@ -537,7 +545,7 @@ class RuleDetail extends Component {
                           <td>
                             <button
                               className="button muted-button"
-                              onClick={() => this.showFormMetaTag(tag)}
+                              onClick={() => this.handleEdit(tag)}
                             >
                               Edit
                             </button>
@@ -610,7 +618,7 @@ class RuleDetail extends Component {
               onCancel={this.handleCancelAddCanonical.bind(this)}
               onSave={this.handleSaveCanonicalTag.bind(this)}
               canonical={this.state.record}
-              action={this.state.actionForm}
+              action={this.state.actionCanonicalForm}
               onChange={this.handleCanonicalTagOnChange.bind(this)}
             />
             <MetaTagForm
@@ -618,7 +626,7 @@ class RuleDetail extends Component {
               onCancel={this.handleCancelAddMetaTag.bind(this)}
               onSave={this.handleSaveMetaTag.bind(this)}
               metatag={this.state.record}
-              action={this.state.actionForm}
+              action={this.state.actionMetaTagForm}
               onChange={this.handleMetaTagOnChange.bind(this)}
             />
             <ScriptTagForm
@@ -626,7 +634,7 @@ class RuleDetail extends Component {
               onCancel={this.handleCancelAddScriptTag}
               onSave={this.handleSaveScriptTag.bind(this)}
               scripttag={this.state.record}
-              action={this.state.actionForm}
+              action={this.state.actionScriptTagForm}
               onChange={this.handleScriptTagOnChange.bind(this)}
             />
             <TitleTagForm
@@ -634,7 +642,7 @@ class RuleDetail extends Component {
               onCancel={this.handleCancelAddTitleTag}
               onSave={this.handleSaveTitleTag.bind(this)}
               titletag={this.state.record}
-              action={this.state.actionForm}
+              action={this.state.actionTitleTagForm}
               onChange={this.handleTitleTagOnChange.bind(this)}
             />
             <Modal
