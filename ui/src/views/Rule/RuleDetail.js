@@ -97,9 +97,6 @@ class RuleDetail extends Component {
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
-    this.handleCancelAddScriptTag = this.handleCancelAddScriptTag.bind(this);
-    this.handleCancelAddTitleTag = this.handleCancelAddTitleTag.bind(this);
-
     this.handleDelete = this.handleDelete.bind(this);
 
     this.toggleWarning = this.toggleWarning.bind(this);
@@ -183,7 +180,11 @@ class RuleDetail extends Component {
 
   showFormCanonicalTag(record) {
     if (record !== undefined) {
-      this.setState({ record: record });
+      const { canonicalFormValues } = this.state;
+      canonicalFormValues.id = record.id;
+      canonicalFormValues.canonical = record.value;
+
+      this.setState({ record: canonicalFormValues });
       this.setState({ actionCanonicalForm: "Edit" });
     } else {
       this.setState({ record: {} });
@@ -635,7 +636,7 @@ class RuleDetail extends Component {
             />
             <ScriptTagForm
               visible={this.state.scriptTagFormVisible}
-              onCancel={this.handleCancelAddScriptTag}
+              onCancel={this.handleCancelAddScriptTag.bind(this)}
               onSave={this.handleSaveScriptTag.bind(this)}
               scripttag={this.state.record}
               action={this.state.actionScriptTagForm}
@@ -643,7 +644,7 @@ class RuleDetail extends Component {
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
-              onCancel={this.handleCancelAddTitleTag}
+              onCancel={this.handleCancelAddTitleTag.bind(this)}
               onSave={this.handleSaveTitleTag.bind(this)}
               titletag={this.state.record}
               action={this.state.actionTitleTagForm}

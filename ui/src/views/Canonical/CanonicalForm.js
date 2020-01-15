@@ -57,6 +57,7 @@ class CanonicalForm extends Component {
       action,
       onChange
     } = this.props;
+
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Canonical</ModalHeader>
@@ -100,7 +101,9 @@ class CanonicalForm extends Component {
                   id="canonical"
                   name="canonical"
                   placeholder="Canonical Name"
-                  defaultValue={canonical !== undefined ? canonical.name : ""}
+                  defaultValue={
+                    canonical !== undefined ? canonical.canonical : ""
+                  }
                   onChange={onChange.bind(this, "canonical")}
                 />
               </Col>
