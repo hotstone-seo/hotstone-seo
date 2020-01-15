@@ -19,7 +19,7 @@ function UniquePageCounterCard() {
     refetch();
   }, 5_000);
 
-  return <CounterCard counter={countUniquePage} label="Hit" />;
+  return <CounterCard counter={countUniquePage} label="Unique Page" />;
 }
 
 export default UniquePageCounterCard;
