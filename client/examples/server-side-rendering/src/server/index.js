@@ -3,7 +3,7 @@ import cors from 'cors';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
-import HotStone from 'hotstone-client';
+import { HotStoneClient } from 'hotstone-client';
 import serialize from 'serialize-javascript';
 import App from '../component/App';
 
@@ -12,7 +12,7 @@ const server = express();
 server.use(cors());
  
 // Instantiate the client by providing the URL of HotStone provider
-const client = new HotStone('http://localhost:8089');
+const client = new HotStoneClient('http://localhost:8089');
 
 const template = ({ body, head }, data) => {
   return `
