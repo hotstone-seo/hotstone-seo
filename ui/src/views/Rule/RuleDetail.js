@@ -456,12 +456,11 @@ class RuleDetail extends Component {
     const isUpdate = actionCanonicalForm !== "Add";
     canonicalFormValues.rule_id = parseInt(ruleId);
     if (isUpdate) {
-      console.log(canonicalFormValues, "uodate val");
       tag_update.id = canonicalFormValues.id;
       tag_update.type = "canonical";
       tag_update.attributes = null;
       tag_update.locale = canonicalFormValues.locale;
-      console.log(tag_update, "kirim val");
+
       axios
         .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
@@ -495,7 +494,7 @@ class RuleDetail extends Component {
   }
   getTagList(rule_id) {
     axios
-      .get(this.state.URL_TAG_API + "?rule_id=" + rule_id)
+      .get(this.state.URL_TAG_API + "?locale=ID&rule_id=" + rule_id)
       .then(res => {
         const tags = res.data;
         this.setState({ tags });
