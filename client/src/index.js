@@ -1,3 +1,6 @@
+import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 /**
@@ -19,7 +22,7 @@ function interpolate(tag, data) {
   return tag;
 }
 
-class HotStone {
+class HotStoneClient {
   constructor(hostURL) {
     this.apiCaller = axios.create({ baseURL: hostURL });
   }
@@ -39,4 +42,54 @@ class HotStone {
   }
 }
 
-export default HotStone;
+// NOTE: What this comppnent should do:
+// Manage meta tag which responds to path changes.
+//
+// There's a hook provided by react-router, useLocation, might be a good starting point
+// but learn about React Hooks first!
+//
+// TODO: Find a way to detect path change
+class HotStone extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const { tags, client } = props;
+    this.state = { tags };
+    this.client = client;
+    this.fetchTags = this.fetchTags.bind(this);
+    this.createTagElement = this.createTagElement.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.location === nextProps.location) {
+      return false;
+    }
+    return true;
+  }
+  
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.location !== prevProps.location) {
+      this.fetchTags(this.props.location);
+    }
+  }
+
+  async fetchTags(path) {
+    try {
+      const rule = await this.client.match(path);
+      const tags = await this.client.tags(rule);
+      this.setState({ tags });
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  render() {
+    const { tags } = this.state;
+    const tagElements = tags.map(({ type, attributes, value }) => (
+      React.createElement(type, attributes, value)
+    ));
+    return ( <Helmet>{tagElements}</Helmet> ); 
+  }
+}
+
+export { HotStone, HotStoneClient };
