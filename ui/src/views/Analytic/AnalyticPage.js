@@ -1,16 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import HitCounterCard from "./HitCounterCard";
 import UniquePageCounterCard from "./UniquePageCounterCard";
 import HitChartCard from "./HitChartCard";
-import { ResponsiveLine } from "@nivo/line";
-import { useForm } from "react-hook-form";
-import useHotstoneAPI from "../../hooks/useHotstoneAPI";
-import dataChart from "./data";
 
 function AnalyticPage() {
-  const { register, handleSubmit, errors } = useForm();
-  const onChangeRange = data => console.log(data);
-
   return (
     <div className="container">
       <div className="row">
