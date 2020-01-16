@@ -296,35 +296,31 @@ class RuleDetail extends Component {
   }
 
   handleDelete(id) {
+    const { ruleId } = this.state;
     axios
       .delete(this.state.URL_TAG_API + `/${id}`)
       .then(() => {
-        const { tags } = this.state;
-        this.setState({ tags: tags.filter(tag => tag.id !== id) });
+        //const { tags } = this.state;
+        //this.setState({ tags: tags.filter(tag => tag.id !== id) });
+        this.getTagList(parseInt(ruleId));
       })
       .catch(error => {
         this.toggleWarningAPI(error.message);
       });
+    const { tags } = this.state;
+    this.setState({ tags: tags.filter(tag => tag.id !== id) });
     this.toggleWarning();
   }
 
   handleSaveMetaTag() {
-    const {
-      metaTagFormValues,
-      tags,
-      actionMetaTagForm,
-      record,
-      ruleId
-    } = this.state;
+    const { metaTagFormValues, tags, actionMetaTagForm, ruleId } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
 
     if (isUpdate) {
-      // TO DO :
-      metaTagFormValues.id = record.id;
       axios
         .put(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(() => {
-          const index = tags.findIndex(tg => tg.id === record.id);
+          const index = tags.findIndex(tg => tg.id === metaTagFormValues.id);
           if (index > -1) {
             tags[index] = metaTagFormValues;
             this.setState({ tags });
@@ -355,16 +351,25 @@ class RuleDetail extends Component {
     this.setState({ metaTagFormVisible: false });
   }
   handleSaveTitleTag() {
-    const {
-      titleTagFormValues,
-      tags,
-      actionTitleTagForm,
-      record,
-      ruleId
-    } = this.state;
+    const { titleTagFormValues, tags, actionTitleTagForm, ruleId } = this.state;
     const isUpdate = actionTitleTagForm !== "Add";
 
     if (isUpdate) {
+      axios
+        .put(this.state.URL_ADDTITLE_API, titleTagFormValues)
+        .then(() => {
+          const index = tags.findIndex(tg => tg.id === titleTagFormValues.id);
+          if (index > -1) {
+            tags[index] = titleTagFormValues;
+            this.setState({ tags });
+          }
+        })
+        .then(() => {
+          this.getTagList(parseInt(ruleId));
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
     } else {
       titleTagFormValues.rule_id = parseInt(ruleId);
 
@@ -388,7 +393,6 @@ class RuleDetail extends Component {
       scriptTagFormValues,
       tags,
       actionScriptTagForm,
-      record,
       ruleId
     } = this.state;
     const isUpdate = actionScriptTagForm !== "Add";
@@ -417,12 +421,26 @@ class RuleDetail extends Component {
       canonicalFormValues,
       tags,
       actionCanonicalForm,
-      record,
       ruleId
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
     if (isUpdate) {
+      axios
+        .put(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
+        .then(() => {
+          const index = tags.findIndex(tg => tg.id === canonicalFormValues.id);
+          if (index > -1) {
+            tags[index] = canonicalFormValues;
+            this.setState({ tags });
+          }
+        })
+        .then(() => {
+          this.getTagList(parseInt(ruleId));
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
     } else {
       canonicalFormValues.rule_id = parseInt(ruleId);
 
