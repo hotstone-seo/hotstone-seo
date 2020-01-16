@@ -7,15 +7,15 @@ import { format, subDays, startOfMonth } from "date-fns";
 import dataChart from "./data";
 import inspectAxiosError, { isAxiosError } from "../../utils/axios";
 
-const DATE_FORMAT = "yyyy-MM-dd";
+const FULL_DATE_FORMAT = "yyyy-MM-dd";
 
 const LAST_7_DAYS = "last7Days";
 const THIS_MONTH = "thisMonth";
 
 const initialState = {
   selectedOption: LAST_7_DAYS,
-  startDate: format(subDays(new Date(), 7), DATE_FORMAT),
-  endDate: format(new Date(), DATE_FORMAT)
+  startDate: format(subDays(new Date(), 7), FULL_DATE_FORMAT),
+  endDate: format(new Date(), FULL_DATE_FORMAT)
 };
 
 function reducer(state, action) {
@@ -24,14 +24,14 @@ function reducer(state, action) {
     case LAST_7_DAYS:
       return {
         selectedOption: LAST_7_DAYS,
-        startDate: format(subDays(now, 7), DATE_FORMAT),
-        endDate: format(now, DATE_FORMAT)
+        startDate: format(subDays(now, 7), FULL_DATE_FORMAT),
+        endDate: format(now, FULL_DATE_FORMAT)
       };
     case THIS_MONTH:
       return {
         selectedOption: THIS_MONTH,
-        startDate: format(startOfMonth(now), DATE_FORMAT),
-        endDate: format(now, DATE_FORMAT)
+        startDate: format(startOfMonth(now), FULL_DATE_FORMAT),
+        endDate: format(now, FULL_DATE_FORMAT)
       };
     default:
       throw new Error();
@@ -43,12 +43,19 @@ const rangeOptions = [
   { value: THIS_MONTH, label: "This Month" }
 ];
 
+function toDataChart(dataListCountHit) {
+  return dataListCountHit.map(({ date, count }) => {
+    return { x: format(new Date(date), "dd/MM"), y: count };
+  });
+}
+
 function HitChartCard() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { register, handleSubmit, errors } = useForm();
 
-  const [countHit, setCountHit] = useState(0);
+  const [dataChart, setDataChart] = useState([{ id: "count", data: [] }]);
+
   const [{ data: dataListCountHit, error }, refetch] = useHotstoneAPI({
     url: `metrics/hit/range?start=${state.startDate}&end=${state.endDate}`
   });
@@ -62,7 +69,7 @@ function HitChartCard() {
 
   useEffect(() => {
     if (dataListCountHit !== undefined) {
-      setCountHit(dataListCountHit.count);
+      setDataChart([{ id: "count", data: toDataChart(dataListCountHit) }]);
     }
   }, [dataListCountHit]);
 
@@ -98,7 +105,9 @@ function HitChartCard() {
         <ResponsiveLine
           data={dataChart}
           margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-          xScale={{ type: "point" }}
+          xScale={{
+            type: "point"
+          }}
           yScale={{
             type: "linear",
             min: "auto",
@@ -131,6 +140,7 @@ function HitChartCard() {
           pointBorderColor={{ from: "serieColor" }}
           pointLabel="Hit Count"
           pointLabelYOffset={-12}
+          enablePointLabel={true}
           useMesh={true}
         />
       </div>
