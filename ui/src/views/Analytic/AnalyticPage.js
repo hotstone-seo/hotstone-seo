@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HitCounterCard from "./HitCounterCard";
 import UniquePageCounterCard from "./UniquePageCounterCard";
+import HitChartCard from "./HitChartCard";
 import { ResponsiveLine } from "@nivo/line";
 import { useForm } from "react-hook-form";
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
@@ -30,60 +31,7 @@ function AnalyticPage() {
       </div>
       <div className="row">
         <div className="col">
-          <div className="card" style={{ height: 400 }}>
-            <div className="card-header text-left">
-              <form>
-                <select
-                  name="range"
-                  ref={register({ required: true })}
-                  onChange={handleSubmit(onChangeRange)}
-                >
-                  <option value="last-7days">Last 7 Days</option>
-                  <option value="this-month">This Month</option>
-                </select>
-              </form>
-            </div>
-            <div className="card-body">
-              <ResponsiveLine
-                data={dataChart}
-                margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-                xScale={{ type: "point" }}
-                yScale={{
-                  type: "linear",
-                  min: "auto",
-                  max: "auto",
-                  stacked: true,
-                  reverse: false
-                }}
-                axisBottom={{
-                  orient: "bottom",
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legend: "transportation",
-                  legendOffset: 36,
-                  legendPosition: "middle"
-                }}
-                axisLeft={{
-                  orient: "left",
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legend: "Hit Count",
-                  legendOffset: -40,
-                  legendPosition: "middle"
-                }}
-                colors={{ scheme: "nivo" }}
-                pointSize={10}
-                pointColor={{ theme: "background" }}
-                pointBorderWidth={2}
-                pointBorderColor={{ from: "serieColor" }}
-                pointLabel="Hit Count"
-                pointLabelYOffset={-12}
-                useMesh={true}
-              />
-            </div>
-          </div>
+          <HitChartCard />
         </div>
       </div>
     </div>
