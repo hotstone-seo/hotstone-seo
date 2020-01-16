@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
+import inspectAxiosError, { isAxiosError } from "../../utils/axios";
 
 function SimulationPage() {
   const [{ data, loading, error }, execute] = useHotstoneAPI(
@@ -15,6 +16,10 @@ function SimulationPage() {
   const onSubmit = ({ url }) => {
     execute({ data: { path: url } });
   };
+
+  // inspectAxiosError(error);
+  // console.log("=== DATA ===");
+  // console.log(data);
 
   return (
     <div className="container">
@@ -52,11 +57,8 @@ function SimulationPage() {
               </form>
             </div>
 
-            <div className="card-footer">
-              <div className="alert alert-danger" role="alert">
-                Failed to fetch data
-              </div>
-            </div>
+            {renderIfSuccess(data)}
+            {renderIfError(error)}
           </div>
         </div>
       </div>
@@ -70,6 +72,29 @@ function SimulationPage() {
       </div>
     </div>
   );
+}
+
+function renderIfSuccess(data) {
+  // TODO: display path params
+  if (data)
+    return (
+      <div className="card-footer">
+        <div className="alert alert-success" role="alert">
+          Matched
+        </div>
+      </div>
+    );
+}
+
+function renderIfError(error) {
+  if (error)
+    return (
+      <div className="card-footer">
+        <div className="alert alert-danger" role="alert">
+          {error.response.data.message}
+        </div>
+      </div>
+    );
 }
 
 export default SimulationPage;
