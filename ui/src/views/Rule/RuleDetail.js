@@ -106,7 +106,8 @@ class RuleDetail extends Component {
         type: null,
         attributes: null,
         value: null,
-        locale: null
+        locale: null,
+        rule_id: null
       }
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
@@ -454,12 +455,14 @@ class RuleDetail extends Component {
       tag_update
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
-    canonicalFormValues.rule_id = parseInt(ruleId);
+
     if (isUpdate) {
       tag_update.id = canonicalFormValues.id;
       tag_update.type = "canonical";
-      tag_update.attributes = null;
+      tag_update.attributes = "{}";
       tag_update.locale = canonicalFormValues.locale;
+      tag_update.value = canonicalFormValues.canonical;
+      tag_update.rule_id = parseInt(ruleId);
 
       axios
         .put(this.state.URL_TAG_API, tag_update)
@@ -467,7 +470,7 @@ class RuleDetail extends Component {
           const index = tags.findIndex(tg => tg.id === canonicalFormValues.id);
           if (index > -1) {
             tags[index] = tag_update;
-            this.setState({ tags });
+            this.setState({ tags: tags });
           }
         })
         .then(() => {
@@ -477,6 +480,7 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
+      canonicalFormValues.rule_id = parseInt(ruleId);
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
