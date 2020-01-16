@@ -366,16 +366,29 @@ class RuleDetail extends Component {
     this.setState({ metaTagFormVisible: false });
   }
   handleSaveTitleTag() {
-    const { titleTagFormValues, tags, actionTitleTagForm, ruleId } = this.state;
+    const {
+      titleTagFormValues,
+      tags,
+      actionTitleTagForm,
+      ruleId,
+      tag_update
+    } = this.state;
     const isUpdate = actionTitleTagForm !== "Add";
 
     if (isUpdate) {
+      tag_update.id = titleTagFormValues.id;
+      tag_update.type = "title";
+      tag_update.attributes = "{}";
+      tag_update.locale = titleTagFormValues.locale;
+      tag_update.value = titleTagFormValues.title;
+      tag_update.rule_id = parseInt(ruleId);
+
       axios
-        .put(this.state.URL_TAG_API, titleTagFormValues)
+        .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
           const index = tags.findIndex(tg => tg.id === titleTagFormValues.id);
           if (index > -1) {
-            tags[index] = titleTagFormValues;
+            tags[index] = tag_update;
             this.setState({ tags });
           }
         })
