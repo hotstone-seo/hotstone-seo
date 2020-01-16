@@ -93,7 +93,21 @@ class RuleDetail extends Component {
       rules: [],
       warning: false,
       warningAPI: false,
-      tags: []
+      tags: [],
+      tag_new: {
+        id: null,
+        type: null,
+        attributes: null,
+        value: null,
+        locale: null
+      },
+      tag_update: {
+        id: null,
+        type: null,
+        attributes: null,
+        value: null,
+        locale: null
+      }
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -318,7 +332,7 @@ class RuleDetail extends Component {
 
     if (isUpdate) {
       axios
-        .put(this.state.URL_ADDMETA_API, metaTagFormValues)
+        .put(this.state.URL_TAG_API, metaTagFormValues)
         .then(() => {
           const index = tags.findIndex(tg => tg.id === metaTagFormValues.id);
           if (index > -1) {
@@ -356,7 +370,7 @@ class RuleDetail extends Component {
 
     if (isUpdate) {
       axios
-        .put(this.state.URL_ADDTITLE_API, titleTagFormValues)
+        .put(this.state.URL_TAG_API, titleTagFormValues)
         .then(() => {
           const index = tags.findIndex(tg => tg.id === titleTagFormValues.id);
           if (index > -1) {
@@ -398,6 +412,21 @@ class RuleDetail extends Component {
     const isUpdate = actionScriptTagForm !== "Add";
 
     if (isUpdate) {
+      axios
+        .put(this.state.URL_TAG_API, scriptTagFormValues)
+        .then(() => {
+          const index = tags.findIndex(tg => tg.id === scriptTagFormValues.id);
+          if (index > -1) {
+            tags[index] = scriptTagFormValues;
+            this.setState({ tags });
+          }
+        })
+        .then(() => {
+          this.getTagList(parseInt(ruleId));
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
 
@@ -421,17 +450,24 @@ class RuleDetail extends Component {
       canonicalFormValues,
       tags,
       actionCanonicalForm,
-      ruleId
+      ruleId,
+      tag_update
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
-
+    canonicalFormValues.rule_id = parseInt(ruleId);
     if (isUpdate) {
+      console.log(canonicalFormValues, "uodate val");
+      tag_update.id = canonicalFormValues.id;
+      tag_update.type = "canonical";
+      tag_update.attributes = null;
+      tag_update.locale = canonicalFormValues.locale;
+      console.log(tag_update, "kirim val");
       axios
-        .put(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
+        .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
           const index = tags.findIndex(tg => tg.id === canonicalFormValues.id);
           if (index > -1) {
-            tags[index] = canonicalFormValues;
+            tags[index] = tag_update;
             this.setState({ tags });
           }
         })
@@ -442,8 +478,6 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      canonicalFormValues.rule_id = parseInt(ruleId);
-
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
