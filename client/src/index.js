@@ -57,7 +57,6 @@ class HotStone extends React.Component {
     this.state = { tags };
     this.client = client;
     this.fetchTags = this.fetchTags.bind(this);
-    this.createTagElement = this.createTagElement.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {

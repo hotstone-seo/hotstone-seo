@@ -24,10 +24,15 @@ const template = ({ body, head }, data) => {
         ${head.link.toString()}
       </head>
       <body ${head.bodyAttributes.toString()}>
-        <div id="root">${body}</div>
+        <div class="container">
+          <div id="root">${body}</div>
+        </div>
         <script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
       </body>
       <script src="/public/bundle.js"></script>
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+        crossorigin="anonymous" />
     </html>
   `
 }
