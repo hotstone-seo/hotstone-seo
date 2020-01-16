@@ -26,9 +26,14 @@ export default {
       icon: "icon-puzzle"
     },
     {
-      name: "Analytic",
+      name: "Rule Analytic",
       url: "/analytic",
-      icon: "icon-puzzle"
+      icon: "icon-speedometer"
+    },
+    {
+      name: "Simulation",
+      url: "/simulation",
+      icon: "icon-compass"
     }
   ]
 };
