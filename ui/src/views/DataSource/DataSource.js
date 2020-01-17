@@ -186,7 +186,7 @@ class DataSource extends Component {
                   <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Updated Date</th>
+                    <th>URL</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -196,7 +196,7 @@ class DataSource extends Component {
                       <tr key={index}>
                         <td>{datasource.id}</td>
                         <td>{datasource.name}</td>
-                        <td></td>
+                        <td>{datasource.url}</td>
                         <td>
                           <button
                             className="button muted-button"
