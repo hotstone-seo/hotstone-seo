@@ -72,8 +72,14 @@ class ScripttagForm extends Component {
                 ) : (
                   ""
                 )}
-                <Input type="select" name="type" id="type">
-                  <option>Javascript</option>
+                <Input
+                  type="select"
+                  name="type"
+                  id="type"
+                  onChange={onChange.bind(this, "type")}
+                  defaultValue={scripttag.type}
+                >
+                  <option value="Javascript">Javascript</option>
                 </Input>
               </Col>
             </FormGroup>
@@ -84,11 +90,11 @@ class ScripttagForm extends Component {
               <Col xs="12" md="9">
                 <Input
                   type="text"
-                  id="source"
-                  name="source"
+                  id="datasource_id"
+                  name="datasource_id"
                   placeholder="Source"
                   defaultValue={scripttag !== undefined ? scripttag.source : ""}
-                  onChange={onChange.bind(this, "source")}
+                  onChange={onChange.bind(this, "datasource_id")}
                 />
               </Col>
             </FormGroup>
