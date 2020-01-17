@@ -61,8 +61,8 @@ class RuleForm extends React.Component {
               <Col xs="12" md="9">
                 <Input
                   type="text"
-                  id="urlPattern"
-                  name="urlPattern"
+                  id="url_pattern"
+                  name="url_pattern"
                   placeholder="URL Pattern"
                   defaultValue={rule !== undefined ? rule.url_pattern : ""}
                   onChange={onChange.bind(this, "url_pattern")}
@@ -79,6 +79,7 @@ class RuleForm extends React.Component {
                   name="data_source_id"
                   id="data_source_id"
                   onChange={onChange.bind(this, "data_source_id")}
+                  defaultValue={rule.data_source_id}
                 >
                   <option value="-">-CHOOSE-</option>
                   {dataSources.map(ds => (

@@ -120,6 +120,7 @@ class RuleList extends Component {
   handleSave() {
     const { ruleFormValues, rules, actionForm, record } = this.state;
     const isUpdate = actionForm !== "Add";
+    ruleFormValues.data_source_id = parseInt(ruleFormValues.data_source_id);
 
     if (isUpdate) {
       ruleFormValues.id = record.id;
@@ -139,7 +140,6 @@ class RuleList extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      ruleFormValues.data_source_id = parseInt(ruleFormValues.data_source_id);
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
@@ -151,7 +151,14 @@ class RuleList extends Component {
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
-      this.setState({ ruleFormValues: {} });
+      this.setState({
+        ruleFormValues: {
+          id: null,
+          name: null,
+          url_pattern: null,
+          data_source_id: null
+        }
+      });
     }
     this.setState({ formVisible: false });
   }
@@ -160,7 +167,7 @@ class RuleList extends Component {
     const { target } = e || {};
     const { value } = target || {};
     const { ruleFormValues } = this.state;
-
+    console.log(ruleFormValues, "onchange");
     this.setState({
       ruleFormValues: {
         ...ruleFormValues,
