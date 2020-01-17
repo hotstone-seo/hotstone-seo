@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Form,
   Modal,
@@ -10,21 +10,36 @@ import {
   FormGroup,
   Label,
   Button
-} from 'reactstrap';
+} from "reactstrap";
 
 class RuleForm extends React.Component {
   render() {
     const {
-      visible, onCancel, onSave, rule, action, onChange
+      visible,
+      onCancel,
+      onSave,
+      rule,
+      action,
+      onChange,
+      dataSources
     } = this.props;
-     
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Rule</ModalHeader>
         <ModalBody>
           <Form className="form-horizontal">
             <FormGroup row>
-              {rule !== undefined? (<Input type="hidden" id="id" name="id" defaultValue={rule.id} onChange={onChange.bind(this, 'id')}/>):""}
+              {rule !== undefined ? (
+                <Input
+                  type="hidden"
+                  id="id"
+                  name="id"
+                  defaultValue={rule.id}
+                  onChange={onChange.bind(this, "id")}
+                />
+              ) : (
+                ""
+              )}
               <Col md="3">
                 <Label htmlFor="text-input">Name</Label>
               </Col>
@@ -34,8 +49,8 @@ class RuleForm extends React.Component {
                   id="name"
                   name="name"
                   placeholder="Name"
-                  defaultValue={rule !== undefined?rule.name:""}
-                  onChange={onChange.bind(this, 'name')}
+                  defaultValue={rule !== undefined ? rule.name : ""}
+                  onChange={onChange.bind(this, "name")}
                 />
               </Col>
             </FormGroup>
@@ -49,8 +64,8 @@ class RuleForm extends React.Component {
                   id="urlPattern"
                   name="urlPattern"
                   placeholder="URL Pattern"
-                  defaultValue={rule !== undefined?rule.url_pattern:""}
-                  onChange={onChange.bind(this, 'url_pattern')}
+                  defaultValue={rule !== undefined ? rule.url_pattern : ""}
+                  onChange={onChange.bind(this, "url_pattern")}
                 />
               </Col>
             </FormGroup>
@@ -59,16 +74,30 @@ class RuleForm extends React.Component {
                 <Label htmlFor="text-input">Data Source</Label>
               </Col>
               <Col xs="12" md="9">
-                <Input type="select" name="datasource" id="datasource" onChange={onChange.bind(this, 'datasource')}>
-                  <option value="1">Airport</option>
+                <Input
+                  type="select"
+                  name="data_source_id"
+                  id="data_source_id"
+                  onChange={onChange.bind(this, "data_source_id")}
+                >
+                  <option value="-">-CHOOSE-</option>
+                  {dataSources.map(ds => (
+                    <option key={ds.id} value={ds.id}>
+                      {ds.name}
+                    </option>
+                  ))}
                 </Input>
               </Col>
             </FormGroup>
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="warning" onClick={onSave}>Save</Button>{' '}
-          <Button color="secondary" onClick={onCancel}>Cancel</Button>
+          <Button color="warning" onClick={onSave}>
+            Save
+          </Button>{" "}
+          <Button color="secondary" onClick={onCancel}>
+            Cancel
+          </Button>
         </ModalFooter>
       </Modal>
     );

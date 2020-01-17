@@ -33,8 +33,10 @@ class RuleList extends Component {
         data_source_id: null
       },
       URL_API: process.env.REACT_APP_API_URL + "rules",
+      URL_API_DATASOURCES: process.env.REACT_APP_API_URL + "data_sources",
       warningAPI: false,
-      errorMessage: ""
+      errorMessage: "",
+      dataSources: []
     };
 
     this.handleDelete = this.handleDelete.bind(this);
@@ -76,6 +78,13 @@ class RuleList extends Component {
   }
   componentDidMount() {
     this.getRuleList();
+    axios
+      .get(this.state.URL_API_DATASOURCES)
+      .then(res => {
+        const dataSources = res.data;
+        this.setState({ dataSources });
+      })
+      .catch(error => {});
   }
 
   handleDelete(id) {
@@ -112,9 +121,8 @@ class RuleList extends Component {
     const { ruleFormValues, rules, actionForm, record } = this.state;
     const isUpdate = actionForm !== "Add";
 
-    ruleFormValues.id = record.id;
-
     if (isUpdate) {
+      ruleFormValues.id = record.id;
       axios
         .put(this.state.URL_API, ruleFormValues)
         .then(() => {
@@ -131,6 +139,7 @@ class RuleList extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
+      ruleFormValues.data_source_id = parseInt(ruleFormValues.data_source_id);
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
@@ -274,6 +283,7 @@ class RuleList extends Component {
             onSave={this.handleSave}
             rule={this.state.record}
             action={this.state.actionForm}
+            dataSources={this.state.dataSources}
             onChange={this.handleOnChange.bind(this)}
           />
 
