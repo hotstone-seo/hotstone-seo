@@ -71,9 +71,10 @@ class RuleDetail extends Component {
       },
       scriptTagFormValues: {
         id: null,
-        name: null,
+        type: null,
         rule_id: null,
-        locale: null
+        locale: null,
+        datasource_id: null
       },
       titleTagFormValues: {
         id: null,
@@ -185,7 +186,7 @@ class RuleDetail extends Component {
     if (record !== undefined) {
       const { scriptTagFormValues } = this.state;
       scriptTagFormValues.id = record.id;
-      scriptTagFormValues.name = record.value;
+      scriptTagFormValues.type = record.value;
       scriptTagFormValues.locale = record.locale;
 
       this.setState({ scriptTagFormValues: scriptTagFormValues });
@@ -452,7 +453,7 @@ class RuleDetail extends Component {
       tag_update.type = "script";
       tag_update.attributes = "{}";
       tag_update.locale = scriptTagFormValues.locale;
-      tag_update.value = scriptTagFormValues.name;
+      tag_update.value = scriptTagFormValues.type;
       tag_update.rule_id = parseInt(ruleId);
 
       axios
@@ -472,7 +473,8 @@ class RuleDetail extends Component {
         });
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
-
+      scriptTagFormValues.datasource_id = 1;
+      console.log(scriptTagFormValues, "scriptTagFormValues");
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {
@@ -485,7 +487,15 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({ scriptTagFormValues: {} });
+    this.setState({
+      scriptTagFormValues: {
+        id: null,
+        type: null,
+        rule_id: null,
+        locale: null,
+        datasource_id: null
+      }
+    });
     this.setState({ scriptTagFormVisible: false });
   }
   handleSaveCanonicalTag() {
