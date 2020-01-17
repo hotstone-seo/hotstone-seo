@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node server",
-    "build": "rm server.js && rm -rf public && webpack --config webpack.client.js && webpack --config webpack.server.js",
+    "clean": "rm server.js && rm -rf public",
+    "build": "webpack --config webpack.client.js && webpack --config webpack.server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,7 +18,7 @@
     "@babel/runtime": "^7.7.7",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "hotstone-client": "file:hotstone-client-0.3.0.tgz",
+    "hotstone-client": "^0.3.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
