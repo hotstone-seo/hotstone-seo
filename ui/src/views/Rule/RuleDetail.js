@@ -108,6 +108,10 @@ class RuleDetail extends Component {
         value: null,
         locale: null,
         rule_id: null
+      },
+      metatag_attr: {
+        name: null,
+        content: null
       }
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
@@ -328,16 +332,33 @@ class RuleDetail extends Component {
   }
 
   handleSaveMetaTag() {
-    const { metaTagFormValues, tags, actionMetaTagForm, ruleId } = this.state;
+    const {
+      metaTagFormValues,
+      tags,
+      actionMetaTagForm,
+      ruleId,
+      tag_update,
+      metatag_attr
+    } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
 
     if (isUpdate) {
+      metatag_attr.name = metaTagFormValues.name;
+      metatag_attr.content = metaTagFormValues.content;
+
+      tag_update.id = metaTagFormValues.id;
+      tag_update.type = "meta";
+      tag_update.attributes = metatag_attr;
+      tag_update.locale = metaTagFormValues.locale;
+      tag_update.value = metaTagFormValues.name;
+      tag_update.rule_id = parseInt(ruleId);
+
       axios
-        .put(this.state.URL_TAG_API, metaTagFormValues)
+        .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
           const index = tags.findIndex(tg => tg.id === metaTagFormValues.id);
           if (index > -1) {
-            tags[index] = metaTagFormValues;
+            tags[index] = tag_update;
             this.setState({ tags });
           }
         })
@@ -421,17 +442,25 @@ class RuleDetail extends Component {
       scriptTagFormValues,
       tags,
       actionScriptTagForm,
-      ruleId
+      ruleId,
+      tag_update
     } = this.state;
     const isUpdate = actionScriptTagForm !== "Add";
 
     if (isUpdate) {
+      tag_update.id = scriptTagFormValues.id;
+      tag_update.type = "script";
+      tag_update.attributes = "{}";
+      tag_update.locale = scriptTagFormValues.locale;
+      tag_update.value = scriptTagFormValues.name;
+      tag_update.rule_id = parseInt(ruleId);
+
       axios
-        .put(this.state.URL_TAG_API, scriptTagFormValues)
+        .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
           const index = tags.findIndex(tg => tg.id === scriptTagFormValues.id);
           if (index > -1) {
-            tags[index] = scriptTagFormValues;
+            tags[index] = tag_update;
             this.setState({ tags });
           }
         })
