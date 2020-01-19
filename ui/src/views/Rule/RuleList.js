@@ -140,14 +140,16 @@ class RuleList extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
+      let lastid = this.getLastId();
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
+          ruleFormValues.id = lastid + 1;
           this.setState({ rules: [...rules, ruleFormValues] });
         })
-        .then(() => {
-          this.getRuleList();
-        })
+        //.then(() => {
+        //  this.getRuleList();
+        //})
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
@@ -190,6 +192,14 @@ class RuleList extends Component {
 
   handleCloseWarningAPI() {
     this.setState({ warningAPI: false });
+  }
+  getLastId() {
+    const { rules } = this.state;
+    let lastid = 0;
+    if (rules.length > 0) {
+      lastid = rules[datasources.length - 1].id;
+    }
+    return lastid;
   }
   render() {
     const { rules } = this.state;
