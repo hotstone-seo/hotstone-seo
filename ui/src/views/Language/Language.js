@@ -128,7 +128,7 @@ class Language extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      let lastid = this.getLastId();
+      let lastid = this.getLastID();
       axios
         .post(this.state.URL_API, languageFormValues)
         .then(response => {
@@ -160,7 +160,7 @@ class Language extends Component {
   handleCloseWarningAPI() {
     this.setState({ warningAPI: false });
   }
-  getLastId() {
+  getLastID() {
     const { languages } = this.state;
     let lastid = 0;
     if (languages.length > 0) {

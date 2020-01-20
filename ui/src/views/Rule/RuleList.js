@@ -140,7 +140,7 @@ class RuleList extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      let lastid = this.getLastId();
+      let lastid = this.getLastID();
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
@@ -193,7 +193,7 @@ class RuleList extends Component {
   handleCloseWarningAPI() {
     this.setState({ warningAPI: false });
   }
-  getLastId() {
+  getLastID() {
     const { rules } = this.state;
     let lastid = 0;
     if (rules.length > 0) {

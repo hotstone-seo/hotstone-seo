@@ -135,7 +135,7 @@ class DataSource extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      let lastid = this.getLastId();
+      let lastid = this.getLastID();
       axios
         .post(this.state.URL_API, datasourcesFormValues)
         .then(response => {
@@ -170,7 +170,7 @@ class DataSource extends Component {
   handleCloseWarningAPI() {
     this.setState({ warningAPI: false });
   }
-  getLastId() {
+  getLastID() {
     const { datasources } = this.state;
     let lastid = 0;
     if (datasources.length > 0) {
