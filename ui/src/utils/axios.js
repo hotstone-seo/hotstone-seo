@@ -31,13 +31,7 @@ export function isAxiosError(error) {
     return false;
   }
 
-  if (error.response || error.request) {
-    return true;
-  } else {
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
 export default inspectAxiosError;
