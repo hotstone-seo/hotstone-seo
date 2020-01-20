@@ -384,7 +384,15 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({ metaTagFormValues: {} });
+    this.setState({
+      metaTagFormValues: {
+        id: null,
+        name: null,
+        content: null,
+        rule_id: null,
+        locale: null
+      }
+    });
     this.setState({ metaTagFormVisible: false });
   }
   handleSaveTitleTag() {
@@ -499,13 +507,6 @@ class RuleDetail extends Component {
 
       axios
         .put(this.state.URL_TAG_API, tag_update)
-        .then(() => {
-          const index = tags.findIndex(tg => tg.id === canonicalFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags: tags });
-          }
-        })
         .then(() => {
           this.getTagList(parseInt(ruleId));
         })
