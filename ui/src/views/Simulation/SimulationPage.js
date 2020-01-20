@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
-import inspectAxiosError, { isAxiosError } from "../../utils/axios";
 
 function SimulationPage() {
-  const [{ data, loading, error }, execute] = useHotstoneAPI(
+  const [{ data, error }, execute] = useHotstoneAPI(
     {
       url: `provider/matchRule`,
       method: "POST"
