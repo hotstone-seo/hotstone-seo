@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Machine, assign } from "xstate";
 import { useMachine } from "@xstate/react";
 import _ from "lodash";
+import parse from "url-parse";
 
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
 import HotstoneAPI from "../../api/hotstone";
@@ -64,7 +65,9 @@ function SimulationPage() {
 
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = ({ url }) => {
-    send("SUBMIT", { url: url });
+    const urlObj = parse(url);
+
+    send("SUBMIT", { url: urlObj.pathname });
   };
 
   return (
