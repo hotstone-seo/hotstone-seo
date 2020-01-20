@@ -110,11 +110,9 @@ class Language extends Component {
 
   handleSave() {
     const { languageFormValues, languages, actionForm, record } = this.state;
-    const isUpdate = actionForm !== "Add";
 
-    languageFormValues.id = record.id;
-
-    if (isUpdate) {
+    if (actionForm !== "Add") {
+      languageFormValues.id = record.id;
       axios
         .put(this.state.URL_API, languageFormValues)
         .then(() => {

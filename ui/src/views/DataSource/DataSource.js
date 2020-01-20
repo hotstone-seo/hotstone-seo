@@ -117,11 +117,9 @@ class DataSource extends Component {
       actionForm,
       record
     } = this.state;
-    const isUpdate = actionForm !== "Add";
 
-    datasourcesFormValues.id = record.id;
-
-    if (isUpdate) {
+    if (actionForm !== "Add") {
+      datasourcesFormValues.id = record.id;
       axios
         .put(this.state.URL_API, datasourcesFormValues)
         .then(() => {

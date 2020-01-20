@@ -119,10 +119,10 @@ class RuleList extends Component {
 
   handleSave() {
     const { ruleFormValues, rules, actionForm, record } = this.state;
-    const isUpdate = actionForm !== "Add";
+
     ruleFormValues.data_source_id = parseInt(ruleFormValues.data_source_id);
 
-    if (isUpdate) {
+    if (actionForm !== "Add") {
       ruleFormValues.id = record.id;
       axios
         .put(this.state.URL_API, ruleFormValues)
