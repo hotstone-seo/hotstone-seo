@@ -137,10 +137,11 @@ class DataSource extends Component {
       axios
         .post(this.state.URL_API, datasourcesFormValues)
         .then(response => {
-          datasourcesFormValues.id = lastid + 1;
-          this.setState({
-            datasources: [...datasources, datasourcesFormValues]
-          });
+          this.getDataSourceList();
+          //datasourcesFormValues.id = lastid + 1;
+          //this.setState({
+          //  datasources: [...datasources, datasourcesFormValues]
+          //});
         })
         //.then(() => {
         //  this.getDataSourceList();

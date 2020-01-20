@@ -130,8 +130,7 @@ class Language extends Component {
       axios
         .post(this.state.URL_API, languageFormValues)
         .then(response => {
-          languageFormValues.id = lastid + 1;
-          this.setState({ languages: [...languages, languageFormValues] });
+          this.getLanguageList();
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);

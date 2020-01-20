@@ -138,8 +138,9 @@ class RuleList extends Component {
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
-          ruleFormValues.id = lastid + 1;
-          this.setState({ rules: [...rules, ruleFormValues] });
+          this.getRuleList();
+          //ruleFormValues.id = lastid + 1;
+          //this.setState({ rules: [...rules, ruleFormValues] });
         })
         //.then(() => {
         //  this.getRuleList();
