@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	typical.Descriptor.Constructors.Append(
+	typical.Descriptor.AppendConstructor(
 		repository.NewDataSourceRepo,
 		repository.NewLocaleRepo,
 		repository.NewMetricsRuleMatchingRepo,

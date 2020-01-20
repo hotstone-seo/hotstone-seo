@@ -24,7 +24,7 @@ type CenterServiceImpl struct {
 	repository.TagRepo
 }
 
-// NewCenterService return new instance of CenterService [autowire]
+// NewCenterService return new instance of CenterService [constructor]
 func NewCenterService(impl CenterServiceImpl) CenterService {
 	return &impl
 }
