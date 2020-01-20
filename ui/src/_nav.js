@@ -1,9 +1,9 @@
 export default {
   items: [
     {
-      name: "Analytic",
-      url: "/dashboard",
-      icon: "icon-speedometer"
+      name: "Rule",
+      url: "/rule",
+      icon: "icon-puzzle"
     },
     {
       name: "Language",
@@ -13,11 +13,6 @@ export default {
     {
       name: "DataSource",
       url: "/datasource",
-      icon: "icon-puzzle"
-    },
-    {
-      name: "Rule",
-      url: "/rule",
       icon: "icon-puzzle"
     },
     {

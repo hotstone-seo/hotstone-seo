@@ -16,7 +16,7 @@ type LocaleServiceImpl struct {
 	repository.LocaleRepo
 }
 
-// NewLocaleService return new instance of LocaleService [autowire]
+// NewLocaleService return new instance of LocaleService [constructor]
 func NewLocaleService(impl LocaleServiceImpl) LocaleService {
 	return &impl
 }

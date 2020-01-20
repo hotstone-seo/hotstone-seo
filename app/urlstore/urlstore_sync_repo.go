@@ -22,7 +22,7 @@ type URLStoreSyncRepo interface {
 	GetListDiff(ctx context.Context, offsetVersion int64) ([]*URLStoreSync, error)
 }
 
-// NewURLStoreSyncRepo return new instance of URLStoreSyncRepo [autowire]
+// NewURLStoreSyncRepo return new instance of URLStoreSyncRepo [constructor]
 func NewURLStoreSyncRepo(impl URLStoreSyncRepoImpl) URLStoreSyncRepo {
 	return &impl
 }

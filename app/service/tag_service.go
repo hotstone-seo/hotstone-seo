@@ -16,7 +16,7 @@ type TagServiceImpl struct {
 	repository.TagRepo
 }
 
-// NewTagService return new instance of TagService [autowire]
+// NewTagService return new instance of TagService [constructor]
 func NewTagService(impl TagServiceImpl) TagService {
 	return &impl
 }

@@ -24,7 +24,7 @@ type RuleRepo interface {
 	Update(ctx context.Context, rule Rule) error
 }
 
-// NewRuleRepo return new instance of RuleRepo [autowire]
+// NewRuleRepo return new instance of RuleRepo [constructor]
 func NewRuleRepo(impl RuleRepoImpl) RuleRepo {
 	return &impl
 }

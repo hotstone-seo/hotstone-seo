@@ -36,7 +36,7 @@ type ProviderServiceImpl struct {
 	urlstore.URLStoreServer
 }
 
-// NewProviderService return new instance of ProviderService [autowire]
+// NewProviderService return new instance of ProviderService [constructor]
 func NewProviderService(impl ProviderServiceImpl) ProviderService {
 	return &impl
 }
