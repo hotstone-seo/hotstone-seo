@@ -1,39 +1,35 @@
+// Reference for icon: https://fontawesome.com/v4.7.0/icons/
 export default {
   items: [
     {
-      name: "Analytic",
-      url: "/dashboard",
-      icon: "icon-speedometer"
+      name: "Rule",
+      url: "/rule",
+      icon: "fa fa-home"
     },
     {
       name: "Language",
       url: "/language",
-      icon: "icon-puzzle"
+      icon: "fa fa-language"
     },
     {
       name: "DataSource",
       url: "/datasource",
-      icon: "icon-puzzle"
-    },
-    {
-      name: "Rule",
-      url: "/rule",
-      icon: "icon-puzzle"
+      icon: "fa fa-database"
     },
     {
       name: "Mismatch Rule",
       url: "/mismatchRule",
-      icon: "icon-puzzle"
+      icon: "fa fa-bug"
     },
     {
       name: "Rule Analytic",
       url: "/analytic",
-      icon: "icon-speedometer"
+      icon: "fa fa-tachometer"
     },
     {
       name: "Simulation",
       url: "/simulation",
-      icon: "icon-compass"
+      icon: "fa fa-play-circle"
     }
   ]
 };
