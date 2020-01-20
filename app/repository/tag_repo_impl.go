@@ -42,7 +42,7 @@ func (r *TagRepoImpl) Find(ctx context.Context, filter TagFilter) (list []*Tag, 
 	builder := sq.
 		Select("id", "rule_id", "locale", "type", "attributes", "value", "updated_at", "created_at").
 		From("tags")
-	if filter.RuleID > 0 {
+	if filter.RuleID > -1 {
 		builder = builder.Where(sq.Eq{"rule_id": filter.RuleID})
 	}
 	if filter.Locale != "" {
