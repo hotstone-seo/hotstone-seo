@@ -115,7 +115,8 @@ class RuleDetail extends Component {
         name: null,
         content: null
       },
-      languages: []
+      languages: [],
+      localeTag: "ID"
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -123,6 +124,7 @@ class RuleDetail extends Component {
 
     this.toggleWarning = this.toggleWarning.bind(this);
     this.toggleWarningAPI = this.toggleWarningAPI.bind(this);
+    this.refreshTag = this.refreshTag.bind(this);
   }
   componentDidMount() {
     const query = parseQuery((window.location || {}).search || "");
@@ -570,8 +572,24 @@ class RuleDetail extends Component {
     this.setState({ canonicalFormVisible: false });
   }
   getTagList(rule_id) {
+    const { localeTag } = this.state;
+
     axios
-      .get(this.state.URL_TAG_API + "?locale=ID&rule_id=" + rule_id)
+      .get(
+        this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id
+      )
+      .then(res => {
+        const tags = res.data;
+        this.setState({ tags });
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
+      });
+  }
+  getTagList_refresh(locale) {
+    const { rule_id } = parseInt(this.state.ruleId);
+    axios
+      .get(this.state.URL_TAG_API + "?locale=" + locale + "&rule_id=" + rule_id)
       .then(res => {
         const tags = res.data;
         this.setState({ tags });
@@ -600,11 +618,19 @@ class RuleDetail extends Component {
 
   refreshTag(e) {
     let localeSelected = e.target.value;
-    //const { ruleId } = this.state;
-    //TO DO : (still on progress)
-    /*axios
+    const { ruleId } = this.state;
+    localeSelected = localeSelected.toUpperCase();
+
+    this.setState({ localeTag: localeSelected });
+
+    // TO DO : next below code will be merged to function getTagList
+    axios
       .get(
-        this.state.URL_TAG_API + "?locale=" + localeSelected + "&rule_id=" + 24
+        this.state.URL_TAG_API +
+          "?locale=" +
+          localeSelected +
+          "&rule_id=" +
+          ruleId
       )
       .then(res => {
         const tags = res.data;
@@ -612,7 +638,7 @@ class RuleDetail extends Component {
       })
       .catch(error => {
         this.toggleWarningAPI(error.message);
-      });*/
+      });
   }
   render() {
     const { rules, tags, languages, ruleId } = this.state;
