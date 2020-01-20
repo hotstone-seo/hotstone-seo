@@ -44,6 +44,7 @@
     "reactstrap": "^8.1.1",
     "simple-line-icons": "^2.4.1",
     "url-join": "^4.0.1",
+    "url-parse": "^1.4.7",
     "xstate": "^4.7.6"
   },
   "devDependencies": {
