@@ -704,28 +704,28 @@ class RuleDetail extends Component {
                     onClick={() => this.showFormCanonicalTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    Add New Canonical
+                    <i class="fa fa-plus"></i>&nbsp;New Canonical
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormMetaTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    Add New Meta-Tag
+                    <i class="fa fa-plus"></i>&nbsp;New Meta Tag
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormScriptTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    Add New Script Tag
+                    <i class="fa fa-plus"></i>&nbsp; New Script Tag
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormTitleTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    Add New Title-Tag
+                    <i class="fa fa-plus"></i>&nbsp; New Title Tag
                   </Button>
                 </div>
                 <div>
@@ -780,19 +780,16 @@ class RuleDetail extends Component {
                           <td>{tag.value}</td>
                           <td>{tag.locale}</td>
                           <td>
-                            <button
-                              className="button muted-button"
+                            <Button
+                              color="secondary"
                               onClick={() => this.handleEdit(tag)}
                             >
-                              Edit
-                            </button>
+                              <i class="fa fa-pencil"></i>&nbsp; Edit
+                            </Button>
                             {"  "}
-                            <button
-                              className="button muted-button"
-                              onClick={this.toggleWarning}
-                            >
-                              Delete
-                            </button>
+                            <Button color="danger" onClick={this.toggleWarning}>
+                              <i class="fa fa-trash"></i>&nbsp;Delete
+                            </Button>
                             <Modal
                               isOpen={this.state.warning}
                               toggle={this.toggleWarning}

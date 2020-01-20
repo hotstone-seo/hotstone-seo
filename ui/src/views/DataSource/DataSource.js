@@ -187,7 +187,8 @@ class DataSource extends Component {
             <CardBody>
               <div style={{ marginBottom: ".5rem" }}>
                 <Button color="primary" onClick={() => this.showForm()}>
-                  Add New
+                  <i class="fa fa-plus"></i>
+                  &nbsp;New Data Source
                 </Button>
               </div>
               <Table responsive bordered>
@@ -207,19 +208,18 @@ class DataSource extends Component {
                         <td>{datasource.name}</td>
                         <td>{datasource.url}</td>
                         <td>
-                          <button
-                            className="button muted-button"
+                          <Button
+                            color="secondary"
                             onClick={() => this.showForm(datasource)}
                           >
-                            Edit
-                          </button>
+                            <i class="fa fa-pencil"></i>
+                            &nbsp;Edit
+                          </Button>
                           {"  "}
-                          <button
-                            className="button muted-button"
-                            onClick={this.toggleWarning}
-                          >
-                            Delete
-                          </button>
+                          <Button color="danger" onClick={this.toggleWarning}>
+                            <i class="fa fa-trash"></i>
+                            &nbsp;Delete
+                          </Button>
                           <Modal
                             isOpen={this.state.warning}
                             toggle={this.toggleWarning}
