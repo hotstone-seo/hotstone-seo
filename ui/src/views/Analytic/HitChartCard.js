@@ -4,8 +4,7 @@ import useHotstoneAPI from "../../hooks/useHotstoneAPI";
 import useInterval from "@use-it/interval";
 import { useForm } from "react-hook-form";
 import { format, subDays, startOfMonth } from "date-fns";
-import dataChart from "./data";
-import inspectAxiosError, { isAxiosError } from "../../utils/axios";
+import { isAxiosError } from "../../utils/axios";
 
 const FULL_DATE_FORMAT = "yyyy-MM-dd";
 
@@ -52,7 +51,7 @@ function toDataChart(dataListCountHit) {
 function HitChartCard() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit } = useForm();
 
   const [dataChart, setDataChart] = useState([{ id: "count", data: [] }]);
 
