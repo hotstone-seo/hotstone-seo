@@ -78,13 +78,6 @@ class RuleList extends Component {
   }
   componentDidMount() {
     this.getRuleList();
-    axios
-      .get(this.state.URL_API_DATASOURCES)
-      .then(res => {
-        const dataSources = res.data;
-        this.setState({ dataSources });
-      })
-      .catch(error => {});
   }
 
   handleDelete(id) {
@@ -100,6 +93,7 @@ class RuleList extends Component {
     this.toggleWarning();
   }
   showForm(record) {
+    this.getDataSourcesFromAPI();
     if (record !== undefined) {
       this.setState({ record: record });
       this.setState({ actionForm: "Edit" });
@@ -200,6 +194,15 @@ class RuleList extends Component {
       lastid = rules[rules.length - 1].id;
     }
     return lastid;
+  }
+  getDataSourcesFromAPI() {
+    axios
+      .get(this.state.URL_API_DATASOURCES)
+      .then(res => {
+        const dataSources = res.data;
+        this.setState({ dataSources });
+      })
+      .catch(error => {});
   }
   render() {
     const { rules } = this.state;
