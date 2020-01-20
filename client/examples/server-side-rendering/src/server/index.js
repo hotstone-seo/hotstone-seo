@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
+import { StaticRouter } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { HotStoneClient } from 'hotstone-client';
 import serialize from 'serialize-javascript';
@@ -24,9 +25,7 @@ const template = ({ body, head }, data) => {
         ${head.link.toString()}
       </head>
       <body ${head.bodyAttributes.toString()}>
-        <div class="container">
-          <div id="root">${body}</div>
-        </div>
+        <div id="root">${body}</div>
         <script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
       </body>
       <script src="/public/bundle.js"></script>
@@ -61,7 +60,11 @@ server.get('*', (req, res, next) => {
      const data = { rule, tags }
 
      // Rendering element...
-     const appString = renderToString(<App data={data} />);
+     const appString = renderToString(
+       <StaticRouter location={req.url} context={{}} >
+         <App data={data} />
+       </StaticRouter>
+     );
      const helmet = Helmet.renderStatic();
      res.send(template({ body: appString, head: helmet }, data));
    } catch(error) {
