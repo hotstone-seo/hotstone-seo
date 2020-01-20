@@ -11,6 +11,7 @@ import {
   ModalHeader,
   Table
 } from "reactstrap";
+import { format, formatDistance } from "date-fns";
 
 class MismatchRuleList extends Component {
   constructor(props) {
@@ -66,6 +67,16 @@ class MismatchRuleList extends Component {
   handleCloseWarningAPI() {
     this.setState({ warningAPI: false });
   }
+
+  formatSince(since) {
+    const sinceDate = new Date(since);
+
+    const full = format(sinceDate, "yyyy-MM-dd hh:mm");
+    const relative = formatDistance(sinceDate, new Date());
+
+    return `${full} (${relative} ago)`;
+  }
+
   render() {
     const { mismatchRules } = this.state;
     return (
@@ -89,7 +100,7 @@ class MismatchRuleList extends Component {
                       <tr key={index}>
                         <td>{++index}</td>
                         <td>{mismatchRule.request_path}</td>
-                        <td>{mismatchRule.since}</td>
+                        <td>{this.formatSince(mismatchRule.since)}</td>
                         <td>{mismatchRule.count}</td>
                       </tr>
                     ))
