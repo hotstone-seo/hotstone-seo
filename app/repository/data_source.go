@@ -24,6 +24,6 @@ type DataSourceRepo interface {
 }
 
 // NewDataSourceRepo return new instance of DataSourceRepo [constructor]
-func NewDataSourceRepo(impl CachedDataSourceRepoImpl) DataSourceRepo {
+func NewDataSourceRepo(impl DataSourceRepoImpl) DataSourceRepo {
 	return &impl
 }

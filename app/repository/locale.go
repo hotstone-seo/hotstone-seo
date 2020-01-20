@@ -24,6 +24,6 @@ type LocaleRepo interface {
 }
 
 // NewLocaleRepo return new instance of LocaleRepo [constructor]
-func NewLocaleRepo(impl CachedLocaleRepoImpl) LocaleRepo {
+func NewLocaleRepo(impl LocaleRepoImpl) LocaleRepo {
 	return &impl
 }
