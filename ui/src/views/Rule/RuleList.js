@@ -197,7 +197,7 @@ class RuleList extends Component {
     const { rules } = this.state;
     let lastid = 0;
     if (rules.length > 0) {
-      lastid = rules[datasources.length - 1].id;
+      lastid = rules[rules.length - 1].id;
     }
     return lastid;
   }
