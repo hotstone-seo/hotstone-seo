@@ -134,17 +134,11 @@ class RuleList extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      let lastid = this.getLastID();
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
           this.getRuleList();
-          //ruleFormValues.id = lastid + 1;
-          //this.setState({ rules: [...rules, ruleFormValues] });
         })
-        //.then(() => {
-        //  this.getRuleList();
-        //})
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
