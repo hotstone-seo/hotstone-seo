@@ -34,6 +34,6 @@ type TagRepo interface {
 }
 
 // NewTagRepo return new instance of TagRepo [constructor]
-func NewTagRepo(impl CachedTagRepoImpl) TagRepo {
+func NewTagRepo(impl TagRepoImpl) TagRepo {
 	return &impl
 }
