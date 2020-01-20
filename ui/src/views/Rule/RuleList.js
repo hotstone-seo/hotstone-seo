@@ -169,10 +169,6 @@ class RuleList extends Component {
 
   handleDetail(record) {
     const { history } = this.props;
-    /*history.push({
-      pathname: "/ruleDetail?ruleId=" + record.id,
-      data: record
-    });*/
     history.push({
       pathname: "/ruleDetail/?ruleId=" + record.id,
       data: record

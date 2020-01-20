@@ -332,8 +332,6 @@ class RuleDetail extends Component {
     axios
       .delete(this.state.URL_TAG_API + `/${id}`)
       .then(() => {
-        //const { tags } = this.state;
-        //this.setState({ tags: tags.filter(tag => tag.id !== id) });
         this.getTagList(parseInt(ruleId));
       })
       .catch(error => {
@@ -387,9 +385,6 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
-          this.setState({ tags: [...tags, metaTagFormValues] });
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -438,9 +433,6 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDTITLE_API, titleTagFormValues)
         .then(response => {
-          this.setState({ tags: [...tags, titleTagFormValues] });
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -486,13 +478,9 @@ class RuleDetail extends Component {
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
       scriptTagFormValues.datasource_id = 1;
-      console.log(scriptTagFormValues, "scriptTagFormValues");
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {
-          this.setState({ tags: [...tags, scriptTagFormValues] });
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
