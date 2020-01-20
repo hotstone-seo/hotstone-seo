@@ -1,24 +1,65 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Machine, assign } from "xstate";
+import { useMachine } from "@xstate/react";
+import _ from "lodash";
+
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
+import HotstoneAPI from "../../api/hotstone";
+import inspectAxiosError, { isAxiosError } from "../../utils/axios";
+
+const pageMachine = Machine({
+  id: "simulation",
+  initial: "idle",
+  context: {
+    url: null,
+    matchResp: null,
+    matchError: null
+  },
+  states: {
+    idle: {},
+    loading: {
+      entry: assign({
+        matchResp: null,
+        matchError: null
+      }),
+      invoke: {
+        src: (context, event) => HotstoneAPI.postProviderMatchRule(context.url),
+        onDone: {
+          target: "success",
+          actions: assign({
+            matchResp: (context, event) => event.data
+          })
+        },
+        onError: {
+          target: "failed",
+          actions: assign({
+            matchError: (context, event) => event.data
+          })
+        }
+      }
+    },
+    success: {},
+    failed: {}
+  },
+  on: {
+    SUBMIT: {
+      target: ".loading",
+      actions: assign({
+        url: (context, event) => event.url
+      })
+    }
+  }
+});
 
 function SimulationPage() {
-  const [{ data, error }, execute] = useHotstoneAPI(
-    {
-      url: `provider/matchRule`,
-      method: "POST"
-    },
-    { manual: true }
-  );
+  const [current, send] = useMachine(pageMachine);
+  const { url, matchResp, matchError } = current.context;
 
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = ({ url }) => {
-    execute({ data: { path: url } });
+    send("SUBMIT", { url: url });
   };
-
-  // inspectAxiosError(error);
-  // console.log("=== DATA ===");
-  // console.log(data);
 
   return (
     <div className="container">
@@ -48,7 +89,11 @@ function SimulationPage() {
                     )}
                   </div>
                   <div className="col-auto">
-                    <button type="submit" className="btn btn-primary">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={current.matches("loading")}
+                    >
                       Submit
                     </button>
                   </div>
@@ -56,8 +101,16 @@ function SimulationPage() {
               </form>
             </div>
 
-            {renderIfSuccess(data)}
-            {renderIfError(error)}
+            {current.matches("loading") && (
+              <div className="card-footer">
+                <div className="alert alert-warning" role="alert">
+                  Loading ...
+                </div>
+              </div>
+            )}
+
+            {renderIfSuccess(matchResp)}
+            {renderIfError(matchError)}
           </div>
         </div>
       </div>
@@ -73,24 +126,39 @@ function SimulationPage() {
   );
 }
 
-function renderIfSuccess(data) {
-  // TODO: display path params
-  if (data)
+function renderIfSuccess(matchResp) {
+  if (matchResp) {
+    const { rule_id, path_param } = matchResp.data;
     return (
       <div className="card-footer">
         <div className="alert alert-success" role="alert">
-          Matched
+          Matched. <br />
+          {!_.isEmpty(path_param) && (
+            <div>
+              <div>Path params:</div>
+              <ul>
+                {Object.entries(path_param).map(([key, value]) => {
+                  return (
+                    <li key={key}>
+                      {key}: {value}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     );
+  }
 }
 
-function renderIfError(error) {
-  if (error)
+function renderIfError(matchError) {
+  if (matchError)
     return (
       <div className="card-footer">
         <div className="alert alert-danger" role="alert">
-          {error.response.data.message}
+          {matchError.response.data.message}
         </div>
       </div>
     );
