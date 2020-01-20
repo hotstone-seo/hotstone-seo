@@ -163,7 +163,7 @@ class RuleList extends Component {
     const { target } = e || {};
     const { value } = target || {};
     const { ruleFormValues } = this.state;
-    console.log(ruleFormValues, "onchange");
+
     this.setState({
       ruleFormValues: {
         ...ruleFormValues,

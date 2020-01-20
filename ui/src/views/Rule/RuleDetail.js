@@ -7,6 +7,7 @@ import {
   Col,
   Form,
   FormGroup,
+  Input,
   Label,
   Modal,
   ModalBody,
@@ -55,7 +56,7 @@ class RuleDetail extends Component {
       URL_ADDCANONICAL_API:
         process.env.REACT_APP_API_URL + "center/addCanonicalTag",
       URL_ADDSCRIPT_API: process.env.REACT_APP_API_URL + "center/addScriptTag",
-
+      URL_LOCALE_API: process.env.REACT_APP_API_URL + "locales",
       canonicalFormValues: {
         id: null,
         canonical: null,
@@ -113,7 +114,9 @@ class RuleDetail extends Component {
       metatag_attr: {
         name: null,
         content: null
-      }
+      },
+      languages: [],
+      localeTag: "ID"
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -121,6 +124,7 @@ class RuleDetail extends Component {
 
     this.toggleWarning = this.toggleWarning.bind(this);
     this.toggleWarningAPI = this.toggleWarningAPI.bind(this);
+    this.refreshTag = this.refreshTag.bind(this);
   }
   componentDidMount() {
     const query = parseQuery((window.location || {}).search || "");
@@ -138,6 +142,14 @@ class RuleDetail extends Component {
       });
     this.setState({ ruleId: ruleId });
     this.getTagList(parseInt(ruleId));
+
+    axios
+      .get(this.state.URL_LOCALE_API)
+      .then(res => {
+        const languages = res.data;
+        this.setState({ languages });
+      })
+      .catch(error => {});
   }
 
   toggle() {
@@ -537,7 +549,7 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
-          tag_new.id = this.getLastId() + 1;
+          tag_new.id = this.getLastID() + 1;
           tag_new.type = "canonical";
           tag_new.attributes = null;
           tag_new.value = canonicalFormValues.canonical;
@@ -560,8 +572,24 @@ class RuleDetail extends Component {
     this.setState({ canonicalFormVisible: false });
   }
   getTagList(rule_id) {
+    const { localeTag } = this.state;
+
     axios
-      .get(this.state.URL_TAG_API + "?locale=ID&rule_id=" + rule_id)
+      .get(
+        this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id
+      )
+      .then(res => {
+        const tags = res.data;
+        this.setState({ tags });
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
+      });
+  }
+  getTagList_refresh(locale) {
+    const { rule_id } = parseInt(this.state.ruleId);
+    axios
+      .get(this.state.URL_TAG_API + "?locale=" + locale + "&rule_id=" + rule_id)
       .then(res => {
         const tags = res.data;
         this.setState({ tags });
@@ -579,7 +607,7 @@ class RuleDetail extends Component {
       else if (typeTag === "title") this.showFormTitleTag(record);
     }
   }
-  getLastId() {
+  getLastID() {
     const { tags } = this.state;
     let lastid = 0;
     if (tags.length > 0) {
@@ -587,8 +615,33 @@ class RuleDetail extends Component {
     }
     return lastid;
   }
+
+  refreshTag(e) {
+    let localeSelected = e.target.value;
+    const { ruleId } = this.state;
+    localeSelected = localeSelected.toUpperCase();
+
+    this.setState({ localeTag: localeSelected });
+
+    // TO DO : next below code will be merged to function getTagList
+    axios
+      .get(
+        this.state.URL_TAG_API +
+          "?locale=" +
+          localeSelected +
+          "&rule_id=" +
+          ruleId
+      )
+      .then(res => {
+        const tags = res.data;
+        this.setState({ tags });
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
+      });
+  }
   render() {
-    const { rules, tags } = this.state;
+    const { rules, tags, languages, ruleId } = this.state;
 
     return (
       <div className="animated fadeIn">
@@ -674,6 +727,29 @@ class RuleDetail extends Component {
                   >
                     Add New Title-Tag
                   </Button>
+                </div>
+                <div>
+                  <FormGroup row>
+                    <Col md="1">
+                      <Label htmlFor="text-input">Language:</Label>
+                    </Col>
+                    <Col xs="6" md="3">
+                      <Input
+                        type="select"
+                        name="lang_code"
+                        id="lang_code_id"
+                        defaultValue="id"
+                        onChange={this.refreshTag}
+                      >
+                        <option value="-">-CHOOSE-</option>
+                        {languages.map(ds => (
+                          <option key={ds.lang_code} value={ds.lang_code}>
+                            {ds.lang_code}
+                          </option>
+                        ))}
+                      </Input>
+                    </Col>
+                  </FormGroup>
                 </div>
                 <Table responsive bordered>
                   <thead>
