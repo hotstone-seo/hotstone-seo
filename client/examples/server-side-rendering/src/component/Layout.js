@@ -2,11 +2,12 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 export default function Layout(props) {
-  const { content, links } = props;
-  const navs = links.map(({ to, label }) => {
+  const { links } = props;
+  const content = props.children;
+  const navs = links.map(({ to, label, exact }) => {
     return (
-      <li class="nav-item">
-        <NavLink to={to} className="nav-link" activeClassName="active">
+      <li className="nav-item" key={to}>
+        <NavLink to={to} exact={exact} className="nav-link" activeClassName="active">
           {label}
         </NavLink>
       </li>

@@ -4,9 +4,9 @@ import Layout from './Layout';
 import TagInfo from './TagInfo';
 
 const links = [
-  { to: '/airport', label: 'Static Link' },
-  { to: '/airport/12', label: 'Dynamic Link' },
-  { to: '/nonexistent', label: 'Non-existent Link' }
+  { to: '/airports', label: 'Static Link', exact: true },
+  { to: '/airports/12', label: 'Dynamic Link' },
+  { to: '/nonexistent', label: 'Non-existent Link', exact: true }
 ];
 
 export default function App(props) {
@@ -14,7 +14,9 @@ export default function App(props) {
   return (
     <div>
       <HotStone tags={tags} />
-      <Layout links={links} content={<TagInfo tags={tags} />} />
+      <Layout links={links}>
+        <TagInfo tags={tags} />
+      </Layout>
     </div> 
   );
 }
