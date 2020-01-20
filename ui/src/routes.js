@@ -1,7 +1,6 @@
 import React from "react";
 import MetatagForm from "./views/Metatag/MetatagForm";
 
-const Dashboard = React.lazy(() => import("./views/Dashboard"));
 const RuleList = React.lazy(() => import("./views/Rule/RuleList"));
 const RuleForm = React.lazy(() => import("./views/Rule/RuleForm"));
 const RuleDetail = React.lazy(() => import("./views/Rule/RuleDetail"));
@@ -36,7 +35,6 @@ const SimulationPage = React.lazy(() =>
 
 const routes = [
   { path: "/", exact: true, name: "Home" },
-  { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/rule", name: "Rules", component: RuleList },
   { path: "/ruleForm", name: "Rules", component: RuleForm },
   {
