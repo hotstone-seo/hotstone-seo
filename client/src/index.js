@@ -54,6 +54,8 @@ class HotStoneClient {
   }
 }
 
+const HotStoneContext = React.createContext([]);
+
 // NOTE: What this comppnent should do:
 // Manage meta tag which responds to path changes.
 //
@@ -96,10 +98,17 @@ class HotStoneWrapper extends React.Component {
       attributes.key = id;
       return React.createElement(type, attributes, value);
     });
-    return ( <Helmet>{tagElements}</Helmet> ); 
+    return (
+      <div>
+        <Helmet>{tagElements}</Helmet>
+        <HotStoneContext.Provider value={tags}>
+          {this.props.children}
+        </HotStoneContext.Provider>
+      </div>
+    ); 
   }
 }
 
 const HotStone = withRouter(HotStoneWrapper);
 
-export { HotStone, HotStoneClient };
+export { HotStone, HotStoneClient, HotStoneContext };
