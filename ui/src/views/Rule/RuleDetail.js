@@ -537,13 +537,7 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
-          tag_new.id = this.getLastID() + 1;
-          tag_new.type = "canonical";
-          tag_new.attributes = null;
-          tag_new.value = canonicalFormValues.canonical;
-          tag_new.locale = canonicalFormValues.locale;
-          //  this.getTagList(parseInt(ruleId));
-          this.setState({ tags: [...tags, tag_new] });
+          this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
@@ -629,7 +623,7 @@ class RuleDetail extends Component {
       });
   }
   render() {
-    const { rules, tags, languages, ruleId } = this.state;
+    const { rules, tags, languages } = this.state;
 
     return (
       <div className="animated fadeIn">
