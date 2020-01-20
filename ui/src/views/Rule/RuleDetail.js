@@ -367,13 +367,6 @@ class RuleDetail extends Component {
       axios
         .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
-          const index = tags.findIndex(tg => tg.id === metaTagFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags });
-          }
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -397,7 +390,6 @@ class RuleDetail extends Component {
   handleSaveTitleTag() {
     const {
       titleTagFormValues,
-      tags,
       actionTitleTagForm,
       ruleId,
       tag_update
@@ -414,13 +406,6 @@ class RuleDetail extends Component {
 
       axios
         .put(this.state.URL_TAG_API, tag_update)
-        .then(() => {
-          const index = tags.findIndex(tg => tg.id === titleTagFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags });
-          }
-        })
         .then(() => {
           this.getTagList(parseInt(ruleId));
         })
@@ -439,7 +424,9 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({ titleTagFormValues: {} });
+    this.setState({
+      titleTagFormValues: { id: null, title: null, rule_id: null, locale: null }
+    });
     this.setState({ titleTagFormVisible: false });
   }
   handleSaveScriptTag() {
@@ -462,13 +449,6 @@ class RuleDetail extends Component {
 
       axios
         .put(this.state.URL_TAG_API, tag_update)
-        .then(() => {
-          const index = tags.findIndex(tg => tg.id === scriptTagFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags });
-          }
-        })
         .then(() => {
           this.getTagList(parseInt(ruleId));
         })
@@ -568,18 +548,6 @@ class RuleDetail extends Component {
         this.toggleWarningAPI(error.message);
       });
   }
-  getTagList_refresh(locale) {
-    const { rule_id } = parseInt(this.state.ruleId);
-    axios
-      .get(this.state.URL_TAG_API + "?locale=" + locale + "&rule_id=" + rule_id)
-      .then(res => {
-        const tags = res.data;
-        this.setState({ tags });
-      })
-      .catch(error => {
-        this.toggleWarningAPI(error.message);
-      });
-  }
   handleEdit(record) {
     if (record !== undefined) {
       const typeTag = record.type;
@@ -588,14 +556,6 @@ class RuleDetail extends Component {
       else if (typeTag === "script") this.showFormScriptTag(record);
       else if (typeTag === "title") this.showFormTitleTag(record);
     }
-  }
-  getLastID() {
-    const { tags } = this.state;
-    let lastid = 0;
-    if (tags.length > 0) {
-      lastid = tags[tags.length - 1].id;
-    }
-    return lastid;
   }
 
   refreshTag(e) {
