@@ -28,13 +28,19 @@ const pageMachine = Machine({
         onDone: {
           target: "success",
           actions: assign({
-            matchResp: (context, event) => event.data
+            matchResp: (context, event) => {
+              console.log("RESP: ", event);
+              return event.data;
+            }
           })
         },
         onError: {
           target: "failed",
           actions: assign({
-            matchError: (context, event) => event.data
+            matchError: (context, event) => {
+              console.log("ERR :", event);
+              return event.data;
+            }
           })
         }
       }
@@ -154,14 +160,20 @@ function renderIfSuccess(matchResp) {
 }
 
 function renderIfError(matchError) {
-  if (matchError)
+  if (matchError) {
+    let msgError = matchError.message;
+    if (matchError.response) {
+      msgError = matchError.response.data.message;
+    }
+
     return (
       <div className="card-footer">
         <div className="alert alert-danger" role="alert">
-          {matchError.response.data.message}
+          {msgError}
         </div>
       </div>
     );
+  }
 }
 
 export default SimulationPage;
