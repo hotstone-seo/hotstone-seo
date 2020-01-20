@@ -25,7 +25,7 @@ type RuleServiceImpl struct {
 	repository.Transactional
 }
 
-// NewRuleService return new instance of RuleService [autowire]
+// NewRuleService return new instance of RuleService [constructor]
 func NewRuleService(impl RuleServiceImpl) RuleService {
 	return &impl
 }

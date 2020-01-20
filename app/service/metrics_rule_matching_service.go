@@ -19,7 +19,7 @@ type MetricsRuleMatchingServiceImpl struct {
 	repository.MetricsRuleMatchingRepo
 }
 
-// NewMetricsRuleMatchingService return new instance of MetricsRuleMatchingService [autowire]
+// NewMetricsRuleMatchingService return new instance of MetricsRuleMatchingService [constructor]
 func NewMetricsRuleMatchingService(impl MetricsRuleMatchingServiceImpl) MetricsRuleMatchingService {
 	return &impl
 }

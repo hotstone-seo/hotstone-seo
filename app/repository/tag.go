@@ -33,7 +33,7 @@ type TagRepo interface {
 	Update(context.Context, Tag) error
 }
 
-// NewTagRepo return new instance of TagRepo [autowire]
+// NewTagRepo return new instance of TagRepo [constructor]
 func NewTagRepo(impl CachedTagRepoImpl) TagRepo {
 	return &impl
 }

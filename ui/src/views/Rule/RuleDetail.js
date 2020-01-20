@@ -504,7 +504,8 @@ class RuleDetail extends Component {
       tags,
       actionCanonicalForm,
       ruleId,
-      tag_update
+      tag_update,
+      tag_new
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
@@ -536,16 +537,26 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
-          this.setState({ tags: [...tags, canonicalFormValues] });
-        })
-        .then(() => {
-          this.getTagList(parseInt(ruleId));
+          tag_new.id = this.getLastId() + 1;
+          tag_new.type = "canonical";
+          tag_new.attributes = null;
+          tag_new.value = canonicalFormValues.canonical;
+          tag_new.locale = canonicalFormValues.locale;
+          //  this.getTagList(parseInt(ruleId));
+          this.setState({ tags: [...tags, tag_new] });
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
     }
-    //this.setState({ canonicalFormValues: {} });
+    this.setState({
+      canonicalFormValues: {
+        id: null,
+        canonical: null,
+        rule_id: null,
+        locale: null
+      }
+    });
     this.setState({ canonicalFormVisible: false });
   }
   getTagList(rule_id) {
@@ -567,6 +578,14 @@ class RuleDetail extends Component {
       else if (typeTag === "script") this.showFormScriptTag(record);
       else if (typeTag === "title") this.showFormTitleTag(record);
     }
+  }
+  getLastId() {
+    const { tags } = this.state;
+    let lastid = 0;
+    if (tags.length > 0) {
+      lastid = tags[tags.length - 1].id;
+    }
+    return lastid;
   }
   render() {
     const { rules, tags } = this.state;

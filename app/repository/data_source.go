@@ -23,7 +23,7 @@ type DataSourceRepo interface {
 	Update(context.Context, DataSource) error
 }
 
-// NewDataSourceRepo return new instance of DataSourceRepo [autowire]
+// NewDataSourceRepo return new instance of DataSourceRepo [constructor]
 func NewDataSourceRepo(impl CachedDataSourceRepoImpl) DataSourceRepo {
 	return &impl
 }

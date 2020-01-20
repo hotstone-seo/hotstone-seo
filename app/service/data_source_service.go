@@ -16,7 +16,7 @@ type DataSourceServiceImpl struct {
 	repository.DataSourceRepo
 }
 
-// NewDataSourceService return new instance of DataSourceService [autowire]
+// NewDataSourceService return new instance of DataSourceService [constructor]
 func NewDataSourceService(impl DataSourceServiceImpl) DataSourceService {
 	return &impl
 }

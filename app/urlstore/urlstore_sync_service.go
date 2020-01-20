@@ -21,7 +21,7 @@ type URLStoreSyncServiceImpl struct {
 	URLStoreSyncRepo
 }
 
-// NewURLStoreSyncService return new instance of URLStoreSyncService [autowire]
+// NewURLStoreSyncService return new instance of URLStoreSyncService [constructor]
 func NewURLStoreSyncService(impl URLStoreSyncServiceImpl) URLStoreSyncService {
 	return &impl
 }

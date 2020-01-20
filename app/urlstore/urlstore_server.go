@@ -14,7 +14,7 @@ type URLStoreServer interface {
 	Match(url string) (int, map[string]string)
 }
 
-// NewURLStoreServer return new instance of URLStoreServer [autowire]
+// NewURLStoreServer return new instance of URLStoreServer [constructor]
 func NewURLStoreServer(svc URLStoreSyncService) URLStoreServer {
 	return &URLStoreServerImpl{
 		URLStoreSyncService: svc,

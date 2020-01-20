@@ -119,10 +119,10 @@ class RuleList extends Component {
 
   handleSave() {
     const { ruleFormValues, rules, actionForm, record } = this.state;
-    const isUpdate = actionForm !== "Add";
+
     ruleFormValues.data_source_id = parseInt(ruleFormValues.data_source_id);
 
-    if (isUpdate) {
+    if (actionForm !== "Add") {
       ruleFormValues.id = record.id;
       axios
         .put(this.state.URL_API, ruleFormValues)
@@ -140,14 +140,16 @@ class RuleList extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
+      let lastid = this.getLastID();
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
+          ruleFormValues.id = lastid + 1;
           this.setState({ rules: [...rules, ruleFormValues] });
         })
-        .then(() => {
-          this.getRuleList();
-        })
+        //.then(() => {
+        //  this.getRuleList();
+        //})
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
@@ -190,6 +192,14 @@ class RuleList extends Component {
 
   handleCloseWarningAPI() {
     this.setState({ warningAPI: false });
+  }
+  getLastID() {
+    const { rules } = this.state;
+    let lastid = 0;
+    if (rules.length > 0) {
+      lastid = rules[rules.length - 1].id;
+    }
+    return lastid;
   }
   render() {
     const { rules } = this.state;

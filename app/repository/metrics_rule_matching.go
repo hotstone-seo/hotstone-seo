@@ -21,7 +21,7 @@ type MetricsRuleMatchingRepo interface {
 	ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error)
 }
 
-// NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [autowire]
+// NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [constructor]
 func NewMetricsRuleMatchingRepo(impl MetricsRuleMatchingRepoImpl) MetricsRuleMatchingRepo {
 	return &impl
 }

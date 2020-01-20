@@ -23,7 +23,7 @@ type LocaleRepo interface {
 	Update(context.Context, Locale) error
 }
 
-// NewLocaleRepo return new instance of LocaleRepo [autowire]
+// NewLocaleRepo return new instance of LocaleRepo [constructor]
 func NewLocaleRepo(impl CachedLocaleRepoImpl) LocaleRepo {
 	return &impl
 }
