@@ -72,15 +72,15 @@ class HotStoneWrapper extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.location === nextProps.location) {
+    if (this.props.location.pathname === nextProps.location.pathname) {
       return false;
     }
     return true;
   }
   
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.location !== prevProps.location) {
-      this.fetchTags(this.props.location);
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.fetchTags(this.props.location.pathname);
     }
   }
 
