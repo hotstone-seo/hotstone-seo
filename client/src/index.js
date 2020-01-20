@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useLocation } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 /**
@@ -28,17 +28,29 @@ class HotStoneClient {
   }
 
   async match(path) {
-    const { data } = await this.apiCaller.post('/provider/matchRule', { path });
-    return data;
+    let rule = {};
+    try {
+      const { data } = await this.apiCaller.post('/provider/matchRule', { path });
+      rule = data;
+    } catch (e) {
+      console.error('Failed to retrieve rule:', e.message);
+    }
+    return rule;
   }
 
   async tags(rule, locale, contentData={}) {
-    const { data } = await this.apiCaller.post('/provider/tags', {
-      rule_id: rule.rule_id,
-      locale: locale,
-      data: contentData
-    });
-    return data;
+    let tags = [];
+    try {
+      const { data } = await this.apiCaller.post('/provider/tags', {
+        rule_id: rule.rule_id,
+        locale: locale,
+        data: contentData
+      });
+      tags = data;
+    } catch(e) {
+      console.error('Failed to retrieve tags:', e.message);
+    }
+    return tags;
   }
 }
 
@@ -49,7 +61,7 @@ class HotStoneClient {
 // but learn about React Hooks first!
 //
 // TODO: Find a way to detect path change
-class HotStone extends React.Component {
+class HotStoneWrapper extends React.Component {
   constructor(props) {
     super(props);
 
@@ -73,22 +85,21 @@ class HotStone extends React.Component {
   }
 
   async fetchTags(path) {
-    try {
-      const rule = await this.client.match(path);
-      const tags = await this.client.tags(rule);
-      this.setState({ tags });
-    } catch(error) {
-      console.log(error);
-    }
+    const rule = await this.client.match(path);
+    const tags = await this.client.tags(rule);
+    this.setState({ tags });
   }
 
   render() {
     const { tags } = this.state;
-    const tagElements = tags.map(({ type, attributes, value }) => (
-      React.createElement(type, attributes, value)
-    ));
+    const tagElements = tags.map(({ id, type, attributes, value }) => {
+      attributes.key = id;
+      return React.createElement(type, attributes, value);
+    });
     return ( <Helmet>{tagElements}</Helmet> ); 
   }
 }
+
+const HotStone = withRouter(HotStoneWrapper);
 
 export { HotStone, HotStoneClient };
