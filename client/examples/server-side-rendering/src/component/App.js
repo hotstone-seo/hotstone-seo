@@ -1,5 +1,5 @@
 import React from 'react';
-import { HotStone } from 'hotstone-client';
+import { HotStone, HotStoneContext } from 'hotstone-client';
 import Layout from './Layout';
 import TagInfo from './TagInfo';
 
@@ -12,11 +12,12 @@ const links = [
 export default function App(props) {
   const { tags=[] } = props.data;
   return (
-    <div>
-      <HotStone tags={tags} />
+    <HotStone tags={tags} >
       <Layout links={links}>
-        <TagInfo tags={tags} />
+        <HotStoneContext.Consumer>
+          {(value) => <TagInfo tags={value} />} 
+        </HotStoneContext.Consumer>
       </Layout>
-    </div> 
+    </HotStone>
   );
 }
