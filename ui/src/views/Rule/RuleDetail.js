@@ -128,10 +128,11 @@ class RuleDetail extends Component {
   }
   componentDidMount() {
     const query = parseQuery((window.location || {}).search || "");
-    const { ruleId } = query || {};
+    const { id } = query || {};
+
     const { rules } = this.state;
     axios
-      .get(this.state.URL_API + `/${ruleId}`)
+      .get(this.state.URL_API + `/${id}`)
       .then(res => {
         const { data: resData } = res || {};
         const rulesdata = resData;
@@ -140,8 +141,8 @@ class RuleDetail extends Component {
       .catch(error => {
         this.toggleWarningAPI(error.message);
       });
-    this.setState({ ruleId: ruleId });
-    this.getTagList(parseInt(ruleId));
+    this.setState({ ruleId: id });
+    this.getTagList(parseInt(id));
 
     axios
       .get(this.state.URL_LOCALE_API)
