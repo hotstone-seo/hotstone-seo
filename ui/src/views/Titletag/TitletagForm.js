@@ -52,7 +52,9 @@ class TitletagForm extends Component {
       languages,
       languageDefault
     } = this.props;
-    let defaultValueLang = action !== "Add" ? titletag.locale : languageDefault;
+    var defaultValueLang = action !== "Add" ? titletag.locale : languageDefault;
+    if (defaultValueLang !== null)
+      defaultValueLang = defaultValueLang.toLowerCase();
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Title-Tag</ModalHeader>

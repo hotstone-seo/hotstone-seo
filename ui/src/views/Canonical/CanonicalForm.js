@@ -54,9 +54,10 @@ class CanonicalForm extends Component {
       languages,
       languageDefault
     } = this.props;
-    let defaultValueLang =
+    var defaultValueLang =
       action !== "Add" ? canonical.locale : languageDefault;
-
+    if (defaultValueLang !== null)
+      defaultValueLang = defaultValueLang.toLowerCase();
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Canonical</ModalHeader>
