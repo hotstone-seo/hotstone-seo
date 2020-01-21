@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"net/url"
 	"time"
 )
 
@@ -17,8 +18,8 @@ type MetricsRuleMatching struct {
 type MetricsRuleMatchingRepo interface {
 	Insert(context.Context, MetricsRuleMatching) (err error)
 	ListMismatchedCount(ctx context.Context) (list []*MetricsMismatchedCount, err error)
-	CountMatched(ctx context.Context) (count int64, err error)
-	CountUniquePage(ctx context.Context) (count int64, err error)
+	CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
+	CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
 	ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error)
 }
 
