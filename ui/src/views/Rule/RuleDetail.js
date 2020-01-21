@@ -344,7 +344,8 @@ class RuleDetail extends Component {
       actionMetaTagForm,
       ruleId,
       tag_update,
-      metatag_attr
+      metatag_attr,
+      localeTag
     } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
 
@@ -369,7 +370,7 @@ class RuleDetail extends Component {
         });
     } else {
       metaTagFormValues.rule_id = parseInt(ruleId);
-
+      metaTagFormValues.locale = localeTag;
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
@@ -395,7 +396,8 @@ class RuleDetail extends Component {
       titleTagFormValues,
       actionTitleTagForm,
       ruleId,
-      tag_update
+      tag_update,
+      localeTag
     } = this.state;
     const isUpdate = actionTitleTagForm !== "Add";
 
@@ -417,7 +419,7 @@ class RuleDetail extends Component {
         });
     } else {
       titleTagFormValues.rule_id = parseInt(ruleId);
-
+      titleTagFormValues.locale = localeTag;
       axios
         .post(this.state.URL_ADDTITLE_API, titleTagFormValues)
         .then(response => {
