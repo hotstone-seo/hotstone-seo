@@ -20,8 +20,8 @@ type MetricsRuleMatchingRepoImpl struct {
 func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleMatching) (err error) {
 	builder := sq.
 		Insert("metrics_rule_matching").
-		Columns("is_matched", "url").
-		Values(e.IsMatched, e.URL).
+		Columns("is_matched", "url", "rule_id").
+		Values(e.IsMatched, e.URL, e.RuleID).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {

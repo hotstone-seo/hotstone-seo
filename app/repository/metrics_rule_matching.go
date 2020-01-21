@@ -9,6 +9,7 @@ import (
 type MetricsRuleMatching struct {
 	Time      time.Time
 	IsMatched int
+	RuleID    *int64
 	URL       *string
 }
 
