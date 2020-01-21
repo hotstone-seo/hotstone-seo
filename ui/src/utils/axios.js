@@ -36,8 +36,6 @@ export function isAxiosError(error) {
   } else {
     return true;
   }
-
-  return false;
 }
 
 export default inspectAxiosError;
