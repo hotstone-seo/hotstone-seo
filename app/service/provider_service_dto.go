@@ -11,11 +11,13 @@ type MatchRuleResponse struct {
 }
 
 type RetrieveDataRequest struct {
-	DataSourceID int64 `json:"data_source_id"`
+	DataSourceID int64             `json:"data_source_id"`
+	PathParam    map[string]string `json:"path_param"`
 }
 
 type ProvideTagsRequest struct {
-	RuleID int64       `json:"rule_id"`
-	Locale string      `json:"locale"`
-	Data   interface{} `json:"data"`
+	RuleID    int64             `json:"rule_id"`
+	PathParam map[string]string `json:"path_param"`
+	Locale    string            `json:"locale"`
+	Data      interface{}       `json:"data"`
 }
