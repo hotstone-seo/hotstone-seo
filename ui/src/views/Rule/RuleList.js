@@ -14,6 +14,7 @@ import {
   Table,
   NavLink
 } from "reactstrap";
+import { format, formatDistance } from "date-fns";
 import RuleForm from "./RuleForm";
 
 class RuleList extends Component {
@@ -195,6 +196,14 @@ class RuleList extends Component {
       })
       .catch(error => {});
   }
+  formatSince(since) {
+    const sinceDate = new Date(since);
+
+    const full = format(sinceDate, "dd/MM/yyyy - HH:mm");
+    const relative = formatDistance(sinceDate, new Date());
+
+    return `${full} (${relative} ago)`;
+  }
   render() {
     const { rules } = this.state;
     return (
@@ -234,7 +243,7 @@ class RuleList extends Component {
                           </NavLink>
                         </td>
                         <td>{rule.url_pattern}</td>
-                        <td>{rule.updated_at}</td>
+                        <td>{this.formatSince(rule.updated_at)}</td>
                         <td>
                           <Button
                             color="secondary"
