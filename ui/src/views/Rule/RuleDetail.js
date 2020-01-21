@@ -332,8 +332,6 @@ class RuleDetail extends Component {
     axios
       .delete(this.state.URL_TAG_API + `/${id}`)
       .then(() => {
-        //const { tags } = this.state;
-        //this.setState({ tags: tags.filter(tag => tag.id !== id) });
         this.getTagList(parseInt(ruleId));
       })
       .catch(error => {
@@ -369,13 +367,6 @@ class RuleDetail extends Component {
       axios
         .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
-          const index = tags.findIndex(tg => tg.id === metaTagFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags });
-          }
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -387,22 +378,26 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
-          this.setState({ tags: [...tags, metaTagFormValues] });
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({ metaTagFormValues: {} });
+    this.setState({
+      metaTagFormValues: {
+        id: null,
+        name: null,
+        content: null,
+        rule_id: null,
+        locale: null
+      }
+    });
     this.setState({ metaTagFormVisible: false });
   }
   handleSaveTitleTag() {
     const {
       titleTagFormValues,
-      tags,
       actionTitleTagForm,
       ruleId,
       tag_update
@@ -420,13 +415,6 @@ class RuleDetail extends Component {
       axios
         .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
-          const index = tags.findIndex(tg => tg.id === titleTagFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags });
-          }
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -438,16 +426,15 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDTITLE_API, titleTagFormValues)
         .then(response => {
-          this.setState({ tags: [...tags, titleTagFormValues] });
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({ titleTagFormValues: {} });
+    this.setState({
+      titleTagFormValues: { id: null, title: null, rule_id: null, locale: null }
+    });
     this.setState({ titleTagFormVisible: false });
   }
   handleSaveScriptTag() {
@@ -471,13 +458,6 @@ class RuleDetail extends Component {
       axios
         .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
-          const index = tags.findIndex(tg => tg.id === scriptTagFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags });
-          }
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -486,13 +466,9 @@ class RuleDetail extends Component {
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
       scriptTagFormValues.datasource_id = 1;
-      console.log(scriptTagFormValues, "scriptTagFormValues");
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {
-          this.setState({ tags: [...tags, scriptTagFormValues] });
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -532,13 +508,6 @@ class RuleDetail extends Component {
       axios
         .put(this.state.URL_TAG_API, tag_update)
         .then(() => {
-          const index = tags.findIndex(tg => tg.id === canonicalFormValues.id);
-          if (index > -1) {
-            tags[index] = tag_update;
-            this.setState({ tags: tags });
-          }
-        })
-        .then(() => {
           this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
@@ -549,13 +518,7 @@ class RuleDetail extends Component {
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
-          tag_new.id = this.getLastID() + 1;
-          tag_new.type = "canonical";
-          tag_new.attributes = null;
-          tag_new.value = canonicalFormValues.canonical;
-          tag_new.locale = canonicalFormValues.locale;
-          //  this.getTagList(parseInt(ruleId));
-          this.setState({ tags: [...tags, tag_new] });
+          this.getTagList(parseInt(ruleId));
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
@@ -586,18 +549,6 @@ class RuleDetail extends Component {
         this.toggleWarningAPI(error.message);
       });
   }
-  getTagList_refresh(locale) {
-    const { rule_id } = parseInt(this.state.ruleId);
-    axios
-      .get(this.state.URL_TAG_API + "?locale=" + locale + "&rule_id=" + rule_id)
-      .then(res => {
-        const tags = res.data;
-        this.setState({ tags });
-      })
-      .catch(error => {
-        this.toggleWarningAPI(error.message);
-      });
-  }
   handleEdit(record) {
     if (record !== undefined) {
       const typeTag = record.type;
@@ -606,14 +557,6 @@ class RuleDetail extends Component {
       else if (typeTag === "script") this.showFormScriptTag(record);
       else if (typeTag === "title") this.showFormTitleTag(record);
     }
-  }
-  getLastID() {
-    const { tags } = this.state;
-    let lastid = 0;
-    if (tags.length > 0) {
-      lastid = tags[tags.length - 1].id;
-    }
-    return lastid;
   }
 
   refreshTag(e) {
@@ -641,7 +584,7 @@ class RuleDetail extends Component {
       });
   }
   render() {
-    const { rules, tags, languages, ruleId } = this.state;
+    const { rules, tags, languages } = this.state;
 
     return (
       <div className="animated fadeIn">

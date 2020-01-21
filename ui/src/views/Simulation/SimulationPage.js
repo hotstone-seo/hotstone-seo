@@ -5,9 +5,7 @@ import { useMachine } from "@xstate/react";
 import _ from "lodash";
 import parse from "url-parse";
 
-import useHotstoneAPI from "../../hooks/useHotstoneAPI";
 import HotstoneAPI from "../../api/hotstone";
-import inspectAxiosError, { isAxiosError } from "../../utils/axios";
 
 const pageMachine = Machine({
   id: "simulation",
@@ -25,7 +23,7 @@ const pageMachine = Machine({
         matchError: null
       }),
       invoke: {
-        src: (context, event) => HotstoneAPI.postProviderMatchRule(context.url),
+        src: context => HotstoneAPI.postProviderMatchRule(context.url),
         onDone: {
           target: "success",
           actions: assign({
@@ -61,7 +59,7 @@ const pageMachine = Machine({
 
 function SimulationPage() {
   const [current, send] = useMachine(pageMachine);
-  const { url, matchResp, matchError } = current.context;
+  const { matchResp, matchError } = current.context;
 
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = ({ url }) => {
@@ -137,7 +135,7 @@ function SimulationPage() {
 
 function renderIfSuccess(matchResp) {
   if (matchResp) {
-    const { rule_id, path_param } = matchResp.data;
+    const { path_param } = matchResp.data;
     return (
       <div className="card-footer">
         <div className="alert alert-success" role="alert">

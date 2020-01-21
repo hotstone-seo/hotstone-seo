@@ -133,22 +133,17 @@ class DataSource extends Component {
           this.toggleWarningAPI(error.message);
         });
     } else {
-      let lastid = this.getLastID();
       axios
         .post(this.state.URL_API, datasourcesFormValues)
         .then(response => {
-          datasourcesFormValues.id = lastid + 1;
-          this.setState({
-            datasources: [...datasources, datasourcesFormValues]
-          });
+          this.getDataSourceList();
         })
-        //.then(() => {
-        //  this.getDataSourceList();
-        //})
         .catch(error => {
           this.toggleWarningAPI(error.message);
         });
-      this.setState({ datasourcesFormValues: {} });
+      this.setState({
+        datasourcesFormValues: { id: null, name: null, url: null }
+      });
     }
     this.setState({ formVisible: false });
   }
@@ -168,14 +163,7 @@ class DataSource extends Component {
   handleCloseWarningAPI() {
     this.setState({ warningAPI: false });
   }
-  getLastID() {
-    const { datasources } = this.state;
-    let lastid = 0;
-    if (datasources.length > 0) {
-      lastid = datasources[datasources.length - 1].id;
-    }
-    return lastid;
-  }
+
   render() {
     const { datasources } = this.state;
     return (
