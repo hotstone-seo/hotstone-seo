@@ -3,10 +3,10 @@ import CounterCard from "./CounterCard";
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
 import useInterval from "@use-it/interval";
 
-function UniquePageCounterCard() {
+function UniquePageCounterCard({ ruleID }) {
   const [countUniquePage, setCountUniquePage] = useState(0);
   const [{ data: dataCountUniquePage }, refetch] = useHotstoneAPI({
-    url: "metrics/unique-page"
+    url: "metrics/unique-page?" + (ruleID ? `rule_id=${ruleID}` : ``)
   });
 
   useEffect(() => {
