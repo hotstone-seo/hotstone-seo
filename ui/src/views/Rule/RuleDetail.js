@@ -24,6 +24,8 @@ import CanonicalForm from "../Canonical/CanonicalForm";
 import MetaTagForm from "../Metatag/MetatagForm";
 import ScriptTagForm from "../Scripttag/ScripttagForm";
 import TitleTagForm from "../Titletag/TitletagForm";
+import UniquePageCounterCard from "../Analytic/UniquePageCounterCard";
+import HitCounterCard from "../Analytic/HitCounterCard";
 
 import axios from "axios";
 
@@ -629,6 +631,12 @@ class RuleDetail extends Component {
                   </Form>
                 </CardBody>
               </Card>
+            </Col>
+            <Col>
+              <HitCounterCard ruleID={rule.id} />
+            </Col>
+            <Col>
+              <UniquePageCounterCard ruleID={rule.id} />
             </Col>
           </Row>
         ))}

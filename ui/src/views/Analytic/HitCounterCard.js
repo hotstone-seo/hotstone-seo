@@ -3,10 +3,10 @@ import CounterCard from "./CounterCard";
 import useHotstoneAPI from "../../hooks/useHotstoneAPI";
 import useInterval from "@use-it/interval";
 
-function HitCounterCard() {
+function HitCounterCard({ ruleID }) {
   const [countHit, setCountHit] = useState(0);
   const [{ data: dataCountHit }, refetch] = useHotstoneAPI({
-    url: "metrics/hit"
+    url: `metrics/hit?` + (ruleID ? `rule_id=${ruleID}` : ``)
   });
 
   useEffect(() => {
