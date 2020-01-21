@@ -56,7 +56,7 @@ server.get('*', (req, res, next) => {
      //   { type: "title", attributes: {}, value: "Page Title" },
      //   { type: "meta", attributes: { name: "description", content: "Page Description" } }
      // ]
-     const tags = await client.tags(rule, "en-US");
+     const tags = await client.tags(rule, "en_US");
      const data = { rule, tags }
 
      // Rendering element...
