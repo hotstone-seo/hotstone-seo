@@ -26,7 +26,6 @@ class CanonicalForm extends Component {
     };
 
     this.handlePreview = this.handlePreview.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
   }
 
   toggle() {
@@ -44,10 +43,6 @@ class CanonicalForm extends Component {
     history.push("/base/MetatagPreview");
   }
 
-  handleCancel() {
-    const { history } = this.props;
-    history.push("/canonical");
-  }
   render() {
     const {
       visible,
@@ -55,9 +50,14 @@ class CanonicalForm extends Component {
       onSave,
       canonical,
       action,
-      onChange
+      onChange,
+      languages,
+      languageDefault
     } = this.props;
-
+    var defaultValueLang =
+      action !== "Add" ? canonical.locale : languageDefault;
+    if (defaultValueLang !== null)
+      defaultValueLang = defaultValueLang.toLowerCase();
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Canonical</ModalHeader>
@@ -65,7 +65,7 @@ class CanonicalForm extends Component {
           <Form className="form-horizontal">
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">Language</Label>
+                <Label htmlFor="text-input">Locale</Label>
               </Col>
               <Col xs="12" md="9">
                 <Input
@@ -73,11 +73,14 @@ class CanonicalForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
-                  defaultValue={canonical.locale}
+                  defaultValue={defaultValueLang}
+                  disabled
                 >
-                  <option value="-">-CHOOSE-</option>
-                  <option value="id-ID">id-ID</option>
-                  <option value="en-US">en-US</option>
+                  {languages.map(ds => (
+                    <option key={ds.lang_code} value={ds.lang_code}>
+                      {ds.lang_code + "_" + ds.country_code}
+                    </option>
+                  ))}
                 </Input>
               </Col>
             </FormGroup>

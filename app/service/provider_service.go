@@ -63,7 +63,7 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 		return nil, fmt.Errorf("No rule match: %s", url.Path)
 	} else {
 		// matched
-		p.MetricsRuleMatchingService.SetMatched(mtx, url.Path)
+		p.MetricsRuleMatchingService.SetMatched(mtx, url.Path, int64(ruleID))
 	}
 
 	resp = &MatchRuleResponse{RuleID: int64(ruleID), PathParam: pathParam}

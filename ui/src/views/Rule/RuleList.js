@@ -14,6 +14,7 @@ import {
   Table,
   NavLink
 } from "reactstrap";
+import { format, formatDistance } from "date-fns";
 import RuleForm from "./RuleForm";
 
 class RuleList extends Component {
@@ -95,6 +96,13 @@ class RuleList extends Component {
   showForm(record) {
     this.getDataSourcesFromAPI();
     if (record !== undefined) {
+      const { ruleFormValues } = this.state;
+
+      ruleFormValues.id = record.id;
+      ruleFormValues.name = record.name;
+      ruleFormValues.url_pattern = record.url_pattern;
+
+      this.setState({ ruleFormValues: ruleFormValues });
       this.setState({ record: record });
       this.setState({ actionForm: "Edit" });
     } else {
@@ -120,13 +128,6 @@ class RuleList extends Component {
       ruleFormValues.id = record.id;
       axios
         .put(this.state.URL_API, ruleFormValues)
-        .then(() => {
-          const index = rules.findIndex(rul => rul.id === record.id);
-          if (index > -1) {
-            rules[index] = ruleFormValues;
-            this.setState({ rules });
-          }
-        })
         .then(() => {
           this.getRuleList();
         })
@@ -195,6 +196,14 @@ class RuleList extends Component {
       })
       .catch(error => {});
   }
+  formatSince(since) {
+    const sinceDate = new Date(since);
+
+    const full = format(sinceDate, "dd/MM/yyyy - HH:mm");
+    const relative = formatDistance(sinceDate, new Date());
+
+    return `${full} (${relative} ago)`;
+  }
   render() {
     const { rules } = this.state;
     return (
@@ -234,7 +243,7 @@ class RuleList extends Component {
                           </NavLink>
                         </td>
                         <td>{rule.url_pattern}</td>
-                        <td>{rule.updated_at}</td>
+                        <td>{this.formatSince(rule.updated_at)}</td>
                         <td>
                           <Button
                             color="secondary"

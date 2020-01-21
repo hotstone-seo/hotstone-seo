@@ -38,7 +38,7 @@ func (c *MetricsCntrl) ListMismatched(ctx echo.Context) (err error) {
 func (c *MetricsCntrl) CountHit(ctx echo.Context) (err error) {
 	var count int64
 	ctx0 := ctx.Request().Context()
-	if count, err = c.MetricsRuleMatchingService.CountMatched(ctx0); err != nil {
+	if count, err = c.MetricsRuleMatchingService.CountMatched(ctx0, ctx.QueryParams()); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, map[string]int64{"count": count})
@@ -47,7 +47,7 @@ func (c *MetricsCntrl) CountHit(ctx echo.Context) (err error) {
 func (c *MetricsCntrl) CountUniquePage(ctx echo.Context) (err error) {
 	var count int64
 	ctx0 := ctx.Request().Context()
-	if count, err = c.MetricsRuleMatchingService.CountUniquePage(ctx0); err != nil {
+	if count, err = c.MetricsRuleMatchingService.CountUniquePage(ctx0, ctx.QueryParams()); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, map[string]int64{"count": count})

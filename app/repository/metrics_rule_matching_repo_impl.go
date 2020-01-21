@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
-	log "github.com/sirupsen/logrus"
+	"net/url"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
@@ -20,8 +20,8 @@ type MetricsRuleMatchingRepoImpl struct {
 func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleMatching) (err error) {
 	builder := sq.
 		Insert("metrics_rule_matching").
-		Columns("is_matched", "url").
-		Values(e.IsMatched, e.URL).
+		Columns("is_matched", "url", "rule_id").
+		Values(e.IsMatched, e.URL, e.RuleID).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
@@ -63,12 +63,15 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context) (
 	return
 }
 
-func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context) (count int64, err error) {
+func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error) {
 
 	builder := sq.Select().
 		Column("count(is_matched)").
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 1}).
+		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+
+	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
@@ -78,12 +81,14 @@ func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context) (count i
 	return
 }
 
-func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context) (count int64, err error) {
+func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error) {
 
 	builder := sq.Select().
 		Column("count(distinct(url))").
 		From("metrics_rule_matching").
-		Where(sq.Eq{"is_matched": 1}).
+		Where(sq.Eq{"is_matched": 1})
+
+	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
@@ -95,8 +100,6 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context) (coun
 
 func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error) {
 	var rows *sql.Rows
-
-	log.Warnf("start: %s end: %s", startDate, endDate)
 
 	query := `
 	WITH range_date AS (
@@ -124,4 +127,16 @@ func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, st
 		list = append(list, &e0)
 	}
 	return
+}
+
+func buildWhereQuery(builder sq.SelectBuilder, whereParams url.Values, validColumns []string) sq.SelectBuilder {
+	for key, val := range whereParams {
+		for _, col := range validColumns {
+			if col == key {
+				builder = builder.Where(sq.Eq{key: val})
+			}
+		}
+	}
+
+	return builder
 }

@@ -48,8 +48,13 @@ class TitletagForm extends Component {
       onSave,
       titletag,
       action,
-      onChange
+      onChange,
+      languages,
+      languageDefault
     } = this.props;
+    var defaultValueLang = action !== "Add" ? titletag.locale : languageDefault;
+    if (defaultValueLang !== null)
+      defaultValueLang = defaultValueLang.toLowerCase();
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Title-Tag</ModalHeader>
@@ -68,7 +73,7 @@ class TitletagForm extends Component {
             )}
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">Language</Label>
+                <Label htmlFor="text-input">Locale</Label>
               </Col>
               <Col xs="12" md="9">
                 <Input
@@ -76,11 +81,14 @@ class TitletagForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
-                  defaultValue={titletag.locale}
+                  defaultValue={defaultValueLang}
+                  disabled
                 >
-                  <option value="-">-CHOOSE-</option>
-                  <option value="id-ID">id-ID</option>
-                  <option value="en-US">en-US</option>
+                  {languages.map(ds => (
+                    <option key={ds.lang_code} value={ds.lang_code}>
+                      {ds.lang_code + "_" + ds.country_code}
+                    </option>
+                  ))}
                 </Input>
               </Col>
             </FormGroup>

@@ -24,6 +24,8 @@ import CanonicalForm from "../Canonical/CanonicalForm";
 import MetaTagForm from "../Metatag/MetatagForm";
 import ScriptTagForm from "../Scripttag/ScripttagForm";
 import TitleTagForm from "../Titletag/TitletagForm";
+import UniquePageCounterCard from "../Analytic/UniquePageCounterCard";
+import HitCounterCard from "../Analytic/HitCounterCard";
 
 import axios from "axios";
 
@@ -296,6 +298,7 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+    console.log(canonicalFormValues, "canonicalFormValues");
   }
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
@@ -339,11 +342,11 @@ class RuleDetail extends Component {
   handleSaveMetaTag() {
     const {
       metaTagFormValues,
-      tags,
       actionMetaTagForm,
       ruleId,
       tag_update,
-      metatag_attr
+      metatag_attr,
+      localeTag
     } = this.state;
     const isUpdate = actionMetaTagForm !== "Add";
 
@@ -368,7 +371,7 @@ class RuleDetail extends Component {
         });
     } else {
       metaTagFormValues.rule_id = parseInt(ruleId);
-
+      metaTagFormValues.locale = localeTag;
       axios
         .post(this.state.URL_ADDMETA_API, metaTagFormValues)
         .then(response => {
@@ -394,7 +397,8 @@ class RuleDetail extends Component {
       titleTagFormValues,
       actionTitleTagForm,
       ruleId,
-      tag_update
+      tag_update,
+      localeTag
     } = this.state;
     const isUpdate = actionTitleTagForm !== "Add";
 
@@ -416,7 +420,7 @@ class RuleDetail extends Component {
         });
     } else {
       titleTagFormValues.rule_id = parseInt(ruleId);
-
+      titleTagFormValues.locale = localeTag;
       axios
         .post(this.state.URL_ADDTITLE_API, titleTagFormValues)
         .then(response => {
@@ -434,7 +438,6 @@ class RuleDetail extends Component {
   handleSaveScriptTag() {
     const {
       scriptTagFormValues,
-      tags,
       actionScriptTagForm,
       ruleId,
       tag_update
@@ -485,7 +488,8 @@ class RuleDetail extends Component {
       canonicalFormValues,
       actionCanonicalForm,
       ruleId,
-      tag_update
+      tag_update,
+      localeTag
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
@@ -507,6 +511,8 @@ class RuleDetail extends Component {
         });
     } else {
       canonicalFormValues.rule_id = parseInt(ruleId);
+      canonicalFormValues.locale = localeTag;
+
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
@@ -528,7 +534,10 @@ class RuleDetail extends Component {
   }
   getTagList(rule_id) {
     const { localeTag } = this.state;
-
+    console.log(
+      this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id,
+      "id"
+    );
     axios
       .get(
         this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id
@@ -554,7 +563,7 @@ class RuleDetail extends Component {
   refreshTag(e) {
     let localeSelected = e.target.value;
     const { ruleId } = this.state;
-    localeSelected = localeSelected.toUpperCase();
+    //localeSelected = localeSelected.toUpperCase();
 
     this.setState({ localeTag: localeSelected });
 
@@ -623,6 +632,12 @@ class RuleDetail extends Component {
                 </CardBody>
               </Card>
             </Col>
+            <Col>
+              <HitCounterCard ruleID={rule.id} />
+            </Col>
+            <Col>
+              <UniquePageCounterCard ruleID={rule.id} />
+            </Col>
           </Row>
         ))}
 
@@ -639,28 +654,28 @@ class RuleDetail extends Component {
                     onClick={() => this.showFormCanonicalTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp;New Canonical
+                    <i className="fa fa-plus"></i>&nbsp;New Canonical
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormMetaTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp;New Meta Tag
+                    <i className="fa fa-plus"></i>&nbsp;New Meta Tag
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormScriptTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp; New Script Tag
+                    <i className="fa fa-plus"></i>&nbsp; New Script Tag
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormTitleTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp; New Title Tag
+                    <i className="fa fa-plus"></i>&nbsp; New Title Tag
                   </Button>
                 </div>
                 <div>
@@ -672,10 +687,9 @@ class RuleDetail extends Component {
                       <Input
                         type="select"
                         name="lang_code"
-                        id="lang_code_id"
-                        defaultValue="id"
+                        id="lang_code"
                         onChange={this.refreshTag}
-                        onSelect="id"
+                        defaultValue={this.state.localeTag.toLowerCase()}
                       >
                         {languages.map(ds => (
                           <option key={ds.lang_code} value={ds.lang_code}>
@@ -789,6 +803,8 @@ class RuleDetail extends Component {
               canonical={this.state.canonicalFormValues}
               action={this.state.actionCanonicalForm}
               onChange={this.handleCanonicalTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <MetaTagForm
               visible={this.state.metaTagFormVisible}
@@ -797,6 +813,8 @@ class RuleDetail extends Component {
               metatag={this.state.metaTagFormValues}
               action={this.state.actionMetaTagForm}
               onChange={this.handleMetaTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <ScriptTagForm
               visible={this.state.scriptTagFormVisible}
@@ -805,6 +823,8 @@ class RuleDetail extends Component {
               scripttag={this.state.scriptTagFormValues}
               action={this.state.actionScriptTagForm}
               onChange={this.handleScriptTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
@@ -813,6 +833,8 @@ class RuleDetail extends Component {
               titletag={this.state.titleTagFormValues}
               action={this.state.actionTitleTagForm}
               onChange={this.handleTitleTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <Modal
               isOpen={this.state.warningAPI}
