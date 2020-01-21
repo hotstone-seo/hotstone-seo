@@ -340,7 +340,6 @@ class RuleDetail extends Component {
   handleSaveMetaTag() {
     const {
       metaTagFormValues,
-      tags,
       actionMetaTagForm,
       ruleId,
       tag_update,
@@ -437,7 +436,6 @@ class RuleDetail extends Component {
   handleSaveScriptTag() {
     const {
       scriptTagFormValues,
-      tags,
       actionScriptTagForm,
       ruleId,
       tag_update
