@@ -111,7 +111,7 @@ class RuleDetail extends Component {
         content: null
       },
       languages: [],
-      localeTag: "ID"
+      localeTag: "id"
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -689,7 +689,7 @@ class RuleDetail extends Component {
                         name="lang_code"
                         id="lang_code"
                         onChange={this.refreshTag}
-                        defaultValue={this.state.localeTag.toLowerCase()}
+                        value={this.state.localeTag.toLowerCase()}
                       >
                         {languages.map(ds => (
                           <option key={ds.lang_code} value={ds.lang_code}>
