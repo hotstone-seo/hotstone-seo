@@ -15,10 +15,17 @@ export default function Layout(props) {
   });
   return (
     <div className="container"> 
-      <ul className="nav nav-pills">
+      <ul className="nav nav-pills" style={{ padding: "1em" }}>
         {navs}
       </ul>
-      {content}
+      <div className="card">
+        <div className="card-header">
+          Tag Response
+        </div>
+        <div className="card-body">
+          {content}
+        </div>
+      </div>
     </div>
   );
 }
