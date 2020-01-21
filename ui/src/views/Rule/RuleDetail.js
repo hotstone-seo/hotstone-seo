@@ -96,13 +96,6 @@ class RuleDetail extends Component {
       warning: false,
       warningAPI: false,
       tags: [],
-      tag_new: {
-        id: null,
-        type: null,
-        attributes: null,
-        value: null,
-        locale: null
-      },
       tag_update: {
         id: null,
         type: null,
@@ -490,11 +483,9 @@ class RuleDetail extends Component {
   handleSaveCanonicalTag() {
     const {
       canonicalFormValues,
-      tags,
       actionCanonicalForm,
       ruleId,
-      tag_update,
-      tag_new
+      tag_update
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
@@ -675,7 +666,7 @@ class RuleDetail extends Component {
                 <div>
                   <FormGroup row>
                     <Col md="1">
-                      <Label htmlFor="text-input">Language:</Label>
+                      <Label htmlFor="text-input">Locale:</Label>
                     </Col>
                     <Col xs="6" md="3">
                       <Input
@@ -684,11 +675,11 @@ class RuleDetail extends Component {
                         id="lang_code_id"
                         defaultValue="id"
                         onChange={this.refreshTag}
+                        onSelect="id"
                       >
-                        <option value="-">-CHOOSE-</option>
                         {languages.map(ds => (
                           <option key={ds.lang_code} value={ds.lang_code}>
-                            {ds.lang_code}
+                            {ds.lang_code + "_" + ds.country_code}
                           </option>
                         ))}
                       </Input>
