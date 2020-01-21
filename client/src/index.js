@@ -38,12 +38,14 @@ class HotStoneClient {
     return rule;
   }
 
-  async tags(rule, locale, contentData={}) {
+  async tags(rule, locale, contentData) {
     let tags = [];
+    const { rule_id, path_param } = rule;
     try {
       const { data } = await this.apiCaller.post('/provider/tags', {
-        rule_id: rule.rule_id,
+        rule_id: rule_id,
         locale: locale,
+        path_param: path_param,
         data: contentData
       });
       tags = data;
