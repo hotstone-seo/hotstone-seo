@@ -532,7 +532,10 @@ class RuleDetail extends Component {
   }
   getTagList(rule_id) {
     const { localeTag } = this.state;
-
+    console.log(
+      this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id,
+      "id"
+    );
     axios
       .get(
         this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id
@@ -558,9 +561,9 @@ class RuleDetail extends Component {
   refreshTag(e) {
     let localeSelected = e.target.value;
     const { ruleId } = this.state;
-    localeSelected = localeSelected.toUpperCase();
+    //localeSelected = localeSelected.toUpperCase();
 
-    this.setState({ localeTag: localeSelected.toLowerCase() });
+    this.setState({ localeTag: localeSelected });
 
     // TO DO : next below code will be merged to function getTagList
     axios
