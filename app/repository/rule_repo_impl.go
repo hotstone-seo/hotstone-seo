@@ -20,7 +20,7 @@ type RuleRepoImpl struct {
 func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
+	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at").
 		From("rules").
 		Where(sq.Eq{"id": id})
 	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
@@ -36,7 +36,7 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err e
 func (r *RuleRepoImpl) Find(ctx context.Context) (list []*Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	builder := psql.Select("id", "name", "url_pattern", "updated_at", "created_at").
+	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at").
 		From("rules")
 	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
@@ -92,7 +92,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 func scanRule(rows *sql.Rows) (*Rule, error) {
 	var rule Rule
 	var err error
-	if err = rows.Scan(&rule.ID, &rule.Name, &rule.UrlPattern, &rule.UpdatedAt, &rule.CreatedAt); err != nil {
+	if err = rows.Scan(&rule.ID, &rule.Name, &rule.UrlPattern, &rule.DataSourceID, &rule.UpdatedAt, &rule.CreatedAt); err != nil {
 		return nil, err
 	}
 	return &rule, nil

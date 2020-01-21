@@ -71,11 +71,21 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 }
 
 func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest) (resp *http.Response, err error) {
-	var dataSource *repository.DataSource
+	var (
+		dataSource *repository.DataSource
+		tmpl       *template.Template
+		buf        bytes.Buffer
+	)
 	if dataSource, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
 		return
 	}
-	return http.Get(dataSource.Url)
+	if tmpl, err = template.New("tmpl").Parse(dataSource.Url); err != nil {
+		return
+	}
+	if err = tmpl.Execute(&buf, req.PathParam); err != nil {
+		return
+	}
+	return http.Get(buf.String())
 }
 
 func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) (interpolatedTags []*InterpolatedTag, err error) {
@@ -97,15 +107,23 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		if rule, err = p.RuleRepo.FindOne(ctx, req.RuleID); err != nil {
 			return
 		}
-		if resp, err = p.RetrieveData(ctx, RetrieveDataRequest{DataSourceID: *rule.DataSourceID}); err != nil {
-			return
-		}
-		if body, err = ioutil.ReadAll(resp.Body); err != nil {
-			return
-		}
-		defer resp.Body.Close()
-		if err = json.Unmarshal(body, &data); err != nil {
-			return
+		if rule.DataSourceID != nil {
+			if resp, err = p.RetrieveData(
+				ctx,
+				RetrieveDataRequest{
+					DataSourceID: *rule.DataSourceID,
+					PathParam:    req.PathParam,
+				},
+			); err != nil {
+				return
+			}
+			if body, err = ioutil.ReadAll(resp.Body); err != nil {
+				return
+			}
+			defer resp.Body.Close()
+			if err = json.Unmarshal(body, &data); err != nil {
+				return
+			}
 		}
 	}
 	interpolatedTags = make([]*InterpolatedTag, 0)
