@@ -296,6 +296,7 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+    console.log(canonicalFormValues, "canonicalFormValues");
   }
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
@@ -485,7 +486,8 @@ class RuleDetail extends Component {
       canonicalFormValues,
       actionCanonicalForm,
       ruleId,
-      tag_update
+      tag_update,
+      localeTag
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
@@ -507,6 +509,8 @@ class RuleDetail extends Component {
         });
     } else {
       canonicalFormValues.rule_id = parseInt(ruleId);
+      canonicalFormValues.locale = localeTag;
+
       axios
         .post(this.state.URL_ADDCANONICAL_API, canonicalFormValues)
         .then(response => {
@@ -556,7 +560,7 @@ class RuleDetail extends Component {
     const { ruleId } = this.state;
     localeSelected = localeSelected.toUpperCase();
 
-    this.setState({ localeTag: localeSelected });
+    this.setState({ localeTag: localeSelected.toLowerCase() });
 
     // TO DO : next below code will be merged to function getTagList
     axios
@@ -672,10 +676,9 @@ class RuleDetail extends Component {
                       <Input
                         type="select"
                         name="lang_code"
-                        id="lang_code_id"
-                        defaultValue="id"
+                        id="lang_code"
                         onChange={this.refreshTag}
-                        onSelect="id"
+                        defaultValue={this.state.localeTag.toLowerCase()}
                       >
                         {languages.map(ds => (
                           <option key={ds.lang_code} value={ds.lang_code}>
@@ -789,6 +792,8 @@ class RuleDetail extends Component {
               canonical={this.state.canonicalFormValues}
               action={this.state.actionCanonicalForm}
               onChange={this.handleCanonicalTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <MetaTagForm
               visible={this.state.metaTagFormVisible}
@@ -797,6 +802,8 @@ class RuleDetail extends Component {
               metatag={this.state.metaTagFormValues}
               action={this.state.actionMetaTagForm}
               onChange={this.handleMetaTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <ScriptTagForm
               visible={this.state.scriptTagFormVisible}
@@ -805,6 +812,8 @@ class RuleDetail extends Component {
               scripttag={this.state.scriptTagFormValues}
               action={this.state.actionScriptTagForm}
               onChange={this.handleScriptTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
@@ -813,6 +822,8 @@ class RuleDetail extends Component {
               titletag={this.state.titleTagFormValues}
               action={this.state.actionTitleTagForm}
               onChange={this.handleTitleTagOnChange.bind(this)}
+              languages={this.state.languages}
+              languageDefault={this.state.localeTag}
             />
             <Modal
               isOpen={this.state.warningAPI}

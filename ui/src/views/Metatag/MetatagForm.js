@@ -44,7 +44,18 @@ class MetatagForm extends Component {
   }
 
   render() {
-    const { visible, onCancel, onSave, metatag, action, onChange } = this.props;
+    const {
+      visible,
+      onCancel,
+      onSave,
+      metatag,
+      action,
+      onChange,
+      languages,
+      languageDefault
+    } = this.props;
+    let defaultValueLang =
+      action !== "Add" ? metatag.locale : languageDefault.toLowerCase();
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Meta-Tag</ModalHeader>
@@ -52,7 +63,7 @@ class MetatagForm extends Component {
           <Form className="form-horizontal">
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">Language</Label>
+                <Label htmlFor="text-input">Locale</Label>
               </Col>
               <Col xs="12" md="9">
                 <Input
@@ -60,11 +71,14 @@ class MetatagForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
-                  defaultValue={metatag.locale}
+                  defaultValue={defaultValueLang}
+                  disabled
                 >
-                  <option value="-">-CHOOSE-</option>
-                  <option value="ID">ID</option>
-                  <option value="EN">EN</option>
+                  {languages.map(ds => (
+                    <option key={ds.lang_code} value={ds.lang_code}>
+                      {ds.lang_code + "_" + ds.country_code}
+                    </option>
+                  ))}
                 </Input>
               </Col>
             </FormGroup>
