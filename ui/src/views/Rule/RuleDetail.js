@@ -654,28 +654,28 @@ class RuleDetail extends Component {
                     onClick={() => this.showFormCanonicalTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp;New Canonical
+                    <i className="fa fa-plus"></i>&nbsp;New Canonical
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormMetaTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp;New Meta Tag
+                    <i className="fa fa-plus"></i>&nbsp;New Meta Tag
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormScriptTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp; New Script Tag
+                    <i className="fa fa-plus"></i>&nbsp; New Script Tag
                   </Button>
                   <Button
                     color="primary"
                     onClick={() => this.showFormTitleTag()}
                     style={{ marginRight: "0.4em" }}
                   >
-                    <i class="fa fa-plus"></i>&nbsp; New Title Tag
+                    <i className="fa fa-plus"></i>&nbsp; New Title Tag
                   </Button>
                 </div>
                 <div>
