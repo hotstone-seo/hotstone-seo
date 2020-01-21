@@ -96,8 +96,6 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context) (coun
 func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error) {
 	var rows *sql.Rows
 
-	log.Warnf("start: %s end: %s", startDate, endDate)
-
 	query := `
 	WITH range_date AS (
 		SELECT generate_series($1::date, $2::date, '1 day') as date
