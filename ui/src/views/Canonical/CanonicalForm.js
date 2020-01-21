@@ -76,8 +76,8 @@ class CanonicalForm extends Component {
                   defaultValue={canonical.locale}
                 >
                   <option value="-">-CHOOSE-</option>
-                  <option value="ID">ID</option>
-                  <option value="EN">EN</option>
+                  <option value="id-ID">id-ID</option>
+                  <option value="en-US">en-US</option>
                 </Input>
               </Col>
             </FormGroup>
