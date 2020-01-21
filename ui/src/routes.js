@@ -21,7 +21,7 @@ const routes = [
   { path: "/", exact: true, name: "Home" },
   { path: "/rule", name: "Rules", component: RuleList },
   {
-    path: "/ruleDetail",
+    path: "/rule-detail",
     name: "Rule Details",
     component: RuleDetail
   },
