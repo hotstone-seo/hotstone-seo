@@ -71,7 +71,7 @@ class MismatchRuleList extends Component {
   formatSince(since) {
     const sinceDate = new Date(since);
 
-    const full = format(sinceDate, "dd/MM/yyyy - hh:mm");
+    const full = format(sinceDate, "dd/MM/yyyy - HH:mm");
     const relative = formatDistance(sinceDate, new Date());
 
     return `${full} (${relative} ago)`;
