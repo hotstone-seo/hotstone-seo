@@ -54,8 +54,7 @@ class MetatagForm extends Component {
       languages,
       languageDefault
     } = this.props;
-    let defaultValueLang =
-      action !== "Add" ? metatag.locale : languageDefault.toLowerCase();
+    let defaultValueLang = action !== "Add" ? metatag.locale : languageDefault;
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Meta-Tag</ModalHeader>
