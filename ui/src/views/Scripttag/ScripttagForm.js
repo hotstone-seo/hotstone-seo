@@ -31,7 +31,9 @@ class ScripttagForm extends Component {
       onSave,
       scripttag,
       action,
-      onChange
+      onChange,
+      languages,
+      languageDefault
     } = this.props;
     return (
       <Modal isOpen={visible}>
@@ -48,9 +50,9 @@ class ScripttagForm extends Component {
                   name="locale"
                   id="locale"
                   onChange={onChange.bind(this, "locale")}
-                  defaultValue={scripttag.locale}
+                  value={languageDefault}
+                  disabled
                 >
-                  <option value="-">-CHOOSE-</option>
                   <option value="id-ID">id-ID</option>
                   <option value="en-US">en-US</option>
                 </Input>

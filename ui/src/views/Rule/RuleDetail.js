@@ -111,7 +111,7 @@ class RuleDetail extends Component {
         content: null
       },
       languages: [],
-      localeTag: "id"
+      localeTag: "id-ID"
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -566,7 +566,7 @@ class RuleDetail extends Component {
     //localeSelected = localeSelected.toUpperCase();
 
     this.setState({ localeTag: localeSelected });
-
+    console.log(localeSelected, "localeSelected");
     // TO DO : next below code will be merged to function getTagList
     axios
       .get(
@@ -689,11 +689,14 @@ class RuleDetail extends Component {
                         name="lang_code"
                         id="lang_code"
                         onChange={this.refreshTag}
-                        value={this.state.localeTag.toLowerCase()}
+                        value={this.state.localeTag}
                       >
                         {languages.map(ds => (
-                          <option key={ds.lang_code} value={ds.lang_code}>
-                            {ds.lang_code + "_" + ds.country_code}
+                          <option
+                            key={ds.lang_code}
+                            value={ds.lang_code + "-" + ds.country_code}
+                          >
+                            {ds.lang_code + "-" + ds.country_code}
                           </option>
                         ))}
                       </Input>
@@ -706,7 +709,7 @@ class RuleDetail extends Component {
                       <th>Type</th>
                       <th>Attribute</th>
                       <th>Value</th>
-                      <td>Language</td>
+                      <td>Locale</td>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -733,11 +736,11 @@ class RuleDetail extends Component {
                               color="secondary"
                               onClick={() => this.handleEdit(tag)}
                             >
-                              <i class="fa fa-pencil"></i>&nbsp; Edit
+                              <i className="fa fa-pencil"></i>&nbsp; Edit
                             </Button>
                             {"  "}
                             <Button color="danger" onClick={this.toggleWarning}>
-                              <i class="fa fa-trash"></i>&nbsp;Delete
+                              <i className="fa fa-trash"></i>&nbsp;Delete
                             </Button>
                             <Modal
                               isOpen={this.state.warning}

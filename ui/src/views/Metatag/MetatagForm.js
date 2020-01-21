@@ -55,8 +55,8 @@ class MetatagForm extends Component {
       languageDefault
     } = this.props;
     var defaultValueLang = action !== "Add" ? metatag.locale : languageDefault;
-    if (defaultValueLang !== null)
-      defaultValueLang = defaultValueLang.toLowerCase();
+    //if (defaultValueLang !== null)
+    //  defaultValueLang = defaultValueLang.toLowerCase();
     return (
       <Modal isOpen={visible}>
         <ModalHeader>{action} Meta-Tag</ModalHeader>
@@ -76,8 +76,11 @@ class MetatagForm extends Component {
                   disabled
                 >
                   {languages.map(ds => (
-                    <option key={ds.lang_code} value={ds.lang_code}>
-                      {ds.lang_code + "_" + ds.country_code}
+                    <option
+                      key={ds.lang_code}
+                      value={ds.lang_code + "-" + ds.country_code}
+                    >
+                      {ds.lang_code + "-" + ds.country_code}
                     </option>
                   ))}
                 </Input>
@@ -109,7 +112,6 @@ class MetatagForm extends Component {
                 />
               </Col>
             </FormGroup>
-
             <FormGroup row>
               <Col md="3">
                 <Label htmlFor="text-input">Content</Label>
@@ -122,22 +124,6 @@ class MetatagForm extends Component {
                   placeholder="content"
                   defaultValue={metatag !== undefined ? metatag.content : ""}
                   onChange={onChange.bind(this, "content")}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Col md="3">
-                <Label htmlFor="text-input">Default Content</Label>
-              </Col>
-              <Col xs="12" md="9">
-                <Input
-                  type="text"
-                  id="default_content"
-                  name="default_content"
-                  placeholder="default content"
-                  defaultValue={
-                    metatag !== undefined ? metatag.default_content : ""
-                  }
                 />
               </Col>
             </FormGroup>
