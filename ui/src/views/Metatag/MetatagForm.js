@@ -52,7 +52,8 @@ class MetatagForm extends Component {
       action,
       onChange,
       languages,
-      languageDefault
+      languageDefault,
+      metaTagPreviewValue
     } = this.props;
     var defaultValueLang = action !== "Add" ? metatag.locale : languageDefault;
     //if (defaultValueLang !== null)
@@ -125,6 +126,15 @@ class MetatagForm extends Component {
                   defaultValue={metatag !== undefined ? metatag.content : ""}
                   onChange={onChange.bind(this, "content")}
                 />
+              </Col>
+            </FormGroup>
+            <FormGroup row></FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">Preview</Label>
+              </Col>
+              <Col xs="12" md="9">
+                {metaTagPreviewValue}
               </Col>
             </FormGroup>
           </Form>

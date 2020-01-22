@@ -111,7 +111,8 @@ class RuleDetail extends Component {
         content: null
       },
       languages: [],
-      localeTag: "id-ID"
+      localeTag: "id-ID",
+      metaTagPreviewValue: ""
     };
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
@@ -260,6 +261,11 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+
+    this.generatePreviewMetaTag(
+      metaTagFormValues.name,
+      metaTagFormValues.content
+    );
   }
 
   handleTitleTagOnChange(type, e) {
@@ -584,6 +590,12 @@ class RuleDetail extends Component {
         this.toggleWarningAPI(error.message);
       });
   }
+  generatePreviewMetaTag(nm, ct) {
+    let metaTagPreviewVal = this.state.metaTagPreviewValue;
+    if (ct === null) ct = "";
+    metaTagPreviewVal = '<meta name="' + nm + '" content="' + ct + '">';
+    this.setState({ metaTagPreviewValue: metaTagPreviewVal });
+  }
   render() {
     const { rules, tags, languages } = this.state;
 
@@ -818,6 +830,7 @@ class RuleDetail extends Component {
               onChange={this.handleMetaTagOnChange.bind(this)}
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
+              metaTagPreviewValue={this.state.metaTagPreviewValue}
             />
             <ScriptTagForm
               visible={this.state.scriptTagFormVisible}
