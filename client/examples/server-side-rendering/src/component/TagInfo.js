@@ -1,38 +1,14 @@
 import React from 'react';
+import toString from 'react-element-to-jsx-string';
 
-const toRows = (tags) => {
-  return tags.map(({ type, attributes, value }, index) => {
-    const attrs = Object.keys(attributes).map((key, i) => (
-      <li key={i}>
-        {key}: {attributes[key]}
-      </li>
-    ));
-    return (
-      <tr key={index}>
-        <td>{type}</td>
-        <td>
-          <ul>{attrs}</ul>
-        </td>
-        <td>{value}</td>
-      </tr>
-    );
-  });
+const toReactElement = ({ type, attributes, value }) => {
+  return toString(React.createElement(type, attributes, value));
 }
 
 export default function TagInfo(props) {
   const { tags } = props;
+  const rawTags = tags.map(toReactElement);
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Attributes</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        {toRows(tags)}
-      </tbody>
-    </table>
+    <pre>{rawTags.join(`\n`)}</pre>
   );
 }
