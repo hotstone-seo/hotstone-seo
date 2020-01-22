@@ -74,15 +74,15 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 
 func (p *ProviderCntrl) RuleTree(c echo.Context) (err error) {
 	var (
-		req  service.ProvideTagsRequest
-		tags string
-		ctx  = c.Request().Context()
+		req      service.ProvideTagsRequest
+		jsonTree string
+		ctx      = c.Request().Context()
 	)
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if tags, err = p.ProviderService.DumpRuleTree(ctx); err != nil {
+	if jsonTree, err = p.ProviderService.DumpRuleTree(ctx); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return c.JSON(http.StatusOK, tags)
+	return c.String(http.StatusOK, jsonTree)
 }
