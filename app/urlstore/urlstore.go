@@ -13,6 +13,7 @@ type URLStore interface {
 	Update(id int, key string)
 	Delete(id int) bool
 	Count() int
+	String() string
 }
 
 // URLStoreImpl is implementation of URLStore
@@ -73,4 +74,8 @@ func (s *URLStoreImpl) Delete(id int) bool {
 
 func (s *URLStoreImpl) Count() int {
 	return s.URLStoreTree.Count()
+}
+
+func (s *URLStoreImpl) String() string {
+	return s.URLStoreTree.String()
 }

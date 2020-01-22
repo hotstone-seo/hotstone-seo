@@ -24,6 +24,7 @@ type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
 	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
 	Tags(context.Context, ProvideTagsRequest) ([]*InterpolatedTag, error)
+	DumpRuleTree(context.Context) (string, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
@@ -150,6 +151,10 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		})
 	}
 	return
+}
+
+func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, err error) {
+	return p.URLStoreServer.DumpTree(), nil
 }
 
 func interpolateAttribute(ori dbkit.JSON, data interface{}) (interpolated dbkit.JSON, err error) {
