@@ -79,7 +79,7 @@ class RuleForm extends React.Component {
                   name="data_source_id"
                   id="data_source_id"
                   onChange={onChange.bind(this, "data_source_id")}
-                  defaultValue={rule.data_source_id}
+                  value={rule.data_source_id}
                 >
                   <option value="-">-CHOOSE-</option>
                   {dataSources.map(ds => (
