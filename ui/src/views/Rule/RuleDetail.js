@@ -235,6 +235,7 @@ class RuleDetail extends Component {
       this.setState({ canonicalFormValues: canonicalFormValues });
       this.setState({ actionCanonicalForm: "Edit" });
     } else {
+      this.resetCanonicalForm();
       this.setState({ record: {} });
       this.setState({ actionCanonicalForm: "Add" });
     }
@@ -534,14 +535,7 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({
-      canonicalFormValues: {
-        id: null,
-        canonical: null,
-        rule_id: null,
-        locale: null
-      }
-    });
+    this.resetCanonicalForm();
     this.setState({ canonicalFormVisible: false });
   }
   getTagList(rule_id) {
@@ -609,6 +603,17 @@ class RuleDetail extends Component {
       '<script type="' + (ttl !== null ? ttl : "") + '"></script>';
     this.setState({ scriptTagPreviewValue: scriptTagPreviewVal });
   }
+  resetCanonicalForm() {
+    this.setState({
+      canonicalFormValues: {
+        id: null,
+        canonical: null,
+        rule_id: null,
+        locale: null
+      }
+    });
+  }
+
   render() {
     const { rules, tags, languages } = this.state;
 
