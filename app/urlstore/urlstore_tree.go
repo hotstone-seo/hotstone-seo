@@ -99,6 +99,38 @@ type node struct {
 	pnames []string       // the parameter names collected from the root till this node
 }
 
+func (n *node) String() string {
+	var regexStr string
+	if n.regex != nil {
+		regexStr = n.regex.String()
+	}
+	var s strings.Builder
+	fmt.Fprintf(&s, "{")
+	fmt.Fprintf(&s,
+		"static:%t id:%d key:%s data:%+v order:%d minOrder:%d pindex:%d pnames:%+v regex:%s ",
+		n.static, n.id, n.key, n.data, n.order, n.minOrder, n.pindex, n.pnames, regexStr)
+
+	fmt.Fprintf(&s, "children:[")
+	for i, c := range n.children {
+		if c != nil {
+			fmt.Fprintf(&s, "%s:%s ", string(i), c.key)
+		}
+	}
+	fmt.Fprintf(&s, "] ")
+
+	fmt.Fprintf(&s, "pchildren:[")
+	for i, c := range n.pchildren {
+		if c != nil {
+			fmt.Fprintf(&s, "%s:%s ", string(i), c.key)
+		}
+	}
+	fmt.Fprintf(&s, "]")
+
+	fmt.Fprintf(&s, "}")
+
+	return s.String()
+}
+
 // add adds a new data item to the tree rooted at the current node.
 // The number of parameters in the key is returned.
 func (n *node) add(id int, key string, data interface{}, order int) int {
