@@ -112,10 +112,12 @@ class RuleDetail extends Component {
       },
       languages: [],
       localeTag: "id-ID",
-      metaTagPreviewValue: ""
+      metaTagPreviewValue: "",
+      titleTagPreviewVal: "",
+      scriptTagPreviewVal: ""
     };
-    this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
+    this.handleEditCanonical = this.handleEditCanonical.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
 
     this.toggleWarning = this.toggleWarning.bind(this);
@@ -591,6 +593,18 @@ class RuleDetail extends Component {
     if (ct === null) ct = "";
     metaTagPreviewVal = '<meta name="' + nm + '" content="' + ct + '">';
     this.setState({ metaTagPreviewValue: metaTagPreviewVal });
+  }
+  generatePreviewTitleTag(ttl) {
+    let titleTagPreviewVal = this.state.titleTagPreviewVal;
+    if (ttl === null) ttl = "";
+    titleTagPreviewVal = '<title>"' + ttl + '"</title>';
+    this.setState({ titleTagPreviewValue: titleTagPreviewVal });
+  }
+  generatePreviewScriptTag(ttl) {
+    let scriptTagPreviewVal = this.state.scriptTagPreviewVal;
+    if (ttl === null) ttl = "";
+    scriptTagPreviewVal = '<script type=""' + ttl + '""></script>';
+    this.setState({ scriptTagPreviewValue: scriptTagPreviewVal });
   }
   render() {
     const { rules, tags, languages } = this.state;
