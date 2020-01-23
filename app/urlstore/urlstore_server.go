@@ -12,6 +12,7 @@ type URLStoreServer interface {
 	Sync() error
 
 	Match(url string) (int, map[string]string)
+	DumpTree() string
 }
 
 // NewURLStoreServer return new instance of URLStoreServer [constructor]
@@ -94,6 +95,10 @@ func (s *URLStoreServerImpl) Sync() error {
 
 func (s *URLStoreServerImpl) Match(url string) (int, map[string]string) {
 	return s.URLStore.Get(url)
+}
+
+func (s *URLStoreServerImpl) DumpTree() string {
+	return s.URLStore.String()
 }
 
 func (s *URLStoreServerImpl) buildURLStore(urlStore URLStore, listURLStoreSync []*URLStoreSync) error {
