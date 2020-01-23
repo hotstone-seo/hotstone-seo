@@ -138,7 +138,12 @@ class RuleList extends Component {
       axios
         .post(this.state.URL_API, ruleFormValues)
         .then(response => {
-          this.getRuleList();
+          var msgArr = response.data.message.split("#");
+
+          const { history } = this.props;
+          history.push({
+            pathname: "/rule-detail/?id=" + msgArr[1]
+          });
         })
         .catch(error => {
           this.toggleWarningAPI(error.message);
