@@ -187,6 +187,7 @@ class RuleDetail extends Component {
       this.setState({ metaTagFormValues: metaTagFormValues });
       this.setState({ actionMetaTagForm: "Edit" });
     } else {
+      this.resetMetaForm();
       this.setState({ record: {} });
       this.setState({ actionMetaTagForm: "Add" });
     }
@@ -203,6 +204,7 @@ class RuleDetail extends Component {
       this.setState({ scriptTagFormValues: scriptTagFormValues });
       this.setState({ actionScriptTagForm: "Edit" });
     } else {
+      this.resetScriptForm();
       this.setState({ record: {} });
       this.setState({ actionScriptTagForm: "Add" });
     }
@@ -219,6 +221,7 @@ class RuleDetail extends Component {
       this.setState({ titleTagFormValues: titleTagFormValues });
       this.setState({ actionTitleTagForm: "Edit" });
     } else {
+      this.resetTitleForm();
       this.setState({ record: {} });
       this.setState({ actionTitleTagForm: "Add" });
     }
@@ -393,15 +396,7 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({
-      metaTagFormValues: {
-        id: null,
-        name: null,
-        content: null,
-        rule_id: null,
-        locale: null
-      }
-    });
+    this.resetMetaForm();
     this.setState({ metaTagFormVisible: false });
   }
   handleSaveTitleTag() {
@@ -442,9 +437,7 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({
-      titleTagFormValues: { id: null, title: null, rule_id: null, locale: null }
-    });
+    this.resetTitleForm();
     this.setState({ titleTagFormVisible: false });
   }
   handleSaveScriptTag() {
@@ -485,15 +478,7 @@ class RuleDetail extends Component {
           this.toggleWarningAPI(error.message);
         });
     }
-    this.setState({
-      scriptTagFormValues: {
-        id: null,
-        type: null,
-        rule_id: null,
-        locale: null,
-        datasource_id: null
-      }
-    });
+    this.resetScriptForm();
     this.setState({ scriptTagFormVisible: false });
   }
   handleSaveCanonicalTag() {
@@ -613,7 +598,37 @@ class RuleDetail extends Component {
       }
     });
   }
-
+  resetTitleForm() {
+    this.setState({
+      titleTagFormValues: {
+        id: null,
+        title: null,
+        rule_id: null,
+        locale: null
+      }
+    });
+  }
+  resetMetaForm() {
+    this.setState({
+      canonicalFormValues: {
+        id: null,
+        canonical: null,
+        rule_id: null,
+        locale: null
+      }
+    });
+  }
+  resetScriptForm() {
+    this.setState({
+      scriptTagFormValues: {
+        id: null,
+        type: null,
+        rule_id: null,
+        locale: null,
+        datasource_id: null
+      }
+    });
+  }
   render() {
     const { rules, tags, languages } = this.state;
 
