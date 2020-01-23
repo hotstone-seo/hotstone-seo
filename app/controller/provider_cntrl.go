@@ -20,7 +20,7 @@ func (c *ProviderCntrl) Route(e *echo.Echo) {
 	e.POST("provider/matchRule", c.MatchRule)
 	e.POST("provider/retrieveData", c.RetrieveData)
 	e.POST("provider/tags", c.Tags)
-	e.GET("provider/rule-tree", c.RuleTree)
+	e.GET("provider/rule-tree", c.DumpRuleTree)
 }
 
 // MatchRule to match rule
@@ -72,17 +72,17 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, tags)
 }
 
-func (p *ProviderCntrl) RuleTree(c echo.Context) (err error) {
+func (p *ProviderCntrl) DumpRuleTree(c echo.Context) (err error) {
 	var (
-		req      service.ProvideTagsRequest
-		jsonTree string
-		ctx      = c.Request().Context()
+		req     service.ProvideTagsRequest
+		strTree string
+		ctx     = c.Request().Context()
 	)
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if jsonTree, err = p.ProviderService.DumpRuleTree(ctx); err != nil {
+	if strTree, err = p.ProviderService.DumpRuleTree(ctx); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return c.String(http.StatusOK, jsonTree)
+	return c.String(http.StatusOK, strTree)
 }
