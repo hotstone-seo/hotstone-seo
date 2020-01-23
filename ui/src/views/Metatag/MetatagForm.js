@@ -131,10 +131,12 @@ class MetatagForm extends Component {
             <FormGroup row></FormGroup>
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">Preview</Label>
+                <Label htmlFor="text-input">
+                  <b>Preview</b>
+                </Label>
               </Col>
               <Col xs="12" md="9">
-                {metaTagPreviewValue}
+                <b>{metaTagPreviewValue}</b>
               </Col>
             </FormGroup>
           </Form>
