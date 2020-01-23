@@ -295,6 +295,7 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+
     this.generatePreviewScriptTag(scriptTagFormValues.type);
   }
 
@@ -473,6 +474,7 @@ class RuleDetail extends Component {
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
       scriptTagFormValues.datasource_id = 1;
+      scriptTagFormValues.locale = this.state.localeTag;
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {

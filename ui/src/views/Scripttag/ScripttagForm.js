@@ -33,7 +33,8 @@ class ScripttagForm extends Component {
       action,
       onChange,
       languages,
-      languageDefault
+      languageDefault,
+      scriptTagPreviewValue
     } = this.props;
     return (
       <Modal isOpen={visible}>
@@ -76,11 +77,12 @@ class ScripttagForm extends Component {
                 )}
                 <Input
                   type="select"
-                  name="type"
-                  id="type"
+                  name="types"
+                  id="types"
                   onChange={onChange.bind(this, "type")}
                   defaultValue={scripttag.type}
                 >
+                  <option value="-">-CHOOSE-</option>
                   <option value="Javascript">Javascript</option>
                 </Input>
               </Col>
@@ -98,6 +100,17 @@ class ScripttagForm extends Component {
                   defaultValue={scripttag !== undefined ? scripttag.source : ""}
                   onChange={onChange.bind(this, "datasource_id")}
                 />
+              </Col>
+            </FormGroup>
+            <FormGroup row></FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">
+                  <b>Preview</b>
+                </Label>
+              </Col>
+              <Col xs="12" md="9">
+                <b>{scriptTagPreviewValue}</b>
               </Col>
             </FormGroup>
           </Form>
