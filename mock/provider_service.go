@@ -79,3 +79,18 @@ func (mr *MockProviderServiceMockRecorder) Tags(arg0, arg1 interface{}) *gomock.
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tags", reflect.TypeOf((*MockProviderService)(nil).Tags), arg0, arg1)
 }
+
+// DumpRuleTree mocks base method
+func (m *MockProviderService) DumpRuleTree(arg0 context.Context) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DumpRuleTree", arg0)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DumpRuleTree indicates an expected call of DumpRuleTree
+func (mr *MockProviderServiceMockRecorder) DumpRuleTree(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DumpRuleTree", reflect.TypeOf((*MockProviderService)(nil).DumpRuleTree), arg0)
+}

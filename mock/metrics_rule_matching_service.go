@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/app/repository"
+	url "net/url"
 	reflect "reflect"
 )
 
@@ -63,16 +64,61 @@ func (mr *MockMetricsRuleMatchingServiceMockRecorder) ListMismatchedCount(ctx in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMismatchedCount", reflect.TypeOf((*MockMetricsRuleMatchingService)(nil).ListMismatchedCount), ctx)
 }
 
+// CountMatched mocks base method
+func (m *MockMetricsRuleMatchingService) CountMatched(ctx context.Context, whereParams url.Values) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountMatched", ctx, whereParams)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountMatched indicates an expected call of CountMatched
+func (mr *MockMetricsRuleMatchingServiceMockRecorder) CountMatched(ctx, whereParams interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountMatched", reflect.TypeOf((*MockMetricsRuleMatchingService)(nil).CountMatched), ctx, whereParams)
+}
+
+// CountUniquePage mocks base method
+func (m *MockMetricsRuleMatchingService) CountUniquePage(ctx context.Context, whereParams url.Values) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountUniquePage", ctx, whereParams)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountUniquePage indicates an expected call of CountUniquePage
+func (mr *MockMetricsRuleMatchingServiceMockRecorder) CountUniquePage(ctx, whereParams interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountUniquePage", reflect.TypeOf((*MockMetricsRuleMatchingService)(nil).CountUniquePage), ctx, whereParams)
+}
+
+// ListCountHitPerDay mocks base method
+func (m *MockMetricsRuleMatchingService) ListCountHitPerDay(ctx context.Context, startDate, endDate string) ([]*repository.MetricsCountHitPerDay, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCountHitPerDay", ctx, startDate, endDate)
+	ret0, _ := ret[0].([]*repository.MetricsCountHitPerDay)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCountHitPerDay indicates an expected call of ListCountHitPerDay
+func (mr *MockMetricsRuleMatchingServiceMockRecorder) ListCountHitPerDay(ctx, startDate, endDate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCountHitPerDay", reflect.TypeOf((*MockMetricsRuleMatchingService)(nil).ListCountHitPerDay), ctx, startDate, endDate)
+}
+
 // SetMatched mocks base method
-func (m_2 *MockMetricsRuleMatchingService) SetMatched(m *repository.MetricsRuleMatching) {
+func (m_2 *MockMetricsRuleMatchingService) SetMatched(m *repository.MetricsRuleMatching, matchedURL string, ruleID int64) {
 	m_2.ctrl.T.Helper()
-	m_2.ctrl.Call(m_2, "SetMatched", m)
+	m_2.ctrl.Call(m_2, "SetMatched", m, matchedURL, ruleID)
 }
 
 // SetMatched indicates an expected call of SetMatched
-func (mr *MockMetricsRuleMatchingServiceMockRecorder) SetMatched(m interface{}) *gomock.Call {
+func (mr *MockMetricsRuleMatchingServiceMockRecorder) SetMatched(m, matchedURL, ruleID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMatched", reflect.TypeOf((*MockMetricsRuleMatchingService)(nil).SetMatched), m)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMatched", reflect.TypeOf((*MockMetricsRuleMatchingService)(nil).SetMatched), m, matchedURL, ruleID)
 }
 
 // SetMismatched mocks base method

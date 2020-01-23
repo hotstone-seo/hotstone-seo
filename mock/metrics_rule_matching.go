@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/app/repository"
+	url "net/url"
 	reflect "reflect"
 )
 
@@ -61,4 +62,49 @@ func (m *MockMetricsRuleMatchingRepo) ListMismatchedCount(ctx context.Context) (
 func (mr *MockMetricsRuleMatchingRepoMockRecorder) ListMismatchedCount(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMismatchedCount", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).ListMismatchedCount), ctx)
+}
+
+// CountMatched mocks base method
+func (m *MockMetricsRuleMatchingRepo) CountMatched(ctx context.Context, whereParams url.Values) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountMatched", ctx, whereParams)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountMatched indicates an expected call of CountMatched
+func (mr *MockMetricsRuleMatchingRepoMockRecorder) CountMatched(ctx, whereParams interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountMatched", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).CountMatched), ctx, whereParams)
+}
+
+// CountUniquePage mocks base method
+func (m *MockMetricsRuleMatchingRepo) CountUniquePage(ctx context.Context, whereParams url.Values) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountUniquePage", ctx, whereParams)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountUniquePage indicates an expected call of CountUniquePage
+func (mr *MockMetricsRuleMatchingRepoMockRecorder) CountUniquePage(ctx, whereParams interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountUniquePage", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).CountUniquePage), ctx, whereParams)
+}
+
+// ListCountHitPerDay mocks base method
+func (m *MockMetricsRuleMatchingRepo) ListCountHitPerDay(ctx context.Context, startDate, endDate string) ([]*repository.MetricsCountHitPerDay, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCountHitPerDay", ctx, startDate, endDate)
+	ret0, _ := ret[0].([]*repository.MetricsCountHitPerDay)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCountHitPerDay indicates an expected call of ListCountHitPerDay
+func (mr *MockMetricsRuleMatchingRepoMockRecorder) ListCountHitPerDay(ctx, startDate, endDate interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCountHitPerDay", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).ListCountHitPerDay), ctx, startDate, endDate)
 }
