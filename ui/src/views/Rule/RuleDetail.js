@@ -595,19 +595,18 @@ class RuleDetail extends Component {
   generatePreviewMetaTag(nm, ct) {
     let metaTagPreviewVal = this.state.metaTagPreviewValue;
     metaTagPreviewVal =
-      '<meta name="' + nm + '" content="' + ct !== null ? ct : "" + '">';
+      '<meta name="' + nm + '" content="' + (ct !== null ? ct : "") + '">';
     this.setState({ metaTagPreviewValue: metaTagPreviewVal });
   }
   generatePreviewTitleTag(ttl) {
     let titleTagPreviewVal = this.state.titleTagPreviewValue;
-    titleTagPreviewVal = "<title>" + ttl !== null ? ttl : "" + "</title>";
+    titleTagPreviewVal = "<title>" + (ttl !== null ? ttl : "") + "</title>";
     this.setState({ titleTagPreviewValue: titleTagPreviewVal });
   }
-  generatePreviewScriptTag(typ) {
+  generatePreviewScriptTag(ttl) {
     let scriptTagPreviewVal = this.state.scriptTagPreviewValue;
-
     scriptTagPreviewVal =
-      '<script type="' + typ !== null ? typ : "" + '"></script>';
+      '<script type="' + (ttl !== null ? ttl : "") + '"></script>';
     this.setState({ scriptTagPreviewValue: scriptTagPreviewVal });
   }
   render() {

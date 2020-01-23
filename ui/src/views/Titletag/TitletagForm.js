@@ -119,7 +119,9 @@ class TitletagForm extends Component {
                 </Label>
               </Col>
               <Col xs="12" md="9">
-                <b>{titleTagPreviewValue}</b>
+                <b>
+                  <pre>{titleTagPreviewValue}</pre>
+                </b>
               </Col>
             </FormGroup>
           </Form>

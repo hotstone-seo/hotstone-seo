@@ -110,7 +110,9 @@ class ScripttagForm extends Component {
                 </Label>
               </Col>
               <Col xs="12" md="9">
-                <b>{scriptTagPreviewValue}</b>
+                <b>
+                  <pre>{scriptTagPreviewValue}</pre>
+                </b>
               </Col>
             </FormGroup>
           </Form>
