@@ -112,10 +112,12 @@ class RuleDetail extends Component {
       },
       languages: [],
       localeTag: "id-ID",
-      metaTagPreviewValue: ""
+      metaTagPreviewValue: "",
+      titleTagPreviewVal: "",
+      scriptTagPreviewVal: ""
     };
-    this.handleEditCanonical = this.handleEditCanonical.bind(this);
 
+    this.handleEditCanonical = this.handleEditCanonical.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
 
     this.toggleWarning = this.toggleWarning.bind(this);
@@ -279,6 +281,8 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+
+    this.generatePreviewTitleTag(titleTagFormValues.title);
   }
   handleScriptTagOnChange(type, e) {
     const { target } = e || {};
@@ -291,6 +295,8 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+
+    this.generatePreviewScriptTag(scriptTagFormValues.type);
   }
 
   handleCanonicalTagOnChange(type, e) {
@@ -304,7 +310,6 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
-    console.log(canonicalFormValues, "canonicalFormValues");
   }
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
@@ -469,6 +474,7 @@ class RuleDetail extends Component {
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
       scriptTagFormValues.datasource_id = 1;
+      scriptTagFormValues.locale = this.state.localeTag;
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {
@@ -591,6 +597,18 @@ class RuleDetail extends Component {
     if (ct === null) ct = "";
     metaTagPreviewVal = '<meta name="' + nm + '" content="' + ct + '">';
     this.setState({ metaTagPreviewValue: metaTagPreviewVal });
+  }
+  generatePreviewTitleTag(ttl) {
+    let titleTagPreviewVal = this.state.titleTagPreviewVal;
+    if (ttl === null) ttl = "";
+    titleTagPreviewVal = "<title>" + ttl + "</title>";
+    this.setState({ titleTagPreviewValue: titleTagPreviewVal });
+  }
+  generatePreviewScriptTag(ttl) {
+    let scriptTagPreviewVal = this.state.scriptTagPreviewVal;
+    if (ttl === null) ttl = "";
+    scriptTagPreviewVal = '<script type="' + ttl + '"></script>';
+    this.setState({ scriptTagPreviewValue: scriptTagPreviewVal });
   }
   render() {
     const { rules, tags, languages } = this.state;
@@ -837,6 +855,7 @@ class RuleDetail extends Component {
               onChange={this.handleScriptTagOnChange.bind(this)}
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
+              scriptTagPreviewValue={this.state.scriptTagPreviewValue}
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
@@ -847,6 +866,7 @@ class RuleDetail extends Component {
               onChange={this.handleTitleTagOnChange.bind(this)}
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
+              titleTagPreviewValue={this.state.titleTagPreviewValue}
             />
             <Modal
               isOpen={this.state.warningAPI}

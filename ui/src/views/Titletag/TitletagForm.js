@@ -50,7 +50,8 @@ class TitletagForm extends Component {
       action,
       onChange,
       languages,
-      languageDefault
+      languageDefault,
+      titleTagPreviewValue
     } = this.props;
     var defaultValueLang = action !== "Add" ? titletag.locale : languageDefault;
     //if (defaultValueLang !== null)
@@ -108,6 +109,17 @@ class TitletagForm extends Component {
                   defaultValue={titletag !== undefined ? titletag.name : ""}
                   onChange={onChange.bind(this, "title")}
                 />
+              </Col>
+            </FormGroup>
+            <FormGroup row></FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">
+                  <b>Preview</b>
+                </Label>
+              </Col>
+              <Col xs="12" md="9">
+                <b>{titleTagPreviewValue}</b>
               </Col>
             </FormGroup>
           </Form>

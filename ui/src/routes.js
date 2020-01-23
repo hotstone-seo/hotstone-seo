@@ -2,9 +2,6 @@ import React from "react";
 
 const RuleList = React.lazy(() => import("./views/Rule/RuleList"));
 const RuleDetail = React.lazy(() => import("./views/Rule/RuleDetail"));
-const MetatagPreview = React.lazy(() =>
-  import("./views/Metatag/MetatagPreview")
-);
 const DataSourceList = React.lazy(() =>
   import("./views/DataSource/DataSource")
 );
@@ -24,11 +21,6 @@ const routes = [
     path: "/rule-detail",
     name: "Rule Details",
     component: RuleDetail
-  },
-  {
-    path: "/metatagPreview",
-    name: "MetatagPreview",
-    component: MetatagPreview
   },
   { path: "/datasource", name: "DataSource", component: DataSourceList },
   { path: "/language", name: "Language", component: LanguageList },
