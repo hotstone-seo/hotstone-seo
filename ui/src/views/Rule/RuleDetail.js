@@ -281,6 +281,8 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+
+    this.generatePreviewTitleTag(titleTagFormValues.title);
   }
   handleScriptTagOnChange(type, e) {
     const { target } = e || {};
@@ -293,6 +295,7 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+    this.generatePreviewScriptTag(scriptTagFormValues.type);
   }
 
   handleCanonicalTagOnChange(type, e) {
@@ -306,7 +309,6 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
-    console.log(canonicalFormValues, "canonicalFormValues");
   }
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
@@ -597,13 +599,13 @@ class RuleDetail extends Component {
   generatePreviewTitleTag(ttl) {
     let titleTagPreviewVal = this.state.titleTagPreviewVal;
     if (ttl === null) ttl = "";
-    titleTagPreviewVal = '<title>"' + ttl + '"</title>';
+    titleTagPreviewVal = "<title>" + ttl + "</title>";
     this.setState({ titleTagPreviewValue: titleTagPreviewVal });
   }
   generatePreviewScriptTag(ttl) {
     let scriptTagPreviewVal = this.state.scriptTagPreviewVal;
     if (ttl === null) ttl = "";
-    scriptTagPreviewVal = '<script type=""' + ttl + '""></script>';
+    scriptTagPreviewVal = '<script type="' + ttl + '"></script>';
     this.setState({ scriptTagPreviewValue: scriptTagPreviewVal });
   }
   render() {
@@ -851,6 +853,7 @@ class RuleDetail extends Component {
               onChange={this.handleScriptTagOnChange.bind(this)}
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
+              scriptTagPreviewValue={this.state.scriptTagPreviewValue}
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
@@ -861,6 +864,7 @@ class RuleDetail extends Component {
               onChange={this.handleTitleTagOnChange.bind(this)}
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
+              titleTagPreviewValue={this.state.titleTagPreviewValue}
             />
             <Modal
               isOpen={this.state.warningAPI}
