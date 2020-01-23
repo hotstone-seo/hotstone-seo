@@ -1,41 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
+import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import routes from '../../routes';
+import './DefaultLayout.css';
 
 const { Header, Content, Sider } = Layout;
 
 function DefaultLayout(props) {
+  const [collapsed, setCollapsed] = useState(false);
+  const { location } = props;
   return (
     <Layout>
-      <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }} />
-      <Layout>
-        <Sider>
-          <Menu>
-            {routes.map((route, idx) => (
-              <Menu.Item key={idx}>
-                <Link to={route.path}>{route.name}</Link>
-              </Menu.Item>
-            ))}
-          </Menu>
-        </Sider>
-        <Layout>
-          <Content>
-            <Switch>
-              {routes.map((route, idx) => {
-                return route.component ? (
-                  <Route
-                    key={idx}
-                    path={route.path}
-                    exact={route.exact}
-                    name={route.name}
-                    render={props => <route.component {...props} />}
-                  />
-                ) : null;
-              })}
-            </Switch>
-          </Content>
-        </Layout>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
+          {routes.map(({ path, name }) => (
+            <Menu.Item key={path}>
+              <Link to={path}>{name}</Link>
+            </Menu.Item>
+          ))}
+        </Menu>
+      </Sider>
+      <Layout className="layout">
+        <Header className="layout-background" style={{ padding: 0 }}>
+          {React.createElement(collapsed ? MenuFoldOutlined : MenuUnfoldOutlined, {
+            className: 'trigger',
+            onClick: () => { setCollapsed(!collapsed) },
+          })}
+        </Header>
+        <Content>
+          <Switch>
+            {routes.map((route, idx) => {
+              return route.component ? (
+                <Route
+                  key={idx}
+                  path={route.path}
+                  exact={route.exact}
+                  name={route.name}
+                  render={props => <route.component {...props} />}
+                />
+              ) : null;
+            })}
+          </Switch>
+        </Content>
       </Layout>
     </Layout>
   );
