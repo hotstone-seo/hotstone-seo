@@ -37,6 +37,15 @@ func TestURLStoreImpl_GetURL(t *testing.T) {
 		require.Equal(t, "def", varMap["id"])
 		require.Equal(t, "123", varMap["accnt"])
 	})
+
+	t.Run("WHEN more than 1 param exist in a subpath", func(t *testing.T) {
+		store := buildStore(t)
+		id, varMap := store.Get("/flight/src-abc-dst-def")
+		require.Equal(t, 15, id)
+		require.Equal(t, 2, len(varMap))
+		require.Equal(t, "abc", varMap["src"])
+		require.Equal(t, "def", varMap["dst"])
+	})
 }
 
 func TestURLStoreImpl_AddURL(t *testing.T) {
@@ -48,7 +57,7 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 		id, varMap := store.Get(url)
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
-		require.Equal(t, 10, store.Count())
+		require.Equal(t, 11, store.Count())
 	})
 
 	t.Run("WHEN new static url added AND id exist before THEN double data added (with same id)", func(t *testing.T) {
@@ -63,7 +72,7 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 		id, varMap = store.Get("/gopher/old.jpg")
 		require.Equal(t, 20, id)
 		require.Empty(t, varMap)
-		require.Equal(t, 11, store.Count())
+		require.Equal(t, 12, store.Count())
 	})
 }
 
@@ -79,7 +88,7 @@ func TestURLStoreImpl_UpdateURL(t *testing.T) {
 		id, varMap = store.Get("/gopher/updated.bmp")
 		require.Equal(t, 6, id)
 		require.Equal(t, 0, len(varMap))
-		require.Equal(t, 9, store.Count())
+		require.Equal(t, 10, store.Count())
 	})
 }
 
@@ -92,7 +101,7 @@ func TestURLStoreImpl_DeleteURL(t *testing.T) {
 		require.Equal(t, -1, id)
 		require.Empty(t, varMap)
 		require.Equal(t, false, store.Delete(6))
-		require.Equal(t, 8, store.Count())
+		require.Equal(t, 9, store.Count())
 	})
 }
 
@@ -112,6 +121,7 @@ func buildStore(t *testing.T) urlstore.URLStore {
 		{12, "/users/<id>/<accnt:\\d+>", "12"},
 		{13, "/users/<id>/test/<name>", "13"},
 		{14, "/users/abc/<id>/<name>", "14"},
+		{15, "/flight/src-<src>-dst-<dst>", "15"},
 	}
 
 	store := urlstore.NewURLStoreTree()
@@ -120,7 +130,7 @@ func buildStore(t *testing.T) urlstore.URLStore {
 		store.Add(pair.id, pair.key, pair.value)
 	}
 
-	require.Equal(t, 9, store.Count())
+	require.Equal(t, 10, store.Count())
 
 	return &urlstore.URLStoreImpl{URLStoreTree: store}
 }

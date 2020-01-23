@@ -345,7 +345,7 @@ repeat:
 		// param node matching non-"/" characters
 		i, kl := 0, len(key)
 		for ; i < kl; i++ {
-			if key[i] == '/' {
+			if key[i] == '/' || key[i] == '-' {
 				pvalues[n.pindex] = key[0:i]
 				key = key[i:]
 				break
