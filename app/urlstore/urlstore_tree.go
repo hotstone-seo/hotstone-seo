@@ -312,20 +312,29 @@ func (n *node) addChild(id int, key string, data interface{}, order int) int {
 	return child.addChild(id, key[p1+1:], data, order)
 }
 
+func printDebug(key string, data interface{}, pnames, pvalues []string) {
+	// fmt.Printf("[%s][data:%v][pnames:%+v][pvalues:%+v]\n\n", key, data, pnames, pvalues)
+}
+
 // get returns the data item with the key matching the tree rooted at the current node
 func (n *node) get(key string, pvalues []string) (data interface{}, pnames []string, order int) {
 	order = math.MaxInt32
 
 repeat:
+	// fmt.Printf("[n]: %s\n", n)
+	// fmt.Printf("[key]: %+v\n", key)
+
 	if n.static {
 		// check if the node key is a prefix of the given key
 		// a slightly optimized version of strings.HasPrefix
 		nkl := len(n.key)
 		if nkl > len(key) {
+			printDebug(key, data, pnames, pvalues)
 			return
 		}
 		for i := nkl - 1; i >= 0; i-- {
 			if n.key[i] != key[i] {
+				printDebug(key, data, pnames, pvalues)
 				return
 			}
 		}
@@ -339,6 +348,7 @@ repeat:
 			pvalues[n.pindex] = key[0:match[1]]
 			key = key[match[1]:]
 		} else {
+			printDebug(key, data, pnames, pvalues)
 			return
 		}
 	} else {
@@ -393,6 +403,7 @@ repeat:
 		}
 	}
 
+	printDebug(key, data, pnames, pvalues)
 	return
 }
 
