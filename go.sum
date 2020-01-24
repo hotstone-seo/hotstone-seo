@@ -44,8 +44,6 @@ github.com/go-sql-driver/mysql v1.4.1 h1:g24URVg0OFbNUTx9qqY1IRZ9D9z3iPyi5zKhQZp
 github.com/go-sql-driver/mysql v1.4.1/go.mod h1:zAC/RDZ24gD3HViQzih4MyKcchzm+sOG5ZlKdlhCg5w=
 github.com/golang-migrate/migrate v3.5.4+incompatible h1:R7OzwvCJTCgwapPCiX6DyBiu2czIUMDCB118gFTKTUA=
 github.com/golang-migrate/migrate v3.5.4+incompatible/go.mod h1:IsVUlFN5puWOmXrqjgGUfIRIbU7mr8oNBE2tyERd9Wk=
-github.com/golang/mock v1.3.1 h1:qGJ6qTW+x6xX/my+8YUVl4WNpX9B7+/l2tRsHGZ7f2s=
-github.com/golang/mock v1.3.1/go.mod h1:sBzyDLLjw3U8JLTeZvSv8jJB+tU5PVekmnlKIyFUx0Y=
 github.com/golang/mock v1.4.0 h1:Rd1kQnQu0Hq3qvJppYSG0HtP+f5LPPUiDswTLiEegLg=
 github.com/golang/mock v1.4.0/go.mod h1:UOMv5ysSaYNkG+OFQykRIcU/QvvxJf3p21QfJ2Bt3cw=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
@@ -121,10 +119,10 @@ github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
-github.com/typical-go/typical-go v0.9.27 h1:LnDlIPtmCm8WXYbq5VTxpjTu37VCeK9QBvS1gIZKb+0=
-github.com/typical-go/typical-go v0.9.27/go.mod h1:7MxA33JC5ZsArci2ZzlVBy9L6sO7/j+mYk17mhhSgF0=
-github.com/typical-go/typical-rest-server v0.8.17 h1:nUvv214xSqjpOl29mu5vPOqzyaD6a1L+ElKsBn9kgLo=
-github.com/typical-go/typical-rest-server v0.8.17/go.mod h1:447tUaH9E+2Fz0O/OzBgRtYoOkZD19bbCWxpXcQZang=
+github.com/typical-go/typical-go v0.9.29 h1:wu1ZXzlsriXOoor5whGNCEPK6kC+RYR0Gr6BlGmTE7E=
+github.com/typical-go/typical-go v0.9.29/go.mod h1:RS9Ja1daRu4WzqjWByyyYjIQEsJDAjSXzdIxrwPT2jc=
+github.com/typical-go/typical-rest-server v0.8.18 h1:TiL18l8zg41eGncBXw0/4PrLsnvVd6VtRmj8m7thf9c=
+github.com/typical-go/typical-rest-server v0.8.18/go.mod h1:NpaHN2u06G4hopsrXsjwhBmtYYb1yGmnPkZDvUdXSNA=
 github.com/urfave/cli/v2 v2.0.0 h1:+HU9SCbu8GnEUFtIBfuUNXN39ofWViIEJIp6SURMpCg=
 github.com/urfave/cli/v2 v2.0.0/go.mod h1:SE9GqnLQmjVa0iPEY0f1w3ygNIYcIJ0OKPMoW2caLfQ=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

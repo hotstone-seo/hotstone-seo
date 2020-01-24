@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
+
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
@@ -13,7 +15,7 @@ import (
 // DataSourceRepoImpl is implementation data_source repository
 type DataSourceRepoImpl struct {
 	dig.In
-	*sql.DB
+	*typpostgres.DB
 }
 
 // FindOne data_source

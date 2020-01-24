@@ -7,13 +7,14 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
 // RuleRepoImpl is implementation rule repository
 type RuleRepoImpl struct {
 	dig.In
-	*sql.DB
+	*typpostgres.DB
 }
 
 // FindOne rule

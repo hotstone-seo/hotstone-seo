@@ -7,13 +7,14 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
 // MetricsRuleMatchingRepoImpl is implementation metrics_rule_matching repository
 type MetricsRuleMatchingRepoImpl struct {
 	dig.In
-	*sql.DB
+	*typpostgres.DB
 }
 
 // Insert metrics_rule_matching

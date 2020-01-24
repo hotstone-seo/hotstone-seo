@@ -7,13 +7,14 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
 // LocaleRepoImpl is implementation locale repository
 type LocaleRepoImpl struct {
 	dig.In
-	*sql.DB
+	*typpostgres.DB
 }
 
 // FindOne locale

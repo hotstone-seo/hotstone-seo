@@ -3,7 +3,6 @@ package typical
 import (
 	"github.com/hotstone-seo/hotstone-seo/app"
 	"github.com/typical-go/typical-go/pkg/typcore"
-	"github.com/typical-go/typical-go/pkg/typrls"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typreadme"
@@ -12,6 +11,39 @@ import (
 )
 
 // Descriptor of hotstone-seo
+var Descriptor = typcore.Descriptor{
+	Name:    "hotstone-seo",
+	Version: "0.0.1",
+	Package: "github.com/hotstone-seo/hotstone-seo",
+
+	App: typcore.NewApp(application).
+		WithDependency(
+			server,
+			redis,
+			postgres,
+		).
+		WithPrepare(
+			redis,
+			postgres,
+		),
+
+	Build: typcore.NewBuild().
+		WithCommands(
+			docker,
+			readme,
+			postgres,
+			redis,
+		),
+
+	Configuration: typcore.NewConfiguration().
+		WithConfigure(
+			application,
+			server,
+			redis,
+			postgres,
+		),
+}
+
 var (
 	application = app.New()
 	readme      = typreadme.New()
@@ -26,44 +58,4 @@ var (
 			// prometheus.New(),
 			// grafana.New(),
 		)
-
-	Descriptor = typcore.ProjectDescriptor{
-		Name:    "hotstone-seo",
-		Version: "0.0.1",
-		Package: "github.com/hotstone-seo/hotstone-seo",
-
-		App: typcore.NewApp().
-			WithEntryPoint(application).
-			WithProvide(
-				server,
-				redis,
-				postgres,
-			).
-			WithDestroy(
-				server,
-				redis,
-				postgres,
-			).
-			WithPrepare(
-				redis,
-				postgres,
-			),
-
-		BuildCommands: []typcore.BuildCommander{
-			docker,
-			readme,
-			postgres,
-			redis,
-		},
-
-		Configuration: typcore.NewConfiguration().
-			WithConfigure(
-				application,
-				server,
-				redis,
-				postgres,
-			),
-
-		Releaser: typrls.New(),
-	}
 )
