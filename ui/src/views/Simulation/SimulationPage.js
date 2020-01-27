@@ -2,10 +2,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Machine, assign } from "xstate";
 import { useMachine } from "@xstate/react";
+import { HotStoneClient } from "hotstone-client";
+import { Link } from "react-router-dom";
 import _ from "lodash";
 import parse from "url-parse";
 
 import HotstoneAPI from "../../api/hotstone";
+
+const client = new HotStoneClient(process.env.REACT_APP_API_URL);
 
 const pageMachine = Machine({
   id: "simulation",
@@ -23,12 +27,13 @@ const pageMachine = Machine({
         matchError: null
       }),
       invoke: {
-        src: context => HotstoneAPI.postProviderMatchRule(context.url),
+        src: context => matchThenGetTags(client, context.url),
         onDone: {
           target: "success",
           actions: assign({
             matchResp: (context, event) => {
               console.log("RESP: ", event);
+              const rule = event.data;
               return event.data;
             }
           })
@@ -56,6 +61,16 @@ const pageMachine = Machine({
     }
   }
 });
+
+async function matchThenGetTags(client, url) {
+  const rule = await client.match(url);
+  if (_.isEmpty(rule)) {
+    throw new Error("Not matched");
+  }
+  const tags = await client.tags(rule, "en_US");
+  const data = { rule, tags };
+  return data;
+}
 
 function SimulationPage() {
   const [current, send] = useMachine(pageMachine);
@@ -135,11 +150,25 @@ function SimulationPage() {
 
 function renderIfSuccess(matchResp) {
   if (matchResp) {
-    const { path_param } = matchResp.data;
+    const { rule_id, path_param } = matchResp.rule;
+    const tags = matchResp.tags;
+
+    let rawHtmlPreview;
+    if (_.isEmpty(tags)) {
+      rawHtmlPreview = (
+        <div>
+          No tags data. Register tags at{" "}
+          <Link to={`/rule-detail/?id=${rule_id}`}>Rule Detail</Link>
+        </div>
+      );
+    } else {
+      rawHtmlPreview = <pre>TODO</pre>;
+    }
+
     return (
-      <div className="card-footer">
+      <div className="card-body">
         <div className="alert alert-success" role="alert">
-          Matched. <br />
+          Matched (<Link to={`/rule-detail/?id=${rule_id}`}>Rule Detail</Link>)
           {!_.isEmpty(path_param) && (
             <div>
               <div>Path params:</div>
@@ -155,6 +184,8 @@ function renderIfSuccess(matchResp) {
             </div>
           )}
         </div>
+        <strong>Raw HTML Tags Preview</strong>
+        {rawHtmlPreview}
       </div>
     );
   }
