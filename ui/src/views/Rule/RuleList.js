@@ -219,7 +219,7 @@ class RuleList extends Component {
             <CardBody>
               <div style={{ marginBottom: ".5rem" }}>
                 <Button color="primary" onClick={() => this.showForm()}>
-                  <i class="fa fa-plus" />
+                  <i className="fa fa-plus" />
                   &nbsp; New Rule
                 </Button>
               </div>
@@ -254,12 +254,12 @@ class RuleList extends Component {
                             color="secondary"
                             onClick={() => this.showForm(rule)}
                           >
-                            <i class="fa fa-pencil" />
+                            <i className="fa fa-pencil" />
                             &nbsp; Edit
                           </Button>
                           {"  "}
                           <Button color="danger" onClick={this.toggleWarning}>
-                            <i class="fa fa-trash" />
+                            <i className="fa fa-trash" />
                             &nbsp; Delete
                           </Button>
                           <Modal
