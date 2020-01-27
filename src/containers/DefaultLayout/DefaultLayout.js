@@ -11,7 +11,7 @@ function DefaultLayout(props) {
   const [collapsed, setCollapsed] = useState(false);
   const { location } = props;
   return (
-    <Layout>
+    <Layout className="DefaultLayout">
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
           {routes.map(({ path, name }) => (
@@ -21,8 +21,8 @@ function DefaultLayout(props) {
           ))}
         </Menu>
       </Sider>
-      <Layout className="layout">
-        <Header className="layout-background" style={{ padding: 0 }}>
+      <Layout>
+        <Header className="header" style={{ padding: 0 }}>
           {React.createElement(collapsed ? MenuFoldOutlined : MenuUnfoldOutlined, {
             className: 'trigger',
             onClick: () => { setCollapsed(!collapsed) },

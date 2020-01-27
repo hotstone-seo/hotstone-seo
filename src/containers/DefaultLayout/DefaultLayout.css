@@ -1,8 +1,8 @@
-.layout {
+.DefaultLayout {
   height: 100vh;
 }
 
-.layout .trigger {
+.DefaultLayout .trigger {
   font-size: 18px;
   line-height: 64px;
   padding: 0 24px;
@@ -10,10 +10,10 @@
   transition: color 0.3s;
 }
 
-.layout .trigger:hover {
+.DefaultLayout .trigger:hover {
   color: #1890ff;
 }
 
-.layout .layout-background {
+.DefaultLayout .header {
   background: #fff;
 }
