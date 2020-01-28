@@ -40,7 +40,7 @@ const pageMachine = Machine({
           })
         },
         onError: {
-          target: "failed",
+          target: "pageFailed",
           actions: assign({
             pageError: (context, event) => {
               console.log("[init] ERR :", event);
@@ -79,7 +79,8 @@ const pageMachine = Machine({
       }
     },
     success: {},
-    failed: {}
+    failed: {},
+    pageFailed: {}
   },
   on: {
     SUBMIT: {
@@ -104,7 +105,7 @@ async function matchThenGetTags(client, locale, url) {
 
 function SimulationPage() {
   const [current, send] = useMachine(pageMachine);
-  const { matchResp, matchError } = current.context;
+  const { matchResp, matchError, pageError } = current.context;
 
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = ({ locale, url }) => {
@@ -141,8 +142,8 @@ function SimulationPage() {
                     )}
                   </div>
 
-                  {!_.isEmpty(current.context.listLocale) && (
-                    <div className="col-auto">
+                  <div className="col-auto">
+                    {!_.isEmpty(current.context.listLocale) ? (
                       <select
                         name="locale"
                         className="form-control"
@@ -157,14 +158,18 @@ function SimulationPage() {
                           );
                         })}
                       </select>
-                    </div>
-                  )}
+                    ) : (
+                      <select></select>
+                    )}
+                  </div>
 
                   <div className="col-auto">
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      disabled={isLoading(current)}
+                      disabled={
+                        isLoading(current) || current.matches("pageFailed")
+                      }
                     >
                       Submit
                     </button>
@@ -183,6 +188,7 @@ function SimulationPage() {
 
             {renderIfSuccess(matchResp)}
             {renderIfError(matchError)}
+            {renderIfPageError(pageError)}
           </div>
         </div>
       </div>
@@ -248,6 +254,22 @@ function renderIfError(matchError) {
       msgError = matchError.response.data.message;
     }
 
+    return (
+      <div className="card-footer">
+        <div className="alert alert-danger" role="alert">
+          {msgError}
+        </div>
+      </div>
+    );
+  }
+}
+
+function renderIfPageError(pageError) {
+  if (pageError) {
+    let msgError = pageError.message;
+    if (pageError.response) {
+      msgError = pageError.response.data.message;
+    }
     return (
       <div className="card-footer">
         <div className="alert alert-danger" role="alert">
