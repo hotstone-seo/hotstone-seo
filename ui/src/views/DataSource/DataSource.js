@@ -174,7 +174,7 @@ class DataSource extends Component {
             <CardBody>
               <div style={{ marginBottom: ".5rem" }}>
                 <Button color="primary" onClick={() => this.showForm()}>
-                  <i class="fa fa-plus"></i>
+                  <i className="fa fa-plus"></i>
                   &nbsp;New Data Source
                 </Button>
               </div>
@@ -199,12 +199,12 @@ class DataSource extends Component {
                             color="secondary"
                             onClick={() => this.showForm(datasource)}
                           >
-                            <i class="fa fa-pencil"></i>
+                            <i className="fa fa-pencil"></i>
                             &nbsp;Edit
                           </Button>
                           {"  "}
                           <Button color="danger" onClick={this.toggleWarning}>
-                            <i class="fa fa-trash"></i>
+                            <i className="fa fa-trash"></i>
                             &nbsp;Delete
                           </Button>
                           <Modal
