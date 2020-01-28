@@ -13,21 +13,50 @@ const client = new HotStoneClient(process.env.REACT_APP_API_URL);
 
 const pageMachine = Machine({
   id: "simulation",
-  initial: "idle",
+  initial: "init",
   context: {
     url: null,
+    locale: "en-US",
+    listLocale: [],
     matchResp: null,
-    matchError: null
+    matchError: null,
+    pageError: null
   },
   states: {
     idle: {},
-    loading: {
+    init: {
+      invoke: {
+        src: context => HotstoneAPI.getLocales(),
+        onDone: {
+          target: "idle",
+          actions: assign({
+            listLocale: (context, event) => {
+              console.log("[init] RESP: ", event);
+              const listLocale = event.data.data;
+              return listLocale.map(({ lang_code, country_code }) => {
+                return `${lang_code}-${country_code}`;
+              });
+            }
+          })
+        },
+        onError: {
+          target: "failed",
+          actions: assign({
+            pageError: (context, event) => {
+              console.log("[init] ERR :", event);
+              return event.data;
+            }
+          })
+        }
+      }
+    },
+    submitting: {
       entry: assign({
         matchResp: null,
         matchError: null
       }),
       invoke: {
-        src: context => matchThenGetTags(client, context.url),
+        src: context => matchThenGetTags(client, context.locale, context.url),
         onDone: {
           target: "success",
           actions: assign({
@@ -54,20 +83,21 @@ const pageMachine = Machine({
   },
   on: {
     SUBMIT: {
-      target: ".loading",
+      target: ".submitting",
       actions: assign({
-        url: (context, event) => event.url
+        url: (context, event) => event.url,
+        locale: (context, event) => event.locale
       })
     }
   }
 });
 
-async function matchThenGetTags(client, url) {
+async function matchThenGetTags(client, locale, url) {
   const rule = await client.match(url);
   if (_.isEmpty(rule)) {
     throw new Error("Not matched");
   }
-  const tags = await client.tags(rule, "en-US");
+  const tags = await client.tags(rule, locale);
   const data = { rule, tags };
   return data;
 }
@@ -77,10 +107,10 @@ function SimulationPage() {
   const { matchResp, matchError } = current.context;
 
   const { register, handleSubmit, errors } = useForm();
-  const onSubmit = ({ url }) => {
+  const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
 
-    send("SUBMIT", { url: urlObj.pathname });
+    send("SUBMIT", { locale, url: urlObj.pathname });
   };
 
   return (
@@ -110,11 +140,31 @@ function SimulationPage() {
                       </div>
                     )}
                   </div>
+
+                  {!_.isEmpty(current.context.listLocale) && (
+                    <div className="col-auto">
+                      <select
+                        name="locale"
+                        className="form-control"
+                        defaultValue={current.context.locale}
+                        ref={register({ required: true })}
+                      >
+                        {current.context.listLocale.map((locale, index) => {
+                          return (
+                            <option key={index} value={locale}>
+                              {locale}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  )}
+
                   <div className="col-auto">
                     <button
                       type="submit"
                       className="btn btn-primary"
-                      disabled={current.matches("loading")}
+                      disabled={isLoading(current)}
                     >
                       Submit
                     </button>
@@ -123,7 +173,7 @@ function SimulationPage() {
               </form>
             </div>
 
-            {current.matches("loading") && (
+            {isLoading(current) && (
               <div className="card-footer">
                 <div className="alert alert-warning" role="alert">
                   Loading ...
@@ -206,6 +256,10 @@ function renderIfError(matchError) {
       </div>
     );
   }
+}
+
+function isLoading(current) {
+  return current.matches("init") || current.matches("submitting");
 }
 
 export default SimulationPage;
