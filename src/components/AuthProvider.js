@@ -1,38 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import AuthAPI, { register } from '../api/auth';
 
 const AuthContext = React.createContext();
 
-function AuthProvider({ children }) {
+function AuthProvider(props) {
   // TODO: Try to get data from localStorage to initialize the state
-  const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const login = (email, password) => {
-    if(!user) {
-      AuthAPI.login(email, password)
-             .then((user) => {
-               setUser(user);
-             });
+    if(!currentUser) {
+      return AuthAPI.login(email, password)
+                    .then((user) => {
+                      setCurrentUser(user);
+                    });
     } else {
       throw new Error('Error login: another user already logged in');
     } 
   }
   const logout = () => {
-    if(user) {
-      AuthAPI.logout()
-             .then(() => {
-               setUser(null);
-             })
+    if(currentUser) {
+      return AuthAPI.logout()
+                    .then(() => {
+                      setCurrentUser(null);
+                    })
     } else {
       throw new Error("Error logout: there's no user currently logged in");
     }
   }
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }} >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ currentUser, login, logout, register }} {...props} />
   );
 }
 
-const useAuth = () => React.useContext(AuthContext);
+function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+} 
 
 export { AuthProvider, useAuth };

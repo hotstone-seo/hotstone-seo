@@ -5,7 +5,7 @@
 // his/her credentials through a backend service. If the authentication is successful,
 // the application will store the user info until the user is logged out.
 
-function login(username, password) {
+function login(email, password) {
   // TODO: Should be calling API, but the service is yet to be created
   return new Promise((resolve, reject) => {
     resolve({ username: 'johndoe', email: 'john@doe.com', name: 'John Doe' });
