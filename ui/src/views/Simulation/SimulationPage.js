@@ -67,7 +67,7 @@ async function matchThenGetTags(client, url) {
   if (_.isEmpty(rule)) {
     throw new Error("Not matched");
   }
-  const tags = await client.tags(rule, "en_US");
+  const tags = await client.tags(rule, "en-US");
   const data = { rule, tags };
   return data;
 }
