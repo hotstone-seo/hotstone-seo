@@ -11,6 +11,10 @@ class HotstoneAPI {
     this.axios = customAxios;
   }
 
+  getLocales() {
+    return this.axios.get("locales");
+  }
+
   postProviderMatchRule(path) {
     return this.axios.post(`provider/matchRule`, { path: path });
   }
