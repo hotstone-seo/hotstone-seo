@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
 import { Form, Input, Checkbox, Button } from 'antd';
-import { useAuth } from '../../../components/AuthProvider';
 
 const formLayout = { labelCol: { span: 8 }, wrapperCol: { span: 16 } };
 
 const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
 
-function LoginForm({ setAuthenticated }) {
+function LoginForm({ login }) {
   const [loading, setLoading] = useState(false);
 
   const [form] = Form.useForm();
 
-  const auth = useAuth();
-
+  // TODO: Figure out a way to redirect. Tried conditional rendering, incorrect
+  // usage cause React to do setState operation on unmounted component
   const onFinish = (values) => {
-    setLoading(true);
     const { email, password } = values;
-    auth.login(email, password)
-        .then(() => {
-          setAuthenticated(true);
-        })
+    setLoading(true);
+    login(email, password)
         .finally(() => {
           setLoading(false);
         });
