@@ -1,11 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import AuthAPI, { register } from '../api/auth';
 
 const AuthContext = React.createContext();
 
 function AuthProvider(props) {
   // TODO: Try to get data from localStorage to initialize the state
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = React.useState(
+    localStorage.getItem('currentUser') || null
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem('currentUser', currentUser);
+  }, [currentUser])
+  
   const login = (email, password) => {
     if(!currentUser) {
       return AuthAPI.login(email, password)
@@ -32,7 +39,7 @@ function AuthProvider(props) {
 }
 
 function useAuth() {
-  const context = useContext(AuthContext);
+  const context = React.useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
