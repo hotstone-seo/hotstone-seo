@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Layout, Row, Col } from 'antd';
 import { useAuth } from '../../../components/AuthProvider';
 import LoginForm from './LoginForm';
@@ -7,6 +8,10 @@ import LoginForm from './LoginForm';
 // unmounted component
 function Login() {
   const auth = useAuth();
+
+  if (auth.currentUser) {
+    return <Redirect to="/" />
+  }
 
   return (
     <Layout style={{ height: '100vh' }}>

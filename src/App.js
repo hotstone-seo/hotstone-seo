@@ -27,7 +27,7 @@ const App = () => (
             <PrivateRoute
               path="/"
               name="Home"
-              render={props => <DefaultLayout {...props} />}
+              component={DefaultLayout}
             />
           </Switch>
         </React.Suspense>

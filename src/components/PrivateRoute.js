@@ -6,7 +6,7 @@ function PrivateRoute({ component: Component, ...rest }) {
   const auth = useAuth();
   return (
     <Route {...rest} render={(props) => (
-      auth.user ? <Component {...props} />
+      auth.currentUser ? <Component {...props} />
       : <Redirect to='/login' />
     )} /> 
   );

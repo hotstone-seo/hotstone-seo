@@ -16,7 +16,7 @@ function LoginForm({ login }) {
     const { email, password } = values;
     setLoading(true);
     login(email, password)
-        .finally(() => {
+        .catch((error) => {
           setLoading(false);
         });
   };
