@@ -26,7 +26,7 @@ const pageMachine = Machine({
     idle: {},
     init: {
       invoke: {
-        src: context => HotstoneAPI.getLocales(),
+        src: () => HotstoneAPI.getLocales(),
         onDone: {
           target: "idle",
           actions: assign({
@@ -62,7 +62,6 @@ const pageMachine = Machine({
           actions: assign({
             matchResp: (context, event) => {
               console.log("RESP: ", event);
-              const rule = event.data;
               return event.data;
             }
           })
@@ -283,23 +282,19 @@ function renderIfPageError(pageError) {
 function renderRawHTMLPreview(tags) {
   return (
     <pre>
-      {tags.map(({ id, type, value, attributes }) => {
-        {
-          let attributesStr = "";
-          if (!_.isEmpty(attributes)) {
-            if (_.isPlainObject(attributes)) {
-              console.log("IS PLAIN");
-              attributesStr += ` ${attributes.name}="${attributes.content}"`;
-            } else if (_.isArray(attributes)) {
-              console.log("IS ARRAY");
-              attributes.map(({ name, content }) => {
-                attributesStr += ` ${name}="${content}"`;
-              });
-            }
+      {tags.map(({ type, value, attributes }) => {
+        let attributesStr = "";
+        if (!_.isEmpty(attributes)) {
+          if (_.isPlainObject(attributes)) {
+            attributesStr += ` ${attributes.name}="${attributes.content}"`;
+          } else if (_.isArray(attributes)) {
+            attributes.forEach(({ name, content }) => {
+              attributesStr += ` ${name}="${content}"`;
+            });
           }
-
-          return `<${type}${attributesStr}>${value}</${type}>\n`;
         }
+
+        return `<${type}${attributesStr}>${value}</${type}>\n`;
       })}
     </pre>
   );
