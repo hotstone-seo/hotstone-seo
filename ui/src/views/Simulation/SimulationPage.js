@@ -218,7 +218,7 @@ function renderIfSuccess(matchResp) {
         </div>
       );
     } else {
-      rawHtmlPreview = <pre>TODO</pre>;
+      rawHtmlPreview = renderRawHTMLPreview(tags);
     }
 
     return (
@@ -278,6 +278,31 @@ function renderIfPageError(pageError) {
       </div>
     );
   }
+}
+
+function renderRawHTMLPreview(tags) {
+  return (
+    <pre>
+      {tags.map(({ id, type, value, attributes }) => {
+        {
+          let attributesStr = "";
+          if (!_.isEmpty(attributes)) {
+            if (_.isPlainObject(attributes)) {
+              console.log("IS PLAIN");
+              attributesStr += ` ${attributes.name}="${attributes.content}"`;
+            } else if (_.isArray(attributes)) {
+              console.log("IS ARRAY");
+              attributes.map(({ name, content }) => {
+                attributesStr += ` ${name}="${content}"`;
+              });
+            }
+          }
+
+          return `<${type}${attributesStr}>${value}</${type}>\n`;
+        }
+      })}
+    </pre>
+  );
 }
 
 function isLoading(current) {
