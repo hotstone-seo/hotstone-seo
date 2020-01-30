@@ -1,0 +1,29 @@
+.DashboardLayout {
+  height: 100vh;
+}
+
+.DashboardLayout .logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.DashboardLayout .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.DashboardLayout .trigger:hover {
+  color: #1890ff;
+}
+
+.DashboardLayout .sider {
+  box-shadow: 2px 0 8px rgba(29, 35, 81, 0.15);
+}
+
+.DashboardLayout .header {
+  background: #fff;
+}
