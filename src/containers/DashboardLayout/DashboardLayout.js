@@ -29,7 +29,7 @@ function DashboardLayout(props) {
       </Sider>
       <Layout>
         <Header className="header" style={{ padding: 0 }}>
-          {React.createElement(collapsed ? MenuFoldOutlined : MenuUnfoldOutlined, {
+          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
             className: 'trigger',
             onClick: () => { setCollapsed(!collapsed) },
           })}
