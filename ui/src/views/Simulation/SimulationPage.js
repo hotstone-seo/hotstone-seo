@@ -240,6 +240,7 @@ function renderIfSuccess(matchResp) {
           )}
         </div>
         <strong>Raw HTML Tags Preview</strong>
+        <br />
         {rawHtmlPreview}
       </div>
     );
@@ -280,27 +281,33 @@ function renderIfPageError(pageError) {
 }
 
 function renderRawHTMLPreview(tags) {
-  return (
-    <pre>
-      {tags.map(({ type, value, attributes }) => {
-        let attributesStr = "";
-        if (!_.isEmpty(attributes)) {
-          if (_.isPlainObject(attributes)) {
-            Object.entries(attributes).forEach(([key, value]) => {
-              attributesStr += ` ${key}="${value}"`;
-            });
-          } else if (_.isArray(attributes)) {
-            attributes.forEach(attributes => {
-              Object.entries(attributes).forEach(([key, value]) => {
-                attributesStr += ` ${key}="${value}"`;
-              });
-            });
-          }
-        }
+  const textAreaVal = tags.map(({ type, value, attributes }) => {
+    let attributesStr = "";
+    if (!_.isEmpty(attributes)) {
+      if (_.isPlainObject(attributes)) {
+        Object.entries(attributes).forEach(([key, value]) => {
+          attributesStr += ` ${key}="${value}"`;
+        });
+      } else if (_.isArray(attributes)) {
+        attributes.forEach(attributes => {
+          Object.entries(attributes).forEach(([key, value]) => {
+            attributesStr += ` ${key}="${value}"`;
+          });
+        });
+      }
+    }
 
-        return `<${type}${attributesStr}>${value}</${type}>\n`;
-      })}
-    </pre>
+    return `<${type}${attributesStr}>${value}</${type}>\n`;
+  });
+
+  return (
+    <textarea
+      readOnly
+      wrap={"off"}
+      defaultValue={textAreaVal}
+      rows={10}
+      cols={150}
+    />
   );
 }
 
