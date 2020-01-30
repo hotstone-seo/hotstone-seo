@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"net/url"
 	"text/template"
+	"time"
 
+	"github.com/go-redis/redis"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
@@ -22,7 +24,7 @@ import (
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
-	RetrieveData(context.Context, RetrieveDataRequest) (*http.Response, error)
+	RetrieveData(context.Context, RetrieveDataRequest) ([]byte, error)
 	Tags(context.Context, ProvideTagsRequest) ([]*InterpolatedTag, error)
 	DumpRuleTree(context.Context) (string, error)
 }
@@ -35,6 +37,7 @@ type ProviderServiceImpl struct {
 	repository.RuleRepo
 	repository.TagRepo
 	urlstore.URLStoreServer
+	Redis *redis.Client
 }
 
 // NewProviderService return new instance of ProviderService [constructor]
@@ -71,7 +74,7 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 	return resp, nil
 }
 
-func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest) (resp *http.Response, err error) {
+func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest) (data []byte, err error) {
 	var (
 		dataSource *repository.DataSource
 		tmpl       *template.Template
@@ -86,13 +89,44 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 	if err = tmpl.Execute(&buf, req.PathParam); err != nil {
 		return
 	}
-	return http.Get(buf.String())
+
+	log.Warnf("DS_buf: %s", buf.String())
+
+	data, err = p.Redis.Get(buf.String()).Bytes()
+	if err == redis.Nil {
+		// data not exist in cache
+		resp, err := http.Get(buf.String())
+		if err != nil {
+			return data, err
+		}
+		defer resp.Body.Close()
+
+		data, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return data, err
+		}
+
+		err = p.Redis.Set(buf.String(), data, 1*time.Minute).Err()
+		if err != nil {
+			return data, err
+		}
+
+		return data, err
+	} else if err != nil {
+		// err when getting data in cache
+		return
+	} else {
+		// data exist in cache
+		return data, err
+	}
+
 }
 
 func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
-		tags []*repository.Tag
-		data = req.Data
+		tags       []*repository.Tag
+		data       = req.Data
+		dataFromDS []byte
 	)
 	if tags, err = p.TagRepo.Find(ctx, repository.TagFilter{RuleID: req.RuleID, Locale: req.Locale}); err != nil {
 		return
@@ -102,14 +136,12 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 		// ProvideTagsRequest. Will be done later since the change impact is not local.
 		var (
 			rule *repository.Rule
-			resp *http.Response
-			body []byte
 		)
 		if rule, err = p.RuleRepo.FindOne(ctx, req.RuleID); err != nil {
 			return
 		}
 		if rule.DataSourceID != nil {
-			if resp, err = p.RetrieveData(
+			if dataFromDS, err = p.RetrieveData(
 				ctx,
 				RetrieveDataRequest{
 					DataSourceID: *rule.DataSourceID,
@@ -118,11 +150,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 			); err != nil {
 				return
 			}
-			if body, err = ioutil.ReadAll(resp.Body); err != nil {
-				return
-			}
-			defer resp.Body.Close()
-			if err = json.Unmarshal(body, &data); err != nil {
+			if err = json.Unmarshal(dataFromDS, &data); err != nil {
 				return
 			}
 		}
