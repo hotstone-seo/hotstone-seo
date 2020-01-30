@@ -8,7 +8,7 @@ const loading = () => (
   <Spin className="loading-spin" size="large" />
 );
 
-const DefaultLayout = React.lazy(() => import('./containers/DefaultLayout'));
+const DashboardLayout = React.lazy(() => import('./containers/DashboardLayout'));
 
 const Login = React.lazy(() => import('./views/Pages/Login'));
 
@@ -27,7 +27,7 @@ const App = () => (
             <PrivateRoute
               path="/"
               name="Home"
-              component={DefaultLayout}
+              component={DashboardLayout}
             />
           </Switch>
         </React.Suspense>
