@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import HeaderMenu from './HeaderMenu';
 import routes from '../../routes';
 import './DashboardLayout.css';
 
@@ -33,6 +34,9 @@ function DashboardLayout(props) {
             className: 'trigger',
             onClick: () => { setCollapsed(!collapsed) },
           })}
+          <div className="header-right">
+            <HeaderMenu />
+          </div>
         </Header>
         <Content>
           <Switch>
