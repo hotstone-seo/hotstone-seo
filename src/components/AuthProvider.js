@@ -6,11 +6,11 @@ const AuthContext = React.createContext();
 function AuthProvider(props) {
   // TODO: Try to get data from localStorage to initialize the state
   const [currentUser, setCurrentUser] = React.useState(
-    localStorage.getItem('currentUser') || null
+    JSON.parse(localStorage.getItem('currentUser')) || null
   );
 
   React.useEffect(() => {
-    localStorage.setItem('currentUser', currentUser);
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
   }, [currentUser])
   
   const login = (email, password) => {
