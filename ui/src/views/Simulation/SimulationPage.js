@@ -286,10 +286,14 @@ function renderRawHTMLPreview(tags) {
         let attributesStr = "";
         if (!_.isEmpty(attributes)) {
           if (_.isPlainObject(attributes)) {
-            attributesStr += ` ${attributes.name}="${attributes.content}"`;
+            Object.entries(attributes).forEach(([key, value]) => {
+              attributesStr += ` ${key}="${value}"`;
+            });
           } else if (_.isArray(attributes)) {
-            attributes.forEach(({ name, content }) => {
-              attributesStr += ` ${name}="${content}"`;
+            attributes.forEach(attributes => {
+              Object.entries(attributes).forEach(([key, value]) => {
+                attributesStr += ` ${key}="${value}"`;
+              });
             });
           }
         }
