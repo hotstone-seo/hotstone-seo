@@ -281,24 +281,26 @@ function renderIfPageError(pageError) {
 }
 
 function renderRawHTMLPreview(tags) {
-  const textAreaVal = tags.map(({ type, value, attributes }) => {
-    let attributesStr = "";
-    if (!_.isEmpty(attributes)) {
-      if (_.isPlainObject(attributes)) {
-        Object.entries(attributes).forEach(([key, value]) => {
-          attributesStr += ` ${key}="${value}"`;
-        });
-      } else if (_.isArray(attributes)) {
-        attributes.forEach(attributes => {
+  const textAreaVal = tags
+    .map(({ type, value, attributes }) => {
+      let attributesStr = "";
+      if (!_.isEmpty(attributes)) {
+        if (_.isPlainObject(attributes)) {
           Object.entries(attributes).forEach(([key, value]) => {
             attributesStr += ` ${key}="${value}"`;
           });
-        });
+        } else if (_.isArray(attributes)) {
+          attributes.forEach(attributes => {
+            Object.entries(attributes).forEach(([key, value]) => {
+              attributesStr += ` ${key}="${value}"`;
+            });
+          });
+        }
       }
-    }
 
-    return `<${type}${attributesStr}>${value}</${type}>\n`;
-  });
+      return `<${type}${attributesStr}>${value}</${type}>`;
+    })
+    .join("\n");
 
   return (
     <textarea
