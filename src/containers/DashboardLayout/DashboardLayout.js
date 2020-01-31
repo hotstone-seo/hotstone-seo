@@ -14,10 +14,11 @@ function DashboardLayout(props) {
   return (
     <Layout className={styles.base}>
       <Sider
-        className="sider"
+        className={styles.sider}
         trigger={null}
         collapsible
         collapsed={collapsed}
+        width={256}
       >
         <div className={styles.logo} />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
@@ -38,7 +39,7 @@ function DashboardLayout(props) {
             <HeaderMenu />
           </div>
         </Header>
-        <Content>
+        <Content className={styles.content}>
           <Switch>
             {routes.map((route, idx) => {
               return route.component ? (
