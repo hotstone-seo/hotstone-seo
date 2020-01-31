@@ -4,7 +4,7 @@ import { Layout, Menu } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import HeaderMenu from './HeaderMenu';
 import routes from '../../routes';
-import './DashboardLayout.css';
+import styles from './DashboardLayout.module.css';
 
 const { Header, Content, Sider } = Layout;
 
@@ -12,14 +12,14 @@ function DashboardLayout(props) {
   const [collapsed, setCollapsed] = useState(false);
   const { location } = props;
   return (
-    <Layout className="DashboardLayout">
+    <Layout className={styles.base}>
       <Sider
         className="sider"
         trigger={null}
         collapsible
         collapsed={collapsed}
       >
-        <div className="logo" />
+        <div className={styles.logo} />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
           {routes.map(({ path, name }) => (
             <Menu.Item key={path}>
@@ -29,12 +29,12 @@ function DashboardLayout(props) {
         </Menu>
       </Sider>
       <Layout>
-        <Header className="header" style={{ padding: 0 }}>
+        <Header className={styles.header} style={{ padding: 0 }}>
           {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: 'trigger',
+            className: styles.trigger,
             onClick: () => { setCollapsed(!collapsed) },
           })}
-          <div className="header-right">
+          <div className={styles.headerRight}>
             <HeaderMenu />
           </div>
         </Header>

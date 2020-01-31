@@ -1,14 +1,14 @@
-.DashboardLayout {
+.base {
   height: 100vh;
 }
 
-.DashboardLayout .logo {
+.logo {
   height: 32px;
   background: rgba(255, 255, 255, 0.2);
   margin: 16px;
 }
 
-.DashboardLayout .trigger {
+.trigger {
   font-size: 20px;
   line-height: 64px;
   padding: 0 24px;
@@ -16,20 +16,20 @@
   transition: color 0.3s;
 }
 
-.DashboardLayout .trigger:hover {
+.trigger:hover {
   color: #1890ff;
 }
 
-.DashboardLayout .sider {
+.sider {
   box-shadow: 2px 0 8px rgba(29, 35, 81, 0.15);
 }
 
-.DashboardLayout .header {
+.header {
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 }
 
-.DashboardLayout .header-right {
+.headerRight {
   float: right;
   margin-left: auto;
   line-height: 64px;
