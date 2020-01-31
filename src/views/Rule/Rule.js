@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { PageHeader } from 'antd';
+import { PageHeader, Row } from 'antd';
 import RuleList from './RuleList';
-import { fetchRules } from '../../api/rules';
+import RuleForm from './RuleForm';
+import { fetchRules } from '../../api/rule';
+import styles from './Rule.module.css';
 
 function Rule() {
   const [rules, setRules] = useState([]);
@@ -22,19 +24,27 @@ function Rule() {
   });
 
   return (
-    <React.Fragment>
+    <div className="Rule">
       <PageHeader
+        className={styles.header}
         title="Rules"
-        subtitle="Manage tags on matching URL"
+        subTitle="Manage tags on matching URL"
       />
-      <Switch>
-        <Route
-          exact
-          path="/rules"
-          render={() => <RuleList rules={rules} />}
-        />
-      </Switch>
-    </React.Fragment>
+      <div className={styles.content}>
+        <Switch>
+          <Route
+            exact
+            path="/rules"
+            render={() => <RuleList rules={rules} />}
+          />
+          <Route
+            exact
+            path="/rules/new"
+            render={() => <RuleForm />}
+          />
+        </Switch>
+      </div>
+    </div>
   );
 }
 
