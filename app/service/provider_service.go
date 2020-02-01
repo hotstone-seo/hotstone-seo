@@ -24,8 +24,8 @@ import (
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
-	RetrieveData(context.Context, RetrieveDataRequest) ([]byte, error)
-	Tags(context.Context, ProvideTagsRequest) ([]*InterpolatedTag, error)
+	RetrieveData(context.Context, RetrieveDataRequest, bool) ([]byte, error)
+	Tags(context.Context, ProvideTagsRequest, bool) ([]*InterpolatedTag, error)
 	DumpRuleTree(context.Context) (string, error)
 }
 
@@ -74,7 +74,7 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 	return resp, nil
 }
 
-func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest) (data []byte, err error) {
+func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (data []byte, err error) {
 	var (
 		dataSource *repository.DataSource
 		tmpl       *template.Template
@@ -92,37 +92,49 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 
 	log.Warnf("DS_buf: %s", buf.String())
 
-	data, err = p.Redis.Get(buf.String()).Bytes()
-	if err == redis.Nil {
-		// data not exist in cache
-		resp, err := http.Get(buf.String())
-		if err != nil {
+	if useCache {
+		data, err = p.Redis.Get(buf.String()).Bytes()
+		if err == redis.Nil {
+			// data not exist in cache
+			data, err = p.getData(buf.String())
+			if err != nil {
+				return data, err
+			}
+
+			err = p.Redis.Set(buf.String(), data, 1*time.Minute).Err()
+			if err != nil {
+				return data, err
+			}
+		} else if err != nil {
+			// err when getting data in cache
+			return
+		} else {
+			// data exist in cache
 			return data, err
 		}
-		defer resp.Body.Close()
-
-		data, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return data, err
-		}
-
-		err = p.Redis.Set(buf.String(), data, 1*time.Minute).Err()
-		if err != nil {
-			return data, err
-		}
-
-		return data, err
-	} else if err != nil {
-		// err when getting data in cache
-		return
 	} else {
-		// data exist in cache
+		return p.getData(buf.String())
+	}
+
+	return
+}
+
+func (p *ProviderServiceImpl) getData(dsURL string) (data []byte, err error) {
+	resp, err := http.Get(dsURL)
+	if err != nil {
+		return data, err
+	}
+	defer resp.Body.Close()
+
+	data, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
 		return data, err
 	}
 
+	return data, err
 }
 
-func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) (interpolatedTags []*InterpolatedTag, err error) {
+func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, useCache bool) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
 		tags       []*repository.Tag
 		data       = req.Data
@@ -146,7 +158,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest) 
 				RetrieveDataRequest{
 					DataSourceID: *rule.DataSourceID,
 					PathParam:    req.PathParam,
-				},
+				}, useCache,
 			); err != nil {
 				return
 			}

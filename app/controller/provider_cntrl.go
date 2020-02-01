@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/labstack/echo"
@@ -47,7 +48,7 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if data, err = p.ProviderService.RetrieveData(ctx, req); err != nil {
+	if data, err = p.ProviderService.RetrieveData(ctx, req, isUseCache(c.Request().Header)); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, data)
@@ -62,7 +63,7 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if tags, err = p.ProviderService.Tags(ctx, req); err != nil {
+	if tags, err = p.ProviderService.Tags(ctx, req, isUseCache(c.Request().Header)); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, tags)
@@ -81,4 +82,16 @@ func (p *ProviderCntrl) DumpRuleTree(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.String(http.StatusOK, strTree)
+}
+
+func isUseCache(headers http.Header) bool {
+	xCache := headers.Get("X-Cache")
+	if xCache == "" {
+		return true
+	} else if xCache == "true" || xCache == "false" {
+		boolVal, _ := strconv.ParseBool(xCache)
+		return boolVal
+	}
+
+	return true
 }
