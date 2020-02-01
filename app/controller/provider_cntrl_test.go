@@ -2,9 +2,6 @@ package controller_test
 
 import (
 	"errors"
-	"io/ioutil"
-	"net/http"
-	"strings"
 	"testing"
 
 	"github.com/hotstone-seo/hotstone-seo/mock"
@@ -51,16 +48,16 @@ func TestProviderCntrl_RetrieveData(t *testing.T) {
 		require.EqualError(t, err, "code=400, message=Syntax error: offset=2, error=invalid character 'i' looking for beginning of object key string")
 	})
 	t.Run("WHEN error match rule", func(t *testing.T) {
-		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
+		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
 		_, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{"rule_id": 99999}`)
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any()).
-			Return(&http.Response{StatusCode: 200, Body: ioutil.NopCloser(strings.NewReader("some-string"))}, nil)
+		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any(), gomock.Any()).
+			Return([]byte("{\"content\": \"some-string\"}"), nil)
 		rec, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{"rule_id": 99999}`)
 		require.NoError(t, err)
 		require.Equal(t, 200, rec.Code)
-		require.Equal(t, "some-string", rec.Body.String())
+		require.Equal(t, "{\"content\": \"some-string\"}", rec.Body.String())
 	})
 }

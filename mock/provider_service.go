@@ -8,7 +8,6 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	service "github.com/hotstone-seo/hotstone-seo/app/service"
-	http "net/http"
 	reflect "reflect"
 )
 
@@ -51,33 +50,33 @@ func (mr *MockProviderServiceMockRecorder) MatchRule(arg0, arg1 interface{}) *go
 }
 
 // RetrieveData mocks base method
-func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest) (*http.Response, error) {
+func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 bool) ([]byte, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RetrieveData", arg0, arg1)
-	ret0, _ := ret[0].(*http.Response)
+	ret := m.ctrl.Call(m, "RetrieveData", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // RetrieveData indicates an expected call of RetrieveData
-func (mr *MockProviderServiceMockRecorder) RetrieveData(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockProviderServiceMockRecorder) RetrieveData(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveData", reflect.TypeOf((*MockProviderService)(nil).RetrieveData), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveData", reflect.TypeOf((*MockProviderService)(nil).RetrieveData), arg0, arg1, arg2)
 }
 
 // Tags mocks base method
-func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTagsRequest) ([]*service.InterpolatedTag, error) {
+func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTagsRequest, arg2 bool) ([]*service.InterpolatedTag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Tags", arg0, arg1)
+	ret := m.ctrl.Call(m, "Tags", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*service.InterpolatedTag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Tags indicates an expected call of Tags
-func (mr *MockProviderServiceMockRecorder) Tags(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockProviderServiceMockRecorder) Tags(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tags", reflect.TypeOf((*MockProviderService)(nil).Tags), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tags", reflect.TypeOf((*MockProviderService)(nil).Tags), arg0, arg1, arg2)
 }
 
 // DumpRuleTree mocks base method

@@ -51,7 +51,7 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	if data, err = p.ProviderService.RetrieveData(ctx, req, isUseCache(c.Request().Header)); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return c.JSON(http.StatusOK, data)
+	return c.String(http.StatusOK, string(data))
 }
 
 func (p *ProviderCntrl) Tags(c echo.Context) (err error) {

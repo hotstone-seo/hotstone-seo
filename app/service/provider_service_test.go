@@ -3,7 +3,6 @@ package service_test
 import (
 	"context"
 	"errors"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -40,18 +39,16 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		})
+		}, false)
 		require.NoError(t, err)
-		body, _ := ioutil.ReadAll(resp.Body)
-		require.Equal(t, 500, resp.StatusCode)
-		require.Equal(t, []byte("some-data"), body)
+		require.Equal(t, []byte("some-data"), resp)
 	})
 
 	t.Run("WHEN FindOne returns Error", func(t *testing.T) {
 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, errors.New("some-error"))
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		})
+		}, false)
 		require.EqualError(t, err, "some-error")
 		require.Nil(t, resp)
 	})
@@ -62,7 +59,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		})
+		}, false)
 		require.EqualError(t, err, "Get non-existent: unsupported protocol scheme \"\"")
 		require.Nil(t, resp)
 	})
@@ -82,7 +79,7 @@ func TestProvider_Tags(t *testing.T) {
 		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
 			RuleID: 999,
 			Locale: "en-US",
-		})
+		}, false)
 		require.EqualError(t, err, "some-error")
 		require.Nil(t, tags)
 	})
@@ -121,7 +118,7 @@ func TestProvider_Tags(t *testing.T) {
 		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
 			RuleID: 999,
 			Locale: "en-US",
-		})
+		}, false)
 		require.NoError(t, err)
 		require.EqualValues(t, []*service.InterpolatedTag{
 			{
@@ -154,7 +151,7 @@ func TestProvider_Tags(t *testing.T) {
 				Data2 string
 				Data3 string
 			}{"some-data-1", "some-data-2", "some-data-3"},
-		})
+		}, false)
 		require.NoError(t, err)
 		require.EqualValues(t, []*service.InterpolatedTag{
 			{
