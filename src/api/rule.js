@@ -1,11 +1,11 @@
-import client from '../client';
+import client from './client';
 
-function fetchDatasources() {
-  return client.get('/data_sources')
+function fetchRules() {
+  return client.get('/rules')
                .then(response => response.data)
                .catch(error => {
                  throw error;
                });
 }
 
-export { fetchDatasources };
+export { fetchRules };
