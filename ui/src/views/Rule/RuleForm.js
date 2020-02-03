@@ -41,7 +41,9 @@ class RuleForm extends React.Component {
                 ""
               )}
               <Col md="3">
-                <Label htmlFor="text-input">Name</Label>
+                <Label htmlFor="text-input">
+                  Name <span className="mandatory-field">*</span>
+                </Label>
               </Col>
               <Col xs="12" md="9">
                 <Input
@@ -56,7 +58,9 @@ class RuleForm extends React.Component {
             </FormGroup>
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">URL Pattern</Label>
+                <Label htmlFor="text-input">
+                  URL Pattern <span className="mandatory-field">*</span>
+                </Label>
               </Col>
               <Col xs="12" md="9">
                 <Input
@@ -71,7 +75,9 @@ class RuleForm extends React.Component {
             </FormGroup>
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">Data Source</Label>
+                <Label htmlFor="text-input">
+                  Data Source<span className="mandatory-field">*</span>
+                </Label>
               </Col>
               <Col xs="12" md="9">
                 <Input
@@ -88,6 +94,11 @@ class RuleForm extends React.Component {
                     </option>
                   ))}
                 </Input>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col xs="12" md="9">
+                <span className="mandatory-field">* : must be filled in</span>
               </Col>
             </FormGroup>
           </Form>

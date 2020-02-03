@@ -209,6 +209,18 @@ class RuleList extends Component {
 
     return `${full} (${relative} ago)`;
   }
+  getDataSource(id) {
+    if (id !== null) {
+      var dname = "";
+      axios
+        .get(process.env.REACT_APP_API_URL + "data_sources/" + id)
+        .then(res => {
+          dname = res.data.name;
+        });
+      return dname;
+    }
+    return "-";
+  }
   render() {
     const { rules } = this.state;
     return (
@@ -230,6 +242,7 @@ class RuleList extends Component {
                     <th>ID</th>
                     <th>Name</th>
                     <th>URL Pattern</th>
+                    <th>Data Source</th>
                     <th>Updated Date</th>
                     <th>Action</th>
                   </tr>
@@ -248,6 +261,7 @@ class RuleList extends Component {
                           </NavLink>
                         </td>
                         <td>{rule.url_pattern}</td>
+                        <td>{this.getDataSource(rule.data_source_id)}</td>
                         <td>{this.formatSince(rule.updated_at)}</td>
                         <td>
                           <Button
