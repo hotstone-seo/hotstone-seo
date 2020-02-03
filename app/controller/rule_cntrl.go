@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
@@ -27,11 +28,45 @@ func (c *RuleCntrl) Route(e *echo.Echo) {
 	e.DELETE("rules/:id", c.Delete)
 }
 
+func buildPaginationParam(queryParams url.Values, validColumns []string) repository.PaginationParam {
+	paginationParam := repository.PaginationParam{}
+
+	sort := queryParams.Get("_sort")
+	for _, col := range validColumns {
+		if col == sort {
+			paginationParam.Sort = sort
+			break
+		}
+	}
+
+	order := queryParams.Get("_order")
+	if order == "ASC" {
+		paginationParam.Order = "ASC"
+	} else if order == "DESC" {
+		paginationParam.Order = "DESC"
+	}
+
+	start, _ := strconv.Atoi(queryParams.Get("_start"))
+	paginationParam.Start = start
+	end, _ := strconv.Atoi(queryParams.Get("_end"))
+	paginationParam.End = end
+
+	filters := map[string]string{}
+	for _, col := range validColumns {
+		filters[col] = queryParams.Get(col)
+	}
+	paginationParam.Filters = filters
+
+	return paginationParam
+}
+
 // Find all rule
 func (c *RuleCntrl) Find(ctx echo.Context) (err error) {
 	var rules []*repository.Rule
 	ctx0 := ctx.Request().Context()
-	if rules, err = c.RuleService.Find(ctx0); err != nil {
+
+	paginationParam := buildPaginationParam(ctx.QueryParams(), []string{"id", "name", "url_pattern", "data_source_id", "updated_at", "created_at"})
+	if rules, err = c.RuleService.Find(ctx0, paginationParam); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, rules)

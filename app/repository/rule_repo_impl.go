@@ -11,6 +11,26 @@ import (
 	"go.uber.org/dig"
 )
 
+type PaginationParam struct {
+	Sort    string
+	Order   string
+	Start   int
+	End     int
+	Filters map[string]string
+}
+
+func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) sq.SelectBuilder {
+	base = base.OrderBy(paginationParam.Sort + " " + paginationParam.Order).
+		Offset(uint64(paginationParam.Start)).
+		Limit(uint64(paginationParam.End - paginationParam.Start + 1))
+
+	for _, _ = range paginationParam.Filters {
+
+	}
+
+	return base
+}
+
 // RuleRepoImpl is implementation rule repository
 type RuleRepoImpl struct {
 	dig.In
@@ -34,7 +54,7 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err e
 }
 
 // Find rule
-func (r *RuleRepoImpl) Find(ctx context.Context) (list []*Rule, err error) {
+func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at").
