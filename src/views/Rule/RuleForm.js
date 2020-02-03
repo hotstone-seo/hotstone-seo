@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, Select, Button } from 'antd';
 import { fetchDatasources } from '../../api/datasource';
 
 const { Option } = Select;
+
+const formLayout = { labelCol: { span: 8 }, wrapperCol: { span: 10 } };
+
+const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
 
 function RuleForm() {
   const [form] = Form.useForm();
@@ -24,7 +28,7 @@ function RuleForm() {
   });
 
   return (
-    <Form form={form}>
+    <Form {...formLayout} form={form}>
       <Form.Item
         name="name"
         label="Name"
@@ -32,6 +36,7 @@ function RuleForm() {
       >
         <Input placeholder="My Rule" />
       </Form.Item>
+
       <Form.Item
         name="urlPattern"
         label="URL Pattern"
@@ -39,6 +44,7 @@ function RuleForm() {
       >
         <Input placeholder="/my/rule/pattern" />
       </Form.Item>
+
       <Form.Item
         name="dataSource"
         label="Data Source"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { PageHeader, Row } from 'antd';
 import RuleList from './RuleList';
-import RuleForm from './RuleForm';
+import RuleStep from './RuleStep';
 import { fetchRules } from '../../api/rule';
 import styles from './Rule.module.css';
 
@@ -40,7 +40,7 @@ function Rule() {
           <Route
             exact
             path="/rules/new"
-            render={() => <RuleForm />}
+            render={() => <RuleStep />}
           />
         </Switch>
       </div>
