@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Table, Button, Divider } from 'antd';
 
 const columns = [
@@ -20,11 +21,19 @@ const columns = [
 
 function RuleList({ rules }) {
   return (
-    <Table
-      columns={columns}
-      dataSource={rules}
-      rowKey="id"
-    />
+    <div>
+      <Button
+        type="primary"
+        style={{ marginBottom: 16 }}
+      >
+        <Link to="/rules/new">Add a rule</Link>
+      </Button>
+      <Table
+        columns={columns}
+        dataSource={rules}
+        rowKey="id"
+      />
+    </div>
   );
 }
 
