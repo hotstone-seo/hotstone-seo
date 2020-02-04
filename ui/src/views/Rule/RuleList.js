@@ -1,6 +1,5 @@
-import axios from "axios";
-import PropTypes from "prop-types";
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
   Button,
   Card,
@@ -16,6 +15,7 @@ import {
 } from "reactstrap";
 import { format, formatDistance } from "date-fns";
 import RuleForm from "./RuleForm";
+import api from '../../api/hotstone';
 
 class RuleList extends Component {
   constructor(props) {
@@ -33,8 +33,6 @@ class RuleList extends Component {
         url_pattern: null,
         data_source_id: null
       },
-      URL_API: process.env.REACT_APP_API_URL + "rules",
-      URL_API_DATASOURCES: process.env.REACT_APP_API_URL + "data_sources",
       warningAPI: false,
       errorMessage: "",
       dataSources: []
@@ -67,30 +65,28 @@ class RuleList extends Component {
     });
   }
   getRuleList() {
-    axios
-      .get(this.state.URL_API)
-      .then(res => {
-        const rules = res.data;
-        this.setState({ rules });
-      })
-      .catch(error => {
-        this.toggleWarningAPI(error.message);
-      });
+    api.getRules()
+       .then(rules => {
+         this.setState({ rules });
+       })
+       .catch(error => {
+         this.toggleWarningAPI(error.message);
+       });
   }
   componentDidMount() {
     this.getRuleList();
   }
 
   handleDelete(id) {
-    axios
-      .delete(this.state.URL_API + `/${id}`)
-      .then(() => {
-        const { rules } = this.state;
-        this.setState({ rules: rules.filter(rul => rul.id !== id) });
-      })
-      .catch(error => {
-        this.toggleWarningAPI(error.message);
-      });
+    api.deleteRule(id)
+       .then(() => {
+         const { rules } = this.state;
+         this.setState({ rules: rules.filter(rule => rule.id !== id) });
+       })
+       .catch(error => {
+         this.toggleWarningAPI(error.message)
+       })
+
     this.toggleWarning();
   }
   showForm(record) {
@@ -126,19 +122,17 @@ class RuleList extends Component {
 
     if (actionForm !== "Add") {
       ruleFormValues.id = record.id;
-      axios
-        .put(this.state.URL_API, ruleFormValues)
-        .then(() => {
-          this.getRuleList();
-        })
-        .catch(error => {
-          this.toggleWarningAPI(error.message);
-        });
+      api.updateRule(ruleFormValues)
+         .then(() => {
+           this.getRuleList();
+         })
+         .catch(error => {
+           this.toggleWarningAPI(error.message);
+         });
     } else {
-      axios
-        .post(this.state.URL_API, ruleFormValues)
+      api.createRule(ruleFormValues)
         .then(response => {
-          var msgArr = response.data.message.split("#");
+          var msgArr = response.message.split("#");
 
           const { history } = this.props;
           history.push({
@@ -193,13 +187,11 @@ class RuleList extends Component {
     return lastid;
   }
   getDataSourcesFromAPI() {
-    axios
-      .get(this.state.URL_API_DATASOURCES)
-      .then(res => {
-        const dataSources = res.data;
-        this.setState({ dataSources });
-      })
-      .catch(error => {});
+    api.getDataSources()
+       .then(dataSources => {
+         this.setState({ dataSources });
+       })
+       .catch(error => {});
   }
   formatSince(since) {
     const sinceDate = new Date(since);
@@ -212,11 +204,10 @@ class RuleList extends Component {
   getDataSource(id) {
     if (id !== null) {
       var dname = "";
-      axios
-        .get(process.env.REACT_APP_API_URL + "data_sources/" + id)
-        .then(res => {
-          dname = res.data.name;
-        });
+      api.getDataSource(id)
+         .then(dataSource => {
+           dname = dataSource.name;
+         });
       return dname;
     }
     return "-";
