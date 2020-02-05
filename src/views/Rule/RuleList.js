@@ -3,7 +3,14 @@ import { Link } from 'react-router-dom';
 import { Table, Button, Divider } from 'antd';
 
 const columns = [
-  { title: 'Name', dataIndex: 'name', key: 'name' },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: (text, record) => (
+      <Link to={`/rules/${record.id}`}>{text}</Link>
+    )
+  },
   { title: 'URL Pattern', dataIndex: 'url_pattern', key: 'urlPattern' },
   { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated' },
   {

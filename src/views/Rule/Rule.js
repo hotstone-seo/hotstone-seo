@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { PageHeader, Row } from 'antd';
-import RuleList from './RuleList';
-import RuleStep from './RuleStep';
 import { fetchRules } from '../../api/rule';
+import RuleList from './RuleList';
+import RuleForm from './RuleForm';
+import RuleDetail from './RuleDetail';
 import styles from './Rule.module.css';
 
 function Rule() {
@@ -23,6 +24,10 @@ function Rule() {
     };
   });
 
+  const findRule = (id) => {
+    return rules.find(rule => rule.id.toString() === id) || {};
+  };
+
   return (
     <div className="Rule">
       <PageHeader
@@ -40,7 +45,11 @@ function Rule() {
           <Route
             exact
             path="/rules/new"
-            render={() => <RuleStep />}
+            render={() => <RuleForm />}
+          />
+          <Route
+            path="/rules/:id"
+            render={({ match }) => <RuleDetail rule={findRule(match.params.id)}/>}
           />
         </Switch>
       </div>
