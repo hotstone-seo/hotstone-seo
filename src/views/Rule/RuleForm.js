@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Select, Button } from 'antd';
-import { fetchDatasources } from '../../api/datasource';
+import { fetchDataSources } from '../../api/datasource';
 
 const { Option } = Select;
 
@@ -15,7 +15,7 @@ function RuleForm() {
 
   useEffect(() => {
     let _isCancelled = false;
-    fetchDatasources()
+    fetchDataSources()
       .then((dataSources) => {
         if (!_isCancelled) {
           setDataSources(dataSources);
@@ -54,6 +54,12 @@ function RuleForm() {
             <Option value={id}>{name}</Option>
           ))}
         </Select>
+      </Form.Item>
+
+      <Form.Item {...tailLayout}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
       </Form.Item>
     </Form>
   );
