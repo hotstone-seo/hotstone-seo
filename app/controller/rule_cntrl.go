@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/hotstone-seo/hotstone-seo/app/service"
@@ -39,7 +40,7 @@ func buildPaginationParam(queryParams url.Values, validColumns []string) reposit
 		}
 	}
 
-	order := queryParams.Get("_order")
+	order := strings.ToUpper(queryParams.Get("_order"))
 	if order == "ASC" {
 		paginationParam.Order = "ASC"
 	} else if order == "DESC" {
@@ -53,7 +54,10 @@ func buildPaginationParam(queryParams url.Values, validColumns []string) reposit
 
 	filters := map[string]string{}
 	for _, col := range validColumns {
-		filters[col] = queryParams.Get(col)
+		whereCond := queryParams.Get(col)
+		if whereCond != "" {
+			filters[col] = whereCond
+		}
 	}
 	paginationParam.Filters = filters
 
