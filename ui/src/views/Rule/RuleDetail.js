@@ -268,10 +268,16 @@ class RuleDetail extends Component {
       }
     });
 
-    this.generatePreviewMetaTag(
-      metaTagFormValues.name,
-      metaTagFormValues.content
-    );
+    let name = "";
+    let content = "";
+    if (target.name === "name") {
+      name = target.value;
+      content = metaTagFormValues.content;
+    } else if (target.name === "content") {
+      name = metaTagFormValues.name;
+      content = target.value;
+    }
+    this.generatePreviewMetaTag(name, content);
   }
 
   handleTitleTagOnChange(type, e) {
@@ -553,7 +559,7 @@ class RuleDetail extends Component {
     //localeSelected = localeSelected.toUpperCase();
 
     this.setState({ localeTag: localeSelected });
-    console.log(localeSelected, "localeSelected");
+
     // TO DO : next below code will be merged to function getTagList
     axios
       .get(
@@ -572,10 +578,10 @@ class RuleDetail extends Component {
       });
   }
   generatePreviewMetaTag(nm, ct) {
-    let metaTagPreviewVal = this.state.metaTagPreviewValue;
-    metaTagPreviewVal =
+    let metaTagPreviewValue = ""; //this.state.metaTagPreviewValue;
+    metaTagPreviewValue =
       '<meta name="' + nm + '" content="' + (ct !== null ? ct : "") + '">';
-    this.setState({ metaTagPreviewValue: metaTagPreviewVal });
+    this.setState({ metaTagPreviewValue });
   }
   generatePreviewTitleTag(ttl) {
     let titleTagPreviewVal = this.state.titleTagPreviewValue;
