@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import { PageHeader } from 'antd';
 import { fetchRules } from 'api/rule';
 import { RuleDetail, RuleForm, RuleList } from 'components/Rule';
+import AddRule from './scenes/AddRule';
 import styles from './Rule.module.css';
 
 function Rule() {
@@ -43,7 +44,7 @@ function Rule() {
           <Route
             exact
             path="/rules/new"
-            render={() => <RuleForm />}
+            render={() => <AddRule />}
           />
           <Route
             path="/rules/:id"

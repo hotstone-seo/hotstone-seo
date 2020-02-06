@@ -28,7 +28,7 @@ function RuleForm() {
   });
 
   return (
-    <Form {...formLayout} form={form}>
+    <Form {...formLayout} form={form} style={{ marginTop: 24 }}>
       <Form.Item
         name="name"
         label="Name"
