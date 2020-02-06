@@ -8,7 +8,7 @@ const formLayout = { labelCol: { span: 8 }, wrapperCol: { span: 10 } };
 
 const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
 
-function RuleForm() {
+function RuleForm({ handleCreate }) {
   const [form] = Form.useForm();
 
   const [dataSources, setDataSources] = useState([]);
@@ -28,7 +28,7 @@ function RuleForm() {
   });
 
   return (
-    <Form {...formLayout} form={form} style={{ marginTop: 24 }}>
+    <Form {...formLayout} form={form} onFinish={handleCreate} style={{ marginTop: 24 }}>
       <Form.Item
         name="name"
         label="Name"
@@ -51,7 +51,7 @@ function RuleForm() {
       >
         <Select allowClear>
           {dataSources.map(({ id, name }) => (
-            <Option value={id}>{name}</Option>
+            <Option value={id} key={id}>{name}</Option>
           ))}
         </Select>
       </Form.Item>

@@ -8,10 +8,17 @@ function ViewRules({ match }) {
   const [rules, setRules] = useState([]);
 
   useEffect(() => {
+    let _isCancelled = false;
     fetchRules()
       .then(rules => {
-        setRules(rules);
+        if (!_isCancelled) {
+          setRules(rules);
+        }
       });
+
+    return () => {
+      _isCancelled = true;
+    };
   })
 
   return (
