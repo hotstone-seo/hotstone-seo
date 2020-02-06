@@ -5,7 +5,7 @@ import { RuleDetail } from 'components/Rule';
 import { AddRule, ViewRules } from './scenes';
 import styles from './Rule.module.css';
 
-function Rule() {
+function Rule({ match }) {
   return (
     <div className="Rule">
       <PageHeader
@@ -17,16 +17,16 @@ function Rule() {
         <Switch>
           <Route
             exact
-            path="/rules"
-            render={() => <ViewRules />}
+            path={match.url}
+            render={(props) => <ViewRules {...props} />}
           />
           <Route
             exact
-            path="/rules/new"
+            path={`${match.url}/new`}
             render={() => <AddRule />}
           />
           <Route
-            path="/rules/:id"
+            path={`${match.url}/:id`}
             render={({ match }) => <RuleDetail />}
           />
         </Switch>

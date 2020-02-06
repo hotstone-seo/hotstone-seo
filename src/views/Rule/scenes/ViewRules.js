@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { fetchRules } from 'api/rule';
 import { RuleList } from 'components/Rule';
 
-function ViewRules() {
+function ViewRules({ match }) {
   const [rules, setRules] = useState([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ function ViewRules() {
         type="primary"
         style={{ marginBottom: 16 }}
       >
-        <Link to="rules/new">Add new Rule</Link>
+        <Link to={`${match.url}/new`}>Add new Rule</Link>
       </Button>
       <RuleList rules={rules} />
     </div>
