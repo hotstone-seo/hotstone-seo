@@ -305,7 +305,9 @@ class RuleDetail extends Component {
       }
     });
 
-    this.generatePreviewScriptTag(scriptTagFormValues.type);
+    if (target.name === "types") {
+      this.generatePreviewScriptTag(target.value);
+    }
   }
 
   handleCanonicalTagOnChange(type, e) {
@@ -587,11 +589,11 @@ class RuleDetail extends Component {
     titleTagPreviewValue = "<title>" + (ttl !== null ? ttl : "") + "</title>";
     this.setState({ titleTagPreviewValue });
   }
-  generatePreviewScriptTag(ttl) {
-    let scriptTagPreviewVal = this.state.scriptTagPreviewValue;
-    scriptTagPreviewVal =
-      '<script type="' + (ttl !== null ? ttl : "") + '"></script>';
-    this.setState({ scriptTagPreviewValue: scriptTagPreviewVal });
+  generatePreviewScriptTag(scp) {
+    let scriptTagPreviewValue = "";
+    scriptTagPreviewValue =
+      '<script type="' + (scp !== null ? scp : "") + '"></script>';
+    this.setState({ scriptTagPreviewValue });
   }
   resetCanonicalForm() {
     this.setState({

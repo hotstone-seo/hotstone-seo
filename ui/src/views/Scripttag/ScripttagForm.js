@@ -105,14 +105,10 @@ class ScripttagForm extends Component {
             <FormGroup row></FormGroup>
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">
-                  <b>Preview</b>
-                </Label>
+                <Label htmlFor="text-input">Preview</Label>
               </Col>
               <Col xs="12" md="9">
-                <b>
-                  <pre>{scriptTagPreviewValue}</pre>
-                </b>
+                <pre>{scriptTagPreviewValue}</pre>
               </Col>
             </FormGroup>
           </Form>

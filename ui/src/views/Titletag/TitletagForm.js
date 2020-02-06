@@ -114,9 +114,7 @@ class TitletagForm extends Component {
             <FormGroup row></FormGroup>
             <FormGroup row>
               <Col md="3">
-                <Label htmlFor="text-input">
-                  <b>Preview</b>
-                </Label>
+                <Label htmlFor="text-input">Preview</Label>
               </Col>
               <Col xs="12" md="9">
                 <pre>{titleTagPreviewValue}</pre>
