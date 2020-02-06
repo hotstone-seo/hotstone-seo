@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { PageHeader, Row } from 'antd';
-import { fetchRules } from '../../api/rule';
-import RuleList from './RuleList';
-import RuleForm from './RuleForm';
-import RuleDetail from './RuleDetail';
+import { PageHeader } from 'antd';
+import { fetchRules } from 'api/rule';
+import { RuleDetail, RuleForm, RuleList } from 'components/Rule';
 import styles from './Rule.module.css';
 
 function Rule() {
