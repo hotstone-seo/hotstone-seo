@@ -1,32 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { PageHeader } from 'antd';
-import { fetchRules } from 'api/rule';
-import { RuleDetail, RuleForm, RuleList } from 'components/Rule';
-import AddRule from './scenes/AddRule';
+import { RuleDetail } from 'components/Rule';
+import { AddRule, ViewRules } from './scenes';
 import styles from './Rule.module.css';
 
 function Rule() {
-  const [rules, setRules] = useState([]);
-
-  useEffect(() => {
-    let _isCancelled = false;
-    fetchRules()
-      .then((rules) => {
-        if (!_isCancelled) {
-          setRules(rules);
-        }
-      });
-
-    return () => {
-      _isCancelled = true;
-    };
-  });
-
-  const findRule = (id) => {
-    return rules.find(rule => rule.id.toString() === id) || {};
-  };
-
   return (
     <div className="Rule">
       <PageHeader
@@ -39,7 +18,7 @@ function Rule() {
           <Route
             exact
             path="/rules"
-            render={() => <RuleList rules={rules} />}
+            render={() => <ViewRules />}
           />
           <Route
             exact
@@ -48,7 +27,7 @@ function Rule() {
           />
           <Route
             path="/rules/:id"
-            render={({ match }) => <RuleDetail rule={findRule(match.params.id)}/>}
+            render={({ match }) => <RuleDetail />}
           />
         </Switch>
       </div>

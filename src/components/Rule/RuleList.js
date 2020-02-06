@@ -28,19 +28,11 @@ const columns = [
 
 function RuleList({ rules }) {
   return (
-    <div>
-      <Button
-        type="primary"
-        style={{ marginBottom: 16 }}
-      >
-        <Link to="/rules/new">Add a rule</Link>
-      </Button>
-      <Table
-        columns={columns}
-        dataSource={rules}
-        rowKey="id"
-      />
-    </div>
+    <Table
+      columns={columns}
+      dataSource={rules}
+      rowKey="id"
+    />
   );
 }
 
