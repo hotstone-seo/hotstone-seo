@@ -533,9 +533,7 @@ class RuleDetail extends Component {
   getTagList(rule_id) {
     const { localeTag } = this.state;
     axios
-      .get(
-        this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id
-      )
+      .get(this.state.URL_TAG_API + "?rule_id=" + rule_id)
       .then(res => {
         const tags = res.data;
         this.setState({ tags });
