@@ -1,8 +1,8 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Layout, Row, Col } from 'antd';
-import { useAuth } from '../../../components/AuthProvider';
-import LoginForm from './LoginForm';
+import { useAuth } from 'components/AuthProvider';
+import { LoginForm } from 'components/Login';
 
 // TODO: Investigate why calling <LoginForm /> cause error saying cannot update state on
 // unmounted component
