@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 	"time"
 
@@ -13,8 +14,7 @@ import (
 )
 
 type PaginationParam struct {
-	Sort    string
-	Order   string
+	Sorts   map[string]string
 	Start   int
 	End     int
 	Filters map[string]string
@@ -22,8 +22,8 @@ type PaginationParam struct {
 
 func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) sq.SelectBuilder {
 
-	if paginationParam.Sort != "" && paginationParam.Order != "" {
-		base = base.OrderBy(paginationParam.Sort + " " + paginationParam.Order)
+	for col, order := range paginationParam.Sorts {
+		base = base.OrderBy(fmt.Sprintf("%s %s", col, order))
 	}
 
 	base = base.Offset(uint64(paginationParam.Start))
