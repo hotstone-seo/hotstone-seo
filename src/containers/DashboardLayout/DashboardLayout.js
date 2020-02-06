@@ -3,7 +3,7 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import HeaderMenu from './HeaderMenu';
-import routes from '../../routes';
+import routes from 'routes';
 import styles from './DashboardLayout.module.css';
 
 const { Header, Content, Sider } = Layout;
