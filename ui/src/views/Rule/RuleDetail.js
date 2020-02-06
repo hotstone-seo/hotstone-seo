@@ -291,8 +291,7 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
-
-    this.generatePreviewTitleTag(titleTagFormValues.title);
+    this.generatePreviewTitleTag(target.value);
   }
   handleScriptTagOnChange(type, e) {
     const { target } = e || {};
@@ -578,15 +577,15 @@ class RuleDetail extends Component {
       });
   }
   generatePreviewMetaTag(nm, ct) {
-    let metaTagPreviewValue = ""; //this.state.metaTagPreviewValue;
+    let metaTagPreviewValue = "";
     metaTagPreviewValue =
       '<meta name="' + nm + '" content="' + (ct !== null ? ct : "") + '">';
     this.setState({ metaTagPreviewValue });
   }
   generatePreviewTitleTag(ttl) {
-    let titleTagPreviewVal = this.state.titleTagPreviewValue;
-    titleTagPreviewVal = "<title>" + (ttl !== null ? ttl : "") + "</title>";
-    this.setState({ titleTagPreviewValue: titleTagPreviewVal });
+    let titleTagPreviewValue = "";
+    titleTagPreviewValue = "<title>" + (ttl !== null ? ttl : "") + "</title>";
+    this.setState({ titleTagPreviewValue });
   }
   generatePreviewScriptTag(ttl) {
     let scriptTagPreviewVal = this.state.scriptTagPreviewValue;
