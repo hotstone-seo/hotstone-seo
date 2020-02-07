@@ -19,7 +19,7 @@ function ViewRules({ match }) {
     return () => {
       _isCancelled = true;
     };
-  })
+  }, []);
 
   return (
     <div>

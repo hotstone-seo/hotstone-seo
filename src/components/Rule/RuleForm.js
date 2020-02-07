@@ -25,7 +25,7 @@ function RuleForm({ handleCreate }) {
     return () => {
       _isCancelled = true;
     };
-  });
+  }, []);
 
   return (
     <Form {...formLayout} form={form} onFinish={handleCreate} style={{ marginTop: 24 }}>
