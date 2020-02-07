@@ -12,13 +12,11 @@ import (
 func init() {
 	typical.Descriptor.AppendConstructor(
 		repository.NewDataSourceRepo,
-		repository.NewLocaleRepo,
 		repository.NewMetricsRuleMatchingRepo,
 		repository.NewRuleRepo,
 		repository.NewTagRepo,
 		service.NewCenterService,
 		service.NewDataSourceService,
-		service.NewLocaleService,
 		service.NewMetricsRuleMatchingService,
 		service.NewProviderService,
 		service.NewRuleService,
