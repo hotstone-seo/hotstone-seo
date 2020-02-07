@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from 'antd';
-import { fetchRules } from 'api/rule';
+import { Button, message } from 'antd';
+import { fetchRules, deleteRule } from 'api/rule';
 import { RuleList } from 'components/Rule';
 
 function ViewRules({ match }) {
@@ -21,6 +21,17 @@ function ViewRules({ match }) {
     };
   }, []);
 
+  const handleDelete = (rule) => {
+    deleteRule(rule.id)
+      .then(() => {
+        message.success(`Successfully deleted ${rule.name}`);
+        setRules(rules.filter(item => item.id !== rule.id))
+      })
+      .catch(error => {
+        message.error(error.message);
+      })
+  }
+
   return (
     <div>
       <Button
@@ -29,7 +40,10 @@ function ViewRules({ match }) {
       >
         <Link to={`${match.url}/new`}>Add new Rule</Link>
       </Button>
-      <RuleList rules={rules} />
+      <RuleList
+        rules={rules}
+        onDelete={handleDelete}
+      />
     </div>
   )
 }

@@ -1,32 +1,40 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Button, Divider } from 'antd';
+import { Table, Button, Divider, Popconfirm } from 'antd';
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text, record) => (
-      <Link to={`/rules/${record.id}`}>{text}</Link>
-    )
-  },
-  { title: 'URL Pattern', dataIndex: 'url_pattern', key: 'urlPattern' },
-  { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated' },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (text, record) => (
-      <span>
-        <Button type="link" style={{ padding: 0 }}>Edit</Button>
-        <Divider type="vertical" />
-        <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
-      </span>
-    )
-  }
-]
+function RuleList(props) {
+  const { rules, onClick, onEdit, onDelete } = props;
 
-function RuleList({ rules }) {
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => (
+        <Link to={`/rules/${record.id}`}>{text}</Link>
+      )
+    },
+    { title: 'URL Pattern', dataIndex: 'url_pattern', key: 'urlPattern' },
+    { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated' },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <span>
+          <Button type="link" style={{ padding: 0 }}>Edit</Button>
+          <Divider type="vertical" />
+          <Popconfirm
+            title="Are you sure to delete this rule?"
+            placement="topRight"
+            onConfirm={() => onDelete(record)}
+          >
+            <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
+          </Popconfirm>
+        </span>
+      )
+    }
+  ]
+
   return (
     <Table
       columns={columns}
