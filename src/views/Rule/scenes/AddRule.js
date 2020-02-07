@@ -20,10 +20,9 @@ function AddRule() {
     <div>
       <Row>
         <Col className={styles.container} span={12}>
-          <RuleForm handleCreate={handleCreate} />
+          <RuleForm handleSubmit={handleCreate} />
         </Col>
       </Row>
-      {}
     </div>
   );
 }
