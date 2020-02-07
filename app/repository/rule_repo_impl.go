@@ -3,8 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"fmt"
-	"strings"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -12,36 +10,6 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
-
-type PaginationParam struct {
-	Sorts   map[string]string
-	Start   int
-	End     int
-	Filters map[string]string
-}
-
-func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) sq.SelectBuilder {
-
-	for col, order := range paginationParam.Sorts {
-		base = base.OrderBy(fmt.Sprintf("%s %s", col, order))
-	}
-
-	base = base.Offset(uint64(paginationParam.Start))
-
-	if paginationParam.End != 0 {
-		base = base.Limit(uint64(paginationParam.End - paginationParam.Start + 1))
-	}
-
-	for col, whereCond := range paginationParam.Filters {
-		if strings.ContainsAny(whereCond, "%") {
-			base = base.Where(sq.Like{col: whereCond})
-		} else {
-			base = base.Where(sq.Eq{col: whereCond})
-		}
-	}
-
-	return base
-}
 
 // RuleRepoImpl is implementation rule repository
 type RuleRepoImpl struct {
