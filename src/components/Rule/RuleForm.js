@@ -38,7 +38,7 @@ function RuleForm({ handleCreate }) {
       </Form.Item>
 
       <Form.Item
-        name="urlPattern"
+        name="url_pattern"
         label="URL Pattern"
         rules={[{ required: true, message: 'Please input the URL Pattern' }]}
       >
@@ -46,7 +46,7 @@ function RuleForm({ handleCreate }) {
       </Form.Item>
 
       <Form.Item
-        name="dataSource"
+        name="data_source_id"
         label="Data Source"
       >
         <Select allowClear>
