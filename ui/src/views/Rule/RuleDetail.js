@@ -29,6 +29,8 @@ import HitCounterCard from "../Analytic/HitCounterCard";
 
 import axios from "axios";
 
+import localeJson from "../../jsondata/locale.json";
+
 export const parseQuery = subject => {
   const results = {};
   const parser = /[^&?]+/g;
@@ -58,7 +60,7 @@ class RuleDetail extends Component {
       URL_ADDCANONICAL_API:
         process.env.REACT_APP_API_URL + "center/addCanonicalTag",
       URL_ADDSCRIPT_API: process.env.REACT_APP_API_URL + "center/addScriptTag",
-      URL_LOCALE_API: process.env.REACT_APP_API_URL + "locales",
+
       canonicalFormValues: {
         id: null,
         canonical: null,
@@ -142,13 +144,8 @@ class RuleDetail extends Component {
     this.setState({ ruleId: id });
     this.getTagList(parseInt(id));
 
-    axios
-      .get(this.state.URL_LOCALE_API)
-      .then(res => {
-        const languages = res.data;
-        this.setState({ languages });
-      })
-      .catch(error => {});
+    const languages = localeJson;
+    this.setState({ languages });
   }
 
   toggle() {
