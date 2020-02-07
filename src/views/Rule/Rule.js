@@ -1,8 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { PageHeader } from 'antd';
-import { RuleDetail } from 'components/Rule';
-import { AddRule, ViewRules } from './scenes';
+import { AddRule, EditRule, ViewRules } from './scenes';
 import styles from './Rule.module.css';
 
 function Rule({ match }) {
@@ -27,7 +26,7 @@ function Rule({ match }) {
           />
           <Route
             path={`${match.url}/:id`}
-            render={({ match }) => <RuleDetail />}
+            render={() => <EditRule />}
           />
         </Switch>
       </div>
