@@ -1,6 +1,13 @@
 import axios from 'axios';
 
 // https://gist.github.com/paulsturgess/ebfae1d1ac1779f18487d3dee80d1258
+ 
+function handleRequest(req) {
+  return req.then(response => response.data)
+            .catch(error => {
+              throw error;
+            });
+}
 
 class HotstoneAPI {
   constructor() {
@@ -10,59 +17,71 @@ class HotstoneAPI {
   }
 
   getRules() {
-    return this.client.get('/rules')
-               .then(response => response.data)
-               .catch(error => {
-                 throw error;
-               });
+    return handleRequest(this.client.get('/rules'));
+  }
+
+  getRule(id) {
+    return handleRequest(this.client.get(`/rules/${id}`));
   }
 
   createRule(rule) {
-    return this.client.post('/rules', rule)
-               .then(response => response.data)
-               .catch(error => {
-                 throw error;
-               })
+    return handleRequest(this.client.post('/rules', rule));
   }
 
   updateRule(rule) {
-    return this.client.put('/rules', rule)
-               .then(response => response.data)
-               .catch(error => {
-                 throw error;
-               });
+    return handleRequest(this.client.put('/rules', rule));
   }
 
   deleteRule(id) {
-    return this.client.delete(`/rules/${id}`)
-               .then(response => response.data)
-               .catch(error => {
-                 throw error;
-               });
+    return handleRequest(this.client.delete(`/rules/${id}`));
   }
 
   getDataSources() {
-    return this.client.get('/data_sources')
-               .then(response => response.data)
-               .catch(error => {
-                 throw error;
-               });
+    return handleRequest(this.client.get('/data_sources'));
   }
 
   getDataSource(id) {
-    return this.client.get(`/data_sources/${id}`)
-               .then(response => response.data)
-               .catch(error => {
-                 throw error;
-               });
+    return handleRequest(this.client.get(`/data_sources/${id}`));
   }
 
   getLocales() {
-    return this.client.get('/locales')
-               .then(response => response.data)
-               .catch(error => {
-                 throw error;
-               });
+    return handleRequest(this.client.get('/locales'));
+  }
+
+  getLocale(id) {
+    return handleRequest(this.client.get(`/locales/${id}`));
+  }
+
+  createLocale(locale) {
+    return handleRequest(this.client.post('/locales', locale));
+  }
+
+  updateLocale(locale) {
+    return handleRequest(this.client.put('/locales', locale));
+  }
+
+  deleteLocale(id) {
+    return handleRequest(this.client.delete(`/locales/${id}`));
+  }
+
+  getTags() {
+    return handleRequest(this.client.get('/tags'));
+  }
+
+  getTag(id) {
+    return handleRequest(this.client.get(`/tags/${id}`));
+  }
+
+  createTag(tag) {
+    return handleRequest(this.client.post('/tags', tag));
+  }
+
+  updateTag(tag) {
+    return handleRequest(this.client.put('/tags', tag));
+  }
+
+  deleteTag(id) {
+    return handleRequest(this.client.delete(`/tags/${id}`));
   }
 
   postProviderMatchRule(path) {
