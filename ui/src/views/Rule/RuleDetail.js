@@ -268,10 +268,16 @@ class RuleDetail extends Component {
       }
     });
 
-    this.generatePreviewMetaTag(
-      metaTagFormValues.name,
-      metaTagFormValues.content
-    );
+    let name = "";
+    let content = "";
+    if (target.name === "name") {
+      name = target.value;
+      content = metaTagFormValues.content;
+    } else if (target.name === "content") {
+      name = metaTagFormValues.name;
+      content = target.value;
+    }
+    this.generatePreviewMetaTag(name, content);
   }
 
   handleTitleTagOnChange(type, e) {
@@ -285,8 +291,7 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
-
-    this.generatePreviewTitleTag(titleTagFormValues.title);
+    this.generatePreviewTitleTag(target.value);
   }
   handleScriptTagOnChange(type, e) {
     const { target } = e || {};
@@ -300,7 +305,9 @@ class RuleDetail extends Component {
       }
     });
 
-    this.generatePreviewScriptTag(scriptTagFormValues.type);
+    if (target.name === "types") {
+      this.generatePreviewScriptTag(target.value);
+    }
   }
 
   handleCanonicalTagOnChange(type, e) {
@@ -553,7 +560,7 @@ class RuleDetail extends Component {
     //localeSelected = localeSelected.toUpperCase();
 
     this.setState({ localeTag: localeSelected });
-    console.log(localeSelected, "localeSelected");
+
     // TO DO : next below code will be merged to function getTagList
     axios
       .get(
@@ -572,21 +579,21 @@ class RuleDetail extends Component {
       });
   }
   generatePreviewMetaTag(nm, ct) {
-    let metaTagPreviewVal = this.state.metaTagPreviewValue;
-    metaTagPreviewVal =
+    let metaTagPreviewValue = "";
+    metaTagPreviewValue =
       '<meta name="' + nm + '" content="' + (ct !== null ? ct : "") + '">';
-    this.setState({ metaTagPreviewValue: metaTagPreviewVal });
+    this.setState({ metaTagPreviewValue });
   }
   generatePreviewTitleTag(ttl) {
-    let titleTagPreviewVal = this.state.titleTagPreviewValue;
-    titleTagPreviewVal = "<title>" + (ttl !== null ? ttl : "") + "</title>";
-    this.setState({ titleTagPreviewValue: titleTagPreviewVal });
+    let titleTagPreviewValue = "";
+    titleTagPreviewValue = "<title>" + (ttl !== null ? ttl : "") + "</title>";
+    this.setState({ titleTagPreviewValue });
   }
-  generatePreviewScriptTag(ttl) {
-    let scriptTagPreviewVal = this.state.scriptTagPreviewValue;
-    scriptTagPreviewVal =
-      '<script type="' + (ttl !== null ? ttl : "") + '"></script>';
-    this.setState({ scriptTagPreviewValue: scriptTagPreviewVal });
+  generatePreviewScriptTag(scp) {
+    let scriptTagPreviewValue = "";
+    scriptTagPreviewValue =
+      '<script type="' + (scp !== null ? scp : "") + '"></script>';
+    this.setState({ scriptTagPreviewValue });
   }
   resetCanonicalForm() {
     this.setState({

@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"strings"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -12,20 +14,30 @@ import (
 )
 
 type PaginationParam struct {
-	Sort    string
-	Order   string
+	Sorts   map[string]string
 	Start   int
 	End     int
 	Filters map[string]string
 }
 
 func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) sq.SelectBuilder {
-	base = base.OrderBy(paginationParam.Sort + " " + paginationParam.Order).
-		Offset(uint64(paginationParam.Start)).
-		Limit(uint64(paginationParam.End - paginationParam.Start + 1))
 
-	for _, _ = range paginationParam.Filters {
+	for col, order := range paginationParam.Sorts {
+		base = base.OrderBy(fmt.Sprintf("%s %s", col, order))
+	}
 
+	base = base.Offset(uint64(paginationParam.Start))
+
+	if paginationParam.End != 0 {
+		base = base.Limit(uint64(paginationParam.End - paginationParam.Start + 1))
+	}
+
+	for col, whereCond := range paginationParam.Filters {
+		if strings.ContainsAny(whereCond, "%") {
+			base = base.Where(sq.Like{col: whereCond})
+		} else {
+			base = base.Where(sq.Eq{col: whereCond})
+		}
 	}
 
 	return base
@@ -59,7 +71,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at").
 		From("rules")
-	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
+	if rows, err = composePagination(builder, paginationParam).RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	list = make([]*Rule, 0)

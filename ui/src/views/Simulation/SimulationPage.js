@@ -32,7 +32,7 @@ const pageMachine = Machine({
           actions: assign({
             listLocale: (context, event) => {
               console.log("[init] RESP: ", event);
-              const listLocale = event.data.data;
+              const listLocale = event.data;
               return listLocale.map(({ lang_code, country_code }) => {
                 return `${lang_code}-${country_code}`;
               });
