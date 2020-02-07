@@ -8,8 +8,11 @@ const formLayout = { labelCol: { span: 8 }, wrapperCol: { span: 10 } };
 
 const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
 
-function RuleForm({ handleCreate }) {
+function RuleForm({ handleSubmit, rule }) {
   const [form] = Form.useForm();
+  if (rule) {
+    form.setFieldsValue(rule);
+  }
 
   const [dataSources, setDataSources] = useState([]);
 
@@ -28,7 +31,7 @@ function RuleForm({ handleCreate }) {
   }, []);
 
   return (
-    <Form {...formLayout} form={form} onFinish={handleCreate} style={{ marginTop: 24 }}>
+    <Form {...formLayout} form={form} onFinish={handleSubmit} style={{ marginTop: 24 }}>
       <Form.Item
         name="name"
         label="Name"
