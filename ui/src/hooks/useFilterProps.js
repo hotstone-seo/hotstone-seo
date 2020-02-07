@@ -1,15 +1,21 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { Input, Button, Icon } from "antd";
+import Highlighter from "react-highlight-words";
 
 export function useFilterProps(dataIndex) {
   const searchInputEl = useRef(null);
-
-  const handleSearch = (selectedKeys, confirm) => {
-    confirm();
-  };
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
   const handleReset = clearFilters => {
     clearFilters();
+    setSearchText("");
+  };
+
+  const handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
   };
 
   return useMemo(() => {
@@ -63,9 +69,17 @@ export function useFilterProps(dataIndex) {
         }
       },
 
-      render: text => {
-        return text;
-      }
+      render: text =>
+        searchedColumn === dataIndex ? (
+          <Highlighter
+            highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+            searchWords={[searchText]}
+            autoEscape
+            textToHighlight={text.toString()}
+          />
+        ) : (
+          text
+        )
     };
-  }, [dataIndex]);
+  }, [dataIndex, searchText, searchedColumn]);
 }
