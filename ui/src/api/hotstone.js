@@ -1,6 +1,5 @@
 import axios from "axios";
 import { locale } from "core-js";
-import localeJson from "../jsondata/locale.json";
 
 // https://gist.github.com/paulsturgess/ebfae1d1ac1779f18487d3dee80d1258
 
@@ -48,7 +47,7 @@ class HotstoneAPI {
   }
 
   getLocales() {
-    const locales = [
+    return [
       {
         id: 1,
         lang_code: "en",
@@ -60,10 +59,6 @@ class HotstoneAPI {
         country_code: "ID"
       }
     ];
-    var obj = new Object();
-    Array.prototype.push.apply(obj, locales);
-    //return obj; //JSON.stringify(locales, null);
-    return localeJson;
   }
 
   getTags() {
