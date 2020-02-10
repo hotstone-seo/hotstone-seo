@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/imantung/mario"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
@@ -206,10 +207,10 @@ func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, er
 
 func interpolateAttribute(ori dbkit.JSON, data interface{}) (interpolated dbkit.JSON, err error) {
 	var (
-		tmpl *template.Template
+		tmpl *mario.Template
 		buf  bytes.Buffer
 	)
-	if tmpl, err = template.New("tmpl").Parse(string(ori)); err != nil {
+	if tmpl, err = mario.New().Parse(string(ori)); err != nil {
 		return
 	}
 	if err = tmpl.Execute(&buf, data); err != nil {
@@ -220,10 +221,10 @@ func interpolateAttribute(ori dbkit.JSON, data interface{}) (interpolated dbkit.
 
 func interpolateValue(ori string, data interface{}) (s string, err error) {
 	var (
-		tmpl *template.Template
+		tmpl *mario.Template
 		buf  bytes.Buffer
 	)
-	if tmpl, err = template.New("tmpl").Parse(ori); err != nil {
+	if tmpl, err = mario.New().Parse(ori); err != nil {
 		return
 	}
 	if err = tmpl.Execute(&buf, data); err != nil {
