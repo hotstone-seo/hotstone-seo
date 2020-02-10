@@ -6,11 +6,11 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
-	"github.com/hotstone-seo/hotstone-seo/typical"
+	"github.com/typical-go/typical-go/pkg/typapp"
 )
 
 func init() {
-	typical.Descriptor.AppendConstructor(
+	typapp.AppendConstructor(
 		repository.NewDataSourceRepo,
 		repository.NewLocaleRepo,
 		repository.NewMetricsRuleMatchingRepo,
