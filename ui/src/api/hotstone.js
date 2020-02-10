@@ -1,12 +1,15 @@
-import axios from 'axios';
+import axios from "axios";
+import { locale } from "core-js";
+import localeJson from "../jsondata/locale.json";
 
 // https://gist.github.com/paulsturgess/ebfae1d1ac1779f18487d3dee80d1258
- 
+
 function handleRequest(req) {
-  return req.then(response => response.data)
-            .catch(error => {
-              throw error;
-            });
+  return req
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
 }
 
 class HotstoneAPI {
@@ -17,7 +20,7 @@ class HotstoneAPI {
   }
 
   getRules() {
-    return handleRequest(this.client.get('/rules'));
+    return handleRequest(this.client.get("/rules"));
   }
 
   getRule(id) {
@@ -25,11 +28,11 @@ class HotstoneAPI {
   }
 
   createRule(rule) {
-    return handleRequest(this.client.post('/rules', rule));
+    return handleRequest(this.client.post("/rules", rule));
   }
 
   updateRule(rule) {
-    return handleRequest(this.client.put('/rules', rule));
+    return handleRequest(this.client.put("/rules", rule));
   }
 
   deleteRule(id) {
@@ -37,7 +40,7 @@ class HotstoneAPI {
   }
 
   getDataSources() {
-    return handleRequest(this.client.get('/data_sources'));
+    return handleRequest(this.client.get("/data_sources"));
   }
 
   getDataSource(id) {
@@ -45,27 +48,26 @@ class HotstoneAPI {
   }
 
   getLocales() {
-    return handleRequest(this.client.get('/locales'));
-  }
-
-  getLocale(id) {
-    return handleRequest(this.client.get(`/locales/${id}`));
-  }
-
-  createLocale(locale) {
-    return handleRequest(this.client.post('/locales', locale));
-  }
-
-  updateLocale(locale) {
-    return handleRequest(this.client.put('/locales', locale));
-  }
-
-  deleteLocale(id) {
-    return handleRequest(this.client.delete(`/locales/${id}`));
+    const locales = [
+      {
+        id: 1,
+        lang_code: "en",
+        country_code: "US"
+      },
+      {
+        id: 2,
+        lang_code: "id",
+        country_code: "ID"
+      }
+    ];
+    var obj = new Object();
+    Array.prototype.push.apply(obj, locales);
+    //return obj; //JSON.stringify(locales, null);
+    return localeJson;
   }
 
   getTags() {
-    return handleRequest(this.client.get('/tags'));
+    return handleRequest(this.client.get("/tags"));
   }
 
   getTag(id) {
@@ -73,11 +75,11 @@ class HotstoneAPI {
   }
 
   createTag(tag) {
-    return handleRequest(this.client.post('/tags', tag));
+    return handleRequest(this.client.post("/tags", tag));
   }
 
   updateTag(tag) {
-    return handleRequest(this.client.put('/tags', tag));
+    return handleRequest(this.client.put("/tags", tag));
   }
 
   deleteTag(id) {

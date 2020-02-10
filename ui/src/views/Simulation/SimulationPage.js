@@ -32,7 +32,8 @@ const pageMachine = Machine({
           actions: assign({
             listLocale: (context, event) => {
               console.log("[init] RESP: ", event);
-              const listLocale = event.data;
+              const listLocale = HotstoneAPI.getLocales(); //event.data;
+              console.log(listLocale);
               return listLocale.map(({ lang_code, country_code }) => {
                 return `${lang_code}-${country_code}`;
               });

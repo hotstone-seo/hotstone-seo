@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import { format, formatDistance } from "date-fns";
 import RuleForm from "./RuleForm";
-import api from '../../api/hotstone';
+import api from "../../api/hotstone";
 
 class RuleList extends Component {
   constructor(props) {
@@ -65,27 +65,29 @@ class RuleList extends Component {
     });
   }
   getRuleList() {
-    api.getRules()
-       .then(rules => {
-         this.setState({ rules });
-       })
-       .catch(error => {
-         this.toggleWarningAPI(error.message);
-       });
+    api
+      .getRules()
+      .then(rules => {
+        this.setState({ rules });
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
+      });
   }
   componentDidMount() {
     this.getRuleList();
   }
 
   handleDelete(id) {
-    api.deleteRule(id)
-       .then(() => {
-         const { rules } = this.state;
-         this.setState({ rules: rules.filter(rule => rule.id !== id) });
-       })
-       .catch(error => {
-         this.toggleWarningAPI(error.message)
-       })
+    api
+      .deleteRule(id)
+      .then(() => {
+        const { rules } = this.state;
+        this.setState({ rules: rules.filter(rule => rule.id !== id) });
+      })
+      .catch(error => {
+        this.toggleWarningAPI(error.message);
+      });
 
     this.toggleWarning();
   }
@@ -116,21 +118,23 @@ class RuleList extends Component {
   }
 
   handleSave() {
-    const { ruleFormValues, rules, actionForm, record } = this.state;
+    const { ruleFormValues, actionForm, record } = this.state;
 
     ruleFormValues.data_source_id = parseInt(ruleFormValues.data_source_id);
 
     if (actionForm !== "Add") {
       ruleFormValues.id = record.id;
-      api.updateRule(ruleFormValues)
-         .then(() => {
-           this.getRuleList();
-         })
-         .catch(error => {
-           this.toggleWarningAPI(error.message);
-         });
+      api
+        .updateRule(ruleFormValues)
+        .then(() => {
+          this.getRuleList();
+        })
+        .catch(error => {
+          this.toggleWarningAPI(error.message);
+        });
     } else {
-      api.createRule(ruleFormValues)
+      api
+        .createRule(ruleFormValues)
         .then(response => {
           var msgArr = response.message.split("#");
 
@@ -187,11 +191,12 @@ class RuleList extends Component {
     return lastid;
   }
   getDataSourcesFromAPI() {
-    api.getDataSources()
-       .then(dataSources => {
-         this.setState({ dataSources });
-       })
-       .catch(error => {});
+    api
+      .getDataSources()
+      .then(dataSources => {
+        this.setState({ dataSources });
+      })
+      .catch(error => {});
   }
   formatSince(since) {
     const sinceDate = new Date(since);
@@ -204,10 +209,9 @@ class RuleList extends Component {
   getDataSource(id) {
     if (id !== null) {
       var dname = "";
-      api.getDataSource(id)
-         .then(dataSource => {
-           dname = dataSource.name;
-         });
+      api.getDataSource(id).then(dataSource => {
+        dname = dataSource.name;
+      });
       return dname;
     }
     return "-";

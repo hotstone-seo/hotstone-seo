@@ -30,6 +30,7 @@ import HitCounterCard from "../Analytic/HitCounterCard";
 import axios from "axios";
 
 import localeJson from "../../jsondata/locale.json";
+import HotstoneAPI from "../../api/hotstone";
 
 export const parseQuery = subject => {
   const results = {};
@@ -143,8 +144,9 @@ class RuleDetail extends Component {
       });
     this.setState({ ruleId: id });
     this.getTagList(parseInt(id));
-
-    const languages = localeJson;
+    console.log(localeJson);
+    console.log(HotstoneAPI.getLocales());
+    const languages = localeJson; //HotstoneAPI.getLocales();
     this.setState({ languages });
   }
 
