@@ -66,7 +66,7 @@ function RuleListV2() {
       sorter: true,
       sortOrder: sortedInfo.columnKey === "age" && sortedInfo.order,
       // ...getColumnSearchProps("age")
-      ...getColumnSearchProps("age")
+      ...useFilterProps("age")
     },
     {
       title: "Address",
