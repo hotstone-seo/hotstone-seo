@@ -50,18 +50,18 @@ func (mr *MockRuleRepoMockRecorder) FindOne(ctx, id interface{}) *gomock.Call {
 }
 
 // Find mocks base method
-func (m *MockRuleRepo) Find(ctx context.Context) ([]*repository.Rule, error) {
+func (m *MockRuleRepo) Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.Rule, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", ctx)
+	ret := m.ctrl.Call(m, "Find", ctx, paginationParam)
 	ret0, _ := ret[0].([]*repository.Rule)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find
-func (mr *MockRuleRepoMockRecorder) Find(ctx interface{}) *gomock.Call {
+func (mr *MockRuleRepoMockRecorder) Find(ctx, paginationParam interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockRuleRepo)(nil).Find), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockRuleRepo)(nil).Find), ctx, paginationParam)
 }
 
 // Insert mocks base method

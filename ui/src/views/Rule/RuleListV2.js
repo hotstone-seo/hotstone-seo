@@ -1,35 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table } from "antd";
-import { getColumnSearchProps } from "../../utils/pagination";
 import { useFilterProps } from "../../hooks/useFilterProps";
 import HotstoneAPI from "../../api/hotstone";
-
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park"
-  },
-  {
-    key: "2",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park"
-  },
-  {
-    key: "3",
-    name: "Jim Green",
-    age: 32,
-    address: "Sidney No. 1 Lake Park"
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park"
-  }
-];
 
 function RuleListV2() {
   const [filteredInfo, setFilteredInfo] = useState({});
@@ -44,44 +16,88 @@ function RuleListV2() {
   };
 
   useEffect(() => {
-    // fetchData();
-  });
+    async function fetchThenNormalizeListRule() {
+      try {
+        var rules = await HotstoneAPI.getRules();
+        const updatedListRule = await Promise.all(
+          rules.map(async rule => {
+            if (rule.data_source_id == null) {
+              rule["data_source"] = "";
+            } else {
+              const dataSource = await HotstoneAPI.getDataSource(
+                rule.data_source_id
+              );
+              rule["data_source"] = dataSource.name;
+            }
+            return rule;
+          })
+        );
 
-  const columns2 = [
+        setListRule(updatedListRule);
+
+        console.log("### RULES: ", rules);
+      } catch (err) {
+        console.log("ERR: ", err);
+      }
+    }
+
+    fetchThenNormalizeListRule();
+  }, [filteredInfo, sortedInfo]);
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: "10%",
+      sorter: false,
+      sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
+      // ...useFilterProps("id")
+    },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: "30%",
+      width: "20%",
       sorter: true,
       sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
-      // ...getColumnSearchProps("name")
       ...useFilterProps("name")
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      width: "20%",
+      title: "URL Pattern",
+      dataIndex: "url_pattern",
+      key: "url_pattern",
+      width: "30%",
       sorter: true,
-      sortOrder: sortedInfo.columnKey === "age" && sortedInfo.order,
-      // ...getColumnSearchProps("age")
-      ...getColumnSearchProps("age")
+      sortOrder: sortedInfo.columnKey === "url_pattern" && sortedInfo.order,
+      ...useFilterProps("url_pattern")
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Data Source",
+      dataIndex: "data_source",
+      key: "data_source",
+      sorter: false,
+      sortOrder: sortedInfo.columnKey === "data_source" && sortedInfo.order
+      // ...useFilterProps("data_source")
+    },
+    {
+      title: "Updated Date",
+      dataIndex: "updated_date",
+      key: "updated_date",
       sorter: true,
-      sortOrder: sortedInfo.columnKey === "address" && sortedInfo.order,
-      // ...getColumnSearchProps("address")
-      ...useFilterProps("address")
+      sortOrder: sortedInfo.columnKey === "updated_date" && sortedInfo.order
+      // ...useFilterProps("updated_date")
     }
   ];
 
   return (
     <div>
-      <Table columns={columns2} dataSource={data} onChange={handleChange} />
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={listRule}
+        onChange={handleChange}
+      />
     </div>
   );
 }
