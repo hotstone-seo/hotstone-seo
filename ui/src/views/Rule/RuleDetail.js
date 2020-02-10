@@ -113,7 +113,7 @@ class RuleDetail extends Component {
         content: null
       },
       languages: [],
-      localeTag: "id-ID",
+      localeTag: process.env.DEFAULT_LOCALE,
       metaTagPreviewValue: "",
       titleTagPreviewVal: "",
       scriptTagPreviewVal: ""
