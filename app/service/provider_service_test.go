@@ -88,48 +88,6 @@ func TestProvider_Tags(t *testing.T) {
 		require.EqualError(t, err, "some-error")
 		require.Nil(t, tags)
 	})
-	t.Run("WHEN requesting external data", func(t *testing.T) {
-		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).
-			Return([]*repository.Tag{
-				{ID: 1, RuleID: 999, Locale: "en-US", Type: "some-type", Attributes: dbkit.JSON(`{"key1": "value1 {{.Data1}}", "key2{{.Data2}}": "value2"}`), Value: "some-value{{.Data3}}"},
-			}, nil)
-		dataSourceID := new(int64)
-		*dataSourceID = 555
-		ruleRepo.EXPECT().FindOne(ctx, int64(999)).
-			Return(&repository.Rule{
-				ID:           1,
-				Name:         "Some rule",
-				UrlPattern:   "/some-pattern",
-				DataSourceID: dataSourceID,
-			}, nil)
-		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(200)
-			w.Write([]byte(`{"Data1":"some-data-1","Data2":"some-data-2","Data3":"some-data-3"}`))
-		}))
-		defer server.Close()
-		dataSourceRepo.EXPECT().FindOne(ctx, int64(555)).
-			Return(&repository.DataSource{
-				ID:   int64(555),
-				Name: "Some datasource",
-				Url:  server.URL,
-			}, nil)
-		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{
-			RuleID: 999,
-			Locale: "en-US",
-		}, false)
-		require.NoError(t, err)
-		require.EqualValues(t, []*service.InterpolatedTag{
-			{
-				ID:         1,
-				RuleID:     999,
-				Locale:     "en-US",
-				Type:       "some-type",
-				Attributes: dbkit.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
-				Value:      "some-valuesome-data-3",
-			},
-		}, tags)
-	})
-
 }
 
 func TestProvider_Tags_Success(t *testing.T) {
