@@ -1,24 +1,53 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Table } from "antd";
 import { useFilterProps } from "../../hooks/useFilterProps";
+import { buildQueryParam, onTableChange } from "../../utils/pagination";
 import HotstoneAPI from "../../api/hotstone";
+import _ from "lodash";
+
+const defaultPagination = {
+  current: 1,
+  pageSize: 2
+};
 
 function RuleListV2() {
+  const [totalData, setTotalData] = useState(
+    defaultPagination.current * defaultPagination.pageSize +
+      defaultPagination.pageSize
+  );
+
+  const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
 
   const [listRule, setListRule] = useState([]);
 
-  const handleChange = (pagination, filters, sorter) => {
-    console.log("Various parameters", pagination, filters, sorter);
-    setFilteredInfo(filters);
-    setSortedInfo(sorter);
-  };
+  useEffect(() => {
+    console.log("=== listRULE changes === totalData: " + totalData);
+    const pagination = { ...paginationInfo };
+    let total = totalData;
+    if (listRule.length >= pagination.pageSize) {
+      total = pagination.current * pagination.pageSize + pagination.pageSize;
+    } else {
+      total = pagination.current * pagination.pageSize;
+    }
+    setTotalData(total);
+  }, [listRule]);
 
   useEffect(() => {
     async function fetchThenNormalizeListRule() {
+      console.log("=== fetchThenNormalizeListRule ===");
+
       try {
-        var rules = await HotstoneAPI.getRules();
+        const queryParam = buildQueryParam(
+          paginationInfo,
+          filteredInfo,
+          sortedInfo
+        );
+
+        console.log("@@ QUERY PARAM: ", queryParam);
+
+        var rules = await HotstoneAPI.getRules({ params: queryParam });
         const updatedListRule = await Promise.all(
           rules.map(async rule => {
             if (rule.data_source_id == null) {
@@ -42,7 +71,7 @@ function RuleListV2() {
     }
 
     fetchThenNormalizeListRule();
-  }, [filteredInfo, sortedInfo]);
+  }, [paginationInfo, filteredInfo, sortedInfo]);
 
   const columns = [
     {
@@ -52,7 +81,6 @@ function RuleListV2() {
       width: "10%",
       sorter: false,
       sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
-      // ...useFilterProps("id")
     },
     {
       title: "Name",
@@ -78,7 +106,6 @@ function RuleListV2() {
       key: "data_source",
       sorter: false,
       sortOrder: sortedInfo.columnKey === "data_source" && sortedInfo.order
-      // ...useFilterProps("data_source")
     },
     {
       title: "Updated Date",
@@ -86,7 +113,6 @@ function RuleListV2() {
       key: "updated_date",
       sorter: true,
       sortOrder: sortedInfo.columnKey === "updated_date" && sortedInfo.order
-      // ...useFilterProps("updated_date")
     }
   ];
 
@@ -96,7 +122,12 @@ function RuleListV2() {
         rowKey="id"
         columns={columns}
         dataSource={listRule}
-        onChange={handleChange}
+        pagination={{ ...paginationInfo, total: totalData }}
+        onChange={onTableChange(
+          setPaginationInfo,
+          setFilteredInfo,
+          setSortedInfo
+        )}
       />
     </div>
   );
