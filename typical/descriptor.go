@@ -1,13 +1,10 @@
 package typical
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/app"
+	"github.com/typical-go/typical-go/pkg/typapp"
+	"github.com/typical-go/typical-go/pkg/typbuild"
+	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-go/pkg/typcore"
-	"github.com/typical-go/typical-rest-server/pkg/typdocker"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
-	"github.com/typical-go/typical-rest-server/pkg/typreadme"
-	"github.com/typical-go/typical-rest-server/pkg/typredis"
-	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
 // Descriptor of hotstone-seo
@@ -16,7 +13,7 @@ var Descriptor = typcore.Descriptor{
 	Version: "0.0.1",
 	Package: "github.com/hotstone-seo/hotstone-seo",
 
-	App: typcore.NewApp(application).
+	App: typapp.New(application).
 		WithDependency(
 			server,
 			redis,
@@ -27,7 +24,7 @@ var Descriptor = typcore.Descriptor{
 			postgres,
 		),
 
-	Build: typcore.NewBuild().
+	Build: typbuild.New().
 		WithCommands(
 			docker,
 			readme,
@@ -35,7 +32,7 @@ var Descriptor = typcore.Descriptor{
 			redis,
 		),
 
-	Configuration: typcore.NewConfiguration().
+	Configuration: typcfg.New().
 		WithConfigure(
 			application,
 			server,
@@ -43,19 +40,3 @@ var Descriptor = typcore.Descriptor{
 			postgres,
 		),
 }
-
-var (
-	application = app.New()
-	readme      = typreadme.New()
-	server      = typserver.New()
-	redis       = typredis.New()
-	postgres    = typpostgres.New().WithDBName("hotstone")
-
-	docker = typdocker.New().
-		WithComposers(
-			redis,
-			postgres,
-			// prometheus.New(),
-			// grafana.New(),
-		)
-)

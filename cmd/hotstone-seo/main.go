@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/typical"
-	"github.com/typical-go/typical-go/pkg/typapp"
+	"github.com/typical-go/typical-go/pkg/typcore"
 )
 
 func main() {
-	typapp.Run(&typical.Descriptor)
+	typcore.RunApp(&typical.Descriptor)
 }
