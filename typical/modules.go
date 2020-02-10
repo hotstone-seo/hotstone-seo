@@ -11,10 +11,16 @@ import (
 
 var (
 	application = app.New()
-	readme      = typreadme.New()
-	server      = typserver.New()
-	redis       = typredis.New()
-	postgres    = typpostgres.New().WithDBName("hotstone")
+
+	readme = typreadme.New()
+
+	server = typserver.New()
+
+	redis = typredis.New()
+
+	postgres = typpostgres.New().
+			WithDBName("hotstone").
+			WithDockerImage("timescale/timescaledb:latest-pg11")
 
 	docker = typdocker.New().
 		WithComposers(
