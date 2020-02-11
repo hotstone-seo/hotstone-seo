@@ -1,9 +1,6 @@
 import _ from "lodash";
 
 export const buildQueryParam = (pagination, filters, sorters) => {
-  console.log("@FILTERS: ", filters);
-  console.log("@SORTER: ", sorters);
-
   var queryParam = {};
 
   const order = sorters["order"];
