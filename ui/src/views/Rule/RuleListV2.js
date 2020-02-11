@@ -1,51 +1,43 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Table } from "antd";
-import { useFilterProps } from "../../hooks/useFilterProps";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Table, Divider, Button } from "antd";
+import { format, formatDistance } from "date-fns";
+import { useTableFilterProps } from "../../hooks/useTableFilterProps";
 import { buildQueryParam, onTableChange } from "../../utils/pagination";
 import HotstoneAPI from "../../api/hotstone";
-import _ from "lodash";
+import { useTablePaginationTotal } from "../../hooks/useTablePaginationTotal";
 
 const defaultPagination = {
   current: 1,
   pageSize: 2
 };
 
-function RuleListV2() {
-  const [totalData, setTotalData] = useState(
-    defaultPagination.current * defaultPagination.pageSize +
-      defaultPagination.pageSize
-  );
+const formatDate = since => {
+  const sinceDate = new Date(since);
 
+  const full = format(sinceDate, "dd/MM/yyyy - HH:mm");
+  const relative = formatDistance(sinceDate, new Date());
+
+  return `${full}`;
+};
+
+function RuleListV2() {
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
 
   const [listRule, setListRule] = useState([]);
 
-  useEffect(() => {
-    console.log("=== listRULE changes === totalData: " + totalData);
-    const pagination = { ...paginationInfo };
-    let total = totalData;
-    if (listRule.length >= pagination.pageSize) {
-      total = pagination.current * pagination.pageSize + pagination.pageSize;
-    } else {
-      total = pagination.current * pagination.pageSize;
-    }
-    setTotalData(total);
-  }, [listRule]);
+  const total = useTablePaginationTotal(paginationInfo, listRule);
 
   useEffect(() => {
     async function fetchThenNormalizeListRule() {
-      console.log("=== fetchThenNormalizeListRule ===");
-
       try {
         const queryParam = buildQueryParam(
           paginationInfo,
           filteredInfo,
           sortedInfo
         );
-
-        console.log("@@ QUERY PARAM: ", queryParam);
 
         var rules = await HotstoneAPI.getRules({ params: queryParam });
         const updatedListRule = await Promise.all(
@@ -63,8 +55,6 @@ function RuleListV2() {
         );
 
         setListRule(updatedListRule);
-
-        console.log("### RULES: ", rules);
       } catch (err) {
         console.log("ERR: ", err);
       }
@@ -78,7 +68,7 @@ function RuleListV2() {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      width: "10%",
+      width: "5%",
       sorter: false,
       sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
     },
@@ -89,7 +79,10 @@ function RuleListV2() {
       width: "20%",
       sorter: true,
       sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
-      ...useFilterProps("name")
+      ...useTableFilterProps("name"),
+      render: (text, record) => (
+        <Link to={`/rule-detail/?id=${record.id}`}>{text}</Link>
+      )
     },
     {
       title: "URL Pattern",
@@ -98,7 +91,7 @@ function RuleListV2() {
       width: "30%",
       sorter: true,
       sortOrder: sortedInfo.columnKey === "url_pattern" && sortedInfo.order,
-      ...useFilterProps("url_pattern")
+      ...useTableFilterProps("url_pattern")
     },
     {
       title: "Data Source",
@@ -109,10 +102,22 @@ function RuleListV2() {
     },
     {
       title: "Updated Date",
-      dataIndex: "updated_date",
-      key: "updated_date",
+      dataIndex: "updated_at",
+      key: "updated_at",
       sorter: true,
-      sortOrder: sortedInfo.columnKey === "updated_date" && sortedInfo.order
+      sortOrder: sortedInfo.columnKey === "updated_at" && sortedInfo.order,
+      render: (text, record) => <div>{formatDate(record.updated_at)}</div>
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <span>
+          <Button>Edit</Button>
+          <Divider type="vertical" />
+          <Button type="danger">Delete</Button>
+        </span>
+      )
     }
   ];
 
@@ -122,7 +127,7 @@ function RuleListV2() {
         rowKey="id"
         columns={columns}
         dataSource={listRule}
-        pagination={{ ...paginationInfo, total: totalData }}
+        pagination={{ ...paginationInfo, total: total }}
         onChange={onTableChange(
           setPaginationInfo,
           setFilteredInfo,

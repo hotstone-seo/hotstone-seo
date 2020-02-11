@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { Input, Button, Icon } from "antd";
 import Highlighter from "react-highlight-words";
 
-export function useFilterProps(dataIndex) {
+export function useTableFilterProps(dataIndex) {
   const searchInputEl = useRef(null);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");

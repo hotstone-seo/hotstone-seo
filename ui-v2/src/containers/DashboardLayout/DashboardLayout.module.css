@@ -1,0 +1,42 @@
+.base {
+  height: 100vh;
+}
+
+.logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+
+.trigger {
+  font-size: 20px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+
+.sider {
+  z-index: 2;
+  box-shadow: 2px 0 8px rgba(0, 21, 41, 0.35);
+}
+
+.header {
+  background: #fff;
+  z-index: 1;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+.headerRight {
+  float: right;
+  margin-left: auto;
+  line-height: 64px;
+}
+
+.content {
+  z-index: 0;
+}
