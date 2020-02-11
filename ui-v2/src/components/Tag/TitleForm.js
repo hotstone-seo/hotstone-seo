@@ -1,0 +1,27 @@
+import React from 'react';
+import { Form, Input } from 'antd';
+
+function TitleForm({ locales, tag }) {
+  const [form] = Form.useForm();
+  if (tag) {
+    form.setFieldsValue(tag);
+  }
+  form.setFieldsValue({ type: 'title' })
+
+  return (
+    <Form form={form}>
+      <Form.Item label="Locale" name="locale">
+        <Select>
+          {locales.map(locale => (
+            <Option value={locale}>{locale}</Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item label="Title" name="value">
+        <Input />
+      </Form.Item>
+    </Form>
+  )
+}
+
+export default TitleForm;
