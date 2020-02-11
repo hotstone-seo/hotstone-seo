@@ -31,7 +31,7 @@ function RuleForm({ handleSubmit, rule }) {
   }, []);
 
   return (
-    <Form {...formLayout} form={form} onFinish={handleSubmit} style={{ marginTop: 24 }}>
+    <Form {...formLayout} form={form} onFinish={handleSubmit}>
       <Form.Item
         name="name"
         label="Name"

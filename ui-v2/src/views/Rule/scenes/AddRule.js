@@ -19,7 +19,7 @@ function AddRule() {
   return (
     <div>
       <Row>
-        <Col className={styles.container} span={12}>
+        <Col className={styles.container} span={12} style={{ paddingTop: 24 }}>
           <RuleForm handleSubmit={handleCreate} />
         </Col>
       </Row>
