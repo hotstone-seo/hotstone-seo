@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Table } from "antd";
-import { useFilterProps } from "../../hooks/useFilterProps";
+import { useTableFilterProps } from "../../hooks/useTableFilterProps";
 import { buildQueryParam, onTableChange } from "../../utils/pagination";
 import HotstoneAPI from "../../api/hotstone";
-import _ from "lodash";
-import { usePaginationTotal } from "../../hooks/usePaginationTotal";
+import { useTablePaginationTotal } from "../../hooks/useTablePaginationTotal";
 
 const defaultPagination = {
   current: 1,
@@ -18,20 +17,16 @@ function RuleListV2() {
 
   const [listRule, setListRule] = useState([]);
 
-  const total = usePaginationTotal(paginationInfo, listRule);
+  const total = useTablePaginationTotal(paginationInfo, listRule);
 
   useEffect(() => {
     async function fetchThenNormalizeListRule() {
-      console.log("=== fetchThenNormalizeListRule ===");
-
       try {
         const queryParam = buildQueryParam(
           paginationInfo,
           filteredInfo,
           sortedInfo
         );
-
-        console.log("@@ QUERY PARAM: ", queryParam);
 
         var rules = await HotstoneAPI.getRules({ params: queryParam });
         const updatedListRule = await Promise.all(
@@ -49,8 +44,6 @@ function RuleListV2() {
         );
 
         setListRule(updatedListRule);
-
-        console.log("### RULES: ", rules);
       } catch (err) {
         console.log("ERR: ", err);
       }
@@ -75,7 +68,7 @@ function RuleListV2() {
       width: "20%",
       sorter: true,
       sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
-      ...useFilterProps("name")
+      ...useTableFilterProps("name")
     },
     {
       title: "URL Pattern",
@@ -84,7 +77,7 @@ function RuleListV2() {
       width: "30%",
       sorter: true,
       sortOrder: sortedInfo.columnKey === "url_pattern" && sortedInfo.order,
-      ...useFilterProps("url_pattern")
+      ...useTableFilterProps("url_pattern")
     },
     {
       title: "Data Source",

@@ -1,6 +1,6 @@
-import React, { useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 
-export function usePaginationTotal(pagination, listData) {
+export function useTablePaginationTotal(pagination, listData) {
   return useMemo(() => {
     let total = 0;
     if (listData.length >= pagination.pageSize) {
