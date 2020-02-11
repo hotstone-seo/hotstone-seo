@@ -7,7 +7,13 @@ import { List, Button } from 'antd';
 // It interferes with React's renderToStaticMarkup function
 // which will create an empty children whenever the value key is set
 // to empty string.
-function TagList({ tags }) {
+function TagList(props) {
+  const tags = props.tags.map(tag => {
+    if (tag.type === 'meta') {
+      tag.value = null
+    }
+    return tag;
+  });
   return (
     <List
       dataSource={tags}
