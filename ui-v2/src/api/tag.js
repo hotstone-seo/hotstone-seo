@@ -1,6 +1,6 @@
 import client from './client';
 
-function fetchTags(locale, rule_id) {
+function fetchTags({ locale, rule_id }) {
   return client.get('/tags', { params: { locale, rule_id } })
                .then(response => response.data)
                .catch(error => {
@@ -18,7 +18,7 @@ function getTag(id) {
 
 function createTag(tag) {
   return client.post('/tags', tag)
-               .then(response.response.data)
+               .then(response => response.data)
                .catch(error => {
                  throw error;
                });
