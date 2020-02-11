@@ -4,6 +4,7 @@ import { useFilterProps } from "../../hooks/useFilterProps";
 import { buildQueryParam, onTableChange } from "../../utils/pagination";
 import HotstoneAPI from "../../api/hotstone";
 import _ from "lodash";
+import { usePaginationTotal } from "../../hooks/usePaginationTotal";
 
 const defaultPagination = {
   current: 1,
@@ -11,28 +12,13 @@ const defaultPagination = {
 };
 
 function RuleListV2() {
-  const [totalData, setTotalData] = useState(
-    defaultPagination.current * defaultPagination.pageSize +
-      defaultPagination.pageSize
-  );
-
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
 
   const [listRule, setListRule] = useState([]);
 
-  useEffect(() => {
-    console.log("=== listRULE changes === totalData: " + totalData);
-    const pagination = { ...paginationInfo };
-    let total = totalData;
-    if (listRule.length >= pagination.pageSize) {
-      total = pagination.current * pagination.pageSize + pagination.pageSize;
-    } else {
-      total = pagination.current * pagination.pageSize;
-    }
-    setTotalData(total);
-  }, [listRule]);
+  const total = usePaginationTotal(paginationInfo, listRule);
 
   useEffect(() => {
     async function fetchThenNormalizeListRule() {
@@ -122,7 +108,7 @@ function RuleListV2() {
         rowKey="id"
         columns={columns}
         dataSource={listRule}
-        pagination={{ ...paginationInfo, total: totalData }}
+        pagination={{ ...paginationInfo, total: total }}
         onChange={onTableChange(
           setPaginationInfo,
           setFilteredInfo,
