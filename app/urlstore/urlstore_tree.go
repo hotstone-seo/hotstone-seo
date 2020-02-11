@@ -224,26 +224,36 @@ func (n *node) add(id int, key string, data interface{}, order int) int {
 
 // addChild creates static and param nodes to store the given data
 func (n *node) addChild(id int, key string, data interface{}, order int) int {
+	param := CreateParam(key)
 	// find the first occurrence of a param token
-	p0, p1 := -1, -1
-	for i := 0; i < len(key); i++ {
-		if p0 < 0 && key[i] == '<' {
-			p0 = i
+
+	if param == nil {
+		// no param token: done adding the child
+		child := &node{
+			static:      true,
+			id:          id,
+			key:         key,
+			minOrder:    order,
+			data:        data,
+			order:       order,
+			children:    make([]*node, 256),
+			childrenMap: map[byte]*node{},
+			pchildren:   make([]*node, 0),
+			pindex:      n.pindex,
+			pnames:      n.pnames,
 		}
-		if p0 >= 0 && key[i] == '>' {
-			p1 = i
-			break
-		}
+		n.children[key[0]] = child
+		n.childrenMap[key[0]] = child
+
+		return child.pindex + 1
 	}
 
-	// fmt.Printf("[%s] addChild - new childkey: %s - p0:%d p1:%d\n", n.key, key, p0, p1)
-
-	if p0 > 0 && p1 > 0 || p1 < 0 {
-		// param token occurs after a static string, or no param token: create a static node
+	if param.StringBefore != "" {
+		// param token occurs after a static string
 		child := &node{
 			static:      true,
 			id:          -1,
-			key:         key,
+			key:         param.StringBefore,
 			minOrder:    order,
 			children:    make([]*node, 256),
 			childrenMap: map[byte]*node{},
@@ -253,26 +263,15 @@ func (n *node) addChild(id int, key string, data interface{}, order int) int {
 		}
 		n.children[key[0]] = child
 		n.childrenMap[key[0]] = child
-		if p1 > 0 {
-			// param token occurs after a static string
-			child.key = key[:p0]
-			n = child
-		} else {
-			// no param token: done adding the child
-			child.id = id
-			child.data = data
-			child.order = order
-			return child.pindex + 1
-		}
-	}
 
-	// fmt.Printf("[%s] before add param node - new childkey: %s\n", n.key, key)
+		n = child
+	}
 
 	// add param node
 	child := &node{
 		static:      false,
 		id:          -1,
-		key:         key[p0 : p1+1],
+		key:         param.Raw,
 		minOrder:    order,
 		children:    make([]*node, 256),
 		childrenMap: map[byte]*node{},
@@ -280,27 +279,19 @@ func (n *node) addChild(id int, key string, data interface{}, order int) int {
 		pindex:      n.pindex,
 		pnames:      n.pnames,
 	}
-	pattern := ""
-	pname := key[p0+1 : p1]
-	for i := p0 + 1; i < p1; i++ {
-		if key[i] == ':' {
-			pname = key[p0+1 : i]
-			pattern = key[i+1 : p1]
-			break
-		}
-	}
-	if pattern != "" {
+
+	if param.Pattern != "" {
 		// the param token contains a regular expression
-		child.regex = regexp.MustCompile("^" + pattern)
+		child.regex = regexp.MustCompile("^" + param.Pattern)
 	}
 	pnames := make([]string, len(n.pnames)+1)
 	copy(pnames, n.pnames)
-	pnames[len(n.pnames)] = pname
+	pnames[len(n.pnames)] = param.Name
 	child.pnames = pnames
 	child.pindex = len(pnames) - 1
 	n.pchildren = append(n.pchildren, child)
 
-	if p1 == len(key)-1 {
+	if param.AtLastPos {
 		// the param token is at the end of the key
 		child.id = id
 		child.data = data
@@ -309,7 +300,7 @@ func (n *node) addChild(id int, key string, data interface{}, order int) int {
 	}
 
 	// process the rest of the key
-	return child.addChild(id, key[p1+1:], data, order)
+	return child.addChild(id, param.StringAfter, data, order)
 }
 
 func printDebug(key string, data interface{}, pnames, pvalues []string) {

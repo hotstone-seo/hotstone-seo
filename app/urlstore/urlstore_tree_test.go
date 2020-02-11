@@ -207,29 +207,29 @@ func TestStoreGetAndDelete(t *testing.T) {
 		value  interface{}
 		params string
 	}{
-		{"/gopher/bumper.png", "1", ""},
+		{"/gopher/bumper.png", "1", ""}, // 0
 		{"/gopher/bumper192x108.png", "2", ""},
 		{"/gopher/doc.png", "3", ""},
 		{"/gopher/bumper320x180.png", "4", ""},
 		{"/gopher/docpage.png", "5", ""},
-		{"/gopher/doc.png", "3", ""},
+		{"/gopher/doc.png", "3", ""}, // 5
 		{"/gopher/doc", "7", ""},
 		{"/users/abc", "8", "id:abc,"},
 		{"/users/abc/profile", "9", "id:abc,"},
 		{"/users/abc/123/address", "10", "id:abc,accnt:123,"},
-		{"/users/abcd/age", "11", "id:abcd,"},
+		{"/users/abcd/age", "11", "id:abcd,"}, // 10
 		{"/users/abc/123", "12", "id:abc,accnt:123,"},
 		{"/users/abc/test/123", "13", "id:abc,name:123,"},
 		{"/users/abc/xyz/123", "14", "id:xyz,name:123,"},
 		{"", "15", ""},
-		{"/g", nil, ""},
+		{"/g", nil, ""}, // 15
 		{"/all", nil, ""},
-		{"/all/", "16", ":,"},
+		{"/all/", "16", ":,"}, // 17
 		{"/all/abc", "16", ":abc,"},
 		{"/users/abc/xyz", nil, ""},
 	}
 	pvalues := make([]string, maxParams)
-	for _, test := range tests {
+	for i, test := range tests {
 		data, pnames := h.Get(test.key, pvalues)
 		assert.Equal(t, test.value, data, "store.Get("+test.key+") =")
 		params := ""
@@ -238,7 +238,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 				params += fmt.Sprintf("%v:%v,", name, pvalues[i])
 			}
 		}
-		assert.Equal(t, test.params, params, "store.Get("+test.key+").params =")
+		assert.Equal(t, test.params, params, fmt.Sprintf("%d: store.Get(%s).params =", i, test.key))
 	}
 
 	t.Logf("\nBEFORE DELETE:\n%s", h.String())
