@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/imantung/mario"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
@@ -40,6 +41,9 @@ type ProviderServiceImpl struct {
 	Redis *redis.Client
 }
 
+// InterpolatedTag is tag after interpolated with data
+type InterpolatedTag repository.Tag
+
 // NewProviderService return new instance of ProviderService [constructor]
 func NewProviderService(impl ProviderServiceImpl) ProviderService {
 	return &impl
@@ -65,15 +69,17 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
 
 		return nil, fmt.Errorf("No rule match: %s", url.Path)
-	} else {
-		// matched
-		p.MetricsRuleMatchingService.SetMatched(mtx, url.Path, int64(ruleID))
 	}
 
-	resp = &MatchRuleResponse{RuleID: int64(ruleID), PathParam: pathParam}
-	return resp, nil
+	// matched
+	p.MetricsRuleMatchingService.SetMatched(mtx, url.Path, int64(ruleID))
+	return &MatchRuleResponse{
+		RuleID:    int64(ruleID),
+		PathParam: pathParam,
+	}, nil
 }
 
+// RetrieveData to retrieve the data from data provider
 func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (data []byte, err error) {
 	var (
 		dataSource *repository.DataSource
@@ -134,6 +140,7 @@ func (p *ProviderServiceImpl) getData(dsURL string) (data []byte, err error) {
 	return data, err
 }
 
+// Tags to return interpolated tag
 func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, useCache bool) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
 		tags       []*repository.Tag
@@ -193,16 +200,17 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 	return
 }
 
+// DumpRuleTree to dump the rule tree
 func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, err error) {
 	return p.URLStoreServer.DumpTree(), nil
 }
 
 func interpolateAttribute(ori dbkit.JSON, data interface{}) (interpolated dbkit.JSON, err error) {
 	var (
-		tmpl *template.Template
+		tmpl *mario.Template
 		buf  bytes.Buffer
 	)
-	if tmpl, err = template.New("tmpl").Parse(string(ori)); err != nil {
+	if tmpl, err = mario.New().Parse(string(ori)); err != nil {
 		return
 	}
 	if err = tmpl.Execute(&buf, data); err != nil {
@@ -213,10 +221,10 @@ func interpolateAttribute(ori dbkit.JSON, data interface{}) (interpolated dbkit.
 
 func interpolateValue(ori string, data interface{}) (s string, err error) {
 	var (
-		tmpl *template.Template
+		tmpl *mario.Template
 		buf  bytes.Buffer
 	)
-	if tmpl, err = template.New("tmpl").Parse(ori); err != nil {
+	if tmpl, err = mario.New().Parse(ori); err != nil {
 		return
 	}
 	if err = tmpl.Execute(&buf, data); err != nil {
@@ -224,5 +232,3 @@ func interpolateValue(ori string, data interface{}) (s string, err error) {
 	}
 	return buf.String(), nil
 }
-
-type InterpolatedTag repository.Tag

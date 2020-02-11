@@ -30,12 +30,12 @@ func NewRuleService(impl RuleServiceImpl) RuleService {
 	return &impl
 }
 
-// Find rule
+// FindOne rule
 func (r *RuleServiceImpl) FindOne(ctx context.Context, id int64) (rule *repository.Rule, err error) {
 	return r.RuleRepo.FindOne(ctx, id)
 }
 
-// List rule
+// Find rule
 func (r *RuleServiceImpl) Find(ctx context.Context, paginationParam repository.PaginationParam) (list []*repository.Rule, err error) {
 	return r.RuleRepo.Find(ctx, paginationParam)
 }
