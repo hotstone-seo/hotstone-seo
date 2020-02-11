@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "antd";
+import { Link } from "react-router-dom";
+import { Table, Divider, Button } from "antd";
+import { format, formatDistance } from "date-fns";
 import { useTableFilterProps } from "../../hooks/useTableFilterProps";
 import { buildQueryParam, onTableChange } from "../../utils/pagination";
 import HotstoneAPI from "../../api/hotstone";
@@ -8,6 +10,15 @@ import { useTablePaginationTotal } from "../../hooks/useTablePaginationTotal";
 const defaultPagination = {
   current: 1,
   pageSize: 2
+};
+
+const formatDate = since => {
+  const sinceDate = new Date(since);
+
+  const full = format(sinceDate, "dd/MM/yyyy - HH:mm");
+  const relative = formatDistance(sinceDate, new Date());
+
+  return `${full}`;
 };
 
 function RuleListV2() {
@@ -57,7 +68,7 @@ function RuleListV2() {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      width: "10%",
+      width: "5%",
       sorter: false,
       sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
     },
@@ -68,7 +79,10 @@ function RuleListV2() {
       width: "20%",
       sorter: true,
       sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
-      ...useTableFilterProps("name")
+      ...useTableFilterProps("name"),
+      render: (text, record) => (
+        <Link to={`/rule-detail/?id=${record.id}`}>{text}</Link>
+      )
     },
     {
       title: "URL Pattern",
@@ -88,10 +102,22 @@ function RuleListV2() {
     },
     {
       title: "Updated Date",
-      dataIndex: "updated_date",
-      key: "updated_date",
+      dataIndex: "updated_at",
+      key: "updated_at",
       sorter: true,
-      sortOrder: sortedInfo.columnKey === "updated_date" && sortedInfo.order
+      sortOrder: sortedInfo.columnKey === "updated_at" && sortedInfo.order,
+      render: (text, record) => <div>{formatDate(record.updated_at)}</div>
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <span>
+          <Button>Edit</Button>
+          <Divider type="vertical" />
+          <Button type="danger">Delete</Button>
+        </span>
+      )
     }
   ];
 
