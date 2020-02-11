@@ -11,7 +11,12 @@ function RuleList(props) {
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => (
-        <Link to={`/rules/${record.id}`}>{text}</Link>
+        <Button
+          type="link"
+          onClick={() => onClick(record)}
+        >
+          {text}
+        </Button>
       )
     },
     { title: 'URL Pattern', dataIndex: 'url_pattern', key: 'urlPattern' },
@@ -21,7 +26,13 @@ function RuleList(props) {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Button type="link" style={{ padding: 0 }}>Edit</Button>
+          <Button
+            type="link"
+            onClick={() => onEdit(record)}
+            style={{ padding: 0 }}
+          >
+            Edit
+          </Button>
           <Divider type="vertical" />
           <Popconfirm
             title="Are you sure to delete this rule?"

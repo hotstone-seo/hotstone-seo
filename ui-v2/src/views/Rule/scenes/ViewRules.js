@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Button, message } from 'antd';
 import { fetchRules, deleteRule } from 'api/rule';
 import { RuleList } from 'components/Rule';
@@ -20,6 +20,12 @@ function ViewRules({ match }) {
       _isCancelled = true;
     };
   }, []);
+
+  let history = useHistory();
+
+  const showEditForm = (rule) => {
+    history.push(`${match.url}/${rule.id}`);
+  }
 
   const handleDelete = (rule) => {
     deleteRule(rule.id)
@@ -42,6 +48,8 @@ function ViewRules({ match }) {
       </Button>
       <RuleList
         rules={rules}
+        onClick={showEditForm}
+        onEdit={showEditForm}
         onDelete={handleDelete}
       />
     </div>
