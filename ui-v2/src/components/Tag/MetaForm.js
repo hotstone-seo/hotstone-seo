@@ -8,6 +8,7 @@ function MetaForm({ locales, tag }) {
   if (tag) {
     form.setFieldsValue(tag);
   }
+  form.setFieldsValue({ type: 'meta' });
 
   return (
     <Form form={form}>
