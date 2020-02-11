@@ -16,7 +16,7 @@ const pageMachine = Machine({
   initial: "init",
   context: {
     url: null,
-    locale: "en-US",
+    locale: process.env.DEFAULT_LOCALE,
     listLocale: [],
     matchResp: null,
     matchError: null,
