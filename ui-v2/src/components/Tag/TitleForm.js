@@ -1,5 +1,7 @@
 import React from 'react';
-import { Form, Input } from 'antd';
+import { Form, Input, Select } from 'antd';
+
+const { Option } = Select;
 
 function TitleForm({ locales, tag }) {
   const [form] = Form.useForm();
