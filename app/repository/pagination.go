@@ -14,6 +14,7 @@ type PaginationParam struct {
 	Sorts   []Sort
 	Start   uint64
 	End     uint64
+	Limit   uint64 // TODO: Limit implementation. Set default
 	Filters map[string]*Filter
 	NextKey *Next
 	Nexts   []Next
