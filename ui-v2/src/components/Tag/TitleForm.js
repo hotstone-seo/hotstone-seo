@@ -1,9 +1,10 @@
 import React from 'react';
 import { Form, Input, Select } from 'antd';
+import { locales } from 'constants';
 
 const { Option } = Select;
 
-function TitleForm({ locales, tag }) {
+function TitleForm({ tag }) {
   const [form] = Form.useForm();
   if (tag) {
     form.setFieldsValue(tag);
