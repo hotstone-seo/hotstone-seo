@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { List, Button } from 'antd';
+import { List, Button, Popconfirm } from 'antd';
 
 function TagList({ tags, onEdit, onDelete }) {
   const sanitizeTag = (tag) => {
@@ -22,14 +22,13 @@ function TagList({ tags, onEdit, onDelete }) {
             >
               Edit
             </Button>,
-            <Button
-              type="link"
-              danger
-              onClick={() => onDelete(tag)}
-              style={{ padding: 0 }}
+            <Popconfirm
+              title="Are you sure to delete this tag?"
+              placement="topRight"
+              onConfirm={() => onDelete(tag)}
             >
-              Delete
-            </Button>
+              <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
+            </Popconfirm>
           ]}
         >
           <pre>

@@ -4,7 +4,7 @@ import { Row, Col, message, Select } from 'antd';
 import { RuleForm } from 'components/Rule';
 import { TagList } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
-import { fetchTags } from 'api/tag';
+import { fetchTags, deleteTag } from 'api/tag';
 import locales from 'locales';
 import styles from './AddRule.module.css';
 
@@ -34,11 +34,21 @@ function EditRule() {
       });
   }, [id, locale])
 
-  const handleEdit = (newRule) => {
+  const editRule = (newRule) => {
     newRule.id = rule.id;
     updateRule(newRule)
       .then(() => {
         history.push('/rules');
+      })
+      .catch(error => {
+        message.error(error.message);
+      });
+  };
+
+  const removeTag = (tag) => {
+    deleteTag(tag.id)
+      .then(() => {
+        setTags(tags.filter(item => item.id !== tag.id));
       })
       .catch(error => {
         message.error(error.message);
@@ -53,7 +63,7 @@ function EditRule() {
     <div>
       <Row>
         <Col className={styles.container} span={12} style={{ paddingTop: 24 }}>
-          <RuleForm handleSubmit={handleEdit} rule={rule} />
+          <RuleForm handleSubmit={editRule} rule={rule} />
         </Col>
       </Row>
       <Row style={{ marginTop: 24 }}>
@@ -63,7 +73,7 @@ function EditRule() {
               <Option value={locale}>{locale}</Option>
             ))}
           </Select>
-          <TagList tags={tags} />
+          <TagList tags={tags} onDelete={removeTag} />
         </Col>
       </Row>
     </div>
