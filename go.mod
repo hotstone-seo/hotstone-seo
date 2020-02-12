@@ -12,7 +12,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
-	github.com/thoas/go-funk v0.5.0 // indirect
+	github.com/thoas/go-funk v0.5.0
 	github.com/typical-go/typical-go v0.9.30
 	github.com/typical-go/typical-rest-server v0.8.19
 	github.com/xorcare/pointer v1.0.0
