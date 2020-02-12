@@ -166,4 +166,6 @@ func GetPaginationType(paginationParam PaginationParam) PaginationType {
 	if paginationParam.Start != 0 || paginationParam.End != 0 {
 		return OffsetPagination
 	}
+
+	return NoPagination
 }
