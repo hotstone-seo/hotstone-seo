@@ -15,7 +15,7 @@ type PaginationParam struct {
 	Start   uint64
 	End     uint64
 	Filters map[string]*Filter
-	NextKey *NextKey
+	NextKey *Next
 	Nexts   []Next
 }
 
@@ -31,11 +31,6 @@ type Filter struct {
 
 type Next struct {
 	Col   string
-	Value string
-}
-
-type NextKey struct {
-	Col   string
 	Order string
 	Value string
 }
@@ -50,18 +45,31 @@ const (
 
 func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) sq.SelectBuilder {
 
-	for _, sort := range paginationParam.Sorts {
-		base = base.OrderBy(fmt.Sprintf("%s %s", sort.Col, sort.Order))
+	paginationType := GetPaginationType(paginationParam)
+
+	// compose ORDER BY
+	if len(paginationParam.Nexts) == 0 {
+		for _, sort := range paginationParam.Sorts {
+			base = base.OrderBy(fmt.Sprintf("%s %s", sort.Col, sort.Order))
+		}
 	}
 
-	if paginationParam.Start != 0 {
-		base = base.Offset(paginationParam.Start)
+	if paginationType == KeysetPagination {
+		base = base.OrderBy(fmt.Sprintf("%s %s", paginationParam.NextKey.Col, paginationParam.NextKey.Order))
 	}
 
-	if paginationParam.End != 0 {
-		base = base.Limit(uint64(paginationParam.End - paginationParam.Start + 1))
+	// compose OFFSET & LIMIT
+	if paginationType == OffsetPagination {
+		if paginationParam.Start != 0 {
+			base = base.Offset(paginationParam.Start)
+		}
+
+		if paginationParam.End != 0 {
+			base = base.Limit(uint64(paginationParam.End - paginationParam.Start + 1))
+		}
 	}
 
+	// compose WHERE
 	for _, filter := range paginationParam.Filters {
 		if strings.ContainsAny(filter.Cond, "%") {
 			base = base.Where(sq.Like{filter.Col: filter.Cond})
@@ -70,7 +78,46 @@ func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) s
 		}
 	}
 
+	if paginationType == KeysetPagination {
+		if len(paginationParam.Nexts) > 0 {
+			var firstCond sq.Sqlizer
+			var secondCond sq.Sqlizer
+
+			for _, next := range paginationParam.Nexts {
+				nextKeyCond := constructWhereCond(next.Order, next.Col, next.Value)
+				if firstCond == nil {
+					firstCond = nextKeyCond
+				} else {
+					firstCond = sq.And{firstCond, nextKeyCond}
+				}
+
+				nextKeyEqCond := sq.Eq{next.Col: next.Value}
+				if secondCond == nil {
+					secondCond = nextKeyEqCond
+				} else {
+					secondCond = sq.And{secondCond, nextKeyEqCond}
+				}
+			}
+			secondCond = sq.And{secondCond, constructWhereCond(paginationParam.NextKey.Order, paginationParam.NextKey.Col, paginationParam.NextKey.Value)}
+
+			base = base.Where(sq.Or{firstCond, secondCond})
+		} else if len(paginationParam.Nexts) == 0 && paginationParam.NextKey.Value != "" {
+			base = base.Where(constructWhereCond(paginationParam.NextKey.Order, paginationParam.NextKey.Col, paginationParam.NextKey.Value))
+		}
+	}
+
 	return base
+}
+
+func constructWhereCond(order, operand1, operand2 string) sq.Sqlizer {
+	switch order {
+	case "ASC":
+		return sq.Gt{operand1: operand2}
+	case "DESC":
+		return sq.Lt{operand1: operand2}
+	}
+
+	return nil
 }
 
 func extractColAndOrder(colQueryParam string) (col, order string) {
@@ -97,16 +144,15 @@ func extractToSort(colQueryParam string) *Sort {
 	return &Sort{Col: col, Order: order}
 }
 
-func extractToNextKey(colQueryParam string) *NextKey {
+func extractToNextKey(colQueryParam string) *Next {
 	col, order := extractColAndOrder(colQueryParam)
 	if col == "" || order == "" {
 		return nil
 	}
-	return &NextKey{Col: col, Order: order}
+	return &Next{Col: col, Order: order}
 }
 
 func BuildPaginationParam(queryParams url.Values, validColumns []string) PaginationParam {
-	// log.Warnf("# VALID COLUMNS: %q", validColumns)
 	paginationParam := PaginationParam{}
 
 	sorts := []Sort{}
@@ -149,7 +195,7 @@ func BuildPaginationParam(queryParams url.Values, validColumns []string) Paginat
 		if len(paginationParam.Sorts) == len(listColNextValWithoutKey) {
 			for i, sort := range paginationParam.Sorts {
 				nextVal := listColNextValWithoutKey[i]
-				nexts = append(nexts, Next{Col: sort.Col, Value: nextVal})
+				nexts = append(nexts, Next{Col: sort.Col, Order: sort.Order, Value: nextVal})
 			}
 		}
 		paginationParam.Nexts = nexts
