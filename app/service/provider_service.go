@@ -22,6 +22,10 @@ import (
 	"go.uber.org/dig"
 )
 
+var (
+	DataCacheExpire time.Duration = 60 * time.Second
+)
+
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
@@ -102,15 +106,7 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 		data, err = p.Redis.Get(buf.String()).Bytes()
 		if err == redis.Nil {
 			// data not exist in cache
-			data, err = p.getData(buf.String())
-			if err != nil {
-				return data, err
-			}
-
-			err = p.Redis.Set(buf.String(), data, 1*time.Minute).Err()
-			if err != nil {
-				return data, err
-			}
+			return p.getDataThenSetCache(buf.String())
 		} else if err != nil {
 			// err when getting data in cache
 			return
@@ -119,10 +115,8 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 			return data, err
 		}
 	} else {
-		return p.getData(buf.String())
+		return p.getDataThenSetCache(buf.String())
 	}
-
-	return
 }
 
 func (p *ProviderServiceImpl) getData(dsURL string) (data []byte, err error) {
@@ -138,6 +132,16 @@ func (p *ProviderServiceImpl) getData(dsURL string) (data []byte, err error) {
 	}
 
 	return data, err
+}
+
+func (p *ProviderServiceImpl) getDataThenSetCache(url string) (data []byte, err error) {
+	if data, err = p.getData(url); err != nil {
+		return
+	}
+	if err = p.Redis.Set(url, data, DataCacheExpire).Err(); err != nil {
+		return
+	}
+	return
 }
 
 // Tags to return interpolated tag
