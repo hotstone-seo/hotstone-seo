@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Row, Col, message, Select } from 'antd';
+import {
+  Row, Col, message, Select, Button, Modal,
+} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { RuleForm } from 'components/Rule';
-import { TagList } from 'components/Tag';
+import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
-import { fetchTags, deleteTag } from 'api/tag';
+import { fetchTags, createTag, updateTag, deleteTag } from 'api/tag';
 import locales from 'locales';
 import styles from './AddRule.module.css';
 
@@ -17,6 +20,7 @@ function EditRule() {
   const [rule, setRule] = useState({});
   const [tags, setTags] = useState([]);
   const [locale, setLocale] = useState(locales[0] || '');
+  const [tagFormVisible, setTagFormVisible] = useState(false);
 
   useEffect(() => {
     getRule(id)
@@ -27,11 +31,7 @@ function EditRule() {
   }, [id]);
 
   useEffect(() => {
-    fetchTags({ rule_id: id, locale: locale })
-      .then(tags => { setTags(tags) })
-      .catch(error => {
-        message.error(error.message);
-      });
+    refreshTagList(id, locale);
   }, [id, locale])
 
   const editRule = (newRule) => {
@@ -40,6 +40,29 @@ function EditRule() {
       .then(() => {
         history.push('/rules');
       })
+      .catch(error => {
+        message.error(error.message);
+      });
+  };
+
+  const submitTag = (tag) => {
+    let submitFunc = createTag;
+    if (tag.id) {
+      submitFunc = updateTag;
+    }
+
+    submitFunc(tag)
+      .then(() => {
+        refreshTagList(id, locale);
+      })
+      .catch(error => {
+        message.error(error.message);
+      });
+  };
+
+  const refreshTagList = (id, locale) => {
+    fetchTags({ rule_id: id, locale: locale })
+      .then(tags => { setTags(tags) })
       .catch(error => {
         message.error(error.message);
       });
@@ -59,6 +82,14 @@ function EditRule() {
     setLocale(newLocale);
   };
 
+  const openTagForm = () => {
+    setTagFormVisible(true);
+  }
+
+  const closeTagForm = () => {
+    setTagFormVisible(false);
+  }
+
   return (
     <div>
       <Row>
@@ -74,8 +105,23 @@ function EditRule() {
             ))}
           </Select>
           <TagList tags={tags} onDelete={removeTag} />
+          <Button
+            type="dashed"
+            onClick={openTagForm}
+            style={{ width: '100%' }}
+          >
+            <PlusOutlined /> Add Tag
+          </Button>
         </Col>
       </Row>
+      <Modal
+        title="Add/Edit Tag"
+        visible={tagFormVisible}
+        onOk={submitTag}
+        onCancel={closeTagForm}
+      >
+        <TagForm />
+      </Modal>
     </div>
   );
 }
