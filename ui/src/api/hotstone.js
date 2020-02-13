@@ -47,7 +47,7 @@ class HotstoneAPI {
   }
 
   getLocales() {
-    return [
+    const result = [
       {
         id: 1,
         lang_code: "en",
@@ -59,6 +59,9 @@ class HotstoneAPI {
         country_code: "ID"
       }
     ];
+    return new Promise((resolve, reject) => {
+      resolve(result);
+    });
   }
 
   getTags() {
