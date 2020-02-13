@@ -6,6 +6,7 @@ import { useTableFilterProps } from "../../hooks/useTableFilterProps";
 import { buildQueryParam, onTableChange } from "../../utils/pagination";
 import HotstoneAPI from "../../api/hotstone";
 import { useTablePaginationTotal } from "../../hooks/useTablePaginationTotal";
+import { useTablePaginationNormalizedListData } from "../../hooks/useTablePaginationNormalizedListData";
 
 const defaultPagination = {
   current: 1,
@@ -29,6 +30,10 @@ function RuleListV2() {
   const [listRule, setListRule] = useState([]);
 
   const total = useTablePaginationTotal(paginationInfo, listRule);
+  const normalizedListData = useTablePaginationNormalizedListData(
+    paginationInfo,
+    listRule
+  );
 
   useEffect(() => {
     async function fetchThenNormalizeListRule() {
@@ -126,7 +131,7 @@ function RuleListV2() {
       <Table
         rowKey="id"
         columns={columns}
-        dataSource={listRule}
+        dataSource={normalizedListData}
         pagination={{ ...paginationInfo, total: total }}
         onChange={onTableChange(
           setPaginationInfo,
