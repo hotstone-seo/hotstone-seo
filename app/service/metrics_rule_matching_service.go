@@ -24,12 +24,14 @@ func NewMetricsRuleMatchingService(impl MetricsRuleMatchingServiceImpl) MetricsR
 	return &impl
 }
 
+// SetMatched to set matched
 func (s *MetricsRuleMatchingServiceImpl) SetMatched(m *repository.MetricsRuleMatching, matchedURL string, ruleID int64) {
 	m.IsMatched = 1
 	m.URL = &matchedURL
 	m.RuleID = &ruleID
 }
 
+// SetMismatched to set mismatched
 func (s *MetricsRuleMatchingServiceImpl) SetMismatched(m *repository.MetricsRuleMatching, mismatchedURL string) {
 	m.IsMatched = 0
 	m.URL = &mismatchedURL

@@ -8,6 +8,7 @@ import _ from "lodash";
 import parse from "url-parse";
 
 import HotstoneAPI from "../../api/hotstone";
+import RawHtmlPreview from "./RawHtmlPreview";
 
 const client = new HotStoneClient(process.env.REACT_APP_API_URL);
 
@@ -207,19 +208,6 @@ function renderIfSuccess(matchResp) {
   if (matchResp) {
     const { rule_id, path_param } = matchResp.rule;
     const tags = matchResp.tags;
-
-    let rawHtmlPreview;
-    if (_.isEmpty(tags)) {
-      rawHtmlPreview = (
-        <div>
-          No tags data. Register tags at{" "}
-          <Link to={`/rule-detail/?id=${rule_id}`}>Rule Detail</Link>
-        </div>
-      );
-    } else {
-      rawHtmlPreview = renderRawHTMLPreview(tags);
-    }
-
     return (
       <div className="card-body">
         <div className="alert alert-success" role="alert">
@@ -241,7 +229,7 @@ function renderIfSuccess(matchResp) {
         </div>
         <strong>Raw HTML Tags Preview</strong>
         <br />
-        {rawHtmlPreview}
+        <RawHtmlPreview ruleID={rule_id} tags={tags} />
       </div>
     );
   }
@@ -278,39 +266,6 @@ function renderIfPageError(pageError) {
       </div>
     );
   }
-}
-
-function renderRawHTMLPreview(tags) {
-  const textAreaVal = tags
-    .map(({ type, value, attributes }) => {
-      let attributesStr = "";
-      if (!_.isEmpty(attributes)) {
-        if (_.isPlainObject(attributes)) {
-          Object.entries(attributes).forEach(([key, value]) => {
-            attributesStr += ` ${key}="${value}"`;
-          });
-        } else if (_.isArray(attributes)) {
-          attributes.forEach(attributes => {
-            Object.entries(attributes).forEach(([key, value]) => {
-              attributesStr += ` ${key}="${value}"`;
-            });
-          });
-        }
-      }
-
-      return `<${type}${attributesStr}>${value}</${type}>`;
-    })
-    .join("\n");
-
-  return (
-    <textarea
-      readOnly
-      wrap={"off"}
-      defaultValue={textAreaVal}
-      rows={10}
-      cols={150}
-    />
-  );
 }
 
 function isLoading(current) {
