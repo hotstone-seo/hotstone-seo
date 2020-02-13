@@ -12,7 +12,9 @@ export const buildQueryParam = (pagination, filters, sorters) => {
   }
 
   Object.entries(filters).forEach(([key, value]) => {
-    queryParam[key] = `%${value[0]}%`;
+    if (value[0] !== undefined) {
+      queryParam[key] = `%${value[0]}%`;
+    }
   });
 
   if (!_.isEmpty(pagination)) {
