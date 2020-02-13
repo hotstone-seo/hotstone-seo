@@ -12,9 +12,8 @@ import (
 
 type PaginationParam struct {
 	Sorts   []Sort
-	Start   uint64
-	End     uint64
-	Limit   uint64 // TODO: Limit implementation. Set default
+	Offset  uint64
+	Limit   uint64
 	Filters map[string]*Filter
 	NextKey *Next
 	Nexts   []Next
@@ -60,14 +59,13 @@ func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) s
 	}
 
 	// compose OFFSET & LIMIT
-	if paginationType == OffsetPagination {
-		if paginationParam.Start != 0 {
-			base = base.Offset(paginationParam.Start)
-		}
+	if paginationType == OffsetPagination && paginationParam.Offset != 0 {
+		base = base.Offset(paginationParam.Offset)
 
-		if paginationParam.End != 0 {
-			base = base.Limit(uint64(paginationParam.End - paginationParam.Start + 1))
-		}
+	}
+
+	if paginationParam.Limit != 0 {
+		base = base.Limit(paginationParam.Limit)
 	}
 
 	// compose WHERE
@@ -165,10 +163,10 @@ func BuildPaginationParam(queryParams url.Values, validColumns []string) Paginat
 	}
 	paginationParam.Sorts = sorts
 
-	start, _ := strconv.Atoi(queryParams.Get("_start"))
-	paginationParam.Start = uint64(start)
-	end, _ := strconv.Atoi(queryParams.Get("_end"))
-	paginationParam.End = uint64(end)
+	offset, _ := strconv.Atoi(queryParams.Get("_offset"))
+	paginationParam.Offset = uint64(offset)
+	limit, _ := strconv.Atoi(queryParams.Get("_limit"))
+	paginationParam.Limit = uint64(limit)
 
 	filters := map[string]*Filter{}
 	for _, col := range validColumns {
@@ -210,7 +208,7 @@ func GetPaginationType(paginationParam PaginationParam) PaginationType {
 		return KeysetPagination
 	}
 
-	if paginationParam.Start != 0 || paginationParam.End != 0 {
+	if paginationParam.Offset != 0 {
 		return OffsetPagination
 	}
 
