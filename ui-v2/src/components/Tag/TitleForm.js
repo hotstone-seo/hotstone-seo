@@ -4,6 +4,8 @@ import locales from 'locales';
 
 const { Option } = Select;
 
+const formLayout = { labelCol: { span: 8 }, wrapperCol: { span: 12 } };
+
 function TitleForm({ tag }) {
   const [form] = Form.useForm();
   if (tag) {
@@ -12,7 +14,7 @@ function TitleForm({ tag }) {
   form.setFieldsValue({ type: 'title' })
 
   return (
-    <Form form={form}>
+    <Form {...formLayout} form={form}>
       <Form.Item label="Locale" name="locale">
         <Select>
           {locales.map(locale => (
@@ -20,6 +22,7 @@ function TitleForm({ tag }) {
           ))}
         </Select>
       </Form.Item>
+
       <Form.Item label="Title" name="value">
         <Input />
       </Form.Item>
