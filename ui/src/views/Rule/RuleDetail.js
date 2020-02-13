@@ -114,7 +114,8 @@ class RuleDetail extends Component {
       localeTag: "id-ID",
       metaTagPreviewValue: "",
       titleTagPreviewVal: "",
-      scriptTagPreviewVal: ""
+      scriptTagPreviewVal: "",
+      canonicalPreviewValue: ""
     };
 
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
@@ -595,6 +596,17 @@ class RuleDetail extends Component {
       '<script type="' + (scp !== null ? scp : "") + '"></script>';
     this.setState({ scriptTagPreviewValue });
   }
+  generatePreviewCanonicalTag(canonicalFieldVal, hrefFieldVal) {
+    let canonicalPreviewValue = "";
+    canonicalPreviewValue =
+      '<link rel="' +
+      (canonicalFieldVal !== null ? canonicalFieldVal : "") +
+      '" href="' +
+      hrefFieldVal +
+      '">';
+    this.setState({ canonicalPreviewValue });
+  }
+
   resetCanonicalForm() {
     this.setState({
       canonicalFormValues: {
