@@ -15,7 +15,11 @@ function TagForm({ tag }) {
   const [currentType, setCurrentType] = useState(tag ? tag.type : tagTypes[0])
   return (
     <div>
-      <Select defaultValue={currentType} onChange={(value) => setCurrentType(value)}>
+      <Select
+        defaultValue={currentType}
+        onChange={(value) => setCurrentType(value)}
+        style={{ marginBottom: 16 }}
+      >
         {tagTypes.map(tagType => (
           <Option value={tagType}>{capitalize(tagType)}</Option>
         ))}
