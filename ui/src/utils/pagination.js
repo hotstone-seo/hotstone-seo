@@ -14,8 +14,8 @@ export const buildQueryParam = (pagination, filters, sorters) => {
   });
 
   if (!_.isEmpty(pagination)) {
-    queryParam["_start"] = (pagination.current - 1) * pagination.pageSize;
-    queryParam["_end"] = pagination.current * pagination.pageSize - 1;
+    queryParam["_offset"] = (pagination.current - 1) * pagination.pageSize;
+    queryParam["_limit"] = pagination.pageSize;
   }
 
   return queryParam;
