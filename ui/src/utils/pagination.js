@@ -4,8 +4,8 @@ export const buildQueryParam = (pagination, filters, sorters) => {
   var queryParam = {};
 
   const order = sorters["order"];
-  if (order != undefined) {
-    const orderSign = order == "descend" ? "-" : "";
+  if (order !== undefined) {
+    const orderSign = order === "descend" ? "-" : "";
     queryParam["_sort"] = `${orderSign}${sorters.field}`;
   }
 
@@ -14,8 +14,8 @@ export const buildQueryParam = (pagination, filters, sorters) => {
   });
 
   if (!_.isEmpty(pagination)) {
-    queryParam["_start"] = (pagination.current - 1) * pagination.pageSize;
-    queryParam["_end"] = pagination.current * pagination.pageSize - 1;
+    queryParam["_offset"] = (pagination.current - 1) * pagination.pageSize;
+    queryParam["_limit"] = pagination.pageSize;
   }
 
   return queryParam;
