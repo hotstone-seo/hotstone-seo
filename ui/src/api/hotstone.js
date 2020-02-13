@@ -3,6 +3,18 @@ import { locale } from "core-js";
 
 // https://gist.github.com/paulsturgess/ebfae1d1ac1779f18487d3dee80d1258
 
+const localesList = [
+  {
+    id: 1,
+    lang_code: "en",
+    country_code: "US"
+  },
+  {
+    id: 2,
+    lang_code: "id",
+    country_code: "ID"
+  }
+];
 function handleRequest(req) {
   return req
     .then(response => response.data)
@@ -47,21 +59,13 @@ class HotstoneAPI {
   }
 
   getLocales() {
-    const result = [
-      {
-        id: 1,
-        lang_code: "en",
-        country_code: "US"
-      },
-      {
-        id: 2,
-        lang_code: "id",
-        country_code: "ID"
-      }
-    ];
     return new Promise((resolve, reject) => {
-      resolve(result);
+      resolve(localesList);
     });
+  }
+
+  getLocalesWithoutPromise() {
+    return localesList;
   }
 
   getTags() {

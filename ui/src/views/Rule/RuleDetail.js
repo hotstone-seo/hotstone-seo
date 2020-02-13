@@ -144,7 +144,9 @@ class RuleDetail extends Component {
     this.setState({ ruleId: id });
     this.getTagList(parseInt(id));
 
-    const languages = HotstoneAPI.getLocales();
+    const languages = HotstoneAPI.getLocalesWithoutPromise();
+
+    console.log(languages, "ytes");
     this.setState({ languages });
   }
 
