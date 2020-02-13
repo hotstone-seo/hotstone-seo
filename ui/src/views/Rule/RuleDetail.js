@@ -146,7 +146,6 @@ class RuleDetail extends Component {
 
     const languages = HotstoneAPI.getLocalesWithoutPromise();
 
-    console.log(languages, "ytes");
     this.setState({ languages });
   }
 
