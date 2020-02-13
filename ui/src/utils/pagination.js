@@ -4,8 +4,8 @@ export const buildQueryParam = (pagination, filters, sorters) => {
   var queryParam = {};
 
   const order = sorters["order"];
-  if (order != undefined) {
-    const orderSign = order == "descend" ? "-" : "";
+  if (order !== undefined) {
+    const orderSign = order === "descend" ? "-" : "";
     queryParam["_sort"] = `${orderSign}${sorters.field}`;
   }
 
