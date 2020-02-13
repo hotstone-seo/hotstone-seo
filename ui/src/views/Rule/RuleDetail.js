@@ -113,7 +113,7 @@ class RuleDetail extends Component {
         content: null
       },
       languages: [],
-      localeTag: process.env.DEFAULT_LOCALE,
+      localeTag: process.env.REACT_APP_LOCALE,
       metaTagPreviewValue: "",
       titleTagPreviewVal: "",
       scriptTagPreviewVal: ""

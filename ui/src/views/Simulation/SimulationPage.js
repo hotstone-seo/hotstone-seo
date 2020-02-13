@@ -17,7 +17,7 @@ const pageMachine = Machine({
   initial: "init",
   context: {
     url: null,
-    locale: process.env.DEFAULT_LOCALE,
+    locale: process.env.REACT_APP_LOCALE,
     listLocale: [],
     matchResp: null,
     matchError: null,
@@ -147,7 +147,7 @@ function SimulationPage() {
                       <select
                         name="locale"
                         className="form-control"
-                        defaultValue={current.context.locale}
+                        value={current.context.locale}
                         ref={register({ required: true })}
                       >
                         {current.context.listLocale.map((locale, index) => {
