@@ -16,7 +16,8 @@ const capitalize = (item) => {
 function TagForm({ tag, form }) {
   if (!form) { [form] = Form.useForm(); }
 
-  const [currentType, setCurrentType] = useState(tag ? tag.type : tagTypes[0])
+  const type = form.getFieldValue('type');
+  const [currentType, setCurrentType] = useState(type || tagTypes[0]);
 
   // TODO: Might be a good idea that whenever we change type, the form fields
   // should be cleared to ensure no attributes carried over to new type.
@@ -34,8 +35,8 @@ function TagForm({ tag, form }) {
       </Select>
       {
         {
-          title: <TitleForm tag={tag} form={form} />,
-          meta: <MetaForm tag={tag} form={form} />,
+          title: <TitleForm form={form} />,
+          meta: <MetaForm form={form} />,
           canonical: null,
           script: null,
         }[currentType]

@@ -5,7 +5,7 @@ import locales from 'locales';
 const { Option } = Select;
 
 
-function MetaForm({ tag, form }) {
+function MetaForm({ form }) {
   form.setFieldsValue({ type: 'meta' });
 
   return (

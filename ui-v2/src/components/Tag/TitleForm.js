@@ -4,7 +4,7 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-function TitleForm({ tag, form }) {
+function TitleForm({ form }) {
   form.setFieldsValue({ type: 'title' })
 
   return (
