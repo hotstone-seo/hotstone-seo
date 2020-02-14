@@ -13,7 +13,6 @@ type server struct {
 	*echo.Echo
 	config.Config
 	controller.RuleCntrl
-	controller.LocaleCntrl
 	controller.DataSourceCntrl
 	controller.TagCntrl
 	controller.ProviderCntrl
@@ -28,7 +27,6 @@ func (s *server) Middleware() {
 
 func (s *server) Route() {
 	s.RuleCntrl.Route(s.Echo)
-	s.LocaleCntrl.Route(s.Echo)
 	s.DataSourceCntrl.Route(s.Echo)
 	s.TagCntrl.Route(s.Echo)
 	s.ProviderCntrl.Route(s.Echo)

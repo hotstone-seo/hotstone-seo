@@ -29,6 +29,8 @@ import HitCounterCard from "../Analytic/HitCounterCard";
 
 import axios from "axios";
 
+import HotstoneAPI from "../../api/hotstone";
+
 export const parseQuery = subject => {
   const results = {};
   const parser = /[^&?]+/g;
@@ -58,7 +60,7 @@ class RuleDetail extends Component {
       URL_ADDCANONICAL_API:
         process.env.REACT_APP_API_URL + "center/addCanonicalTag",
       URL_ADDSCRIPT_API: process.env.REACT_APP_API_URL + "center/addScriptTag",
-      URL_LOCALE_API: process.env.REACT_APP_API_URL + "locales",
+
       canonicalFormValues: {
         id: null,
         canonical: null,
@@ -111,7 +113,7 @@ class RuleDetail extends Component {
         content: null
       },
       languages: [],
-      localeTag: "id-ID",
+      localeTag: process.env.REACT_APP_LOCALE,
       metaTagPreviewValue: "",
       titleTagPreviewVal: "",
       scriptTagPreviewVal: "",
@@ -143,13 +145,9 @@ class RuleDetail extends Component {
     this.setState({ ruleId: id });
     this.getTagList(parseInt(id));
 
-    axios
-      .get(this.state.URL_LOCALE_API)
-      .then(res => {
-        const languages = res.data;
-        this.setState({ languages });
-      })
-      .catch(error => {});
+    const languages = HotstoneAPI.getLocalesWithoutPromise();
+
+    this.setState({ languages });
   }
 
   toggle() {
@@ -534,9 +532,7 @@ class RuleDetail extends Component {
   getTagList(rule_id) {
     const { localeTag } = this.state;
     axios
-      .get(
-        this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id
-      )
+      .get(this.state.URL_TAG_API + "?rule_id=" + rule_id)
       .then(res => {
         const tags = res.data;
         this.setState({ tags });
