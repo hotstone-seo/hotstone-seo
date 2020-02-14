@@ -116,6 +116,21 @@ class CanonicalForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">Href</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <Input
+                  type="text"
+                  id="href"
+                  name="href"
+                  placeholder="Href"
+                  onChange={onChange.bind(this, "href")}
+                />
+              </Col>
+            </FormGroup>
+
             <FormGroup row></FormGroup>
             <FormGroup row>
               <Col md="3">
