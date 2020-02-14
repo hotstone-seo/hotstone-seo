@@ -228,6 +228,7 @@ class RuleDetail extends Component {
   }
 
   showFormCanonicalTag(record) {
+    this.setState({ canonicalPreviewValue: "" });
     if (record !== undefined) {
       const { canonicalFormValues } = this.state;
       canonicalFormValues.id = record.id;
@@ -320,6 +321,17 @@ class RuleDetail extends Component {
         [type]: value
       }
     });
+
+    let name = "";
+    let href = "";
+    if (target.name === "canonical") {
+      name = target.value;
+      //href = canonicalFormValues.canonical;
+    } /*else if (target.name === "canonical") {
+      name = canonicalFormValues.canonical;
+      href = target.value;
+    }*/
+    this.generatePreviewCanonicalTag(name, href);
   }
   handleCancelAddCanonical() {
     this.setState({ canonicalFormVisible: false });
@@ -868,6 +880,7 @@ class RuleDetail extends Component {
               onChange={this.handleCanonicalTagOnChange.bind(this)}
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
+              canonicalPreviewValue={this.state.canonicalPreviewValue}
             />
             <MetaTagForm
               visible={this.state.metaTagFormVisible}

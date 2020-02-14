@@ -52,7 +52,8 @@ class CanonicalForm extends Component {
       action,
       onChange,
       languages,
-      languageDefault
+      languageDefault,
+      canonicalPreviewValue
     } = this.props;
     var defaultValueLang =
       action !== "Add" ? canonical.locale : languageDefault;
@@ -113,6 +114,15 @@ class CanonicalForm extends Component {
                   }
                   onChange={onChange.bind(this, "canonical")}
                 />
+              </Col>
+            </FormGroup>
+            <FormGroup row></FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                <Label htmlFor="text-input">Preview</Label>
+              </Col>
+              <Col xs="12" md="9">
+                <pre>{canonicalPreviewValue}</pre>
               </Col>
             </FormGroup>
           </Form>
