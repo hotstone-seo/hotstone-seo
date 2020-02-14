@@ -53,8 +53,8 @@ class ScripttagForm extends Component {
                   value={languageDefault}
                   disabled
                 >
-                  <option value="id-ID">id-ID</option>
-                  <option value="en-US">en-US</option>
+                  <option value="id_ID">id_ID</option>
+                  <option value="en_US">en_US</option>
                 </Input>
               </Col>
             </FormGroup>

@@ -35,7 +35,7 @@ const pageMachine = Machine({
               console.log("[init] RESP: ", event);
               const listLocale = event.data;
               return listLocale.map(({ lang_code, country_code }) => {
-                return `${lang_code}-${country_code}`;
+                return `${lang_code}_${country_code}`;
               });
             }
           })

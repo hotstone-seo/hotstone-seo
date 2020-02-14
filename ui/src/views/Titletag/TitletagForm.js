@@ -88,9 +88,9 @@ class TitletagForm extends Component {
                   {languages.map(ds => (
                     <option
                       key={ds.lang_code}
-                      value={ds.lang_code + "-" + ds.country_code}
+                      value={ds.lang_code + "_" + ds.country_code}
                     >
-                      {ds.lang_code + "-" + ds.country_code}
+                      {ds.lang_code + "_" + ds.country_code}
                     </option>
                   ))}
                 </Input>
