@@ -19,11 +19,10 @@ function TagForm({ tag, form }) {
   const type = form.getFieldValue('type');
   const [currentType, setCurrentType] = useState(type || tagTypes[0]);
 
-  // TODO: Might be a good idea that whenever we change type, the form fields
-  // should be cleared to ensure no attributes carried over to new type.
-
   return (
     <Form {...formLayout} form={form}>
+      <Form.Item name="id" noStyle />
+
       <Form.Item label="Type" name="type">
         <Select
           defaultValue={currentType}

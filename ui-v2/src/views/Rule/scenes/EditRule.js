@@ -80,6 +80,11 @@ function EditRule() {
       });
   };
 
+  const editTag = (tag) => {
+    tagForm.setFieldsValue(tag);
+    setTagFormVisible(true);
+  }
+
   const removeTag = (tag) => {
     deleteTag(tag.id)
       .then(() => {
@@ -107,7 +112,7 @@ function EditRule() {
               <Option value={locale}>{locale}</Option>
             ))}
           </Select>
-          <TagList tags={tags} onDelete={removeTag} />
+          <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
           <Button
             type="dashed"
             onClick={() => setTagFormVisible(true)}
