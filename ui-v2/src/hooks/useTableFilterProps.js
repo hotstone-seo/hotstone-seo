@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
-import { Input, Button, Icon } from "antd";
+import { Input, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 
 export function useTableFilterProps(dataIndex) {
@@ -57,7 +58,7 @@ export function useTableFilterProps(dataIndex) {
       ),
 
       filterIcon: filtered => (
-        <Icon
+        <SearchOutlined
           type="search"
           style={{ color: filtered ? "#1890ff" : undefined }}
         />
