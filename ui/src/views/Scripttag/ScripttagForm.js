@@ -32,7 +32,6 @@ class ScripttagForm extends Component {
       scripttag,
       action,
       onChange,
-      languages,
       languageDefault,
       scriptTagPreviewValue
     } = this.props;

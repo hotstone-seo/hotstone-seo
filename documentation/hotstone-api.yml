@@ -9,8 +9,6 @@ servers:
 tags:
 - name: Rule
   description: Rule Entity
-- name: Locale
-  description: Locale Entity
 - name: DataSource
   description: DataSource Entity
 - name: Tag

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/hotstone-seo/hotstone-seo/app/config"
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/labstack/echo"
@@ -16,6 +17,7 @@ import (
 type TagCntrl struct {
 	dig.In
 	service.TagService
+	config.Config
 }
 
 // Route to define API Route
@@ -61,6 +63,9 @@ func (c *TagCntrl) Find(ctx echo.Context) (err error) {
 		filter.RuleID = ruleID
 	}
 	filter.Locale = ctx.QueryParam("locale")
+	if filter.Locale == "" {
+		filter.Locale = c.Config.DefaultLocale
+	}
 	if tags, err = c.TagService.Find(ctx0, filter); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

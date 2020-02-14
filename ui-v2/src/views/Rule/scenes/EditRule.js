@@ -93,7 +93,7 @@ function EditRule() {
   return (
     <div>
       <Row>
-        <Col className={styles.container} span={12} style={{ paddingTop: 24 }}>
+        <Col className={styles.container} span={16} style={{ paddingTop: 24 }}>
           <RuleForm handleSubmit={editRule} rule={rule} />
         </Col>
       </Row>
