@@ -4,9 +4,9 @@ import { fetchDataSources } from '../../api/datasource';
 
 const { Option } = Select;
 
-const formLayout = { labelCol: { span: 8 }, wrapperCol: { span: 10 } };
+const formLayout = { labelCol: { span: 6 }, wrapperCol: { span: 14 } };
 
-const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
+const tailLayout = { wrapperCol: { offset: 6, span: 14 } };
 
 function RuleForm({ handleSubmit, rule }) {
   const [form] = Form.useForm();
