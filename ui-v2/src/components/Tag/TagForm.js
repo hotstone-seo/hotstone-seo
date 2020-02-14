@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Select } from 'antd';
+import { Form, Select } from 'antd';
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
 
 const { Option } = Select;
+
+const formLayout = { labelCol: { span: 6 }, wrapperCol: { span: 14 } };
 
 const tagTypes = ['title', 'meta', 'canonical', 'script'];
 
@@ -11,28 +13,35 @@ const capitalize = (item) => {
   return item.charAt(0).toUpperCase() + item.slice(1);
 }
 
-function TagForm({ tag }) {
-  const [currentType, setCurrentType] = useState(tag ? tag.type : tagTypes[0])
+function TagForm({ tag, form }) {
+  if (!form) { [form] = Form.useForm(); }
+
+  const type = form.getFieldValue('type');
+  const [currentType, setCurrentType] = useState(type || tagTypes[0]);
+
   return (
-    <div>
-      <Select
-        defaultValue={currentType}
-        onChange={(value) => setCurrentType(value)}
-        style={{ marginBottom: 16 }}
-      >
-        {tagTypes.map(tagType => (
-          <Option value={tagType}>{capitalize(tagType)}</Option>
-        ))}
-      </Select>
+    <Form {...formLayout} form={form}>
+      <Form.Item name="id" noStyle />
+
+      <Form.Item label="Type" name="type">
+        <Select
+          defaultValue={currentType}
+          onChange={(value) => setCurrentType(value)}
+        >
+          {tagTypes.map(tagType => (
+            <Option value={tagType}>{capitalize(tagType)}</Option>
+          ))}
+        </Select>
+      </Form.Item>
       {
         {
-          title: <TitleForm tag={tag} />,
-          meta: <MetaForm tag={tag} />,
+          title: <TitleForm form={form} />,
+          meta: <MetaForm form={form} />,
           canonical: null,
           script: null,
         }[currentType]
       }
-    </div>
+    </Form>
   );
 }
 

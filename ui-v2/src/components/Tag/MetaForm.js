@@ -4,17 +4,10 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-const formLayout = { labelCol: { span: 8 }, wrapperCol: { span: 12 } };
 
-function MetaForm({ tag }) {
-  const [form] = Form.useForm();
-  if (tag) {
-    form.setFieldsValue(tag);
-  }
-  form.setFieldsValue({ type: 'meta' });
-
+function MetaForm({ form }) {
   return (
-    <Form {...formLayout} form={form}>
+    <>
       <Form.Item label="Locale" name="locale">
         <Select>
           {locales.map(locale => (
@@ -30,7 +23,7 @@ function MetaForm({ tag }) {
       <Form.Item label="Content" name={['attributes', 'content']}>
         <Input />
       </Form.Item>
-    </Form>
+    </>
   );
 }
 
