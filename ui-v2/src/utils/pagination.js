@@ -6,13 +6,13 @@ export const buildQueryParam = (pagination, filters, sorters) => {
   var queryParam = {};
 
   const order = sorters["order"];
-  if (order !== undefined) {
+  if (!_.isEmpty(order)) {
     const orderSign = order === "descend" ? "-" : "";
     queryParam["_sort"] = `${orderSign}${sorters.field}`;
   }
 
   Object.entries(filters).forEach(([key, value]) => {
-    if (value[0] !== undefined) {
+    if (!_.isEmpty(value)) {
       queryParam[key] = `%${value[0]}%`;
     }
   });
