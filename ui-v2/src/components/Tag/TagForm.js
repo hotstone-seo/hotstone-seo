@@ -24,15 +24,16 @@ function TagForm({ tag, form }) {
 
   return (
     <Form {...formLayout} form={form}>
-      <Select
-        defaultValue={currentType}
-        onChange={(value) => setCurrentType(value)}
-        style={{ marginBottom: 16 }}
-      >
-        {tagTypes.map(tagType => (
-          <Option value={tagType}>{capitalize(tagType)}</Option>
-        ))}
-      </Select>
+      <Form.Item label="Type" name="type">
+        <Select
+          defaultValue={currentType}
+          onChange={(value) => setCurrentType(value)}
+        >
+          {tagTypes.map(tagType => (
+            <Option value={tagType}>{capitalize(tagType)}</Option>
+          ))}
+        </Select>
+      </Form.Item>
       {
         {
           title: <TitleForm form={form} />,

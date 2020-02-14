@@ -5,8 +5,6 @@ import locales from 'locales';
 const { Option } = Select;
 
 function TitleForm({ form }) {
-  form.setFieldsValue({ type: 'title' })
-
   return (
     <>
       <Form.Item label="Locale" name="locale">

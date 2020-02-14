@@ -6,8 +6,6 @@ const { Option } = Select;
 
 
 function MetaForm({ form }) {
-  form.setFieldsValue({ type: 'meta' });
-
   return (
     <>
       <Form.Item label="Locale" name="locale">
