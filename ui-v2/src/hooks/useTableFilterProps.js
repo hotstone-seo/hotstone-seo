@@ -41,7 +41,7 @@ export function useTableFilterProps(dataIndex) {
           <Button
             type="primary"
             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon="search"
+            icon={<SearchOutlined />}
             size="small"
             style={{ width: 90, marginRight: 8 }}
           >
@@ -58,10 +58,7 @@ export function useTableFilterProps(dataIndex) {
       ),
 
       filterIcon: filtered => (
-        <SearchOutlined
-          type="search"
-          style={{ color: filtered ? "#1890ff" : undefined }}
-        />
+        <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
       ),
 
       onFilterDropdownVisibleChange: visible => {
