@@ -1,3 +1,4 @@
+import DataSourceForm from './DataSourceForm';
 import DataSourceList from './DataSourceList';
 
-export { DataSourceList };
+export { DataSourceForm, DataSourceList };
