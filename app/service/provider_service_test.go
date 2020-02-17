@@ -7,6 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/alicebob/miniredis"
+	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
@@ -17,6 +19,17 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/mock"
 )
 
+func newTestRedisClient() *redis.Client {
+	mr, err := miniredis.Run()
+	if err != nil {
+		panic(err)
+	}
+	client := redis.NewClient(&redis.Options{
+		Addr: mr.Addr(),
+	})
+	return client
+}
+
 func TestProvider_RetrieveData(t *testing.T) {
 	ctx := context.Background()
 
@@ -24,7 +37,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 	defer ctrl.Finish()
 
 	dataSourceRepo := mock.NewMockDataSourceRepo(ctrl)
-	svc := service.ProviderServiceImpl{DataSourceRepo: dataSourceRepo}
+	svc := service.ProviderServiceImpl{DataSourceRepo: dataSourceRepo, Redis: newTestRedisClient()}
 
 	t.Run("Success", func(t *testing.T) {
 		handler := func(w http.ResponseWriter, r *http.Request) {
