@@ -75,12 +75,12 @@ func TestCenterCntrl_AddCanoncicalTag(t *testing.T) {
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
 		svc.EXPECT().AddCanonicalTag(gomock.Any(), gomock.Any()).Return(int64(0), errors.New("some-error"))
-		_, err := echotest.DoPOST(cntrl.AddCanonicalTag, "/", `{"canonical":"test","rule_ud":1}`)
+		_, err := echotest.DoPOST(cntrl.AddCanonicalTag, "/", `{"canonical":"test","rule_id":1,"href":"http://localhost"}`)
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
 		svc.EXPECT().AddCanonicalTag(gomock.Any(), gomock.Any()).Return(int64(101), nil)
-		rr, err := echotest.DoPOST(cntrl.AddCanonicalTag, "/", `{"canonical":"test","rule_ud":1}`)
+		rr, err := echotest.DoPOST(cntrl.AddCanonicalTag, "/", `{"canonical":"test","rule_id":1,"href":"http://localhost"}`)
 		require.NoError(t, err)
 		require.Equal(t, 201, rr.Code)
 		require.Equal(t, "{\"message\":\"Success insert new canonical tag #101\"}\n", rr.Body.String())

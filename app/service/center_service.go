@@ -63,7 +63,7 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonica
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "canonical",
-		Attributes: dbkit.JSON(`{}`),
+		Attributes: dbkit.JSON(fmt.Sprintf(`{"href":"%s"}`, req.Href)),
 		Value:      req.Canonical,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
