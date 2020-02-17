@@ -65,7 +65,8 @@ class RuleDetail extends Component {
         id: null,
         canonical: null,
         rule_id: null,
-        locale: null
+        locale: null,
+        href: null
       },
       metaTagFormValues: {
         id: null,
@@ -333,11 +334,11 @@ class RuleDetail extends Component {
     let href = "";
     if (target.name === "canonical") {
       name = target.value;
-      //href = canonicalFormValues.canonical;
-    } /*else if (target.name === "canonical") {
+      href = canonicalFormValues.href;
+    } else if (target.name === "href") {
       name = canonicalFormValues.canonical;
       href = target.value;
-    }*/
+    }
     this.generatePreviewCanonicalTag(name, href);
   }
   handleCancelAddCanonical() {
@@ -621,7 +622,7 @@ class RuleDetail extends Component {
       '<link rel="' +
       (canonicalFieldVal !== null ? canonicalFieldVal : "") +
       '" href="' +
-      hrefFieldVal +
+      (hrefFieldVal !== null ? hrefFieldVal : "") +
       '">';
     this.setState({ canonicalPreviewValue });
   }
@@ -632,7 +633,8 @@ class RuleDetail extends Component {
         id: null,
         canonical: null,
         rule_id: null,
-        locale: null
+        locale: null,
+        href: null
       }
     });
   }
@@ -810,6 +812,10 @@ class RuleDetail extends Component {
                             {tag.type === "meta" &&
                             tag.attributes.name !== undefined
                               ? " Content :" + tag.attributes.content
+                              : ""}
+                            {tag.type === "canonical" &&
+                            tag.attributes.href !== undefined
+                              ? " Href :" + tag.attributes.href
                               : ""}
                           </td>
                           <td>{tag.value}</td>
