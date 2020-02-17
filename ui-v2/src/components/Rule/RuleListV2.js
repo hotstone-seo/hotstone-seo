@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Table, Divider, Button } from "antd";
+import { Table, Divider, Button, Popconfirm } from "antd";
 import { format, formatDistance } from "date-fns";
 import { useTableFilterProps } from "../../hooks/useTableFilterProps";
 import { buildQueryParam, onTableChange } from "../../utils/pagination";
-import { fetchRules, deleteRule } from "api/rule";
+import { fetchRules } from "api/rule";
 import { getDataSource } from "api/datasource";
 import { useTablePaginationTotal } from "../../hooks/useTablePaginationTotal";
 import { useTablePaginationNormalizedListData } from "../../hooks/useTablePaginationNormalizedListData";
 
 const defaultPagination = {
   current: 1,
-  pageSize: 10
+  pageSize: 3
 };
 
 const formatDate = since => {
   const sinceDate = new Date(since);
 
   const full = format(sinceDate, "dd/MM/yyyy - HH:mm");
-  const relative = formatDistance(sinceDate, new Date());
 
   return `${full}`;
 };
 
 function RuleListV2(props) {
-  const { rules, onClick, onEdit, onDelete } = props;
+  const { onClick, onEdit, onDelete } = props;
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -38,7 +36,7 @@ function RuleListV2(props) {
   );
 
   useEffect(() => {
-    async function fetchThenNormalizeListRule() {
+    async function fetchData() {
       try {
         const queryParam = buildQueryParam(
           paginationInfo,
@@ -65,7 +63,7 @@ function RuleListV2(props) {
       }
     }
 
-    fetchThenNormalizeListRule();
+    fetchData();
   }, [paginationInfo, filteredInfo, sortedInfo]);
 
   const columns = [
@@ -86,8 +84,9 @@ function RuleListV2(props) {
       sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
       ...useTableFilterProps("name"),
       render: (text, record) => (
-        // onClick(record)
-        <Link to={`/rule-detail/?id=${record.id}`}>{text}</Link>
+        <Button type="link" onClick={() => onClick(record)}>
+          {text}
+        </Button>
       )
     },
     {
@@ -119,9 +118,23 @@ function RuleListV2(props) {
       key: "action",
       render: (text, record) => (
         <span>
-          <Button>Edit</Button>
+          <Button
+            type="link"
+            onClick={() => onEdit(record)}
+            style={{ padding: 0 }}
+          >
+            Edit
+          </Button>
           <Divider type="vertical" />
-          <Button type="danger">Delete</Button>
+          <Popconfirm
+            title="Are you sure to delete this rule?"
+            placement="topRight"
+            onConfirm={() => onDelete(record)}
+          >
+            <Button type="link" danger style={{ padding: 0 }}>
+              Delete
+            </Button>
+          </Popconfirm>
         </span>
       )
     }
