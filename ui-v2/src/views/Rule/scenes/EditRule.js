@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import {
-  Row, Col, message, Select, Button, Modal, Form,
-} from 'antd';
+import { Row, Col, message, Select, Button, Modal, Form } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { RuleForm } from 'components/Rule';
 import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
 import { fetchTags, createTag, updateTag, deleteTag } from 'api/tag';
+import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
 import styles from './AddRule.module.css';
 
@@ -16,6 +15,7 @@ const { Option } = Select;
 function EditRule() {
   const { id } = useParams();
   const history = useHistory();
+  const dataSources = useDataSources();
   const [tagForm] = Form.useForm();
 
   const [rule, setRule] = useState({});
@@ -34,7 +34,7 @@ function EditRule() {
 
   useEffect(() => {
     refreshTagList(id, locale);
-  }, [id, locale])
+  }, [id, locale]);
 
   const editRule = (newRule) => {
     newRule.id = rule.id;
@@ -48,28 +48,28 @@ function EditRule() {
   };
 
   const submitTag = () => {
-    tagForm.validateFields()
-           .then((tag) => {
-             setTagFormLoading(true);
-             
-             tag.rule_id = parseInt(id);
-             let submitFunc = createTag;
-             if (tag.id) {
-               submitFunc = updateTag;
-             }
-             return submitFunc(tag);
-           })
-           .then(() => {
-             tagForm.resetFields();
-             setTagFormVisible(false);
-             refreshTagList(id, locale);
-           })
-           .catch(error => {
-             message.error(error.message);
-           })
-           .finally(() => {
-             setTagFormLoading(false);
-           });
+    tagForm
+      .validateFields()
+      .then((tag) => {
+        setTagFormLoading(true);
+        tag.rule_id = parseInt(id);
+        let submitFunc = createTag;
+        if (tag.id) {
+          submitFunc = updateTag;
+        }
+        return submitFunc(tag);
+      })
+      .then(() => {
+        tagForm.resetFields();
+        setTagFormVisible(false);
+        refreshTagList(id, locale);
+      })
+      .catch(error => {
+        message.error(error.message);
+      })
+      .finally(() => {
+        setTagFormLoading(false);
+      });
   };
 
   const refreshTagList = (id, locale) => {
@@ -99,7 +99,7 @@ function EditRule() {
     <div>
       <Row>
         <Col className={styles.container} span={16} style={{ paddingTop: 24 }}>
-          <RuleForm handleSubmit={editRule} rule={rule} />
+          <RuleForm handleSubmit={editRule} rule={rule} dataSources={dataSources} />
         </Col>
       </Row>
       <Row style={{ marginTop: 24 }}>
@@ -109,7 +109,7 @@ function EditRule() {
             onChange={(value) => setLocale(value)}
           >
             {locales.map(locale => (
-              <Option value={locale}>{locale}</Option>
+              <Option value={locale} key={locale}>{locale}</Option>
             ))}
           </Select>
           <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />

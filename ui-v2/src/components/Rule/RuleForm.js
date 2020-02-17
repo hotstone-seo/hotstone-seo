@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Form, Input, Select, Button } from 'antd';
-import { fetchDataSources } from '../../api/datasource';
 
 const { Option } = Select;
 
@@ -8,27 +7,11 @@ const formLayout = { labelCol: { span: 6 }, wrapperCol: { span: 14 } };
 
 const tailLayout = { wrapperCol: { offset: 6, span: 14 } };
 
-function RuleForm({ handleSubmit, rule }) {
+function RuleForm({ handleSubmit, rule, dataSources }) {
   const [form] = Form.useForm();
   if (rule) {
     form.setFieldsValue(rule);
   }
-
-  const [dataSources, setDataSources] = useState([]);
-
-  useEffect(() => {
-    let _isCancelled = false;
-    fetchDataSources()
-      .then((dataSources) => {
-        if (!_isCancelled) {
-          setDataSources(dataSources);
-        }
-      });
-
-    return () => {
-      _isCancelled = true;
-    };
-  }, []);
 
   return (
     <Form {...formLayout} form={form} onFinish={handleSubmit}>
