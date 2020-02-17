@@ -1,8 +1,13 @@
 import React from 'react';
-import { Table, Button, Divider, Popconfirm } from 'antd';
+import PropTypes from 'prop-types';
+import {
+  Table, Button, Divider, Popconfirm,
+} from 'antd';
 
 function RuleList(props) {
-  const { rules, onClick, onEdit, onDelete } = props;
+  const {
+    rules, onClick, onEdit, onDelete,
+  } = props;
 
   const columns = [
     {
@@ -16,7 +21,7 @@ function RuleList(props) {
         >
           {text}
         </Button>
-      )
+      ),
     },
     { title: 'URL Pattern', dataIndex: 'url_pattern', key: 'urlPattern' },
     { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated' },
@@ -41,9 +46,9 @@ function RuleList(props) {
             <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
           </Popconfirm>
         </span>
-      )
-    }
-  ]
+      ),
+    },
+  ];
 
   return (
     <Table
@@ -53,5 +58,26 @@ function RuleList(props) {
     />
   );
 }
+
+RuleList.defaultProps = {
+  rules: [],
+};
+
+RuleList.propTypes = {
+  rules: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      url_pattern: PropTypes.string,
+      updated_at: PropTypes.string,
+    }),
+  ),
+
+  onClick: PropTypes.func.isRequired,
+
+  onEdit: PropTypes.func.isRequired,
+
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default RuleList;

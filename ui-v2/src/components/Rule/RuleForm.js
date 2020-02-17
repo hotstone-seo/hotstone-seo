@@ -1,20 +1,22 @@
 import React from 'react';
-import { Form, Input, Select, Button } from 'antd';
+import PropTypes from 'prop-types';
+import {
+  Form, Input, Select, Button,
+} from 'antd';
 
 const { Option } = Select;
 
-const formLayout = { labelCol: { span: 6 }, wrapperCol: { span: 14 } };
-
-const tailLayout = { wrapperCol: { offset: 6, span: 14 } };
-
-function RuleForm({ handleSubmit, rule, dataSources }) {
+function RuleForm({ rule, dataSources, handleSubmit }) {
   const [form] = Form.useForm();
-  if (rule) {
-    form.setFieldsValue(rule);
-  }
+  form.setFieldsValue(rule);
 
   return (
-    <Form {...formLayout} form={form} onFinish={handleSubmit}>
+    <Form
+      form={form}
+      onFinish={handleSubmit}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 14 }}
+    >
       <Form.Item
         name="name"
         label="Name"
@@ -42,7 +44,7 @@ function RuleForm({ handleSubmit, rule, dataSources }) {
         </Select>
       </Form.Item>
 
-      <Form.Item {...tailLayout}>
+      <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
         <Button type="primary" htmlType="submit">
           Submit
         </Button>
@@ -50,5 +52,27 @@ function RuleForm({ handleSubmit, rule, dataSources }) {
     </Form>
   );
 }
+
+RuleForm.defaultProps = {
+  rule: {},
+  dataSources: [],
+};
+
+RuleForm.propTypes = {
+  rule: PropTypes.shape({
+    name: PropTypes.string,
+    url_pattern: PropTypes.string,
+    data_source_id: PropTypes.number,
+  }),
+
+  dataSources: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }),
+  ),
+
+  handleSubmit: PropTypes.func.isRequired,
+};
 
 export default RuleForm;

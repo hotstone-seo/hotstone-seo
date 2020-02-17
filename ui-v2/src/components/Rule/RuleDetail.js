@@ -1,16 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Descriptions } from 'antd';
 
 function RuleDetail({ rule }) {
-  const { name, url_pattern: urlPattern, data_source_id } = rule;
+  const { name, url_pattern: urlPattern, data_source_id: dataSourceID } = rule;
   return (
     <Descriptions title="Rule Detail">
       <Descriptions.Item label="Name">{name}</Descriptions.Item>
       <Descriptions.Item label="URL Pattern">{urlPattern}</Descriptions.Item>
-      {data_source_id && (
+      {dataSourceID && (
         <Descriptions.Item label="Data Source">
-          <Link to={`/data_sources/${data_source_id}`}>
+          <Link to={`/data_sources/${dataSourceID}`}>
             Data Source
           </Link>
         </Descriptions.Item>
@@ -18,5 +19,13 @@ function RuleDetail({ rule }) {
     </Descriptions>
   );
 }
+
+RuleDetail.propTypes = {
+  rule: PropTypes.shape({
+    name: PropTypes.string,
+    url_pattern: PropTypes.string,
+    data_source_id: PropTypes.number,
+  }).isRequired,
+};
 
 export default RuleDetail;
