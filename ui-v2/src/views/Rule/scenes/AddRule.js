@@ -8,7 +8,7 @@ import styles from './AddRule.module.css';
 
 function AddRule() {
   const history = useHistory();
-  const dataSources = useDataSources();
+  const [dataSources] = useDataSources();
   const handleCreate = (rule) => {
     createRule(rule)
       .then(rule => {

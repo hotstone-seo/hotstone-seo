@@ -11,7 +11,7 @@ function useDataSources() {
       });
   }, []);
 
-  return dataSources;
+  return [dataSources, setDataSources];
 }
 
 export default useDataSources;

@@ -15,7 +15,7 @@ const { Option } = Select;
 function EditRule() {
   const { id } = useParams();
   const history = useHistory();
-  const dataSources = useDataSources();
+  const [dataSources] = useDataSources();
   const [tagForm] = Form.useForm();
 
   const [rule, setRule] = useState({});
