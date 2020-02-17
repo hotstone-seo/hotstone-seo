@@ -17,6 +17,8 @@ function RuleForm({ rule, dataSources, handleSubmit }) {
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
     >
+      <Form.Item name="id" noStyle />
+
       <Form.Item
         name="name"
         label="Name"
@@ -60,6 +62,7 @@ RuleForm.defaultProps = {
 
 RuleForm.propTypes = {
   rule: PropTypes.shape({
+    id: PropTypes.number,
     name: PropTypes.string,
     url_pattern: PropTypes.string,
     data_source_id: PropTypes.number,
