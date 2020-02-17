@@ -113,6 +113,9 @@ class RuleDetail extends Component {
         name: null,
         content: null
       },
+      canonicaltag_attr: {
+        href: null
+      },
       languages: [],
       localeTag: process.env.REACT_APP_LOCALE,
       metaTagPreviewValue: "",
@@ -235,6 +238,7 @@ class RuleDetail extends Component {
       canonicalFormValues.id = record.id;
       canonicalFormValues.canonical = record.value;
       canonicalFormValues.locale = record.locale;
+      canonicalFormValues.href = record.attributes.href;
 
       this.setState({ canonicalFormValues: canonicalFormValues });
       this.setState({ actionCanonicalForm: "Edit" });
@@ -513,14 +517,17 @@ class RuleDetail extends Component {
       actionCanonicalForm,
       ruleId,
       tag_update,
-      localeTag
+      localeTag,
+      canonicaltag_attr
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
     if (isUpdate) {
+      canonicaltag_attr.href = canonicalFormValues.href;
+
       tag_update.id = canonicalFormValues.id;
       tag_update.type = "canonical";
-      tag_update.attributes = "{}";
+      tag_update.attributes = canonicaltag_attr;
       tag_update.locale = canonicalFormValues.locale;
       tag_update.value = canonicalFormValues.canonical;
       tag_update.rule_id = parseInt(ruleId);

@@ -126,6 +126,7 @@ class CanonicalForm extends Component {
                   id="href"
                   name="href"
                   placeholder="Href"
+                  defaultValue={canonical !== undefined ? canonical.href : ""}
                   onChange={onChange.bind(this, "href")}
                 />
               </Col>
