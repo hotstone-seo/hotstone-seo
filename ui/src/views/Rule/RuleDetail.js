@@ -305,9 +305,16 @@ class RuleDetail extends Component {
       }
     });
 
+    let types = "";
+    let source = "";
     if (target.name === "types") {
-      this.generatePreviewScriptTag(target.value);
+      types = target.value;
+      source = scriptTagFormValues.datasource_id;
+    } else if (target.name === "datasource_id") {
+      types = scriptTagFormValues.type;
+      source = target.value;
     }
+    this.generatePreviewScriptTag(types, source);
   }
 
   handleCanonicalTagOnChange(type, e) {
@@ -598,10 +605,14 @@ class RuleDetail extends Component {
     titleTagPreviewValue = "<title>" + (ttl !== null ? ttl : "") + "</title>";
     this.setState({ titleTagPreviewValue });
   }
-  generatePreviewScriptTag(scp) {
+  generatePreviewScriptTag(scp, source) {
     let scriptTagPreviewValue = "";
     scriptTagPreviewValue =
-      '<script type="' + (scp !== null ? scp : "") + '"></script>';
+      '<script type="' +
+      (scp !== null ? scp : "") +
+      '">' +
+      source +
+      "</script>";
     this.setState({ scriptTagPreviewValue });
   }
   generatePreviewCanonicalTag(canonicalFieldVal, hrefFieldVal) {
