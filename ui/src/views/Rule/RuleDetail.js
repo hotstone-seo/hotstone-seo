@@ -121,7 +121,8 @@ class RuleDetail extends Component {
       metaTagPreviewValue: "",
       titleTagPreviewVal: "",
       scriptTagPreviewVal: "",
-      canonicalPreviewValue: ""
+      canonicalPreviewValue: "",
+      data_sources: []
     };
 
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
@@ -152,6 +153,17 @@ class RuleDetail extends Component {
     const languages = HotstoneAPI.getLocalesWithoutPromise();
 
     this.setState({ languages });
+
+    axios
+      .get(process.env.REACT_APP_API_URL + "data_sources")
+      .then(res => {
+        const { data: resData } = res || {};
+        const data_sources = resData;
+        this.setState({ data_sources });
+      })
+      .catch(error => {
+        this.toggleWarningAPI("Get Data Sources List : " + error.message);
+      });
   }
 
   toggle() {
@@ -929,6 +941,7 @@ class RuleDetail extends Component {
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
               scriptTagPreviewValue={this.state.scriptTagPreviewValue}
+              dataSources={this.state.data_sources}
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}
