@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Divider, Button, Popconfirm } from "antd";
+import { Table, Divider, Button, Popconfirm, Row, Col } from "antd";
 import { format, formatDistance } from "date-fns";
 import { useTableFilterProps } from "hooks/useTableFilterProps";
 import {
@@ -122,25 +122,35 @@ function ViewMismatchRules(props) {
           )}
         </code>
       </pre> */}
-      <Table
-        rowKey="request_path"
-        columns={columns}
-        dataSource={listData}
-        pagination={false}
-        onChange={onTableChange(setFilteredInfo, setSortedInfo)}
-      />
-      <div className="ant-pagination">
-        <button onClick={() => resetPagination()} disabled={!canPreviousPage}>
-          {"Latest"}
-        </button>{" "}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {"Prev"}
-        </button>
-        {` Page: ${pageIndex + 1} `}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {"Next"}
-        </button>{" "}
-      </div>
+      <Row>
+        <Col span={24}>
+          <Table
+            rowKey="request_path"
+            columns={columns}
+            dataSource={listData}
+            pagination={false}
+            onChange={onTableChange(setFilteredInfo, setSortedInfo)}
+          />
+        </Col>
+      </Row>
+      <Row justify="end">
+        <Col>
+          <Button
+            type="primary"
+            onClick={() => resetPagination()}
+            disabled={!canPreviousPage}
+          >
+            {"Latest"}
+          </Button>
+          <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            {"Prev"}
+          </Button>
+          {` Page: ${pageIndex + 1} `}
+          <Button onClick={() => nextPage()} disabled={!canNextPage}>
+            {"Next"}
+          </Button>
+        </Col>
+      </Row>
     </div>
   );
 }
