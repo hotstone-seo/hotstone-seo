@@ -4,13 +4,12 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-
-function MetaForm({ form }) {
+function MetaForm() {
   return (
     <>
       <Form.Item label="Locale" name="locale">
         <Select>
-          {locales.map(locale => (
+          {locales.map((locale) => (
             <Option value={locale}>{locale}</Option>
           ))}
         </Select>
