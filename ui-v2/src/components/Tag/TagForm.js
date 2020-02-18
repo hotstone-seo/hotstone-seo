@@ -23,6 +23,8 @@ function TagForm({ tag, form }) {
     <Form {...formLayout} form={form}>
       <Form.Item name="id" noStyle />
 
+      <Form.Item name="rule_id" noStyle />
+
       <Form.Item label="Type" name="type">
         <Select
           defaultValue={currentType}

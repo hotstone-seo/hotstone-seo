@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Row, Col, message, Select, Button, Modal, Form } from 'antd';
+import {
+  Row, Col, message, Select, Button, Modal, Form,
+} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { RuleForm } from 'components/Rule';
 import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
-import { fetchTags, createTag, updateTag, deleteTag } from 'api/tag';
+import {
+  fetchTags, createTag, updateTag, deleteTag,
+} from 'api/tag';
 import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
 import styles from './AddRule.module.css';
@@ -26,23 +30,26 @@ function EditRule() {
 
   useEffect(() => {
     getRule(id)
-      .then(rule => { setRule(rule) })
-      .catch(error => {
+      .then((newRule) => { setRule(newRule); })
+      .catch((error) => {
         message.error(error.message);
       });
   }, [id]);
 
   useEffect(() => {
-    refreshTagList(id, locale);
+    fetchTags({ rule_id: id, locale })
+      .then((newTags) => { setTags(newTags); })
+      .catch((error) => {
+        message.error(error.message);
+      });
   }, [id, locale]);
 
   const editRule = (newRule) => {
-    newRule.id = rule.id;
     updateRule(newRule)
       .then(() => {
         history.push('/rules');
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       });
   };
@@ -52,7 +59,6 @@ function EditRule() {
       .validateFields()
       .then((tag) => {
         setTagFormLoading(true);
-        tag.rule_id = parseInt(id);
         let submitFunc = createTag;
         if (tag.id) {
           submitFunc = updateTag;
@@ -62,9 +68,12 @@ function EditRule() {
       .then(() => {
         tagForm.resetFields();
         setTagFormVisible(false);
-        refreshTagList(id, locale);
+        return fetchTags({ rule_id: id, locale });
       })
-      .catch(error => {
+      .then((newTags) => {
+        setTags(newTags);
+      })
+      .catch((error) => {
         message.error(error.message);
       })
       .finally(() => {
@@ -72,25 +81,22 @@ function EditRule() {
       });
   };
 
-  const refreshTagList = (id, locale) => {
-    fetchTags({ rule_id: id, locale: locale })
-      .then(tags => { setTags(tags) })
-      .catch(error => {
-        message.error(error.message);
-      });
+  const addTag = () => {
+    tagForm.setFieldsValue({ rule_id: parseInt(id, 10) });
+    setTagFormVisible(true);
   };
 
   const editTag = (tag) => {
     tagForm.setFieldsValue(tag);
     setTagFormVisible(true);
-  }
+  };
 
   const removeTag = (tag) => {
     deleteTag(tag.id)
       .then(() => {
-        setTags(tags.filter(item => item.id !== tag.id));
+        setTags(tags.filter((item) => item.id !== tag.id));
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       });
   };
@@ -108,17 +114,18 @@ function EditRule() {
             defaultValue={locale}
             onChange={(value) => setLocale(value)}
           >
-            {locales.map(locale => (
-              <Option value={locale} key={locale}>{locale}</Option>
+            {locales.map((loc) => (
+              <Option value={loc} key={loc}>{loc}</Option>
             ))}
           </Select>
           <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
           <Button
             type="dashed"
-            onClick={() => setTagFormVisible(true)}
+            onClick={addTag}
             style={{ width: '100%' }}
           >
-            <PlusOutlined /> Add Tag
+            <PlusOutlined />
+            Add Tag
           </Button>
         </Col>
       </Row>
