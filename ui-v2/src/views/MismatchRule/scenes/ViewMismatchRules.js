@@ -46,6 +46,10 @@ function ViewMismatchRules(props) {
   } = instTokenPagination;
 
   useEffect(() => {
+    resetPagination();
+  }, [filteredInfo]);
+
+  useEffect(() => {
     async function fetchData() {
       try {
         const nextKey = { id: "count", desc: true };
@@ -64,11 +68,10 @@ function ViewMismatchRules(props) {
 
           const nextPageToken = createPageToken(lastRow, sortedInfo, nextKey);
           setNextPageToken(nextPageToken);
+          setListData(listData);
         } else {
           previousPage();
         }
-
-        setListData(listData);
       } catch (err) {
         console.log("ERR: ", err);
       }
@@ -80,12 +83,12 @@ function ViewMismatchRules(props) {
   const columns = [
     {
       title: "URL",
-      dataIndex: "request_path",
-      key: "request_path",
+      dataIndex: "url",
+      key: "url",
       // width: "30%",
       sorter: false,
-      sortOrder: sortedInfo.columnKey === "request_path" && sortedInfo.order,
-      ...useTableFilterProps("request_path")
+      sortOrder: sortedInfo.columnKey === "url" && sortedInfo.order,
+      ...useTableFilterProps("url")
     },
 
     {
@@ -125,7 +128,7 @@ function ViewMismatchRules(props) {
       <Row>
         <Col span={24}>
           <Table
-            rowKey="request_path"
+            rowKey="url"
             columns={columns}
             dataSource={listData}
             pagination={false}

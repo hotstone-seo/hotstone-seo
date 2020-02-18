@@ -56,7 +56,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 	list = make([]*MetricsMismatchedCount, 0)
 	for rows.Next() {
 		var e0 MetricsMismatchedCount
-		if err = rows.Scan(&e0.RequestPath, &e0.Count, &e0.Since); err != nil {
+		if err = rows.Scan(&e0.URL, &e0.Count, &e0.Since); err != nil {
 			return
 		}
 		list = append(list, &e0)
