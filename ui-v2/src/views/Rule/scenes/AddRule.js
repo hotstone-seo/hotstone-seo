@@ -6,7 +6,6 @@ import {
 import { RuleForm } from 'components/Rule';
 import { createRule } from 'api/rule';
 import useDataSources from 'hooks/useDataSources';
-import styles from './AddRule.module.css';
 
 function AddRule() {
   const history = useHistory();
@@ -31,7 +30,7 @@ function AddRule() {
       />
       <div style={{ padding: 24 }}>
         <Row>
-          <Col className={styles.container} span={12} style={{ paddingTop: 24 }}>
+          <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
             <RuleForm handleSubmit={handleCreate} dataSources={dataSources} />
           </Col>
         </Row>

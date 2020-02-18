@@ -12,7 +12,6 @@ import {
 } from 'api/tag';
 import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
-import styles from './AddRule.module.css';
 
 const { Option } = Select;
 
@@ -134,7 +133,7 @@ function EditRule() {
 
       <div style={{ padding: 24 }}>
         <Row>
-          <Col className={styles.container} span={16} style={{ padding: 24 }}>
+          <Col span={16} style={{ background: '#fff', padding: 24 }}>
             <Select
               defaultValue={locale}
               onChange={(value) => setLocale(value)}
