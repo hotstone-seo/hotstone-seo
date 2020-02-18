@@ -4,9 +4,9 @@ import {
   Table, Button, Divider, Popconfirm,
 } from 'antd';
 
-function RuleList(props) {
+function DataSourceList(props) {
   const {
-    rules, onClick, onEdit, onDelete,
+    dataSources, onClick, onEdit, onDelete,
   } = props;
 
   const columns = [
@@ -23,7 +23,7 @@ function RuleList(props) {
         </Button>
       ),
     },
-    { title: 'URL Pattern', dataIndex: 'url_pattern', key: 'urlPattern' },
+    { title: 'URL', dataIndex: 'url', key: 'url' },
     { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated' },
     {
       title: 'Action',
@@ -39,7 +39,7 @@ function RuleList(props) {
           </Button>
           <Divider type="vertical" />
           <Popconfirm
-            title="Are you sure to delete this rule?"
+            title="Are you sure to delete this data source?"
             placement="topRight"
             onConfirm={() => onDelete(record)}
           >
@@ -53,22 +53,22 @@ function RuleList(props) {
   return (
     <Table
       columns={columns}
-      dataSource={rules}
+      dataSource={dataSources}
       rowKey="id"
     />
   );
 }
 
-RuleList.defaultProps = {
-  rules: [],
+DataSourceList.defaultProps = {
+  dataSources: [],
 };
 
-RuleList.propTypes = {
-  rules: PropTypes.arrayOf(
+DataSourceList.propTypes = {
+  dataSources: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string,
-      url_pattern: PropTypes.string,
+      url: PropTypes.string,
       updated_at: PropTypes.string,
     }),
   ),
@@ -80,4 +80,4 @@ RuleList.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-export default RuleList;
+export default DataSourceList;

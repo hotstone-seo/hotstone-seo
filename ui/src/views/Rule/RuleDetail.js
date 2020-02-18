@@ -65,7 +65,8 @@ class RuleDetail extends Component {
         id: null,
         canonical: null,
         rule_id: null,
-        locale: null
+        locale: null,
+        href: null
       },
       metaTagFormValues: {
         id: null,
@@ -111,6 +112,9 @@ class RuleDetail extends Component {
       metatag_attr: {
         name: null,
         content: null
+      },
+      canonicaltag_attr: {
+        href: null
       },
       languages: [],
       localeTag: process.env.REACT_APP_LOCALE,
@@ -234,6 +238,7 @@ class RuleDetail extends Component {
       canonicalFormValues.id = record.id;
       canonicalFormValues.canonical = record.value;
       canonicalFormValues.locale = record.locale;
+      canonicalFormValues.href = record.attributes.href;
 
       this.setState({ canonicalFormValues: canonicalFormValues });
       this.setState({ actionCanonicalForm: "Edit" });
@@ -333,11 +338,11 @@ class RuleDetail extends Component {
     let href = "";
     if (target.name === "canonical") {
       name = target.value;
-      //href = canonicalFormValues.canonical;
-    } /*else if (target.name === "canonical") {
+      href = canonicalFormValues.href;
+    } else if (target.name === "href") {
       name = canonicalFormValues.canonical;
       href = target.value;
-    }*/
+    }
     this.generatePreviewCanonicalTag(name, href);
   }
   handleCancelAddCanonical() {
@@ -512,14 +517,17 @@ class RuleDetail extends Component {
       actionCanonicalForm,
       ruleId,
       tag_update,
-      localeTag
+      localeTag,
+      canonicaltag_attr
     } = this.state;
     const isUpdate = actionCanonicalForm !== "Add";
 
     if (isUpdate) {
+      canonicaltag_attr.href = canonicalFormValues.href;
+
       tag_update.id = canonicalFormValues.id;
       tag_update.type = "canonical";
-      tag_update.attributes = "{}";
+      tag_update.attributes = canonicaltag_attr;
       tag_update.locale = canonicalFormValues.locale;
       tag_update.value = canonicalFormValues.canonical;
       tag_update.rule_id = parseInt(ruleId);
@@ -551,7 +559,9 @@ class RuleDetail extends Component {
   getTagList(rule_id) {
     const { localeTag } = this.state;
     axios
-      .get(this.state.URL_TAG_API + "?rule_id=" + rule_id)
+      .get(
+        this.state.URL_TAG_API + "?locale=" + localeTag + "&rule_id=" + rule_id
+      )
       .then(res => {
         const tags = res.data;
         this.setState({ tags });
@@ -621,7 +631,7 @@ class RuleDetail extends Component {
       '<link rel="' +
       (canonicalFieldVal !== null ? canonicalFieldVal : "") +
       '" href="' +
-      hrefFieldVal +
+      (hrefFieldVal !== null ? hrefFieldVal : "") +
       '">';
     this.setState({ canonicalPreviewValue });
   }
@@ -632,7 +642,8 @@ class RuleDetail extends Component {
         id: null,
         canonical: null,
         rule_id: null,
-        locale: null
+        locale: null,
+        href: null
       }
     });
   }
@@ -810,6 +821,10 @@ class RuleDetail extends Component {
                             {tag.type === "meta" &&
                             tag.attributes.name !== undefined
                               ? " Content :" + tag.attributes.content
+                              : ""}
+                            {tag.type === "canonical" &&
+                            tag.attributes.href !== undefined
+                              ? " Href :" + tag.attributes.href
                               : ""}
                           </td>
                           <td>{tag.value}</td>

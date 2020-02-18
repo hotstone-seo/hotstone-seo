@@ -24,8 +24,6 @@ class CanonicalForm extends Component {
       fadeIn: true,
       timeout: 300
     };
-
-    this.handlePreview = this.handlePreview.bind(this);
   }
 
   toggle() {
@@ -36,11 +34,6 @@ class CanonicalForm extends Component {
     this.setState(prevState => {
       return { fadeIn: !prevState };
     });
-  }
-
-  handlePreview() {
-    const { history } = this.props;
-    history.push("/base/MetatagPreview");
   }
 
   render() {
@@ -126,6 +119,7 @@ class CanonicalForm extends Component {
                   id="href"
                   name="href"
                   placeholder="Href"
+                  defaultValue={canonical !== undefined ? canonical.href : ""}
                   onChange={onChange.bind(this, "href")}
                 />
               </Col>

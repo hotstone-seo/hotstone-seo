@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { Button, message } from "antd";
-import { fetchRules, deleteRule } from "api/rule";
-import { RuleListV2 } from "components/Rule";
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { Button, message } from 'antd';
+import { fetchRules, deleteRule } from 'api/rule';
+import { RuleListV2 } from 'components/Rule';
 
 function ViewRules({ match }) {
   const [rules, setRules] = useState([]);
 
   useEffect(() => {
     let _isCancelled = false;
-    fetchRules().then(rules => {
+    fetchRules().then((rules) => {
       if (!_isCancelled) {
         setRules(rules);
       }
@@ -20,19 +20,19 @@ function ViewRules({ match }) {
     };
   }, []);
 
-  let history = useHistory();
+  const history = useHistory();
 
-  const showEditForm = rule => {
+  const showEditForm = (rule) => {
     history.push(`${match.url}/${rule.id}`);
   };
 
-  const handleDelete = rule => {
+  const handleDelete = (rule) => {
     deleteRule(rule.id)
       .then(() => {
         message.success(`Successfully deleted ${rule.name}`);
-        setRules(rules.filter(item => item.id !== rule.id));
+        setRules(rules.filter((item) => item.id !== rule.id));
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       });
   };

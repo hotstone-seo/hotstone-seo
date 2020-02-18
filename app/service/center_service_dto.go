@@ -20,6 +20,7 @@ type AddCanonicalTagRequest struct {
 	Canonical string `json:"canonical"`
 	Locale    string `json:"locale"`
 	RuleID    int64  `json:"rule_id"`
+	Href      string `json:"href"`
 }
 
 // AddScriptTagRequest is request model for addScriptTag method
