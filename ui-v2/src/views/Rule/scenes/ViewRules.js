@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, message } from 'antd';
 import { fetchRules, deleteRule } from 'api/rule';
@@ -8,15 +9,15 @@ function ViewRules({ match }) {
   const [rules, setRules] = useState([]);
 
   useEffect(() => {
-    let _isCancelled = false;
-    fetchRules().then((rules) => {
-      if (!_isCancelled) {
-        setRules(rules);
+    let isCancelled = false;
+    fetchRules().then((newRules) => {
+      if (!isCancelled) {
+        setRules(newRules);
       }
     });
 
     return () => {
-      _isCancelled = true;
+      isCancelled = true;
     };
   }, []);
 
@@ -51,5 +52,11 @@ function ViewRules({ match }) {
     </div>
   );
 }
+
+ViewRules.propTypes = {
+  match: PropTypes.shape({
+    url: PropTypes.string,
+  }).isRequired,
+};
 
 export default ViewRules;

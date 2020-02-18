@@ -29,7 +29,11 @@ func (c *MetricsCntrl) Route(e *echo.Echo) {
 func (c *MetricsCntrl) ListMismatched(ctx echo.Context) (err error) {
 	var metrics_mismatcheds []*repository.MetricsMismatchedCount
 	ctx0 := ctx.Request().Context()
-	if metrics_mismatcheds, err = c.MetricsRuleMatchingService.ListMismatchedCount(ctx0); err != nil {
+
+	validCols := []string{"request_path", "since", "count"}
+	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
+
+	if metrics_mismatcheds, err = c.MetricsRuleMatchingService.ListMismatchedCount(ctx0, paginationParam); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, metrics_mismatcheds)

@@ -17,7 +17,7 @@ type MetricsRuleMatching struct {
 // MetricsRuleMatchingRepo to handle metrics_rule_matching entity [mock]
 type MetricsRuleMatchingRepo interface {
 	Insert(context.Context, MetricsRuleMatching) (err error)
-	ListMismatchedCount(ctx context.Context) (list []*MetricsMismatchedCount, err error)
+	ListMismatchedCount(ctx context.Context, paginationParam PaginationParam) (list []*MetricsMismatchedCount, err error)
 	CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
 	CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
 	ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error)
