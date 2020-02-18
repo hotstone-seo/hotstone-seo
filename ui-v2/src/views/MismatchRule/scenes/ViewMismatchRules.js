@@ -80,12 +80,12 @@ function ViewMismatchRules(props) {
   const columns = [
     {
       title: "URL",
-      dataIndex: "request_path",
-      key: "request_path",
+      dataIndex: "url",
+      key: "url",
       // width: "30%",
       sorter: false,
-      sortOrder: sortedInfo.columnKey === "request_path" && sortedInfo.order,
-      ...useTableFilterProps("request_path")
+      sortOrder: sortedInfo.columnKey === "url" && sortedInfo.order,
+      ...useTableFilterProps("url")
     },
 
     {
@@ -107,7 +107,7 @@ function ViewMismatchRules(props) {
 
   return (
     <div>
-      {/* <pre>
+      <pre>
         <code>
           {JSON.stringify(
             {
@@ -121,11 +121,11 @@ function ViewMismatchRules(props) {
             2
           )}
         </code>
-      </pre> */}
+      </pre>
       <Row>
         <Col span={24}>
           <Table
-            rowKey="request_path"
+            rowKey="url"
             columns={columns}
             dataSource={listData}
             pagination={false}

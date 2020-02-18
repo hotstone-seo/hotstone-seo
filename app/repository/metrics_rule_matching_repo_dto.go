@@ -6,9 +6,9 @@ import (
 
 // MetricsMismatchedCount represented  metrics_unmatched entity
 type MetricsMismatchedCount struct {
-	RequestPath string    `json:"request_path"`
-	Count       int64     `json:"count"`
-	Since       time.Time `json:"since"`
+	URL   string    `json:"url"`
+	Count int64     `json:"count"`
+	Since time.Time `json:"since"`
 }
 
 type MetricsCountHitPerDay struct {
