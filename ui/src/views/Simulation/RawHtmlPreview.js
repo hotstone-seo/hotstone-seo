@@ -35,13 +35,9 @@ export default function RawHTMLPreview({ ruleID, tags }) {
       .join("\n");
 
     return (
-      <textarea
-        readOnly
-        wrap={"off"}
-        defaultValue={textAreaVal}
-        rows={10}
-        cols={size.width * (130 / 1280)}
-      />
+      <pre style={{ border: "1px solid" }}>
+        <code>{textAreaVal}</code>
+      </pre>
     );
   }
 }
