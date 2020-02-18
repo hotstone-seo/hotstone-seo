@@ -25,6 +25,7 @@ function EditRule() {
   const [rule, setRule] = useState({});
   const [tags, setTags] = useState([]);
   const [locale, setLocale] = useState(locales[0] || '');
+  const [isEditingRule, setIsEditingRule] = useState(false);
   const [tagFormVisible, setTagFormVisible] = useState(false);
   const [tagFormLoading, setTagFormLoading] = useState(false);
 
@@ -47,7 +48,8 @@ function EditRule() {
   const editRule = (newRule) => {
     updateRule(newRule)
       .then(() => {
-        history.push('/rules');
+        setRule(newRule);
+        setIsEditingRule(false);
       })
       .catch((error) => {
         message.error(error.message);
@@ -108,17 +110,30 @@ function EditRule() {
         title="Manage Rule"
         subTitle="Organize tags to be rendered"
         style={{ background: '#fff' }}
+        extra={[
+          <Button
+            key="edit"
+            type={isEditingRule ? 'default' : 'primary'}
+            onClick={() => setIsEditingRule(!isEditingRule)}
+          >
+            {isEditingRule ? 'Cancel' : 'Edit Rule'}
+          </Button>,
+        ]}
       >
-        <RuleDetail rule={rule} />
+        {isEditingRule ? (
+          <RuleForm
+            rule={rule}
+            dataSources={dataSources}
+            formLayout="inline"
+            onSubmit={editRule}
+          />
+        ) : (
+          <RuleDetail rule={rule} />
+        )}
       </PageHeader>
 
       <div style={{ padding: 24 }}>
         <Row>
-          <Col className={styles.container} span={16} style={{ paddingTop: 24 }}>
-            <RuleForm handleSubmit={editRule} rule={rule} dataSources={dataSources} />
-          </Col>
-        </Row>
-        <Row style={{ marginTop: 24 }}>
           <Col className={styles.container} span={16} style={{ padding: 24 }}>
             <Select
               defaultValue={locale}

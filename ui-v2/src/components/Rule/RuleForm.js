@@ -6,16 +6,24 @@ import {
 
 const { Option } = Select;
 
-function RuleForm({ rule, dataSources, handleSubmit }) {
+function RuleForm(props) {
+  const {
+    rule, dataSources, onSubmit, formLayout,
+  } = props;
   const [form] = Form.useForm();
   form.setFieldsValue(rule);
 
   return (
     <Form
       form={form}
-      onFinish={handleSubmit}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 14 }}
+      onFinish={onSubmit}
+      layout={formLayout}
+      labelCol={
+        formLayout === 'horizontal' ? { span: 6 } : null
+      }
+      wrapperCol={
+        formLayout === 'horizontal' ? { span: 14 } : null
+      }
     >
       <Form.Item name="id" noStyle />
 
@@ -46,7 +54,11 @@ function RuleForm({ rule, dataSources, handleSubmit }) {
         </Select>
       </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
+      <Form.Item
+        wrapperCol={
+          formLayout === 'horizontal' ? { offset: 6, span: 14 } : null
+        }
+      >
         <Button type="primary" htmlType="submit">
           Submit
         </Button>
@@ -58,6 +70,7 @@ function RuleForm({ rule, dataSources, handleSubmit }) {
 RuleForm.defaultProps = {
   rule: {},
   dataSources: [],
+  formLayout: 'horizontal',
 };
 
 RuleForm.propTypes = {
@@ -75,7 +88,9 @@ RuleForm.propTypes = {
     }),
   ),
 
-  handleSubmit: PropTypes.func.isRequired,
+  formLayout: PropTypes.string,
+
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default RuleForm;
