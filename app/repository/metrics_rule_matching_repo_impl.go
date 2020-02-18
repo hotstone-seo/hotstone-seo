@@ -32,7 +32,7 @@ func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleM
 }
 
 // ListMismatchedCount list mistached count
-func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context) (list []*MetricsMismatchedCount, err error) {
+func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, paginationParam PaginationParam) (list []*MetricsMismatchedCount, err error) {
 	var rows *sql.Rows
 
 	subQuery := sq.
@@ -41,14 +41,14 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context) (
 		Column(sq.Alias(sq.Expr("max(time)"), "since")).
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 0}).
-		GroupBy("url").
-		PlaceholderFormat(sq.Dollar)
+		GroupBy("url")
 
 	builder := sq.
 		Select("url", "count", "since").
 		FromSelect(subQuery, "u").
-		OrderBy("u.since desc", "u.count desc").
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar)
+
+	builder = composePagination(builder, paginationParam).RunWith(dbkit.TxCtx(ctx, r))
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return

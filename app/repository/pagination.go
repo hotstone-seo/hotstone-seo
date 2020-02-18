@@ -48,10 +48,8 @@ func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) s
 	paginationType := GetPaginationType(paginationParam)
 
 	// compose ORDER BY
-	if len(paginationParam.Nexts) == 0 {
-		for _, sort := range paginationParam.Sorts {
-			base = base.OrderBy(fmt.Sprintf("%s %s", sort.Col, sort.Order))
-		}
+	for _, sort := range paginationParam.Sorts {
+		base = base.OrderBy(fmt.Sprintf("%s %s", sort.Col, sort.Order))
 	}
 
 	if paginationType == KeysetPagination {
