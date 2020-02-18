@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-import { ViewDataSources } from './scenes';
+import { AddDataSource, EditDataSource, ViewDataSources } from './scenes';
 
 function DataSource({ match }) {
   return (
@@ -10,6 +10,15 @@ function DataSource({ match }) {
         exact
         path={match.url}
         render={() => <ViewDataSources match={match} />}
+      />
+      <Route
+        exact
+        path={`${match.url}/new`}
+        render={() => <AddDataSource />}
+      />
+      <Route
+        path={`${match.url}/:id`}
+        render={() => <EditDataSource />}
       />
     </Switch>
   );
