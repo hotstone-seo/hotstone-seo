@@ -4,12 +4,12 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-function TitleForm({ form }) {
+function TitleForm() {
   return (
     <>
       <Form.Item label="Locale" name="locale">
         <Select>
-          {locales.map(locale => (
+          {locales.map((locale) => (
             <Option value={locale}>{locale}</Option>
           ))}
         </Select>
@@ -19,7 +19,7 @@ function TitleForm({ form }) {
         <Input />
       </Form.Item>
     </>
-  )
+  );
 }
 
 export default TitleForm;
