@@ -64,11 +64,10 @@ function ViewMismatchRules(props) {
 
           const nextPageToken = createPageToken(lastRow, sortedInfo, nextKey);
           setNextPageToken(nextPageToken);
+          setListData(listData);
         } else {
           previousPage();
         }
-
-        setListData(listData);
       } catch (err) {
         console.log("ERR: ", err);
       }
