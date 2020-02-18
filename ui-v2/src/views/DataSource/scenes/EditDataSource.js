@@ -20,7 +20,7 @@ function EditDataSource() {
       .catch((error) => {
         message.error(error.message);
       });
-  });
+  }, [id]);
 
   const handleEdit = (newDataSource) => {
     updateDataSource(newDataSource)

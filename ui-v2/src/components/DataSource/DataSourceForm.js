@@ -13,6 +13,8 @@ function DataSourceForm({ dataSource, handleSubmit }) {
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
     >
+      <Form.Item name="id" noStyle />
+
       <Form.Item
         name="name"
         label="Name"
