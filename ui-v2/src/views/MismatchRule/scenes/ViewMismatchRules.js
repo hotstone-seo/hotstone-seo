@@ -46,6 +46,10 @@ function ViewMismatchRules(props) {
   } = instTokenPagination;
 
   useEffect(() => {
+    resetPagination();
+  }, [filteredInfo]);
+
+  useEffect(() => {
     async function fetchData() {
       try {
         const nextKey = { id: "count", desc: true };
@@ -64,11 +68,10 @@ function ViewMismatchRules(props) {
 
           const nextPageToken = createPageToken(lastRow, sortedInfo, nextKey);
           setNextPageToken(nextPageToken);
+          setListData(listData);
         } else {
           previousPage();
         }
-
-        setListData(listData);
       } catch (err) {
         console.log("ERR: ", err);
       }
@@ -107,7 +110,7 @@ function ViewMismatchRules(props) {
 
   return (
     <div>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -121,7 +124,7 @@ function ViewMismatchRules(props) {
             2
           )}
         </code>
-      </pre>
+      </pre> */}
       <Row>
         <Col span={24}>
           <Table
