@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { message } from 'antd';
+import {
+  PageHeader, Row, Col, message,
+} from 'antd';
 import { DataSourceForm } from 'components/DataSource';
 import { getDataSource, updateDataSource } from 'api/datasource';
 
@@ -20,7 +22,7 @@ function EditDataSource() {
       });
   });
 
-  const handleCreate = (newDataSource) => {
+  const handleEdit = (newDataSource) => {
     updateDataSource(newDataSource)
       .then(() => {
         history.push('/datasources');
@@ -31,7 +33,20 @@ function EditDataSource() {
   };
 
   return (
-    <DataSourceForm handleSubmit={handleCreate} dataSource={dataSource} />
+    <div>
+      <PageHeader
+        onBack={() => history.push('/datasources')}
+        title={`Edit ${dataSource.name}`}
+        style={{ background: '#fff' }}
+      />
+      <div style={{ padding: 24 }}>
+        <Row>
+          <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
+            <DataSourceForm handleSubmit={handleEdit} dataSource={dataSource} />
+          </Col>
+        </Row>
+      </div>
+    </div>
   );
 }
 

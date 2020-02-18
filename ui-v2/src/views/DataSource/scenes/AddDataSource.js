@@ -1,6 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { message } from 'antd';
+import {
+  PageHeader, Row, Col, message,
+} from 'antd';
 import { DataSourceForm } from 'components/DataSource';
 import { createDataSource } from 'api/datasource';
 
@@ -18,7 +20,20 @@ function AddDataSource() {
   };
 
   return (
-    <DataSourceForm handleSubmit={handleCreate} />
+    <div>
+      <PageHeader
+        onBack={() => history.push('/datasources')}
+        title="Add new Data Source"
+        style={{ background: '#fff' }}
+      />
+      <div style={{ padding: 24 }}>
+        <Row>
+          <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
+            <DataSourceForm handleSubmit={handleCreate} />
+          </Col>
+        </Row>
+      </div>
+    </div>
   );
 }
 
