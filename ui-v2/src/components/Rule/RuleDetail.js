@@ -6,7 +6,7 @@ import { Descriptions } from 'antd';
 function RuleDetail({ rule }) {
   const { name, url_pattern: urlPattern, data_source_id: dataSourceID } = rule;
   return (
-    <Descriptions title="Rule Detail">
+    <Descriptions>
       <Descriptions.Item label="Name">{name}</Descriptions.Item>
       <Descriptions.Item label="URL Pattern">{urlPattern}</Descriptions.Item>
       {dataSourceID && (
