@@ -46,6 +46,10 @@ function ViewMismatchRules(props) {
   } = instTokenPagination;
 
   useEffect(() => {
+    resetPagination();
+  }, [filteredInfo]);
+
+  useEffect(() => {
     async function fetchData() {
       try {
         const nextKey = { id: "count", desc: true };
