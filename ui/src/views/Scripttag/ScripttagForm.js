@@ -98,8 +98,9 @@ class ScripttagForm extends Component {
                   id="datasource_id"
                   onChange={onChange.bind(this, "datasource_id")}
                 >
+                  <option value="-">-CHOOSE-</option>
                   {dataSources.map(ds => (
-                    <option key={ds.id} value={ds.id}>
+                    <option key={ds.id} value={ds.url}>
                       {ds.url}
                     </option>
                   ))}
