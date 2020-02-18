@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 import { PageHeader } from 'antd';
 import { AddRule, EditRule, ViewRules } from './scenes';
@@ -17,7 +18,7 @@ function Rule({ match }) {
           <Route
             exact
             path={match.url}
-            render={(props) => <ViewRules {...props} />}
+            render={() => <ViewRules match={match} />}
           />
           <Route
             exact
@@ -33,5 +34,11 @@ function Rule({ match }) {
     </div>
   );
 }
+
+Rule.propTypes = {
+  match: PropTypes.shape({
+    url: PropTypes.string,
+  }).isRequired,
+};
 
 export default Rule;

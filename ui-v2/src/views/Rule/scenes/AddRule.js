@@ -9,15 +9,17 @@ import styles from './AddRule.module.css';
 function AddRule() {
   const history = useHistory();
   const [dataSources] = useDataSources();
+
   const handleCreate = (rule) => {
     createRule(rule)
-      .then(rule => {
+      .then(() => {
         history.push('/rules');
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       });
   };
+
   return (
     <div>
       <Row>
