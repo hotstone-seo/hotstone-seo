@@ -632,9 +632,9 @@ class RuleDetail extends Component {
     scriptTagPreviewValue =
       '<script type="' +
       (scp !== null ? scp : "") +
-      '">' +
-      source +
-      "</script>";
+      '" src="' +
+      (source !== null ? source : "") +
+      '"></script>';
     this.setState({ scriptTagPreviewValue });
   }
   generatePreviewCanonicalTag(canonicalFieldVal, hrefFieldVal) {
