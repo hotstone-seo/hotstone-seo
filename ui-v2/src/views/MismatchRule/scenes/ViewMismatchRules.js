@@ -110,7 +110,7 @@ function ViewMismatchRules(props) {
 
   return (
     <div>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -124,7 +124,7 @@ function ViewMismatchRules(props) {
             2
           )}
         </code>
-      </pre>
+      </pre> */}
       <Row>
         <Col span={24}>
           <Table
