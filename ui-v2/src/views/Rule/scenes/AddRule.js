@@ -1,6 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Row, Col, message } from 'antd';
+import {
+  PageHeader, Row, Col, message,
+} from 'antd';
 import { RuleForm } from 'components/Rule';
 import { createRule } from 'api/rule';
 import useDataSources from 'hooks/useDataSources';
@@ -12,8 +14,8 @@ function AddRule() {
 
   const handleCreate = (rule) => {
     createRule(rule)
-      .then(() => {
-        history.push('/rules');
+      .then((newRule) => {
+        history.push(`/rules/${newRule.id}`);
       })
       .catch((error) => {
         message.error(error.message);
@@ -22,11 +24,18 @@ function AddRule() {
 
   return (
     <div>
-      <Row>
-        <Col className={styles.container} span={12} style={{ paddingTop: 24 }}>
-          <RuleForm handleSubmit={handleCreate} dataSources={dataSources} />
-        </Col>
-      </Row>
+      <PageHeader
+        onBack={() => history.push('/rules')}
+        title="Add new Rule"
+        style={{ background: '#fff' }}
+      />
+      <div style={{ padding: 24 }}>
+        <Row>
+          <Col className={styles.container} span={12} style={{ paddingTop: 24 }}>
+            <RuleForm handleSubmit={handleCreate} dataSources={dataSources} />
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 }

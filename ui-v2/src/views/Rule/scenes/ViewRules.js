@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
-import { Button, message } from 'antd';
+import { PageHeader, Button, message } from 'antd';
 import { fetchRules, deleteRule } from 'api/rule';
 import { RuleListV2 } from 'components/Rule';
 
@@ -40,15 +40,22 @@ function ViewRules({ match }) {
 
   return (
     <div>
-      <Button type="primary" style={{ marginBottom: 16 }}>
-        <Link to={`${match.url}/new`}>Add new Rule</Link>
-      </Button>
-      <RuleListV2
-        rules={rules}
-        onClick={showEditForm}
-        onEdit={showEditForm}
-        onDelete={handleDelete}
+      <PageHeader
+        title="Rules"
+        subTitle="Manage Tags on matching URL Rules"
+        style={{ background: '#fff' }}
       />
+      <div style={{ padding: 24 }}>
+        <Button type="primary" style={{ marginBottom: 16 }}>
+          <Link to={`${match.url}/new`}>Add new Rule</Link>
+        </Button>
+        <RuleListV2
+          rules={rules}
+          onClick={showEditForm}
+          onEdit={showEditForm}
+          onDelete={handleDelete}
+        />
+      </div>
     </div>
   );
 }

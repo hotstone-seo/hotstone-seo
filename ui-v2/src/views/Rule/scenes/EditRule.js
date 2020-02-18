@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  Row, Col, message, Select, Button, Modal, Form,
+  PageHeader, Row, Col, message, Select, Button, Modal, Form,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { RuleForm } from 'components/Rule';
+import { RuleForm, RuleDetail } from 'components/Rule';
 import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
 import {
@@ -103,32 +103,44 @@ function EditRule() {
 
   return (
     <div>
-      <Row>
-        <Col className={styles.container} span={16} style={{ paddingTop: 24 }}>
-          <RuleForm handleSubmit={editRule} rule={rule} dataSources={dataSources} />
-        </Col>
-      </Row>
-      <Row style={{ marginTop: 24 }}>
-        <Col className={styles.container} span={16} style={{ padding: 24 }}>
-          <Select
-            defaultValue={locale}
-            onChange={(value) => setLocale(value)}
-          >
-            {locales.map((loc) => (
-              <Option value={loc} key={loc}>{loc}</Option>
-            ))}
-          </Select>
-          <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
-          <Button
-            type="dashed"
-            onClick={addTag}
-            style={{ width: '100%' }}
-          >
-            <PlusOutlined />
-            Add Tag
-          </Button>
-        </Col>
-      </Row>
+      <PageHeader
+        onBack={() => history.push('/rules')}
+        title="Manage Rule"
+        subTitle="Organize tags to be rendered"
+        style={{ background: '#fff' }}
+      >
+        <RuleDetail rule={rule} />
+      </PageHeader>
+
+      <div style={{ padding: 24 }}>
+        <Row>
+          <Col className={styles.container} span={16} style={{ paddingTop: 24 }}>
+            <RuleForm handleSubmit={editRule} rule={rule} dataSources={dataSources} />
+          </Col>
+        </Row>
+        <Row style={{ marginTop: 24 }}>
+          <Col className={styles.container} span={16} style={{ padding: 24 }}>
+            <Select
+              defaultValue={locale}
+              onChange={(value) => setLocale(value)}
+            >
+              {locales.map((loc) => (
+                <Option value={loc} key={loc}>{loc}</Option>
+              ))}
+            </Select>
+            <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
+            <Button
+              type="dashed"
+              onClick={addTag}
+              style={{ width: '100%' }}
+            >
+              <PlusOutlined />
+              Add Tag
+            </Button>
+          </Col>
+        </Row>
+      </div>
+
       <Modal
         title="Add/Edit Tag"
         visible={tagFormVisible}
