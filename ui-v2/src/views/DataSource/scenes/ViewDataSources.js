@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link, useHistory } from 'react-router-dom';
 import { Button, message } from 'antd';
 import { deleteDataSource } from 'api/datasource';
@@ -26,7 +27,7 @@ function ViewDataSources({ match }) {
 
   return (
     <div>
-      <Button type='primary' style={{ marginBottom: 16 }}>
+      <Button type="primary" style={{ marginBottom: 16 }}>
         <Link to={`${match.url}/new`}>Add new Data Source</Link>
       </Button>
       <DataSourceList
@@ -38,5 +39,11 @@ function ViewDataSources({ match }) {
     </div>
   );
 }
+
+ViewDataSources.propTypes = {
+  match: PropTypes.shape({
+    url: PropTypes.string,
+  }).isRequired,
+};
 
 export default ViewDataSources;
