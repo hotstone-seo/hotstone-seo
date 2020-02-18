@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Select } from 'antd';
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
 
 const { Option } = Select;
 
-const formLayout = { labelCol: { span: 6 }, wrapperCol: { span: 14 } };
-
 const tagTypes = ['title', 'meta', 'canonical', 'script'];
 
-const capitalize = (item) => {
-  return item.charAt(0).toUpperCase() + item.slice(1);
-}
+const capitalize = (item) => item.charAt(0).toUpperCase() + item.slice(1);
 
-function TagForm({ tag, form }) {
-  if (!form) { [form] = Form.useForm(); }
+function TagForm({ form }) {
+  const [currentType, setCurrentType] = useState(tagTypes[0]);
 
-  const type = form.getFieldValue('type');
-  const [currentType, setCurrentType] = useState(type || tagTypes[0]);
+  useEffect(() => {
+    const type = form.getFieldValue('type');
+    setCurrentType(type);
+  }, [form]);
 
   return (
-    <Form {...formLayout} form={form}>
+    <Form
+      form={form}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 14 }}
+    >
       <Form.Item name="id" noStyle />
 
       <Form.Item name="rule_id" noStyle />
@@ -30,7 +33,7 @@ function TagForm({ tag, form }) {
           defaultValue={currentType}
           onChange={(value) => setCurrentType(value)}
         >
-          {tagTypes.map(tagType => (
+          {tagTypes.map((tagType) => (
             <Option value={tagType}>{capitalize(tagType)}</Option>
           ))}
         </Select>
@@ -46,5 +49,11 @@ function TagForm({ tag, form }) {
     </Form>
   );
 }
+
+TagForm.propTypes = {
+  form: PropTypes.shape({
+    getFieldValue: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default TagForm;
