@@ -35,7 +35,7 @@ export default function RawHTMLPreview({ ruleID, tags }) {
       .join("\n");
 
     return (
-      <pre style={{ border: "1px solid" }}>
+      <pre style={{ border: "1px solid grey", padding: 8 }}>
         <code>{textAreaVal}</code>
       </pre>
     );
