@@ -100,7 +100,7 @@ class ScripttagForm extends Component {
                 >
                   <option value="-">-CHOOSE-</option>
                   {dataSources.map(ds => (
-                    <option key={ds.id} value={ds.url}>
+                    <option key={ds.id} value={ds.id + "~" + ds.url}>
                       {ds.url}
                     </option>
                   ))}

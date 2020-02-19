@@ -322,18 +322,29 @@ class RuleDetail extends Component {
       }
     });
 
-    let types = "";
-    let source = "";
+    let types = "",
+      sourceName = "";
     if (target.name === "types") {
       types = target.value;
-      source = scriptTagFormValues.datasource_id;
+      sourceName = this.getDataSourceName(scriptTagFormValues.datasource_id);
     } else if (target.name === "datasource_id") {
       types = scriptTagFormValues.type;
-      source = target.value;
+      sourceName = this.getDataSourceName(target.value);
     }
-    this.generatePreviewScriptTag(types, source);
+    this.generatePreviewScriptTag(types, sourceName);
   }
-
+  getDataSourceName(str) {
+    if (str !== null) {
+      const [id, name] = str.split("~");
+      return name;
+    } else return "";
+  }
+  getDataSourceId(str) {
+    if (str !== null) {
+      const [id, name] = str.split("~");
+      return id;
+    } else return "";
+  }
   handleCanonicalTagOnChange(type, e) {
     const { target } = e || {};
     const { value } = target || {};
