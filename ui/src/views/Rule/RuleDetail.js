@@ -343,7 +343,7 @@ class RuleDetail extends Component {
     if (str !== null) {
       const [id, name] = str.split("~");
       return id;
-    } else return "";
+    } else return 0;
   }
   handleCanonicalTagOnChange(type, e) {
     const { target } = e || {};
@@ -520,8 +520,11 @@ class RuleDetail extends Component {
         });
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
-      scriptTagFormValues.datasource_id = 1;
+      scriptTagFormValues.datasource_id = parseInt(
+        this.getDataSourceId(scriptTagFormValues.datasource_id)
+      );
       scriptTagFormValues.locale = this.state.localeTag;
+      console.log(scriptTagFormValues, "consol");
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {
@@ -848,6 +851,11 @@ class RuleDetail extends Component {
                             {tag.type === "canonical" &&
                             tag.attributes.href !== undefined
                               ? " Href :" + tag.attributes.href
+                              : ""}
+                            {tag.type === "script" &&
+                            tag.attributes.datasource_id !== undefined
+                              ? " Data source ID :" +
+                                tag.attributes.datasource_id
                               : ""}
                           </td>
                           <td>{tag.value}</td>
