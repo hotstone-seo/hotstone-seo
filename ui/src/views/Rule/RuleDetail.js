@@ -552,10 +552,10 @@ class RuleDetail extends Component {
       canonicaltag_attr.href = canonicalFormValues.href;
 
       tag_update.id = canonicalFormValues.id;
-      tag_update.type = "canonical";
+      tag_update.type = "link";
       tag_update.attributes = canonicaltag_attr;
       tag_update.locale = canonicalFormValues.locale;
-      tag_update.value = canonicalFormValues.canonical;
+      tag_update.value = "";
       tag_update.rule_id = parseInt(ruleId);
 
       axios
