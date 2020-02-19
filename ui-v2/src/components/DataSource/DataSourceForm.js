@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button } from 'antd';
+import {
+  Form, Input, Button, Tooltip
+} from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 function DataSourceForm({ dataSource, handleSubmit }) {
   const [form] = Form.useForm();
@@ -28,7 +31,14 @@ function DataSourceForm({ dataSource, handleSubmit }) {
         label="Resource URL"
         rules={[{ required: true, message: 'Please input the Resource URL' }]}
       >
-        <Input placeholder="http://api.service.com/resource" />
+        <Input
+          placeholder="http://api.service.com/resource"
+          suffix={(
+            <Tooltip title="Where the data to fill tags will be retrieved from">
+              <QuestionCircleOutlined />
+            </Tooltip>
+          )}
+        />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 6, span: 14 }}>

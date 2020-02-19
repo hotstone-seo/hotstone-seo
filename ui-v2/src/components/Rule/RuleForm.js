@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Select, Button,
+  Form, Input, Select, Button, Tooltip,
 } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -40,7 +41,14 @@ function RuleForm(props) {
         label="URL Pattern"
         rules={[{ required: true, message: 'Please input the URL Pattern' }]}
       >
-        <Input placeholder="/my/rule/pattern" />
+        <Input
+          placeholder="/my/rule/pattern"
+          suffix={(
+            <Tooltip title="If a request matched this pattern, the tags in the Rule will be returned">
+              <QuestionCircleOutlined />
+            </Tooltip>
+          )}
+        />
       </Form.Item>
 
       <Form.Item
