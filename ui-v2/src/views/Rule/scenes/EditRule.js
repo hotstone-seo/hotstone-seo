@@ -108,7 +108,7 @@ function EditRule() {
         onBack={() => history.push('/rules')}
         title="Manage Rule"
         subTitle="Organize tags to be rendered"
-        style={{ background: '#fff' }}
+        style={{ background: '#fff', minHeight: 120 }}
         extra={[
           <Button
             key="edit"
