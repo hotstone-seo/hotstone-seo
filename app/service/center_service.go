@@ -77,7 +77,7 @@ func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req AddScriptTagRe
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "script",
-		Attributes: dbkit.JSON(`{}`),
+		Attributes: dbkit.JSON(fmt.Sprintf(`{"datasource_id":"%d"}`, req.DataSourceID)),
 		Value:      req.Type,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
