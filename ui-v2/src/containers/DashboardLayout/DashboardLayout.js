@@ -22,9 +22,11 @@ function DashboardLayout(props) {
       >
         <div className={styles.logo} />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
-          {routes.map(({ path, name }) => (
+          {routes.map(({ path, name, icon }) => (
             <Menu.Item key={path}>
-              <Link to={path}>{name}</Link>
+              {icon && React.createElement(icon)}
+              <span>{name}</span>
+              <Link to={path} />
             </Menu.Item>
           ))}
         </Menu>
