@@ -17,16 +17,15 @@ type AddTitleTagRequest struct {
 
 // AddCanonicalTagRequest is request model for addCanonicalTag method
 type AddCanonicalTagRequest struct {
-	Canonical string `json:"canonical"`
-	Locale    string `json:"locale"`
-	RuleID    int64  `json:"rule_id"`
-	Href      string `json:"href"`
+	Locale string `json:"locale"`
+	RuleID int64  `json:"rule_id"`
+	Href   string `json:"href"`
 }
 
 // AddScriptTagRequest is request model for addScriptTag method
 type AddScriptTagRequest struct {
-	Type         string `json:"type"`
-	Locale       string `json:"locale"`
-	RuleID       int64  `json:"rule_id"`
-	DataSourceID int64  `json:"datasource_id"`
+	Type   string `json:"type"`
+	Locale string `json:"locale"`
+	RuleID int64  `json:"rule_id"`
+	Source string `json:"source"`
 }
