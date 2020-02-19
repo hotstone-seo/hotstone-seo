@@ -12,6 +12,7 @@ type server struct {
 	dig.In
 	*echo.Echo
 	config.Config
+	controller.AuthCntrl
 	controller.RuleCntrl
 	controller.DataSourceCntrl
 	controller.TagCntrl
@@ -26,6 +27,7 @@ func (s *server) Middleware() {
 }
 
 func (s *server) Route() {
+	s.AuthCntrl.Route(s.Echo)
 	s.RuleCntrl.Route(s.Echo)
 	s.DataSourceCntrl.Route(s.Echo)
 	s.TagCntrl.Route(s.Echo)
