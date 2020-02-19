@@ -18,7 +18,6 @@ function DashboardLayout(props) {
         trigger={null}
         collapsible
         collapsed={collapsed}
-        width={256}
       >
         <div className={styles.logo} />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
