@@ -15,7 +15,9 @@ function TagForm({ form }) {
 
   useEffect(() => {
     const type = form.getFieldValue('type');
-    setCurrentType(type);
+    if (type) {
+      setCurrentType(type);
+    }
   }, [form]);
 
   return (
