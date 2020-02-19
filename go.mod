@@ -18,5 +18,6 @@ require (
 	github.com/typical-go/typical-rest-server v0.8.19
 	github.com/xorcare/pointer v1.0.0
 	go.uber.org/dig v1.8.0
+	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 	gopkg.in/go-playground/validator.v9 v9.30.2
 )
