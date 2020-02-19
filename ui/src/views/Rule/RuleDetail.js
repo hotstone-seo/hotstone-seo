@@ -852,6 +852,11 @@ class RuleDetail extends Component {
                             tag.attributes.href !== undefined
                               ? " Href :" + tag.attributes.href
                               : ""}
+                            {tag.type === "script" &&
+                            tag.attributes.datasource_id !== undefined
+                              ? " Data source ID :" +
+                                tag.attributes.datasource_id
+                              : ""}
                           </td>
                           <td>{tag.value}</td>
                           <td>{tag.locale}</td>
