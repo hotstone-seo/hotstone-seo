@@ -1,8 +1,5 @@
 import React from 'react';
 import { Form, Input, Select } from 'antd';
-import locales from 'locales';
-
-const { Option } = Select;
 
 function TitleForm() {
   return (

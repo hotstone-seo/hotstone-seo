@@ -14,9 +14,9 @@ function TagList({ tags, onEdit, onDelete }) {
       key: 'attributes',
       render: (text, record) => {
         const { attributes } = record;
-        const attrs = []
+        const attrs = [];
         for (const key in attributes) {
-          attrs.push(`${key}="${attributes[key]}"`)
+          attrs.push(`${key}="${attributes[key]}"`);
         }
         if (attrs.length === 0) {
           return null;
@@ -30,7 +30,7 @@ function TagList({ tags, onEdit, onDelete }) {
             )}
           />
         );
-      }
+      },
     },
     { title: 'Value', dataIndex: 'value', key: 'value' },
     {
