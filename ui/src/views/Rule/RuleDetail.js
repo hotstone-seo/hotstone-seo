@@ -79,7 +79,7 @@ class RuleDetail extends Component {
         type: null,
         rule_id: null,
         locale: null,
-        datasource_id: null
+        source: null
       },
       titleTagFormValues: {
         id: null,
@@ -120,8 +120,7 @@ class RuleDetail extends Component {
       metaTagPreviewValue: "",
       titleTagPreviewVal: "",
       scriptTagPreviewVal: "",
-      canonicalPreviewValue: "",
-      data_sources: []
+      canonicalPreviewValue: ""
     };
 
     this.handleEditCanonical = this.handleEditCanonical.bind(this);
@@ -152,17 +151,6 @@ class RuleDetail extends Component {
     const languages = HotstoneAPI.getLocalesWithoutPromise();
 
     this.setState({ languages });
-
-    axios
-      .get(process.env.REACT_APP_API_URL + "data_sources")
-      .then(res => {
-        const { data: resData } = res || {};
-        const data_sources = resData;
-        this.setState({ data_sources });
-      })
-      .catch(error => {
-        this.toggleWarningAPI("Get Data Sources List : " + error.message);
-      });
   }
 
   toggle() {
@@ -324,25 +312,14 @@ class RuleDetail extends Component {
       sourceName = "";
     if (target.name === "types") {
       types = target.value;
-      sourceName = this.getDataSourceName(scriptTagFormValues.datasource_id);
-    } else if (target.name === "datasource_id") {
+      sourceName = scriptTagFormValues.source;
+    } else if (target.name === "source") {
       types = scriptTagFormValues.type;
-      sourceName = this.getDataSourceName(target.value);
+      sourceName = target.value;
     }
     this.generatePreviewScriptTag(types, sourceName);
   }
-  getDataSourceName(str) {
-    if (str !== null) {
-      const [id, name] = str.split("~");
-      return name;
-    } else return "";
-  }
-  getDataSourceId(str) {
-    if (str !== null) {
-      const [id, name] = str.split("~");
-      return id;
-    } else return 0;
-  }
+
   handleCanonicalTagOnChange(type, e) {
     const { target } = e || {};
     const { value } = target || {};
@@ -516,11 +493,8 @@ class RuleDetail extends Component {
         });
     } else {
       scriptTagFormValues.rule_id = parseInt(ruleId);
-      scriptTagFormValues.datasource_id = parseInt(
-        this.getDataSourceId(scriptTagFormValues.datasource_id)
-      );
       scriptTagFormValues.locale = this.state.localeTag;
-      console.log(scriptTagFormValues, "consol");
+
       axios
         .post(this.state.URL_ADDSCRIPT_API, scriptTagFormValues)
         .then(response => {
@@ -692,7 +666,7 @@ class RuleDetail extends Component {
         type: null,
         rule_id: null,
         locale: null,
-        datasource_id: null
+        source: null
       }
     });
   }
@@ -951,7 +925,6 @@ class RuleDetail extends Component {
               languages={this.state.languages}
               languageDefault={this.state.localeTag}
               scriptTagPreviewValue={this.state.scriptTagPreviewValue}
-              dataSources={this.state.data_sources}
             />
             <TitleTagForm
               visible={this.state.titleTagFormVisible}

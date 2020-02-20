@@ -93,18 +93,13 @@ class ScripttagForm extends Component {
               </Col>
               <Col xs="12" md="9">
                 <Input
-                  type="select"
-                  name="datasource_id"
-                  id="datasource_id"
-                  onChange={onChange.bind(this, "datasource_id")}
-                >
-                  <option value="-">-CHOOSE-</option>
-                  {dataSources.map(ds => (
-                    <option key={ds.id} value={ds.id + "~" + ds.url}>
-                      {ds.url}
-                    </option>
-                  ))}
-                </Input>
+                  type="text"
+                  id="source"
+                  name="source"
+                  placeholder="Source"
+                  defaultValue={scripttag !== undefined ? scripttag.source : ""}
+                  onChange={onChange.bind(this, "source")}
+                />
               </Col>
             </FormGroup>
             <FormGroup row></FormGroup>
