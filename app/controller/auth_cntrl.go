@@ -6,6 +6,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 
+	log "github.com/sirupsen/logrus"
+
+	"github.com/dgrijalva/jwt-go"
 	"github.com/juju/errors"
 
 	"fmt"
@@ -46,7 +49,6 @@ type AuthCntrl struct {
 func (c *AuthCntrl) Route(e *echo.Echo) {
 	e.GET("auth/google/login", c.AuthGoogleLogin)
 	e.GET("auth/google/callback", c.AuthGoogleCallback)
-
 }
 
 // AuthGoogleLogin handle Google auth login
@@ -59,10 +61,8 @@ func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
 	// Create oauthState cookie
 	oauthState := c.setRandomCookie(ce, "oauthstate", time.Now().Add(20*time.Minute))
 
-	/*
-		AuthCodeURL receive state that is a token to protect the user from CSRF attacks. You must always provide a non-empty string and
-		validate that it matches the the state query parameter on your redirect callback.
-	*/
+	// AuthCodeURL receive state that is a token to protect the user from CSRF attacks. You must always provide a non-empty string and
+	// validate that it matches the the state query parameter on your redirect callback.
 	url := c.Oauth2Config.AuthCodeURL(oauthState)
 	// log.Errorf("[auth/google/login] AUTH URL:\n%s\n\n", url)
 
@@ -76,32 +76,56 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 	// 	log.Warnf("[auth/google/callback] REQ:\n%s\n\n", requestDump)
 	// }
 
-	// Read oauthState from Cookie
-	oauthState, err := ce.Cookie("oauthstate")
+	authCallback := func(ce echo.Context) (err error) {
+		// Read oauthState from Cookie
+		oauthState, err := ce.Cookie("oauthstate")
+		if err != nil {
+			return errors.Trace(err)
+		}
+
+		if ce.QueryParam("state") != oauthState.Value {
+			return errors.New("invalid oauth google state")
+		}
+
+		userInfoResp, err := c.getUserInfoFromGoogle(ce.QueryParam("code"))
+		if err != nil {
+			return errors.Trace(err)
+		}
+
+		err = c.validateUserInfoResp(userInfoResp)
+		if err != nil {
+			return errors.Trace(err)
+		}
+
+		jwtToken, err := c.generateJwtToken(userInfoResp)
+		if err != nil {
+			return errors.Trace(err)
+		}
+
+		secureTokenCookie := &http.Cookie{
+			Name: "secure_token", Value: jwtToken,
+			Expires:  time.Now().Add(time.Hour * 72),
+			HttpOnly: true, Secure: c.Config.CookieSecure,
+		}
+		ce.SetCookie(secureTokenCookie)
+
+		tokenCookie := &http.Cookie{
+			Name: "token", Value: jwtToken,
+			Expires:  time.Now().Add(time.Hour * 72),
+			HttpOnly: true, Secure: false,
+		}
+		ce.SetCookie(tokenCookie)
+
+		return ce.Redirect(http.StatusTemporaryRedirect, c.Oauth2GoogleRedirectSuccess)
+	}
+
+	err = authCallback(ce)
 	if err != nil {
-		return errors.Trace(err)
-	}
-
-	if ce.QueryParam("state") != oauthState.Value {
-		return errors.New("invalid oauth google state")
-	}
-
-	userInfoResp, err := c.getUserInfoFromGoogle(ce.QueryParam("code"))
-	if err != nil {
-		return errors.Trace(err)
-	}
-
-	if verifiedEmail, ok := userInfoResp["verified_email"]; !ok || !verifiedEmail.(bool) {
+		log.Error(errors.Details(err))
 		return ce.Redirect(http.StatusTemporaryRedirect, c.Oauth2GoogleRedirectFailure)
 	}
 
-	if c.Config.Oauth2GoogleHostedDomain != "" {
-		if hd, ok := userInfoResp["hd"]; !ok || hd != c.Config.Oauth2GoogleHostedDomain {
-			return ce.Redirect(http.StatusTemporaryRedirect, c.Oauth2GoogleRedirectFailure)
-		}
-	}
-
-	return ce.String(http.StatusOK, fmt.Sprintf("%+v", userInfoResp))
+	return err
 }
 
 func (c *AuthCntrl) setRandomCookie(ce echo.Context, cookieName string, expiration time.Time) string {
@@ -138,4 +162,37 @@ func (c *AuthCntrl) getUserInfoFromGoogle(code string) (userInfoResp GoogleOauth
 	}
 
 	return userInfoResp, nil
+}
+
+func (c *AuthCntrl) validateUserInfoResp(userInfoResp GoogleOauth2UserInfoResp) error {
+	if verifiedEmail, ok := userInfoResp["verified_email"]; !ok || !verifiedEmail.(bool) {
+		return errors.New("invalid or empty verified_email")
+	}
+
+	if c.Config.Oauth2GoogleHostedDomain != "" {
+		if hd, ok := userInfoResp["hd"]; !ok || hd != c.Config.Oauth2GoogleHostedDomain {
+			return errors.New("invalid or empty hd")
+		}
+	}
+	return nil
+}
+
+func (c *AuthCntrl) generateJwtToken(userInfoResp GoogleOauth2UserInfoResp) (string, error) {
+
+	// Create token
+	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Set claims
+	claims := token.Claims.(jwt.MapClaims)
+	claims["email"] = userInfoResp["email"]
+	claims["picture"] = userInfoResp["picture"]
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+
+	// Generate encoded token and send it as response.
+	t, err := token.SignedString([]byte(c.Config.JwtSecret))
+	if err != nil {
+		return "", errors.Trace(err)
+	}
+
+	return t, nil
 }

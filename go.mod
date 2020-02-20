@@ -6,6 +6,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.3.3
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/alicebob/miniredis v2.5.0+incompatible
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/golang/mock v1.4.0
 	github.com/imantung/mario v0.9.0
