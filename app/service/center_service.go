@@ -62,9 +62,9 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonica
 	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
-		Type:       "canonical",
-		Attributes: dbkit.JSON(fmt.Sprintf(`{"href":"%s"}`, req.Href)),
-		Value:      req.Canonical,
+		Type:       "link",
+		Attributes: dbkit.JSON(fmt.Sprintf(`{"href":"%s","rel":"canonical"}`, req.Href)),
+		Value:      "",
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 	})
@@ -77,7 +77,7 @@ func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req AddScriptTagRe
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "script",
-		Attributes: dbkit.JSON(`{}`),
+		Attributes: dbkit.JSON(fmt.Sprintf(`{"source":"%s"}`, req.Source)),
 		Value:      req.Type,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),

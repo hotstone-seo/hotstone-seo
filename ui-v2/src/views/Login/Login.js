@@ -1,23 +1,30 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import { Layout, Row, Col } from 'antd';
+import {
+  Layout, Row, Col, message,
+} from 'antd';
 import { useAuth } from 'components/AuthProvider';
 import { LoginForm } from 'components/Login';
 
-// TODO: Investigate why calling <LoginForm /> cause error saying cannot update state on
-// unmounted component
 function Login() {
   const auth = useAuth();
-
   if (auth.currentUser) {
-    return <Redirect to="/" />
+    return <Redirect to="/" />;
   }
+
+  const login = (user) => {
+    const { email, password } = user;
+    auth.login(email, password)
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
 
   return (
     <Layout style={{ height: '100vh' }}>
       <Row justify="space-around" align="middle" style={{ height: '100%' }}>
         <Col span={8}>
-          <LoginForm login={auth.login} />
+          <LoginForm login={login} />
         </Col>
       </Row>
     </Layout>

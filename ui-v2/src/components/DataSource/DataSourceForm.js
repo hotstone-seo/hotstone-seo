@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, Tooltip
+  Form, Input, Button, Tooltip,
 } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 

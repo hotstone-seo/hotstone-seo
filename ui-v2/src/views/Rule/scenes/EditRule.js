@@ -108,7 +108,7 @@ function EditRule() {
         onBack={() => history.push('/rules')}
         title="Manage Rule"
         subTitle="Organize tags to be rendered"
-        style={{ background: '#fff' }}
+        style={{ background: '#fff', minHeight: 120 }}
         extra={[
           <Button
             key="edit"
@@ -133,16 +133,16 @@ function EditRule() {
 
       <div style={{ padding: 24 }}>
         <Row>
-          <Col span={16} style={{ background: '#fff', padding: 24 }}>
+          <Col span={24} style={{ background: '#fff', padding: 24 }}>
             <Select
               defaultValue={locale}
               onChange={(value) => setLocale(value)}
+              style={{ float: 'right', marginBottom: 16 }}
             >
               {locales.map((loc) => (
                 <Option value={loc} key={loc}>{loc}</Option>
               ))}
             </Select>
-            <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
             <Button
               type="dashed"
               onClick={addTag}
@@ -151,6 +151,7 @@ function EditRule() {
               <PlusOutlined />
               Add Tag
             </Button>
+            <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
           </Col>
         </Row>
       </div>
