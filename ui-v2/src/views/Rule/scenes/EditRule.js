@@ -165,6 +165,7 @@ function EditRule() {
           tagForm.resetFields();
         }}
         confirmLoading={tagFormLoading}
+        destroyOnClose
       >
         <TagForm form={tagForm} />
       </Modal>
