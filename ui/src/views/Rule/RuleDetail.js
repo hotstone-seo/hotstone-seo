@@ -63,7 +63,6 @@ class RuleDetail extends Component {
 
       canonicalFormValues: {
         id: null,
-        canonical: null,
         rule_id: null,
         locale: null,
         href: null
@@ -248,7 +247,6 @@ class RuleDetail extends Component {
     if (record !== undefined) {
       const { canonicalFormValues } = this.state;
       canonicalFormValues.id = record.id;
-      canonicalFormValues.canonical = record.value;
       canonicalFormValues.locale = record.locale;
       canonicalFormValues.href = record.attributes.href;
 
@@ -360,10 +358,8 @@ class RuleDetail extends Component {
     let name = "";
     let href = "";
     if (target.name === "canonical") {
-      name = target.value;
       href = canonicalFormValues.href;
     } else if (target.name === "href") {
-      name = canonicalFormValues.canonical;
       href = target.value;
     }
     this.generatePreviewCanonicalTag(name, href);
@@ -654,9 +650,7 @@ class RuleDetail extends Component {
   generatePreviewCanonicalTag(canonicalFieldVal, hrefFieldVal) {
     let canonicalPreviewValue = "";
     canonicalPreviewValue =
-      '<link rel="' +
-      (canonicalFieldVal !== null ? canonicalFieldVal : "") +
-      '" href="' +
+      '<link rel="canonical" href="' +
       (hrefFieldVal !== null ? hrefFieldVal : "") +
       '">';
     this.setState({ canonicalPreviewValue });
@@ -666,7 +660,6 @@ class RuleDetail extends Component {
     this.setState({
       canonicalFormValues: {
         id: null,
-        canonical: null,
         rule_id: null,
         locale: null,
         href: null
@@ -687,7 +680,6 @@ class RuleDetail extends Component {
     this.setState({
       canonicalFormValues: {
         id: null,
-        canonical: null,
         rule_id: null,
         locale: null
       }
@@ -842,20 +834,19 @@ class RuleDetail extends Component {
                           <td>
                             {tag.type === "meta" &&
                             tag.attributes.name !== undefined
-                              ? "Name : " + tag.attributes.name
+                              ? "Name = " + tag.attributes.name
                               : ""}
                             {tag.type === "meta" &&
                             tag.attributes.name !== undefined
-                              ? " Content :" + tag.attributes.content
+                              ? " Content =" + tag.attributes.content
                               : ""}
-                            {tag.type === "canonical" &&
+                            {tag.type === "link" &&
                             tag.attributes.href !== undefined
-                              ? " Href :" + tag.attributes.href
+                              ? " Href =" + tag.attributes.href
                               : ""}
                             {tag.type === "script" &&
                             tag.attributes.datasource_id !== undefined
-                              ? " Data source ID :" +
-                                tag.attributes.datasource_id
+                              ? " Source =" + tag.attributes.datasource_id
                               : ""}
                           </td>
                           <td>{tag.value}</td>
