@@ -91,6 +91,10 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 		return errors.Trace(err)
 	}
 
+	if verifiedEmail, ok := userInfoResp["verified_email"]; !ok || !verifiedEmail.(bool) {
+		return ce.Redirect(http.StatusTemporaryRedirect, c.Oauth2GoogleRedirectFailure)
+	}
+
 	if c.Config.Oauth2GoogleHostedDomain != "" {
 		if hd, ok := userInfoResp["hd"]; !ok || hd != c.Config.Oauth2GoogleHostedDomain {
 			return ce.Redirect(http.StatusTemporaryRedirect, c.Oauth2GoogleRedirectFailure)
