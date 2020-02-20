@@ -1,12 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
 
-function CanonicalForm() {
+function CanonicalForm({ form }) {
+  form.setFieldsValue({
+    attributes: { rel: 'canonical' },
+  });
+
   return (
     <>
-      <Form.Item label="Rel" name={['attributes', 'rel']}>
-        <Input defaultValue="canonical" />
-      </Form.Item>
+      <Form.Item name={['attributes', 'rel']} noStyle />
 
       <Form.Item label="URL" name={['attributes', 'href']}>
         <Input />
@@ -14,5 +17,11 @@ function CanonicalForm() {
     </>
   );
 }
+
+CanonicalForm.propTypes = {
+  form: PropTypes.shape({
+    setFieldsValue: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default CanonicalForm;
