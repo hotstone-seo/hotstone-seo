@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Select } from 'antd';
+import locales from 'locales';
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
 
@@ -37,6 +38,14 @@ function TagForm({ form }) {
         >
           {tagTypes.map((tagType) => (
             <Option value={tagType}>{capitalize(tagType)}</Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item label="Locale" name="locale">
+        <Select>
+          {locales.map((locale) => (
+            <Option value={locale}>{locale}</Option>
           ))}
         </Select>
       </Form.Item>
