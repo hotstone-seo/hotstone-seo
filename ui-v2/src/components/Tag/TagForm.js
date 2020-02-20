@@ -6,6 +6,7 @@ import locales from 'locales';
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
 import CanonicalForm from './CanonicalForm';
+import ScriptForm from './ScriptForm';
 
 const { Option } = Select;
 
@@ -47,10 +48,10 @@ function TagForm({ form }) {
       </Form.Item>
       {
         {
-          title: <TitleForm form={form} />,
-          meta: <MetaForm form={form} />,
+          title: <TitleForm />,
+          meta: <MetaForm />,
           link: <CanonicalForm form={form} />,
-          script: null,
+          script: <ScriptForm />,
         }[currentType]
       }
     </Form>
