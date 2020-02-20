@@ -3,8 +3,10 @@ package app
 import (
 	"github.com/hotstone-seo/hotstone-seo/app/config"
 	"github.com/hotstone-seo/hotstone-seo/app/controller"
+	"github.com/juju/errors"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
@@ -34,6 +36,13 @@ func (s *server) Route() {
 	s.ProviderCntrl.Route(s.Echo)
 	s.CenterCntrl.Route(s.Echo)
 	s.MetricsCntrl.Route(s.Echo)
+}
+
+func (s *server) ErrorHandler() {
+	s.HTTPErrorHandler = func(err error, c echo.Context) {
+		s.DefaultHTTPErrorHandler(err, c)
+		log.Error(errors.Details(err))
+	}
 }
 
 func (s *server) Start() error {
