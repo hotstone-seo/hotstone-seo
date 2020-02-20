@@ -96,6 +96,11 @@ func (c *AuthCntrl) getUserInfoFromGoogle(code string) (userInfoResp GoogleOauth
 	if err != nil {
 		return nil, fmt.Errorf("code exchange wrong: %s", err.Error())
 	}
+
+	if !token.Valid() {
+		return nil, fmt.Errorf("invalid token")
+	}
+
 	response, err := http.Get(fmt.Sprintf("https://www.googleapis.com/oauth2/v2/userinfo?access_token=%s", token.AccessToken))
 	if err != nil {
 		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
