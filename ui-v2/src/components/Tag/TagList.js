@@ -1,45 +1,68 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOMServer from 'react-dom/server';
-import { List, Button, Popconfirm } from 'antd';
+import {
+  Table, Button, Popconfirm, Divider, List,
+} from 'antd';
 
 function TagList({ tags, onEdit, onDelete }) {
-  const sanitizeTag = (tag) => {
-    const cleanTag = tag;
-    if (tag.type === 'meta') {
-      cleanTag.value = null;
-    }
-    return cleanTag;
-  };
-  return (
-    <List
-      dataSource={tags.map(sanitizeTag)}
-      renderItem={(tag) => (
-        <List.Item
-          actions={[
-            <Button
-              type="link"
-              onClick={() => onEdit(tag)}
-              style={{ padding: 0 }}
-            >
-              Edit
-            </Button>,
-            <Popconfirm
-              title="Are you sure to delete this tag?"
-              placement="topRight"
-              onConfirm={() => onDelete(tag)}
-            >
-              <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
-            </Popconfirm>,
-          ]}
-        >
-          <pre>
-            {ReactDOMServer.renderToStaticMarkup(
-              React.createElement(tag.type, tag.attributes, tag.value),
+  const columns = [
+    { title: 'Type', dataIndex: 'type', key: 'type' },
+    {
+      title: 'Attributes',
+      dataIndex: 'attributes',
+      key: 'attributes',
+      render: (text, record) => {
+        const { attributes } = record;
+        const attrs = []
+        for (const key in attributes) {
+          attrs.push(`${key}="${attributes[key]}"`)
+        }
+        if (attrs.length === 0) {
+          return null;
+        }
+        return (
+          <List
+            size="small"
+            dataSource={attrs}
+            renderItem={(item) => (
+              <List.Item>{item}</List.Item>
             )}
-          </pre>
-        </List.Item>
-      )}
+          />
+        );
+      }
+    },
+    { title: 'Value', dataIndex: 'value', key: 'value' },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <span>
+          <Button
+            type="link"
+            onClick={() => onEdit(record)}
+            style={{ padding: 0 }}
+          >
+            Edit
+          </Button>
+          <Divider type="vertical" />
+          <Popconfirm
+            title="Are you sure to delete this tag?"
+            placement="topRight"
+            onConfirm={() => onDelete(record)}
+          >
+            <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
+          </Popconfirm>
+        </span>
+      ),
+    },
+  ];
+
+  return (
+    <Table
+      columns={columns}
+      dataSource={tags}
+      rowKey="id"
     />
   );
 }
