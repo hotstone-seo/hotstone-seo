@@ -75,7 +75,7 @@ func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {
 	if err = ce.Bind(&req); err != nil {
 		return
 	}
-	if jwtToken, err = c.AuthGoogleService.GetJwtToken(ctx, req.Holder); err != nil {
+	if jwtToken, err = c.AuthGoogleService.GetThenDeleteJwtToken(ctx, req.Holder); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return ce.JSON(http.StatusOK, repository.TokenResp{Token: string(jwtToken)})
