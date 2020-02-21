@@ -46,19 +46,21 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 	// if err == nil {
 	// 	log.Warnf("[auth/google/callback] REQ:\n%s\n\n", requestDump)
 	// }
+	failureUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectFailure, url.Values{"oauth_error": {"true"}})
+	if err != nil {
+		return errors.Trace(err)
+	}
 
 	holder, err := c.AuthGoogleService.VerifyCallback(ce)
 	if err != nil {
 		log.Error(errors.Details(err))
-		return ce.Redirect(http.StatusTemporaryRedirect, c.Oauth2GoogleRedirectFailure)
+		return ce.Redirect(http.StatusTemporaryRedirect, failureUrl)
 	}
 
-	queryParam := url.Values{}
-	queryParam.Set("holder", holder)
-	successUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, queryParam)
+	successUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{"holder": {holder}})
 	if err != nil {
 		log.Error(errors.Details(err))
-		return ce.Redirect(http.StatusTemporaryRedirect, c.Oauth2GoogleRedirectFailure)
+		return ce.Redirect(http.StatusTemporaryRedirect, failureUrl)
 	}
 
 	return ce.Redirect(http.StatusTemporaryRedirect, successUrl)
