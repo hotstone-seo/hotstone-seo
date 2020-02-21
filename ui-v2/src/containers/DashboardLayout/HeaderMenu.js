@@ -1,11 +1,11 @@
-import React from 'react';
-import { Menu, Dropdown, Button } from 'antd';
-import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { useAuth } from '../../components/AuthProvider';
+import React from "react";
+import { Menu, Dropdown, Button } from "antd";
+import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
+import { useAuth } from "../../components/AuthProvider";
 
 function HeaderMenu() {
   const auth = useAuth();
-  const { name } = auth.currentUser;
+  const { email } = auth.currentUser;
 
   const accountMenu = (
     <Menu>
@@ -25,7 +25,7 @@ function HeaderMenu() {
     <>
       <Dropdown overlay={accountMenu}>
         <Button type="link" icon={<UserOutlined />}>
-          {name}
+          {email}
         </Button>
       </Dropdown>
     </>

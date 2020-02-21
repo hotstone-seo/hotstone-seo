@@ -1,17 +1,32 @@
 import React from "react";
 import AuthAPI, { register } from "../api/auth";
+import Cookies from "js-cookie";
+import jwt from "jsonwebtoken";
 
 const AuthContext = React.createContext();
 
+const loadUserFromCookie = () => {
+  const token = Cookies.get("token");
+  // console.log(token);
+  // console.log(jwt.decode(token));
+
+  const tokenDecoded = jwt.decode(token);
+  const user = {
+    email: tokenDecoded.email,
+    picture: tokenDecoded.picture
+  };
+
+  console.log(user);
+  return user;
+};
+
 function AuthProvider(props) {
   // TODO: Try to get data from localStorage to initialize the state
-  const [currentUser, setCurrentUser] = React.useState(
-    JSON.parse(localStorage.getItem("currentUser")) || null
-  );
+  const [currentUser, setCurrentUser] = React.useState(loadUserFromCookie());
 
-  React.useEffect(() => {
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  }, [currentUser]);
+  // React.useEffect(() => {
+  //   localStorage.setItem("currentUser", JSON.stringify(currentUser));
+  // }, [currentUser]);
 
   const login = (email, password) => {
     if (!currentUser) {
@@ -36,6 +51,10 @@ function AuthProvider(props) {
     if (!currentUser) {
       return AuthAPI.googleOAuth2GetToken(holder).then(resp => {
         console.log("@@@ RESP: ", resp);
+
+        const user = loadUserFromCookie();
+        console.log(user);
+        setCurrentUser(user);
       });
     } else {
       throw new Error("Error login: another user already logged in");
