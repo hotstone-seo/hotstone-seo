@@ -44,6 +44,7 @@ func NewOauth2Config(config config.Config) *oauth2.Config {
 type AuthGoogleService interface {
 	VerifyCallback(ce echo.Context) (string, error)
 	GetAuthCodeURL(ce echo.Context) string
+	GetJwtToken(ctx context.Context, holder string) ([]byte, error)
 }
 
 // AuthGoogleServiceImpl implementation of AuthGoogleService
@@ -122,6 +123,10 @@ func (c *AuthGoogleServiceImpl) VerifyCallback(ce echo.Context) (string, error) 
 	}
 
 	return holder, nil
+}
+
+func (c *AuthGoogleServiceImpl) GetJwtToken(ctx context.Context, holder string) ([]byte, error) {
+	return c.Redis.Get(holder).Bytes()
 }
 
 func (c *AuthGoogleServiceImpl) setRandomCookie(ce echo.Context, cookieName string, expiration time.Time) string {
