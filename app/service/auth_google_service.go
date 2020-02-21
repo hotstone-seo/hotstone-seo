@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/app/config"
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/juju/errors"
@@ -17,6 +18,13 @@ import (
 	"go.uber.org/dig"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+)
+
+var (
+	OAuthStateCookieExpire time.Duration = 20 * time.Minute
+	JwtTokenHolderExpire   time.Duration = 60 * time.Second
+	JwtTokenExpire         time.Duration = 72 * time.Hour
+	JwtTokenCookieExpire   time.Duration = JwtTokenExpire
 )
 
 // NewOauth2Config return new instance of oauth2.Config [constructor]
@@ -43,6 +51,7 @@ type AuthGoogleServiceImpl struct {
 	dig.In
 	config.Config
 	Oauth2Config *oauth2.Config
+	Redis        *redis.Client
 }
 
 // NewAuthGoogleService return new instance of AuthGoogleService [constructor]
@@ -52,7 +61,7 @@ func NewAuthGoogleService(impl AuthGoogleServiceImpl) AuthGoogleService {
 
 func (c *AuthGoogleServiceImpl) GetAuthCodeURL(ce echo.Context) (authCodeURL string) {
 	// Create oauthState cookie
-	oauthState := c.setRandomCookie(ce, "oauthstate", time.Now().Add(20*time.Minute))
+	oauthState := c.setRandomCookie(ce, "oauthstate", time.Now().Add(OAuthStateCookieExpire))
 
 	// AuthCodeURL receive state that is a token to protect the user from CSRF attacks. You must always provide a non-empty string and
 	// validate that it matches the the state query parameter on your redirect callback.
@@ -90,14 +99,14 @@ func (c *AuthGoogleServiceImpl) VerifyCallback(ce echo.Context) (string, error) 
 
 	secureTokenCookie := &http.Cookie{
 		Name: "secure_token", Value: jwtToken,
-		Expires:  time.Now().Add(time.Hour * 72),
+		Expires:  time.Now().Add(JwtTokenCookieExpire),
 		HttpOnly: true, Secure: c.Config.CookieSecure,
 	}
 	ce.SetCookie(secureTokenCookie)
 
 	tokenCookie := &http.Cookie{
 		Name: "token", Value: jwtToken,
-		Expires:  time.Now().Add(time.Hour * 72),
+		Expires:  time.Now().Add(JwtTokenCookieExpire),
 		HttpOnly: true, Secure: false,
 	}
 	ce.SetCookie(tokenCookie)
@@ -108,6 +117,9 @@ func (c *AuthGoogleServiceImpl) VerifyCallback(ce echo.Context) (string, error) 
 	// - save holder to session (redis)
 	// - setup session with redis
 	// - move set cookies above to POST /auth/google/token (set_cookie=true) endpoint
+	if err = c.Redis.Set(holder, jwtToken, JwtTokenHolderExpire).Err(); err != nil {
+		return "", errors.Trace(err)
+	}
 
 	return holder, nil
 }
@@ -166,7 +178,7 @@ func (c *AuthGoogleServiceImpl) generateJwtToken(userInfoResp repository.GoogleO
 	claims := token.Claims.(jwt.MapClaims)
 	claims["email"] = userInfoResp["email"]
 	claims["picture"] = userInfoResp["picture"]
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	claims["exp"] = time.Now().Add(JwtTokenExpire).Unix()
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(c.Config.JwtSecret))
