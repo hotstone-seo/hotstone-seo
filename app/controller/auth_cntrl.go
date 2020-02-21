@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"time"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/juju/errors"
@@ -13,6 +15,10 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
+)
+
+var (
+	JwtTokenCookieExpire time.Duration = 72 * time.Hour
 )
 
 // AuthCntrl is controller to handle authentication
@@ -78,6 +84,23 @@ func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {
 	if jwtToken, err = c.AuthGoogleService.GetThenDeleteJwtToken(ctx, req.Holder); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
+
+	if req.SetCookie {
+		secureTokenCookie := &http.Cookie{
+			Name: "secure_token", Value: string(jwtToken),
+			Expires:  time.Now().Add(JwtTokenCookieExpire),
+			HttpOnly: true, Secure: c.Config.CookieSecure,
+		}
+		ce.SetCookie(secureTokenCookie)
+
+		tokenCookie := &http.Cookie{
+			Name: "token", Value: string(jwtToken),
+			Expires:  time.Now().Add(JwtTokenCookieExpire),
+			HttpOnly: true, Secure: false,
+		}
+		ce.SetCookie(tokenCookie)
+	}
+
 	return ce.JSON(http.StatusOK, repository.TokenResp{Token: string(jwtToken)})
 }
 

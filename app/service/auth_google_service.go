@@ -24,7 +24,6 @@ var (
 	OAuthStateCookieExpire time.Duration = 20 * time.Minute
 	JwtTokenHolderExpire   time.Duration = 60 * time.Second
 	JwtTokenExpire         time.Duration = 72 * time.Hour
-	JwtTokenCookieExpire   time.Duration = JwtTokenExpire
 )
 
 // NewOauth2Config return new instance of oauth2.Config [constructor]
@@ -98,26 +97,8 @@ func (c *AuthGoogleServiceImpl) VerifyCallback(ce echo.Context) (string, error) 
 		return "", errors.Trace(err)
 	}
 
-	secureTokenCookie := &http.Cookie{
-		Name: "secure_token", Value: jwtToken,
-		Expires:  time.Now().Add(JwtTokenCookieExpire),
-		HttpOnly: true, Secure: c.Config.CookieSecure,
-	}
-	ce.SetCookie(secureTokenCookie)
-
-	tokenCookie := &http.Cookie{
-		Name: "token", Value: jwtToken,
-		Expires:  time.Now().Add(JwtTokenCookieExpire),
-		HttpOnly: true, Secure: false,
-	}
-	ce.SetCookie(tokenCookie)
-
 	holder := generateRandomBase64(64)
 
-	// TODO:
-	// - save holder to session (redis)
-	// - setup session with redis
-	// - move set cookies above to POST /auth/google/token (set_cookie=true) endpoint
 	if err = c.Redis.Set(holder, jwtToken, JwtTokenHolderExpire).Err(); err != nil {
 		return "", errors.Trace(err)
 	}
