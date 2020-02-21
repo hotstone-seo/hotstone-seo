@@ -29,10 +29,13 @@ type AuthCntrl struct {
 }
 
 // Route to define API Route
-func (c *AuthCntrl) Route(e *echo.Echo) {
-	e.GET("auth/google/login", c.AuthGoogleLogin)
-	e.GET("auth/google/callback", c.AuthGoogleCallback)
-	e.POST("auth/google/token", c.AuthGoogleToken)
+func (c *AuthCntrl) Route(e *echo.Group) {
+
+	e.GET("/google/login", c.AuthGoogleLogin)
+	e.GET("/google/callback", c.AuthGoogleCallback)
+	// e.POST("/google/token", c.AuthGoogleToken, middleware.CORSWithConfig(tokenCorsConfig))
+	e.POST("/google/token", c.AuthGoogleToken)
+	e.OPTIONS("/google/token", echo.MethodNotAllowedHandler)
 }
 
 // AuthGoogleLogin handle Google auth login

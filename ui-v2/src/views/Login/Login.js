@@ -13,6 +13,12 @@ function Login() {
     return <Redirect to="/" />;
   }
 
+  if (query.holder) {
+    auth.loginWithGoogle(query.holder).catch(error => {
+      message.error(error.message);
+    });
+  }
+
   const login = user => {
     const { email, password } = user;
     auth.login(email, password).catch(error => {
