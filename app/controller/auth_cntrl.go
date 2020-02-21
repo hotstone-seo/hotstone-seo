@@ -89,6 +89,7 @@ func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {
 		secureTokenCookie := &http.Cookie{
 			Name: "secure_token", Value: string(jwtToken),
 			Expires:  time.Now().Add(JwtTokenCookieExpire),
+			Path:     "/",
 			HttpOnly: true, Secure: c.Config.CookieSecure,
 		}
 		ce.SetCookie(secureTokenCookie)
@@ -96,7 +97,8 @@ func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {
 		tokenCookie := &http.Cookie{
 			Name: "token", Value: string(jwtToken),
 			Expires:  time.Now().Add(JwtTokenCookieExpire),
-			HttpOnly: true, Secure: false,
+			Path:     "/",
+			HttpOnly: false, Secure: c.Config.CookieSecure,
 		}
 		ce.SetCookie(tokenCookie)
 	}
