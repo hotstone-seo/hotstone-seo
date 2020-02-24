@@ -28,13 +28,6 @@ type AuthCntrl struct {
 	service.AuthGoogleService
 }
 
-// Route to define API Route
-func (c *AuthCntrl) Route(e *echo.Echo) {
-	e.GET("auth/google/login", c.AuthGoogleLogin)
-	e.GET("auth/google/callback", c.AuthGoogleCallback)
-	e.POST("auth/logout", c.AuthLogout)
-}
-
 // AuthGoogleLogin handle Google auth login
 func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
 	// requestDump, err := httputil.DumpRequest(ce.Request(), true)

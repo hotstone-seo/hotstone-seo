@@ -31,15 +31,7 @@ function HeaderMenu() {
           {email}
         </Button>
       </Dropdown>
-      <form
-        ref={logoutForm}
-        action={urljoin(process.env.REACT_APP_API_URL, "/auth/logout")}
-        method="post"
-        onSubmit={env => {
-          console.log("== Form submitted ==");
-          // alert("Form submitted!");
-        }}
-      ></form>
+      <form ref={logoutForm} action={"/api/logout"} method="post"></form>
     </>
   );
 }

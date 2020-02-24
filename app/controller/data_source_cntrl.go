@@ -20,12 +20,12 @@ type DataSourceCntrl struct {
 }
 
 // Route to define API Route
-func (c *DataSourceCntrl) Route(e *echo.Echo) {
-	e.GET("data_sources", c.Find)
-	e.POST("data_sources", c.Create)
-	e.GET("data_sources/:id", c.FindOne)
-	e.PUT("data_sources", c.Update)
-	e.DELETE("data_sources/:id", c.Delete)
+func (c *DataSourceCntrl) Route(e *echo.Group) {
+	e.GET("/data_sources", c.Find)
+	e.POST("/data_sources", c.Create)
+	e.GET("/data_sources/:id", c.FindOne)
+	e.PUT("/data_sources", c.Update)
+	e.DELETE("/data_sources/:id", c.Delete)
 }
 
 // Create data_source

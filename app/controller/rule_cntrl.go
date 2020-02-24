@@ -19,12 +19,12 @@ type RuleCntrl struct {
 }
 
 // Route to define API Route
-func (c *RuleCntrl) Route(e *echo.Echo) {
-	e.GET("rules", c.Find)
-	e.POST("rules", c.Create)
-	e.GET("rules/:id", c.FindOne)
-	e.PUT("rules", c.Update)
-	e.DELETE("rules/:id", c.Delete)
+func (c *RuleCntrl) Route(e *echo.Group) {
+	e.GET("/rules", c.Find)
+	e.POST("/rules", c.Create)
+	e.GET("/rules/:id", c.FindOne)
+	e.PUT("/rules", c.Update)
+	e.DELETE("/rules/:id", c.Delete)
 }
 
 // Find all rule
