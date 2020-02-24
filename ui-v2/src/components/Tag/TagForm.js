@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Select } from 'antd';
 import locales from 'locales';
+
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
+import CanonicalForm from './CanonicalForm';
+import ScriptForm from './ScriptForm';
 
 const { Option } = Select;
 
@@ -14,17 +17,9 @@ const tagTypes = [
   { label: 'Script', value: 'script' },
 ];
 
-const capitalize = (item) => item.charAt(0).toUpperCase() + item.slice(1);
-
 function TagForm({ form }) {
-  const [currentType, setCurrentType] = useState(tagTypes[0].value);
-
-  useEffect(() => {
-    const type = form.getFieldValue('type');
-    if (type) {
-      setCurrentType(type);
-    }
-  }, [form]);
+  const type = form.getFieldValue('type');
+  const [currentType, setCurrentType] = useState(type);
 
   return (
     <Form
@@ -37,10 +32,7 @@ function TagForm({ form }) {
       <Form.Item name="rule_id" noStyle />
 
       <Form.Item label="Type" name="type">
-        <Select
-          defaultValue={currentType}
-          onChange={(value) => setCurrentType(value)}
-        >
+        <Select onChange={(value) => setCurrentType(value)}>
           {tagTypes.map(({ label, value }) => (
             <Option key={value} value={value}>{label}</Option>
           ))}
@@ -56,10 +48,10 @@ function TagForm({ form }) {
       </Form.Item>
       {
         {
-          title: <TitleForm form={form} />,
-          meta: <MetaForm form={form} />,
-          canonical: null,
-          script: null,
+          title: <TitleForm />,
+          meta: <MetaForm />,
+          link: <CanonicalForm form={form} />,
+          script: <ScriptForm />,
         }[currentType]
       }
     </Form>

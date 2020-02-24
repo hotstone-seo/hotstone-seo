@@ -1,7 +1,5 @@
 import React from 'react';
-import { Form, Input, Select } from 'antd';
-
-const { Option } = Select;
+import { Form, Input } from 'antd';
 
 function MetaForm() {
   return (

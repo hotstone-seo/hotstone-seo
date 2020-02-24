@@ -146,7 +146,7 @@ function EditRule() {
             <Button
               type="dashed"
               onClick={addTag}
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginBottom: 16 }}
             >
               <PlusOutlined />
               Add Tag
@@ -165,6 +165,7 @@ function EditRule() {
           tagForm.resetFields();
         }}
         confirmLoading={tagFormLoading}
+        destroyOnClose
       >
         <TagForm form={tagForm} />
       </Modal>
