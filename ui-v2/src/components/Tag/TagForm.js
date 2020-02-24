@@ -53,7 +53,11 @@ function TagForm({ form }) {
 
         <Form.Item name="rule_id" noStyle />
 
-        <Form.Item label="Type" name="type">
+        <Form.Item
+          label="Type"
+          name="type"
+          rules={[{ required: true, message: 'A type must be selected' }]}
+        >
           <Select onChange={(value) => setCurrentType(value)}>
             {tagTypes.map(({ label, value }) => (
               <Option key={value} value={value}>{label}</Option>
@@ -61,7 +65,11 @@ function TagForm({ form }) {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Locale" name="locale">
+        <Form.Item
+          label="Locale"
+          name="locale"
+          rules={[{ required: true, message: 'Please set a locale for the tag' }]}
+        >
           <Select>
             {locales.map((locale) => (
               <Option key={locale} value={locale}>{locale}</Option>

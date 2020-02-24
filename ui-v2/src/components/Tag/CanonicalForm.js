@@ -11,7 +11,11 @@ function CanonicalForm({ form }) {
     <>
       <Form.Item name={['attributes', 'rel']} noStyle />
 
-      <Form.Item label="URL" name={['attributes', 'href']}>
+      <Form.Item
+        label="URL"
+        name={['attributes', 'href']}
+        rules={[{ required: true, message: 'Must provide canonical URL' }]}
+      >
         <Input />
       </Form.Item>
     </>
