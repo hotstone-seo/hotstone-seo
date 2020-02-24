@@ -21,8 +21,6 @@ const routes = [
     name: "Rule Details",
     component: RuleDetail
   },
-  { path: "/datasource", name: "DataSource", component: DataSourceList },
-  { path: "/mismatchRule", name: "MismatchRule", component: MismatchRuleList },
   { path: "/analytic", name: "Analytic", component: AnalyticPage },
   { path: "/simulation", name: "Simulation", component: SimulationPage }
 ];

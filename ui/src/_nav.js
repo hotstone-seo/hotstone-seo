@@ -6,16 +6,6 @@ export default {
       url: "/rule",
       icon: "fa fa-home"
     },
-    /*{
-      name: "Language",
-      url: "/language",
-      icon: "fa fa-language"
-    },*/
-    {
-      name: "DataSource",
-      url: "/datasource",
-      icon: "fa fa-database"
-    },
     {
       name: "Mismatch Rule",
       url: "/mismatchRule",
