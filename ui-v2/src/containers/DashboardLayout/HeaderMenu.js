@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Menu, Dropdown, Button } from "antd";
 import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useAuth } from "../../components/AuthProvider";
+import urljoin from "url-join";
 
 function HeaderMenu() {
   const auth = useAuth();
   const { email } = auth.currentUser;
+
+  const logoutForm = useRef();
 
   const accountMenu = (
     <Menu>
@@ -13,7 +16,7 @@ function HeaderMenu() {
         <Button
           type="link"
           icon={<LogoutOutlined />}
-          onClick={() => auth.logout()}
+          onClick={() => logoutForm.current.submit()}
         >
           Logout
         </Button>
@@ -28,6 +31,15 @@ function HeaderMenu() {
           {email}
         </Button>
       </Dropdown>
+      <form
+        ref={logoutForm}
+        action={urljoin(process.env.REACT_APP_API_URL, "/auth/logout")}
+        method="post"
+        onSubmit={env => {
+          console.log("== Form submitted ==");
+          // alert("Form submitted!");
+        }}
+      ></form>
     </>
   );
 }

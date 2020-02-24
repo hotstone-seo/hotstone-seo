@@ -14,4 +14,5 @@ type Config struct {
 	Oauth2GoogleRedirectSuccess      string   `envconfig:"OAUTH2_GOOGLE_REDIRECT_SUCCESS"`
 	Oauth2GoogleRedirectFailure      string   `envconfig:"OAUTH2_GOOGLE_REDIRECT_FAILURE"`
 	Oauth2GoogleHostedDomain         string   `envconfig:"OAUTH2_GOOGLE_HOSTED_DOMAIN"`
+	AuthLogoutRedirect               string   `envconfig:"AUTH_LOGOUT_REDIRECT"`
 }

@@ -32,6 +32,7 @@ type AuthCntrl struct {
 func (c *AuthCntrl) Route(e *echo.Echo) {
 	e.GET("auth/google/login", c.AuthGoogleLogin)
 	e.GET("auth/google/callback", c.AuthGoogleCallback)
+	e.POST("auth/logout", c.AuthLogout)
 }
 
 // AuthGoogleLogin handle Google auth login
@@ -120,6 +121,17 @@ func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {
 	}
 
 	return ce.JSON(http.StatusOK, repository.TokenResp{Token: string(jwtToken)})
+}
+
+// AuthLogout handle logout by invalidating cookies
+func (c *AuthCntrl) AuthLogout(ce echo.Context) (err error) {
+	secureTokenCookie := &http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"}
+	ce.SetCookie(secureTokenCookie)
+
+	tokenCookie := &http.Cookie{Name: "token", MaxAge: -1, Path: "/"}
+	ce.SetCookie(tokenCookie)
+
+	return ce.Redirect(http.StatusSeeOther, c.Config.AuthLogoutRedirect)
 }
 
 func urlWithQueryParams(urlStr string, queryParam url.Values) (string, error) {
