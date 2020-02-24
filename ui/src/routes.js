@@ -2,9 +2,6 @@ import React from "react";
 
 const RuleList = React.lazy(() => import("./views/Rule/RuleList"));
 const RuleDetail = React.lazy(() => import("./views/Rule/RuleDetail"));
-const DataSourceList = React.lazy(() =>
-  import("./views/DataSource/DataSource")
-);
 const MismatchRuleList = React.lazy(() =>
   import("./views/MismatchRule/MismatchRuleList")
 );
