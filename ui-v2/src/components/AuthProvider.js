@@ -2,12 +2,17 @@ import React from "react";
 import AuthAPI, { register } from "../api/auth";
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
+import _ from "lodash";
 
 const AuthContext = React.createContext();
 
 const loadUserFromCookie = () => {
   const token = Cookies.get("token");
-  // console.log(token);
+  console.log(`TOKEN: ${token}`);
+
+  if (_.isEmpty(token)) {
+    return null;
+  }
   // console.log(jwt.decode(token));
 
   const tokenDecoded = jwt.decode(token);
@@ -47,22 +52,9 @@ function AuthProvider(props) {
     }
   };
 
-  const loginWithGoogle = holder => {
-    if (!currentUser) {
-      return AuthAPI.googleOAuth2GetToken(holder).then(resp => {
-        console.log("@@@ RESP: ", resp);
-
-        const user = loadUserFromCookie();
-        console.log(user);
-        setCurrentUser(user);
-      });
-    } else {
-      throw new Error("Error login: another user already logged in");
-    }
-  };
   return (
     <AuthContext.Provider
-      value={{ currentUser, login, logout, register, loginWithGoogle }}
+      value={{ currentUser, login, logout, register }}
       {...props}
     />
   );

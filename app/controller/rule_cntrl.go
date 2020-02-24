@@ -19,7 +19,7 @@ type RuleCntrl struct {
 }
 
 // Route to define API Route
-func (c *RuleCntrl) Route(e *echo.Group) {
+func (c *RuleCntrl) Route(e *echo.Echo) {
 	e.GET("rules", c.Find)
 	e.POST("rules", c.Create)
 	e.GET("rules/:id", c.FindOne)

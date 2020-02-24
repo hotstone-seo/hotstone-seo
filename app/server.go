@@ -1,16 +1,13 @@
 package app
 
 import (
-	"encoding/json"
-
 	"github.com/hotstone-seo/hotstone-seo/app/config"
 	"github.com/hotstone-seo/hotstone-seo/app/controller"
 	"github.com/juju/errors"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
-	// log "github.com/sirupsen/logrus"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"go.uber.org/dig"
 )
@@ -29,28 +26,13 @@ type server struct {
 }
 
 func (s *server) Middleware() {
-	tokenCorsConfig := middleware.DefaultCORSConfig
-	tokenCorsConfig.AllowCredentials = true
-	if len(s.Config.Oauth2GoogleGetTokenAllowOrigins) != 0 {
-		tokenCorsConfig.AllowOrigins = s.Config.Oauth2GoogleGetTokenAllowOrigins
-	}
-
-	log.Printf("tokenCorsConfig: %+v", tokenCorsConfig)
-
-	auth := s.Group("auth", middleware.CORSWithConfig(tokenCorsConfig))
-	s.AuthCntrl.Route(auth)
-
-	api := s.Group("api", middleware.CORSWithConfig(middleware.DefaultCORSConfig))
-	s.RuleCntrl.Route(api)
-
-	// s.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
+	s.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	s.Use(middleware.Recover())
 }
 
 func (s *server) Route() {
-	// s.AuthCntrl.Route(s.Echo)
-
-	// s.RuleCntrl.Route(s.Echo)
+	s.AuthCntrl.Route(s.Echo)
+	s.RuleCntrl.Route(s.Echo)
 	s.DataSourceCntrl.Route(s.Echo)
 	s.TagCntrl.Route(s.Echo)
 	s.ProviderCntrl.Route(s.Echo)
@@ -66,8 +48,5 @@ func (s *server) ErrorHandler() {
 }
 
 func (s *server) Start() error {
-	data, _ := json.MarshalIndent(s.Routes(), "", "  ")
-	log.Print(string(data))
-
 	return s.Echo.Start(s.Config.Address)
 }

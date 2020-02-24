@@ -29,13 +29,9 @@ type AuthCntrl struct {
 }
 
 // Route to define API Route
-func (c *AuthCntrl) Route(e *echo.Group) {
-
-	e.GET("/google/login", c.AuthGoogleLogin)
-	e.GET("/google/callback", c.AuthGoogleCallback)
-	// e.POST("/google/token", c.AuthGoogleToken, middleware.CORSWithConfig(tokenCorsConfig))
-	e.POST("/google/token", c.AuthGoogleToken)
-	e.OPTIONS("/google/token", echo.MethodNotAllowedHandler)
+func (c *AuthCntrl) Route(e *echo.Echo) {
+	e.GET("auth/google/login", c.AuthGoogleLogin)
+	e.GET("auth/google/callback", c.AuthGoogleCallback)
 }
 
 // AuthGoogleLogin handle Google auth login
@@ -49,30 +45,47 @@ func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
 	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
 }
 
-// AuthGoogleLogin handle Google auth callback
+// AuthGoogleCallback handle Google auth callback
 func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 	// requestDump, err := httputil.DumpRequest(ce.Request(), true)
 	// if err == nil {
 	// 	log.Warnf("[auth/google/callback] REQ:\n%s\n\n", requestDump)
 	// }
-	failureUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectFailure, url.Values{"oauth_error": {"true"}})
+	failureURL, err := urlWithQueryParams(c.Oauth2GoogleRedirectFailure, url.Values{"oauth_error": {"true"}})
 	if err != nil {
 		return errors.Trace(err)
 	}
 
-	holder, err := c.AuthGoogleService.VerifyCallback(ce)
+	jwtToken, err := c.AuthGoogleService.VerifyCallback(ce)
 	if err != nil {
 		log.Error(errors.Details(err))
-		return ce.Redirect(http.StatusTemporaryRedirect, failureUrl)
+		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
 	}
 
-	successUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{"holder": {holder}})
+	// successUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{"holder": {holder}})
+	successURL, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{})
 	if err != nil {
 		log.Error(errors.Details(err))
-		return ce.Redirect(http.StatusTemporaryRedirect, failureUrl)
+		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
 	}
 
-	return ce.Redirect(http.StatusTemporaryRedirect, successUrl)
+	secureTokenCookie := &http.Cookie{
+		Name: "secure_token", Value: string(jwtToken),
+		Expires:  time.Now().Add(JwtTokenCookieExpire),
+		Path:     "/",
+		HttpOnly: true, Secure: c.Config.CookieSecure,
+	}
+	ce.SetCookie(secureTokenCookie)
+
+	tokenCookie := &http.Cookie{
+		Name: "token", Value: string(jwtToken),
+		Expires:  time.Now().Add(JwtTokenCookieExpire),
+		Path:     "/",
+		HttpOnly: false, Secure: c.Config.CookieSecure,
+	}
+	ce.SetCookie(tokenCookie)
+
+	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
 }
 
 func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {

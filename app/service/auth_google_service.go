@@ -66,7 +66,6 @@ func (c *AuthGoogleServiceImpl) GetAuthCodeURL(ce echo.Context) (authCodeURL str
 	// AuthCodeURL receive state that is a token to protect the user from CSRF attacks. You must always provide a non-empty string and
 	// validate that it matches the the state query parameter on your redirect callback.
 	urlAuthCode := c.Oauth2Config.AuthCodeURL(oauthState)
-	// log.Errorf("[auth/google/login] AUTH URL:\n%s\n\n", url)
 
 	return urlAuthCode
 }
@@ -97,13 +96,7 @@ func (c *AuthGoogleServiceImpl) VerifyCallback(ce echo.Context) (string, error) 
 		return "", errors.Trace(err)
 	}
 
-	holder := generateRandomBase64(64)
-
-	if err = c.Redis.Set(holder, jwtToken, JwtTokenHolderExpire).Err(); err != nil {
-		return "", errors.Trace(err)
-	}
-
-	return holder, nil
+	return jwtToken, nil
 }
 
 func (c *AuthGoogleServiceImpl) GetThenDeleteJwtToken(ctx context.Context, holder string) ([]byte, error) {
