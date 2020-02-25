@@ -26,7 +26,7 @@ type server struct {
 }
 
 func (s *server) Middleware() {
-	s.GET("auth/google/login", s.AuthCntrl.AuthGoogleLogin)
+	s.POST("auth/google/login", s.AuthCntrl.AuthGoogleLogin)
 	s.GET("auth/google/callback", s.AuthCntrl.AuthGoogleCallback)
 
 	api := s.Group("/api")

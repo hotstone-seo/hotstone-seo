@@ -1,13 +1,13 @@
-import React from "react";
+import React, {useRef} from "react";
 import PropTypes from "prop-types";
 import { Form, Input, Checkbox, Button, Row, Divider, Typography } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
-import urljoin from "url-join";
 
 const { Text } = Typography;
 
 function LoginForm({ login }) {
   const [form] = Form.useForm();
+  const loginGoogleForm = useRef();
 
   return (
     <>
@@ -52,16 +52,14 @@ function LoginForm({ login }) {
             <Button
               type="primary"
               icon={<GoogleOutlined />}
-              href={urljoin(
-                process.env.REACT_APP_API_URL,
-                "/auth/google/login"
-              )}
+              onClick={() => loginGoogleForm.current.submit()}
             >
               Sign in with Google
             </Button>
           </Row>
         </Form.Item>
       </Form>
+      <form ref={loginGoogleForm} action={"/auth/google/login"} method="post"></form>
     </>
   );
 }
