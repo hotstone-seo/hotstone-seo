@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useCallback } from "react";
-import { Card, Select } from "antd";
+import { Card, Select, Typography } from "antd";
 import { ResponsiveLine } from "@nivo/line";
 import useInterval from "@use-hooks/interval";
 import { format, subDays, startOfMonth } from "date-fns";
@@ -7,6 +7,7 @@ import { isAxiosError } from "utils/axios";
 import { fetchListCountHitPerDay } from "api/metric";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 const FULL_DATE_FORMAT = "yyyy-MM-dd";
 
@@ -56,16 +57,19 @@ function HitChartCard() {
   const [dataListCountHit, setDataListCountHit] = useState([]);
   const [error, setError] = useState();
 
-  const fetchData = useCallback((startDate, endDate) => {
-    const queryParm = { start: startDate, end: endDate };
-    fetchListCountHitPerDay({ params: queryParm })
-      .then(data => {
-        setDataListCountHit(data);
-      })
-      .catch(error => {
-        setError(error);
-      });
-  }, [setDataListCountHit, setError]);
+  const fetchData = useCallback(
+    (startDate, endDate) => {
+      const queryParm = { start: startDate, end: endDate };
+      fetchListCountHitPerDay({ params: queryParm })
+        .then(data => {
+          setDataListCountHit(data);
+        })
+        .catch(error => {
+          setError(error);
+        });
+    },
+    [setDataListCountHit, setError]
+  );
 
   // inspectAxiosError(error);
   const onChangeRange = selectedOption => {
@@ -94,15 +98,18 @@ function HitChartCard() {
             Failed to fetch data
           </div>
         )}
-        <Select value={state.selectedOption} onChange={onChangeRange}>
-          {rangeOptions.map(({ value, label }, index) => {
-            return (
-              <Option key={value} value={value}>
-                {label}
-              </Option>
-            );
-          })}
-        </Select>
+        <div>
+          <Text strong>Hit Count in </Text>
+          <Select value={state.selectedOption} onChange={onChangeRange}>
+            {rangeOptions.map(({ value, label }, index) => {
+              return (
+                <Option key={value} value={value}>
+                  {label}
+                </Option>
+              );
+            })}
+          </Select>
+        </div>
       </div>
       <div style={{ height: 400 }}>
         <ResponsiveLine
