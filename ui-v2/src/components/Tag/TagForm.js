@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { Form, Select } from 'antd';
 import locales from 'locales';
@@ -18,49 +19,81 @@ const tagTypes = [
 ];
 
 function TagForm({ form }) {
-  const type = form.getFieldValue('type');
-  const [currentType, setCurrentType] = useState(type);
+  const [currentType, setCurrentType] = useState(form.getFieldValue('type'));
+  const [tagValues, setTagValues] = useState(
+    form.getFieldsValue(['type', 'attributes', 'value']),
+  );
+
+  const renderTagMock = (tag) => {
+    if (!tag.type) {
+      return null;
+    }
+    const mock = tag;
+    if (['meta', 'link'].includes(mock.type)) {
+      mock.value = null;
+    }
+    return (
+      <pre>
+        {renderToStaticMarkup(
+          React.createElement(mock.type, mock.attributes, mock.value),
+        )}
+      </pre>
+    );
+  };
 
   return (
-    <Form
-      form={form}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 14 }}
-    >
-      <Form.Item name="id" noStyle />
+    <>
+      <Form
+        form={form}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 14 }}
+        onValuesChange={(changedValues, allValues) => setTagValues(allValues)}
+      >
+        <Form.Item name="id" noStyle />
 
-      <Form.Item name="rule_id" noStyle />
+        <Form.Item name="rule_id" noStyle />
 
-      <Form.Item label="Type" name="type">
-        <Select onChange={(value) => setCurrentType(value)}>
-          {tagTypes.map(({ label, value }) => (
-            <Option key={value} value={value}>{label}</Option>
-          ))}
-        </Select>
-      </Form.Item>
+        <Form.Item
+          label="Type"
+          name="type"
+          rules={[{ required: true, message: 'A type must be selected' }]}
+        >
+          <Select onChange={(value) => setCurrentType(value)}>
+            {tagTypes.map(({ label, value }) => (
+              <Option key={value} value={value}>{label}</Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-      <Form.Item label="Locale" name="locale">
-        <Select>
-          {locales.map((locale) => (
-            <Option key={locale} value={locale}>{locale}</Option>
-          ))}
-        </Select>
-      </Form.Item>
-      {
+        <Form.Item
+          label="Locale"
+          name="locale"
+          rules={[{ required: true, message: 'Please set a locale for the tag' }]}
+        >
+          <Select>
+            {locales.map((locale) => (
+              <Option key={locale} value={locale}>{locale}</Option>
+            ))}
+          </Select>
+        </Form.Item>
         {
-          title: <TitleForm />,
-          meta: <MetaForm />,
-          link: <CanonicalForm form={form} />,
-          script: <ScriptForm />,
-        }[currentType]
-      }
-    </Form>
+          {
+            title: <TitleForm />,
+            meta: <MetaForm />,
+            link: <CanonicalForm form={form} />,
+            script: <ScriptForm />,
+          }[currentType]
+        }
+      </Form>
+      {renderTagMock(tagValues)}
+    </>
   );
 }
 
 TagForm.propTypes = {
   form: PropTypes.shape({
     getFieldValue: PropTypes.func.isRequired,
+    getFieldsValue: PropTypes.func.isRequired,
   }).isRequired,
 };
 

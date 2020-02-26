@@ -2,9 +2,6 @@ import React from "react";
 
 const RuleList = React.lazy(() => import("./views/Rule/RuleList"));
 const RuleDetail = React.lazy(() => import("./views/Rule/RuleDetail"));
-const DataSourceList = React.lazy(() =>
-  import("./views/DataSource/DataSource")
-);
 const MismatchRuleList = React.lazy(() =>
   import("./views/MismatchRule/MismatchRuleList")
 );
@@ -21,7 +18,6 @@ const routes = [
     name: "Rule Details",
     component: RuleDetail
   },
-  { path: "/datasource", name: "DataSource", component: DataSourceList },
   { path: "/mismatchRule", name: "MismatchRule", component: MismatchRuleList },
   { path: "/analytic", name: "Analytic", component: AnalyticPage },
   { path: "/simulation", name: "Simulation", component: SimulationPage }
