@@ -2,11 +2,6 @@
 export default {
   items: [
     {
-      name: "Rule",
-      url: "/rule",
-      icon: "fa fa-home"
-    },
-    {
       name: "Rule Analytic",
       url: "/analytic",
       icon: "fa fa-tachometer"
