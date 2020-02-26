@@ -16,11 +16,11 @@ type ProviderCntrl struct {
 }
 
 // Route to define API Route
-func (c *ProviderCntrl) Route(e *echo.Echo) {
-	e.POST("provider/matchRule", c.MatchRule)
-	e.POST("provider/retrieveData", c.RetrieveData)
-	e.POST("provider/tags", c.Tags)
-	e.GET("provider/rule-tree", c.DumpRuleTree)
+func (c *ProviderCntrl) Route(e *echo.Group) {
+	e.POST("/provider/matchRule", c.MatchRule)
+	e.POST("/provider/retrieveData", c.RetrieveData)
+	e.POST("/provider/tags", c.Tags)
+	e.GET("/provider/rule-tree", c.DumpRuleTree)
 }
 
 // MatchRule to match rule

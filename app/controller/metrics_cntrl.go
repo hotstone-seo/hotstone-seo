@@ -17,12 +17,11 @@ type MetricsCntrl struct {
 }
 
 // Route to define API Route
-func (c *MetricsCntrl) Route(e *echo.Echo) {
-
-	e.GET("metrics/mismatched", c.ListMismatched)
-	e.GET("metrics/hit", c.CountHit)
-	e.GET("metrics/hit/range", c.ListCountHitPerDay)
-	e.GET("metrics/unique-page", c.CountUniquePage)
+func (c *MetricsCntrl) Route(e *echo.Group) {
+	e.GET("/metrics/mismatched", c.ListMismatched)
+	e.GET("/metrics/hit", c.CountHit)
+	e.GET("/metrics/hit/range", c.ListCountHitPerDay)
+	e.GET("/metrics/unique-page", c.CountUniquePage)
 }
 
 // ListMismatched of metrics_unmatched
