@@ -7,11 +7,6 @@ export default {
       icon: "fa fa-home"
     },
     {
-      name: "Mismatch Rule",
-      url: "/mismatchRule",
-      icon: "fa fa-bug"
-    },
-    {
       name: "Rule Analytic",
       url: "/analytic",
       icon: "fa fa-tachometer"

@@ -15,12 +15,12 @@ type Module struct{}
 
 // EntryPoint of application
 func (*Module) EntryPoint() interface{} {
-	return func(s server,  m TaskManager) error {
+	return func(s server, m TaskManager) error {
 		if err := m.Start(); err != nil {
 			return err
 		}
 
-
+		s.ErrorHandler()
 		s.Middleware()
 		s.Route()
 		return s.Start()

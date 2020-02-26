@@ -21,12 +21,12 @@ type TagCntrl struct {
 }
 
 // Route to define API Route
-func (c *TagCntrl) Route(e *echo.Echo) {
-	e.GET("tags", c.Find)
-	e.POST("tags", c.Create)
-	e.GET("tags/:id", c.FindOne)
-	e.PUT("tags", c.Update)
-	e.DELETE("tags/:id", c.Delete)
+func (c *TagCntrl) Route(e *echo.Group) {
+	e.GET("/tags", c.Find)
+	e.POST("/tags", c.Create)
+	e.GET("/tags/:id", c.FindOne)
+	e.PUT("/tags", c.Update)
+	e.DELETE("/tags/:id", c.Delete)
 }
 
 // Create tag
