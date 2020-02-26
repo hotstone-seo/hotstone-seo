@@ -9,6 +9,7 @@
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
     "@use-hooks/interval": "^1.0.1",
+    "@xstate/react": "^0.8.1",
     "antd": "^4.0.0-rc.5",
     "axios": "^0.19.2",
     "date-fns": "^2.9.0",
