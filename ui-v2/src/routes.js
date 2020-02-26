@@ -4,13 +4,15 @@ import {
   FormOutlined,
   DatabaseOutlined,
   TagsOutlined,
-  AreaChartOutlined
+  AreaChartOutlined,
+  PlayCircleOutlined
 } from "@ant-design/icons";
 
 const Rule = React.lazy(() => import("views/Rule"));
 const MismatchRule = React.lazy(() => import("views/MismatchRule"));
 const DataSource = React.lazy(() => import("views/DataSource"));
 const Analytic = React.lazy(() => import("views/Analytic"));
+const Simulation = React.lazy(() => import("views/Simulation"));
 
 const routes = [
   {
@@ -42,6 +44,12 @@ const routes = [
     name: "Analytic",
     component: Analytic,
     icon: AreaChartOutlined
+  },
+  {
+    path: "/simulation",
+    name: "Simulation",
+    component: Simulation,
+    icon: PlayCircleOutlined
   }
 ];
 
