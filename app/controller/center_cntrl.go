@@ -16,12 +16,12 @@ type CenterCntrl struct {
 }
 
 // Route to define API Route
-func (c *CenterCntrl) Route(e *echo.Echo) {
-	e.POST("center/addMetaTag", c.AddMetaTag)
-	e.POST("center/addTitleTag", c.AddTitleTag)
-	e.POST("center/addCanonicalTag", c.AddCanonicalTag)
-	e.POST("center/addScriptTag", c.AddScriptTag)
-	e.POST("center/addArticle", c.AddArticle)
+func (c *CenterCntrl) Route(e *echo.Group) {
+	e.POST("/center/addMetaTag", c.AddMetaTag)
+	e.POST("/center/addTitleTag", c.AddTitleTag)
+	e.POST("/center/addCanonicalTag", c.AddCanonicalTag)
+	e.POST("/center/addScriptTag", c.AddScriptTag)
+	e.POST("/center/addArticle", c.AddArticle)
 }
 
 // AddMetaTag add meta tag

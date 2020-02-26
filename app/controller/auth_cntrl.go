@@ -1,111 +1,137 @@
 package controller
 
 import (
-	"context"
-	"crypto/rand"
-	"encoding/base64"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"net/http"
 	"time"
 
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
+	log "github.com/sirupsen/logrus"
+
+	"github.com/juju/errors"
+
+	"net/http"
+	"net/url"
 
 	"github.com/hotstone-seo/hotstone-seo/app/config"
+	"github.com/hotstone-seo/hotstone-seo/app/repository"
+	"github.com/hotstone-seo/hotstone-seo/app/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
 
-type GoogleOauth2UserInfoResp map[string]interface{}
-
-// NewOauth2Config return new instance of oauth2.Config [constructor]
-func NewOauth2Config(config config.Config) *oauth2.Config {
-
-	c := oauth2.Config{
-		RedirectURL:  config.Oauth2GoogleCallback,
-		ClientID:     config.Oauth2GoogleClientID,
-		ClientSecret: config.Oauth2GoogleClientSecret,
-		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-		Endpoint:     google.Endpoint,
-	}
-	return &c
-}
+var (
+	JwtTokenCookieExpire time.Duration = 72 * time.Hour
+)
 
 // AuthCntrl is controller to handle authentication
 type AuthCntrl struct {
 	dig.In
 	config.Config
-	Oauth2Config *oauth2.Config
-}
-
-// Route to define API Route
-func (c *AuthCntrl) Route(e *echo.Echo) {
-	e.Any("auth/google/login", c.AuthGoogleLogin)
-	e.Any("auth/google/callback", c.AuthGoogleCallback)
-
+	service.AuthGoogleService
 }
 
 // AuthGoogleLogin handle Google auth login
 func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
-	// Create oauthState cookie
-	oauthState := generateStateOauthCookie(ce.Response())
+	// requestDump, err := httputil.DumpRequest(ce.Request(), true)
+	// if err == nil {
+	// 	log.Warnf("[auth/google/login] REQ:\n%s\n\n", requestDump)
+	// }
 
-	/*
-		AuthCodeURL receive state that is a token to protect the user from CSRF attacks. You must always provide a non-empty string and
-		validate that it matches the the state query parameter on your redirect callback.
-	*/
-	url := c.Oauth2Config.AuthCodeURL(oauthState)
-
-	return ce.Redirect(http.StatusTemporaryRedirect, url)
+	authCodeURL := c.AuthGoogleService.GetAuthCodeURL(ce)
+	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
 }
 
-// AuthGoogleLogin handle Google auth callback
+// AuthGoogleCallback handle Google auth callback
 func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
-	// Read oauthState from Cookie
-	oauthState, _ := ce.Cookie("oauthstate")
-
-	if ce.FormValue("state") != oauthState.Value {
-		return errors.New("invalid oauth google state")
+	// requestDump, err := httputil.DumpRequest(ce.Request(), true)
+	// if err == nil {
+	// 	log.Warnf("[auth/google/callback] REQ:\n%s\n\n", requestDump)
+	// }
+	failureURL, err := urlWithQueryParams(c.Oauth2GoogleRedirectFailure, url.Values{"oauth_error": {"true"}})
+	if err != nil {
+		return errors.Trace(err)
 	}
 
-	userInfoResp, err := c.getUserInfoFromGoogle(ce.FormValue("code"))
+	jwtToken, err := c.AuthGoogleService.VerifyCallback(ce)
 	if err != nil {
+		log.Error(errors.Details(err))
+		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
+	}
+
+	// successUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{"holder": {holder}})
+	successURL, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{})
+	if err != nil {
+		log.Error(errors.Details(err))
+		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
+	}
+
+	secureTokenCookie := &http.Cookie{
+		Name: "secure_token", Value: string(jwtToken),
+		Expires:  time.Now().Add(JwtTokenCookieExpire),
+		Path:     "/",
+		HttpOnly: true, Secure: c.Config.CookieSecure,
+	}
+	ce.SetCookie(secureTokenCookie)
+
+	tokenCookie := &http.Cookie{
+		Name: "token", Value: string(jwtToken),
+		Expires:  time.Now().Add(JwtTokenCookieExpire),
+		Path:     "/",
+		HttpOnly: false, Secure: c.Config.CookieSecure,
+	}
+	ce.SetCookie(tokenCookie)
+
+	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
+}
+
+func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {
+	var (
+		req      repository.TokenReq
+		jwtToken []byte
+		ctx      = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
 		return
 	}
+	if jwtToken, err = c.AuthGoogleService.GetThenDeleteJwtToken(ctx, req.Holder); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
 
-	return ce.String(http.StatusOK, fmt.Sprintf("%+v", userInfoResp))
+	if req.SetCookie {
+		secureTokenCookie := &http.Cookie{
+			Name: "secure_token", Value: string(jwtToken),
+			Expires:  time.Now().Add(JwtTokenCookieExpire),
+			Path:     "/",
+			HttpOnly: true, Secure: c.Config.CookieSecure,
+		}
+		ce.SetCookie(secureTokenCookie)
+
+		tokenCookie := &http.Cookie{
+			Name: "token", Value: string(jwtToken),
+			Expires:  time.Now().Add(JwtTokenCookieExpire),
+			Path:     "/",
+			HttpOnly: false, Secure: c.Config.CookieSecure,
+		}
+		ce.SetCookie(tokenCookie)
+	}
+
+	return ce.JSON(http.StatusOK, repository.TokenResp{Token: string(jwtToken)})
 }
 
-func generateStateOauthCookie(w http.ResponseWriter) string {
-	var expiration = time.Now().Add(20 * time.Minute)
+// AuthLogout handle logout by invalidating cookies
+func (c *AuthCntrl) AuthLogout(ce echo.Context) (err error) {
+	secureTokenCookie := &http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"}
+	ce.SetCookie(secureTokenCookie)
 
-	b := make([]byte, 16)
-	rand.Read(b)
-	state := base64.URLEncoding.EncodeToString(b)
-	cookie := http.Cookie{Name: "oauthstate", Value: state, Expires: expiration}
-	http.SetCookie(w, &cookie)
+	tokenCookie := &http.Cookie{Name: "token", MaxAge: -1, Path: "/"}
+	ce.SetCookie(tokenCookie)
 
-	return state
+	return ce.Redirect(http.StatusSeeOther, c.Config.AuthLogoutRedirect)
 }
 
-func (c *AuthCntrl) getUserInfoFromGoogle(code string) (userInfoResp GoogleOauth2UserInfoResp, err error) {
-	// Use code to get token and get user info from Google.
-	token, err := c.Oauth2Config.Exchange(context.Background(), code)
+func urlWithQueryParams(urlStr string, queryParam url.Values) (string, error) {
+	u, err := url.Parse(urlStr)
 	if err != nil {
-		return nil, fmt.Errorf("code exchange wrong: %s", err.Error())
+		return "", errors.Trace(err)
 	}
-	response, err := http.Get(fmt.Sprintf("https://www.googleapis.com/oauth2/v2/userinfo?access_token=%s", token.AccessToken))
-	if err != nil {
-		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
-	}
-	defer response.Body.Close()
-
-	err = json.NewDecoder(response.Body).Decode(&userInfoResp)
-	if err != nil {
-		return nil, err
-	}
-
-	return userInfoResp, nil
+	u.RawQuery = queryParam.Encode()
+	return u.String(), nil
 }
