@@ -5,6 +5,7 @@ module.exports = {
   rules: {
     'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }],
   },
+  parser: "react-scripts/node_modules/babel-eslint",
   settings: {
     'import/resolver': {
       node: {
