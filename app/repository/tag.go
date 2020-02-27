@@ -67,28 +67,28 @@ func TagStructLevelValidation(sl validator.StructLevel) {
 
 func validateTitleTag(sl validator.StructLevel, tag Tag) {
 	if tag.Value == "" {
-		sl.ReportError(tag.Value, "value", "Value", "noempty", "")
+		sl.ReportError(tag.Value, "Value", "Value", "noempty", "")
 	}
 }
 
 func validateMetaTag(sl validator.StructLevel, tag Tag) {
 	if !validAttributesKey(tag, "name", "content") {
-		sl.ReportError(tag.Attributes, "attributes", "Attributes", "", "")
+		sl.ReportError(tag.Attributes, "Attributes", "Attributes", "", "")
 	}
 	if tag.Value != "" {
-		sl.ReportError(tag.Value, "value", "Value", "", "")
+		sl.ReportError(tag.Value, "Value", "Value", "", "")
 	}
 }
 
 func validateCanonicalTag(sl validator.StructLevel, tag Tag) {
 	if !validAttributesKey(tag, "rel", "href") {
-		sl.ReportError(tag.Attributes, "attributes", "Attributes", "", "")
+		sl.ReportError(tag.Attributes, "Attributes", "Attributes", "", "")
 	}
 }
 
 func validateScriptTag(sl validator.StructLevel, tag Tag) {
 	if !validAttributesKey(tag, "src") {
-		sl.ReportError(tag.Attributes, "attributes", "Attributes", "", "")
+		sl.ReportError(tag.Attributes, "Attributes", "Attributes", "", "")
 	}
 }
 
