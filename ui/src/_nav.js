@@ -5,11 +5,6 @@ export default {
       name: "Rule Analytic",
       url: "/analytic",
       icon: "fa fa-tachometer"
-    },
-    {
-      name: "Simulation",
-      url: "/simulation",
-      icon: "fa fa-play-circle"
     }
   ]
 };
