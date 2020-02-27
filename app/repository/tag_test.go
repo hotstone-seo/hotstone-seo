@@ -61,4 +61,52 @@ func TestTagValidation(t *testing.T) {
 		require.EqualError(t, tag.Validate(),
 			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
 	})
+	t.Run("When valid canonical tag", func(t *testing.T) {
+		tag := repository.Tag{
+			RuleID:     999,
+			Locale:     "en_US",
+			Type:       "link",
+			Attributes: []byte(`{ "rel": "canonical", "href": "http://original-site.com" }`),
+		}
+		require.NoError(t, tag.Validate())
+	})
+	t.Run("When 'rel' key is missing from attribute in canonical tag", func(t *testing.T) {
+		tag := repository.Tag{
+			RuleID:     999,
+			Locale:     "en_US",
+			Type:       "link",
+			Attributes: []byte(`{ "href": "http://original-site.com" }`),
+		}
+		require.EqualError(t, tag.Validate(),
+			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
+	})
+	t.Run("When 'href' key is missing from attribute in canonical tag", func(t *testing.T) {
+		tag := repository.Tag{
+			RuleID:     999,
+			Locale:     "en_US",
+			Type:       "link",
+			Attributes: []byte(`{ "rel": "canonical" }`),
+		}
+		require.EqualError(t, tag.Validate(),
+			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
+	})
+	t.Run("When valid script tag", func(t *testing.T) {
+		tag := repository.Tag{
+			RuleID:     999,
+			Locale:     "en_US",
+			Type:       "script",
+			Attributes: []byte(`{ "src": "http://mysite.com/script.js" }`),
+		}
+		require.NoError(t, tag.Validate())
+	})
+	t.Run("When 'src' key is missing from attribute in script tag", func(t *testing.T) {
+		tag := repository.Tag{
+			RuleID:     999,
+			Locale:     "en_US",
+			Type:       "script",
+			Attributes: []byte(`{}`),
+		}
+		require.EqualError(t, tag.Validate(),
+			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
+	})
 }
