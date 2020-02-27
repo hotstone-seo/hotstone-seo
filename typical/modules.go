@@ -1,7 +1,7 @@
 package typical
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/app"
+	"github.com/hotstone-seo/hotstone-seo/server"
 	"github.com/typical-go/typical-rest-server/pkg/typdocker"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typreadme"
@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	application = app.New()
+	_server = server.New()
 
 	readme = typreadme.New()
 
