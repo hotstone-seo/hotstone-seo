@@ -4,19 +4,19 @@ import (
 	"context"
 	"time"
 
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 )
 
 // Tag represented  tag entity
 type Tag struct {
-	ID         int64      `json:"id"`
-	RuleID     int64      `json:"rule_id"`
-	Locale     string     `json:"locale"`
-	Type       string     `json:"type"`
-	Attributes dbkit.JSON `json:"attributes"`
-	Value      string     `json:"value"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	CreatedAt  time.Time  `json:"created_at"`
+	ID         int64       `json:"id"`
+	RuleID     int64       `json:"rule_id"`
+	Locale     string      `json:"locale"`
+	Type       string      `json:"type"`
+	Attributes dbtype.JSON `json:"attributes"`
+	Value      string      `json:"value"`
+	UpdatedAt  time.Time   `json:"updated_at"`
+	CreatedAt  time.Time   `json:"created_at"`
 }
 
 type TagFilter struct {

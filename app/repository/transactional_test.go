@@ -6,9 +6,12 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
+
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
+	"github.com/hotstone-seo/hotstone-seo/app/repository"
 	"github.com/stretchr/testify/require"
-	"github.com/typical-go/typical-rest-server/app/repository"
+
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 )
 
@@ -17,7 +20,7 @@ func TestTransactional(t *testing.T) {
 	require.NoError(t, err)
 	defer db.Close()
 	trx := repository.Transactional{
-		DB: db,
+		DB: typpostgres.NewDB(db),
 	}
 	t.Run("WHEN error occurred before commit", func(t *testing.T) {
 		ctx := context.Background()

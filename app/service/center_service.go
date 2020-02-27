@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 	"go.uber.org/dig"
 )
 
@@ -35,7 +35,7 @@ func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagReques
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "meta",
-		Attributes: dbkit.JSON(fmt.Sprintf(`{"name":"%s", "content":"%s"}`, req.Name, req.Content)),
+		Attributes: dbtype.JSON(fmt.Sprintf(`{"name":"%s", "content":"%s"}`, req.Name, req.Content)),
 		Value:      "",
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
@@ -49,7 +49,7 @@ func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req AddTitleTagRequ
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "title",
-		Attributes: dbkit.JSON(`{}`),
+		Attributes: dbtype.JSON(`{}`),
 		Value:      req.Title,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
@@ -63,7 +63,7 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonica
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "link",
-		Attributes: dbkit.JSON(fmt.Sprintf(`{"href":"%s","rel":"canonical"}`, req.Href)),
+		Attributes: dbtype.JSON(fmt.Sprintf(`{"href":"%s","rel":"canonical"}`, req.Href)),
 		Value:      "",
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
@@ -77,7 +77,7 @@ func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req AddScriptTagRe
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "script",
-		Attributes: dbkit.JSON(fmt.Sprintf(`{"source":"%s"}`, req.Source)),
+		Attributes: dbtype.JSON(fmt.Sprintf(`{"source":"%s"}`, req.Source)),
 		Value:      req.Type,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),

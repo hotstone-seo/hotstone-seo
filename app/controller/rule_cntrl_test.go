@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/app/controller"
-	"github.com/hotstone-seo/hotstone-seo/mock"
+	"github.com/hotstone-seo/hotstone-seo/app/mock_service"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 )
@@ -15,7 +15,7 @@ import (
 func TestRuleController_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	ruleSvcMock := mock.NewMockRuleService(ctrl)
+	ruleSvcMock := mock_service.NewMockRuleService(ctrl)
 	ruleCntrl := controller.RuleCntrl{
 		RuleService: ruleSvcMock,
 	}

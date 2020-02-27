@@ -4,19 +4,19 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/hotstone-seo/hotstone-seo/mock"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 
-	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/app/controller"
+	"github.com/hotstone-seo/hotstone-seo/app/mock_service"
 	"github.com/hotstone-seo/hotstone-seo/app/service"
 )
 
 func TestProviderCntrl_MatchRule(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock.NewMockProviderService(ctrl)
+	svc := mock_service.NewMockProviderService(ctrl)
 	cntrl := controller.ProviderCntrl{
 		ProviderService: svc,
 	}
@@ -41,7 +41,7 @@ func TestProviderCntrl_MatchRule(t *testing.T) {
 func TestProviderCntrl_RetrieveData(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock.NewMockProviderService(ctrl)
+	svc := mock_service.NewMockProviderService(ctrl)
 	cntrl := controller.ProviderCntrl{ProviderService: svc}
 	t.Run("WHEN invalid json body", func(t *testing.T) {
 		_, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{invalid`)

@@ -6,7 +6,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/app/controller"
-	"github.com/hotstone-seo/hotstone-seo/mock"
+	"github.com/hotstone-seo/hotstone-seo/app/mock_service"
+
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 )
@@ -14,7 +15,7 @@ import (
 func TestCenterCntrl_AddMetaTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock.NewMockCenterService(ctrl)
+	svc := mock_service.NewMockCenterService(ctrl)
 	cntrl := controller.CenterCntrl{
 		CenterService: svc,
 	}
@@ -40,7 +41,7 @@ func TestCenterCntrl_AddMetaTag(t *testing.T) {
 func TestCenterCntrl_AddTitleTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock.NewMockCenterService(ctrl)
+	svc := mock_service.NewMockCenterService(ctrl)
 	cntrl := controller.CenterCntrl{
 		CenterService: svc,
 	}
@@ -65,7 +66,7 @@ func TestCenterCntrl_AddTitleTag(t *testing.T) {
 func TestCenterCntrl_AddCanoncicalTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock.NewMockCenterService(ctrl)
+	svc := mock_service.NewMockCenterService(ctrl)
 	cntrl := controller.CenterCntrl{
 		CenterService: svc,
 	}
@@ -90,7 +91,7 @@ func TestCenterCntrl_AddCanoncicalTag(t *testing.T) {
 func TestCenterCntrl_AddScriptTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock.NewMockCenterService(ctrl)
+	svc := mock_service.NewMockCenterService(ctrl)
 	cntrl := controller.CenterCntrl{
 		CenterService: svc,
 	}

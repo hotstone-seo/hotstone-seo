@@ -2,38 +2,65 @@ package app
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/app/config"
-	"github.com/typical-go/typical-go/pkg/typcore"
+	"github.com/labstack/echo"
+	"github.com/typical-go/typical-go/pkg/typcfg"
+	"github.com/typical-go/typical-go/pkg/typdep"
+	"github.com/typical-go/typical-rest-server/pkg/serverkit"
 )
 
-// New application [nowire]
-func New() *Module {
-	return &Module{}
+// Module of application
+type Module struct {
+	prefix string
 }
 
-// Module of application
-type Module struct{}
+// New application
+func New() *Module {
+	return &Module{
+		prefix: "APP",
+	}
+}
+
+// WithPrefix return app module with new prefix
+func (m *Module) WithPrefix(prefix string) *Module {
+	m.prefix = prefix
+	return m
+}
+
+// Configure the application
+func (m *Module) Configure(loader typcfg.Loader) *typcfg.Detail {
+	return &typcfg.Detail{
+		Prefix: m.prefix,
+		Spec:   &config.Config{},
+		Constructor: typdep.NewConstructor(func() (cfg config.Config, err error) {
+			err = loader.Load(m.prefix, &cfg)
+			return
+		}),
+	}
+}
 
 // EntryPoint of application
-func (*Module) EntryPoint() interface{} {
-	return func(s server, m TaskManager) error {
+func (*Module) EntryPoint() *typdep.Invocation {
+	return typdep.NewInvocation(func(s server, m TaskManager) error {
 		if err := m.Start(); err != nil {
 			return err
 		}
 
-		s.ErrorHandler()
-		s.Middleware()
-		s.Route()
 		return s.Start()
+	})
+}
+
+// Provide dependencies
+func (m *Module) Provide() []*typdep.Constructor {
+	return []*typdep.Constructor{
+		typdep.NewConstructor(func(cfg config.Config) *echo.Echo {
+			return serverkit.Create(cfg.Debug)
+		}),
 	}
 }
 
-// Configure the application
-func (*Module) Configure(loader typcore.ConfigLoader) (prefix string, spec, loadFn interface{}) {
-	prefix = "APP"
-	spec = &config.Config{}
-	loadFn = func() (cfg config.Config, err error) {
-		err = loader.Load(prefix, &cfg)
-		return
+// Destroy dependencies
+func (m *Module) Destroy() []*typdep.Invocation {
+	return []*typdep.Invocation{
+		typdep.NewInvocation(serverkit.Shutdown),
 	}
-	return
 }

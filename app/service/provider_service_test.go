@@ -9,14 +9,14 @@ import (
 
 	"github.com/alicebob/miniredis"
 	"github.com/go-redis/redis"
+	"github.com/hotstone-seo/hotstone-seo/app/mock_repository"
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/app/service"
-	"github.com/hotstone-seo/hotstone-seo/mock"
 )
 
 func newTestRedisClient() *redis.Client {
@@ -36,7 +36,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	dataSourceRepo := mock.NewMockDataSourceRepo(ctrl)
+	dataSourceRepo := mock_repository.NewMockDataSourceRepo(ctrl)
 	svc := service.ProviderServiceImpl{DataSourceRepo: dataSourceRepo, Redis: newTestRedisClient()}
 
 	t.Run("Success", func(t *testing.T) {
@@ -82,9 +82,9 @@ func TestProvider_Tags(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	var (
-		tagRepo        = mock.NewMockTagRepo(ctrl)
-		ruleRepo       = mock.NewMockRuleRepo(ctrl)
-		dataSourceRepo = mock.NewMockDataSourceRepo(ctrl)
+		tagRepo        = mock_repository.NewMockTagRepo(ctrl)
+		ruleRepo       = mock_repository.NewMockRuleRepo(ctrl)
+		dataSourceRepo = mock_repository.NewMockDataSourceRepo(ctrl)
 
 		svc = service.ProviderServiceImpl{
 			TagRepo:        tagRepo,
@@ -105,14 +105,14 @@ func TestProvider_Tags(t *testing.T) {
 
 func TestProvider_Tags_Success(t *testing.T) {
 	testcases := []struct {
-		attribute         dbkit.JSON
+		attribute         dbtype.JSON
 		value             string
 		data              interface{}
-		expectedAttribute dbkit.JSON
+		expectedAttribute dbtype.JSON
 		expectedValue     string
 	}{
 		{
-			attribute: dbkit.JSON(`{"key1": "value1 {{data1}}", "key2{{Data2}}": "value2"}`),
+			attribute: dbtype.JSON(`{"key1": "value1 {{data1}}", "key2{{Data2}}": "value2"}`),
 			value:     "some-value{{data3}}",
 			data: struct {
 				Data1 string
@@ -123,18 +123,18 @@ func TestProvider_Tags_Success(t *testing.T) {
 				Data2: "some-data-2",
 				Data3: "some-data-3",
 			},
-			expectedAttribute: dbkit.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
+			expectedAttribute: dbtype.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
 			expectedValue:     "some-valuesome-data-3",
 		},
 		{
-			attribute: dbkit.JSON(`{"key1": "value1 {{data1}}", "key2{{data2}}": "value2"}`),
+			attribute: dbtype.JSON(`{"key1": "value1 {{data1}}", "key2{{data2}}": "value2"}`),
 			value:     "some-value{{data3}}",
 			data: map[string]string{
 				"data1": "some-data-1",
 				"data2": "some-data-2",
 				"data3": "some-data-3",
 			},
-			expectedAttribute: dbkit.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
+			expectedAttribute: dbtype.JSON(`{"key1": "value1 some-data-1", "key2some-data-2": "value2"}`),
 			expectedValue:     "some-valuesome-data-3",
 		},
 	}
@@ -142,9 +142,9 @@ func TestProvider_Tags_Success(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	var (
-		tagRepo        = mock.NewMockTagRepo(ctrl)
-		ruleRepo       = mock.NewMockRuleRepo(ctrl)
-		dataSourceRepo = mock.NewMockDataSourceRepo(ctrl)
+		tagRepo        = mock_repository.NewMockTagRepo(ctrl)
+		ruleRepo       = mock_repository.NewMockRuleRepo(ctrl)
+		dataSourceRepo = mock_repository.NewMockDataSourceRepo(ctrl)
 
 		svc = service.ProviderServiceImpl{
 			TagRepo:        tagRepo,

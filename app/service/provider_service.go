@@ -14,11 +14,11 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/imantung/mario"
 	log "github.com/sirupsen/logrus"
+	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 
 	"github.com/hotstone-seo/hotstone-seo/app/urlstore"
 
 	"github.com/hotstone-seo/hotstone-seo/app/repository"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
@@ -181,7 +181,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 	interpolatedTags = make([]*InterpolatedTag, 0)
 	for _, tag := range tags {
 		var (
-			attribute dbkit.JSON
+			attribute dbtype.JSON
 			value     string
 		)
 		if attribute, err = interpolateAttribute(tag.Attributes, data); err != nil {
@@ -209,7 +209,7 @@ func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, er
 	return p.URLStoreServer.DumpTree(), nil
 }
 
-func interpolateAttribute(ori dbkit.JSON, data interface{}) (interpolated dbkit.JSON, err error) {
+func interpolateAttribute(ori dbtype.JSON, data interface{}) (interpolated dbtype.JSON, err error) {
 	var (
 		tmpl *mario.Template
 		buf  bytes.Buffer

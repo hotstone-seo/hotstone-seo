@@ -6,15 +6,12 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typreadme"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
-	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
 var (
 	application = app.New()
 
 	readme = typreadme.New()
-
-	server = typserver.New()
 
 	redis = typredis.New()
 
