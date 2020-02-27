@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Table, Divider, Button, Popconfirm,
 } from 'antd';
-import { format, formatDistance } from 'date-fns';
+import { format } from 'date-fns';
 import { fetchRules } from 'api/rule';
 import { getDataSource } from 'api/datasource';
 import { useTableFilterProps } from '../../hooks/useTableFilterProps';
