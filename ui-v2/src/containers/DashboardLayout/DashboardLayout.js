@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import { Layout, Menu } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
-import HeaderMenu from './HeaderMenu';
 import routes from 'routes';
+import HeaderMenu from './HeaderMenu';
 import styles from './DashboardLayout.module.css';
 
 const { Header, Content, Sider } = Layout;
@@ -34,7 +34,7 @@ function DashboardLayout(props) {
         <Header className={styles.header} style={{ padding: 0 }}>
           {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
             className: styles.trigger,
-            onClick: () => { setCollapsed(!collapsed) },
+            onClick: () => { setCollapsed(!collapsed); },
           })}
           <div className={styles.headerRight}>
             <HeaderMenu />
@@ -42,17 +42,15 @@ function DashboardLayout(props) {
         </Header>
         <Content className={styles.content}>
           <Switch>
-            {routes.map((route, idx) => {
-              return route.component ? (
-                <Route
-                  key={idx}
-                  path={route.path}
-                  exact={route.exact}
-                  name={route.name}
-                  render={props => <route.component {...props} />}
-                />
-              ) : null;
-            })}
+            {routes.map((route, idx) => (route.component ? (
+              <Route
+                key={idx}
+                path={route.path}
+                exact={route.exact}
+                name={route.name}
+                render={(props) => <route.component {...props} />}
+              />
+            ) : null))}
           </Switch>
         </Content>
       </Layout>

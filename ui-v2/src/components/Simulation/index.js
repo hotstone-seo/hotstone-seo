@@ -1,3 +1,3 @@
-import RawHtmlPreview from "./RawHtmlPreview";
+import RawHtmlPreview from './RawHtmlPreview';
 
 export { RawHtmlPreview };

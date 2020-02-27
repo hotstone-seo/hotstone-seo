@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState } from 'react';
 
 const PageSizeMultiplierHack = 2;
 
@@ -8,11 +8,11 @@ export function useTablePaginationNormalizedListData(pagination, listData) {
   const [listNormalizedData, setListNormalizedData] = useState(listData);
 
   return useMemo(() => {
-    var normalizedListData = listData;
+    let normalizedListData = listData;
     if (listData.length / pagination.pageSize > PageSizeMultiplierHack - 1) {
       normalizedListData = listData.slice(
         0,
-        pagination.pageSize - listData.length
+        pagination.pageSize - listData.length,
       );
     }
 

@@ -1,5 +1,5 @@
-import React from "react";
-import { Statistic, Card } from "antd";
+import React from 'react';
+import { Statistic, Card } from 'antd';
 
 function CounterCard({ counter, label }) {
   return (

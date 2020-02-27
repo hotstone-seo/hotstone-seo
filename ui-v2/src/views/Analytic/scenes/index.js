@@ -1,3 +1,3 @@
-import ViewAnalytics from "./ViewAnalytics";
+import ViewAnalytics from './ViewAnalytics';
 
 export { ViewAnalytics };

@@ -1,8 +1,8 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
-import { PageHeader } from "antd";
-import { ViewAnalytics } from "./scenes";
-import styles from "./Analytic.module.css";
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import { PageHeader } from 'antd';
+import { ViewAnalytics } from './scenes';
+import styles from './Analytic.module.css';
 
 function Analytic({ match }) {
   return (
@@ -17,7 +17,7 @@ function Analytic({ match }) {
           <Route
             exact
             path={match.url}
-            render={props => <ViewAnalytics {...props} />}
+            render={(props) => <ViewAnalytics {...props} />}
           />
         </Switch>
       </div>

@@ -1,8 +1,8 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
-import { PageHeader } from "antd";
-import { SimulationPage } from "./scenes";
-import styles from "./Simulation.module.css";
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import { PageHeader } from 'antd';
+import { SimulationPage } from './scenes';
+import styles from './Simulation.module.css';
 
 function Simulation({ match }) {
   return (
@@ -17,7 +17,7 @@ function Simulation({ match }) {
           <Route
             exact
             path={match.url}
-            render={props => <SimulationPage {...props} />}
+            render={(props) => <SimulationPage {...props} />}
           />
         </Switch>
       </div>

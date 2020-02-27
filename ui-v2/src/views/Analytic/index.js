@@ -1,3 +1,3 @@
-import Analytic from "./Analytic";
+import Analytic from './Analytic';
 
 export default Analytic;

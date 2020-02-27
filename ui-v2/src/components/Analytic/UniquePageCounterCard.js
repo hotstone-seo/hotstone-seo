@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
-import CounterCard from "./CounterCard";
-import useInterval from "@use-hooks/interval";
-import { fetchCountUniquePage } from "api/metric";
+import React, { useState, useEffect, useCallback } from 'react';
+import useInterval from '@use-hooks/interval';
+import { fetchCountUniquePage } from 'api/metric';
+import CounterCard from './CounterCard';
 
 function UniquePageCounterCard({ ruleID }) {
   const [countUniquePage, setCountUniquePage] = useState(0);
@@ -10,10 +10,10 @@ function UniquePageCounterCard({ ruleID }) {
   const fetchData = useCallback(() => {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
     fetchCountUniquePage({ params: queryParm })
-      .then(data => {
+      .then((data) => {
         setCountUniquePage(data.count);
       })
-      .catch(error => {
+      .catch((error) => {
         setError(error);
       });
   }, [ruleID, setCountUniquePage, setError]);

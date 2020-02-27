@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
-import CounterCard from "./CounterCard";
-import useInterval from "@use-hooks/interval";
-import { fetchCountHit } from "api/metric";
+import React, { useState, useEffect, useCallback } from 'react';
+import useInterval from '@use-hooks/interval';
+import { fetchCountHit } from 'api/metric';
+import CounterCard from './CounterCard';
 
 function HitCounterCard({ ruleID }) {
   const [countHit, setCountHit] = useState(0);
@@ -10,10 +10,10 @@ function HitCounterCard({ ruleID }) {
   const fetchData = useCallback(() => {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
     fetchCountHit({ params: queryParm })
-      .then(data => {
+      .then((data) => {
         setCountHit(data.count);
       })
-      .catch(error => {
+      .catch((error) => {
         setError(error);
       });
   }, [ruleID, setCountHit, setError]);

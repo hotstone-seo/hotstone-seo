@@ -1,8 +1,8 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
-import { PageHeader } from "antd";
-import { ViewMismatchRules } from "./scenes";
-import styles from "./MismatchRule.module.css";
+import React from 'react';
+import { Switch, Route } from 'react-router-dom';
+import { PageHeader } from 'antd';
+import { ViewMismatchRules } from './scenes';
+import styles from './MismatchRule.module.css';
 
 function MismatchRule({ match }) {
   return (
@@ -17,7 +17,7 @@ function MismatchRule({ match }) {
           <Route
             exact
             path={match.url}
-            render={props => <ViewMismatchRules {...props} />}
+            render={(props) => <ViewMismatchRules {...props} />}
           />
         </Switch>
       </div>
