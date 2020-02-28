@@ -7,7 +7,9 @@ const client = axios.create({
 client.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error(error);
+    if (error.status !== 401) {
+      return Promise.reject(error || 'Network error.Failed to connect API');
+    }
     if (error.response) {
       const {
         data: { message },
