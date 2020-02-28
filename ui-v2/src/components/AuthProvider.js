@@ -1,13 +1,13 @@
-import React from "react";
-import AuthAPI, { register } from "../api/auth";
-import Cookies from "js-cookie";
-import jwt from "jsonwebtoken";
-import _ from "lodash";
+import React from 'react';
+import Cookies from 'js-cookie';
+import jwt from 'jsonwebtoken';
+import _ from 'lodash';
+import AuthAPI, { register } from '../api/auth';
 
 const AuthContext = React.createContext();
 
 const loadUserFromCookie = () => {
-  const token = Cookies.get("token");
+  const token = Cookies.get('token');
   console.log(`TOKEN: ${token}`);
 
   if (_.isEmpty(token)) {
@@ -18,7 +18,7 @@ const loadUserFromCookie = () => {
   const tokenDecoded = jwt.decode(token);
   const user = {
     email: tokenDecoded.email,
-    picture: tokenDecoded.picture
+    picture: tokenDecoded.picture,
   };
 
   console.log(user);
@@ -35,26 +35,26 @@ function AuthProvider(props) {
 
   const login = (email, password) => {
     if (!currentUser) {
-      return AuthAPI.login(email, password).then(user => {
+      return AuthAPI.login(email, password).then((user) => {
         setCurrentUser(user);
       });
-    } else {
-      throw new Error("Error login: another user already logged in");
     }
+    throw new Error('Error login: another user already logged in');
   };
   const logout = () => {
     if (currentUser) {
       return AuthAPI.logout().then(() => {
         setCurrentUser(null);
       });
-    } else {
-      throw new Error("Error logout: there's no user currently logged in");
     }
+    throw new Error("Error logout: there's no user currently logged in");
   };
 
   return (
     <AuthContext.Provider
-      value={{ currentUser, login, logout, register }}
+      value={{
+        currentUser, login, logout, register,
+      }}
       {...props}
     />
   );
@@ -63,7 +63,7 @@ function AuthProvider(props) {
 function useAuth() {
   const context = React.useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

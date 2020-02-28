@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDOMServer from 'react-dom/server';
 import {
   Table, Button, Popconfirm, Divider, List,
 } from 'antd';

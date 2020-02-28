@@ -1,12 +1,16 @@
-import React, { useEffect, useMemo } from "react";
-import { useTable, useSortBy, useFilters, usePagination } from "react-table";
-import { useTokenPagination } from "react-table/src/utility-hooks/useTokenPagination";
-import { fetchMismatched } from "api/metric";
-import _ from "lodash";
+import React, { useEffect, useMemo } from 'react';
+import {
+  useTable, useSortBy, useFilters, usePagination,
+} from 'react-table';
+import { useTokenPagination } from 'react-table/src/utility-hooks/useTokenPagination';
+import { fetchMismatched } from 'api/metric';
+import _ from 'lodash';
 
 // Define a default UI for filtering
 function DefaultColumnFilter({ column: props }) {
-  const { Header, filterValue, preFilteredRows, setFilter } = props;
+  const {
+    Header, filterValue, preFilteredRows, setFilter,
+  } = props;
 
   // console.log("@@@ PROPS: ", props);
 
@@ -14,9 +18,9 @@ function DefaultColumnFilter({ column: props }) {
 
   return (
     <input
-      value={filterValue || ""}
-      onChange={e => {
-        console.log("e.target.value: ", e.target.value);
+      value={filterValue || ''}
+      onChange={(e) => {
+        console.log('e.target.value: ', e.target.value);
         setFilter(e.target.value);
       }}
       placeholder={`Search ${Header}`}
@@ -31,14 +35,14 @@ function Table({
   loading,
   pageSize,
   setPageSize,
-  initialSortBy
+  initialSortBy,
 }) {
   const defaultColumn = useMemo(
     () => ({
       // Let's set up our default Filter UI
-      Filter: DefaultColumnFilter
+      Filter: DefaultColumnFilter,
     }),
-    []
+    [],
   );
 
   const props = useTable(
@@ -46,9 +50,9 @@ function Table({
       columns,
       data,
       defaultColumn,
-      initialState: { pageIndex: 0, pageSize: pageSize, sortBy: initialSortBy }, // Pass our hoisted table state
+      initialState: { pageIndex: 0, pageSize, sortBy: initialSortBy }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
-      manualSortBy: true
+      manualSortBy: true,
       // hook that we'll handle our own data fetching
     },
 
@@ -56,7 +60,7 @@ function Table({
 
     useSortBy,
     // usePagination,
-    useTokenPagination
+    useTokenPagination,
   );
 
   const {
@@ -75,13 +79,13 @@ function Table({
     canNextPage,
     resetPagination,
 
-    state: { pageIndex, sortBy, filters }
+    state: { pageIndex, sortBy, filters },
   } = props;
 
-  console.log("useTokenPagination props: ", props);
+  console.log('useTokenPagination props: ', props);
 
   useEffect(() => {
-    console.log("!!! FILTERS: ", filters);
+    console.log('!!! FILTERS: ', filters);
   }, [filters]);
 
   // Listen for changes in pagination and use the state to fetch our new data
@@ -92,7 +96,7 @@ function Table({
       pageToken,
       setNextPageToken,
       sortBy,
-      filters
+      filters,
     });
   }, [
     fetchData,
@@ -100,7 +104,7 @@ function Table({
     pageSize,
     pageToken,
     setNextPageToken,
-    sortBy
+    sortBy,
     // filters
   ]);
 
@@ -117,43 +121,41 @@ function Table({
               sortBy,
               filters,
               canNextPage,
-              canPreviousPage
+              canPreviousPage,
             },
             null,
-            2
+            2,
           )}
         </code>
       </pre>
       <table {...getTableProps()}>
         <thead>
-          {headerGroups.map(headerGroup => (
+          {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
+              {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render("Header")}
+                  {column.render('Header')}
                   <span>
                     {column.isSorted
                       ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ''}
                   </span>
-                  <div>{column.canFilter ? column.render("Filter") : null}</div>
+                  <div>{column.canFilter ? column.render('Filter') : null}</div>
                 </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
+          {rows.map((row) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  );
-                })}
+                {row.cells.map((cell) => (
+                  <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                ))}
               </tr>
             );
           })}
@@ -165,20 +167,23 @@ function Table({
           </tr>
         </tbody>
       </table>
-      {/* 
-        Pagination can be built however you'd like. 
+      {/*
+        Pagination can be built however you'd like.
         This is just a very basic UI implementation:
       */}
       <div className="pagination">
         <button onClick={() => resetPagination()} disabled={!canPreviousPage}>
-          {"Latest"}
-        </button>{" "}
+          Latest
+        </button>
+        {' '}
         <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {"Prev"}
-        </button>{" "}
+          Prev
+        </button>
+        {' '}
         <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {"Next"}
-        </button>{" "}
+          Next
+        </button>
+        {' '}
       </div>
     </>
   );
@@ -188,25 +193,25 @@ function ViewMismatchRules() {
   const columns = React.useMemo(
     () => [
       {
-        Header: "URL",
-        accessor: "request_path",
+        Header: 'URL',
+        accessor: 'request_path',
         disableSortBy: true,
-        disableFilters: true
+        disableFilters: true,
       },
       {
-        Header: "Since",
-        accessor: "since",
+        Header: 'Since',
+        accessor: 'since',
         disableSortBy: true,
-        disableFilters: true
+        disableFilters: true,
       },
       {
-        Header: "Count",
-        accessor: "count",
+        Header: 'Count',
+        accessor: 'count',
         disableSortBy: true,
-        disableFilters: true
-      }
+        disableFilters: true,
+      },
     ],
-    []
+    [],
   );
 
   // We'll start our table without any data
@@ -215,15 +220,15 @@ function ViewMismatchRules() {
   const [loading, setLoading] = React.useState(false);
   const fetchIdRef = React.useRef(0);
 
-  const initialSortBy = useMemo(() => {
-    return [
-      { id: "since", desc: true }
-      // { id: "count", desc: true } // '-count' as next_key
-    ];
-  }, []);
+  const initialSortBy = useMemo(() => [
+    { id: 'since', desc: true },
+    // { id: "count", desc: true } // '-count' as next_key
+  ], []);
 
   const fetchData = React.useCallback(
-    ({ pageSize, pageIndex, pageToken, setNextPageToken, sortBy, filters }) => {
+    ({
+      pageSize, pageIndex, pageToken, setNextPageToken, sortBy, filters,
+    }) => {
       // // This will get called when the table needs new data
       // // You could fetch your data from literally anywhere,
       // // even a server. But for this example, we'll just fake it.
@@ -255,25 +260,25 @@ function ViewMismatchRules() {
       // }
 
       console.log(
-        "PAGE_INDEX: ",
+        'PAGE_INDEX: ',
         pageIndex,
-        " PAGE_TOKEN: ",
+        ' PAGE_TOKEN: ',
         pageToken,
-        " SET_NEXT_PAGE_TOKENB: ",
-        setNextPageToken
+        ' SET_NEXT_PAGE_TOKENB: ',
+        setNextPageToken,
       );
-      const nextKey = { id: "count", desc: true };
+      const nextKey = { id: 'count', desc: true };
       const queryParam = buildQueryParam(
         pageSize,
         sortBy,
         filters,
         nextKey,
-        pageToken
+        pageToken,
       );
       // queryParam["_next_key"] = "-count";
-      fetchMismatched({ params: queryParam }).then(data => {
-        console.log("$$$ DATA: ", data);
-        console.log("$$$ queryParam: ", queryParam);
+      fetchMismatched({ params: queryParam }).then((data) => {
+        console.log('$$$ DATA: ', data);
+        console.log('$$$ queryParam: ', queryParam);
 
         if (!_.isEmpty(data)) {
           const lastRow = data[data.length - 1];
@@ -285,7 +290,7 @@ function ViewMismatchRules() {
         setData(data);
       });
     },
-    []
+    [],
   );
 
   return (
@@ -304,9 +309,9 @@ function ViewMismatchRules() {
 export default ViewMismatchRules;
 
 function createPageToken(lastRow, sortBy, nextKey) {
-  var pageToken = [];
+  const pageToken = [];
   sortBy.map(({ id, desc }) => {
-    pageToken.push({ id: id, desc: desc, val: lastRow[id] });
+    pageToken.push({ id, desc, val: lastRow[id] });
   });
 
   pageToken.push({ ...nextKey, val: lastRow[nextKey.id] });
@@ -314,29 +319,29 @@ function createPageToken(lastRow, sortBy, nextKey) {
 }
 
 function buildQueryParam(pageSize, sortBy, filters, nextKey, pageToken) {
-  console.log(">>> pageSize: ", pageSize);
-  console.log(">>> sortBy: ", sortBy);
-  console.log(">>> filters: ", filters);
+  console.log('>>> pageSize: ', pageSize);
+  console.log('>>> sortBy: ', sortBy);
+  console.log('>>> filters: ', filters);
 
-  var queryParam = {};
+  const queryParam = {};
 
   sortBy.map(({ id, desc }) => {
-    const orderSign = desc ? "-" : "";
-    var _sort = queryParam["_sort"];
-    _sort = (_sort == undefined ? "" : `${_sort},`) + `${orderSign}${id}`;
-    queryParam["_sort"] = _sort;
+    const orderSign = desc ? '-' : '';
+    let { _sort } = queryParam;
+    _sort = `${_sort == undefined ? '' : `${_sort},`}${orderSign}${id}`;
+    queryParam._sort = _sort;
   });
 
   if (!_.isEmpty(nextKey)) {
-    const orderSign = nextKey.desc ? "-" : "";
-    queryParam["_next_key"] = `${orderSign}${nextKey.id}`;
+    const orderSign = nextKey.desc ? '-' : '';
+    queryParam._next_key = `${orderSign}${nextKey.id}`;
   }
 
   if (!_.isEmpty(pageToken)) {
     pageToken.map(({ id, desc, val }) => {
-      var _next = queryParam["_next"];
-      _next = (_next == undefined ? "" : `${_next},`) + `${val}`;
-      queryParam["_next"] = _next;
+      let { _next } = queryParam;
+      _next = `${_next == undefined ? '' : `${_next},`}${val}`;
+      queryParam._next = _next;
     });
   }
 
@@ -346,8 +351,8 @@ function buildQueryParam(pageSize, sortBy, filters, nextKey, pageToken) {
   //   }
   // });
 
-  queryParam["_limit"] = pageSize;
+  queryParam._limit = pageSize;
 
-  console.log(">>> queryParam: ", queryParam);
+  console.log('>>> queryParam: ', queryParam);
   return queryParam;
 }

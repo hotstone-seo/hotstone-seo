@@ -1,3 +1,3 @@
-import SimulationPage from "./SimulationPage";
+import SimulationPage from './SimulationPage';
 
 export { SimulationPage };

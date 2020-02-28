@@ -1,56 +1,56 @@
-import React from "react";
+import React from 'react';
 import {
   HomeOutlined,
   FormOutlined,
   DatabaseOutlined,
   TagsOutlined,
   AreaChartOutlined,
-  PlayCircleOutlined
-} from "@ant-design/icons";
+  PlayCircleOutlined,
+} from '@ant-design/icons';
 
-const Rule = React.lazy(() => import("views/Rule"));
-const MismatchRule = React.lazy(() => import("views/MismatchRule"));
-const DataSource = React.lazy(() => import("views/DataSource"));
-const Analytic = React.lazy(() => import("views/Analytic"));
-const Simulation = React.lazy(() => import("views/Simulation"));
+const Rule = React.lazy(() => import('views/Rule'));
+const MismatchRule = React.lazy(() => import('views/MismatchRule'));
+const DataSource = React.lazy(() => import('views/DataSource'));
+const Analytic = React.lazy(() => import('views/Analytic'));
+const Simulation = React.lazy(() => import('views/Simulation'));
 
 const routes = [
   {
-    path: "/",
+    path: '/',
     exact: true,
-    name: "Home",
-    icon: HomeOutlined
+    name: 'Home',
+    icon: HomeOutlined,
   },
   {
-    path: "/rules",
-    name: "Rules",
+    path: '/rules',
+    name: 'Rules',
     component: Rule,
-    icon: FormOutlined
+    icon: FormOutlined,
   },
   {
-    path: "/datasources",
-    name: "Data Sources",
+    path: '/datasources',
+    name: 'Data Sources',
     component: DataSource,
-    icon: DatabaseOutlined
+    icon: DatabaseOutlined,
   },
   {
-    path: "/mismatch-rule",
-    name: "Mismatch Rule",
+    path: '/mismatch-rule',
+    name: 'Mismatch Rule',
     component: MismatchRule,
-    icon: TagsOutlined
+    icon: TagsOutlined,
   },
   {
-    path: "/analytic",
-    name: "Analytic",
+    path: '/analytic',
+    name: 'Analytic',
     component: Analytic,
-    icon: AreaChartOutlined
+    icon: AreaChartOutlined,
   },
   {
-    path: "/simulation",
-    name: "Simulation",
+    path: '/simulation',
+    name: 'Simulation',
     component: Simulation,
-    icon: PlayCircleOutlined
-  }
+    icon: PlayCircleOutlined,
+  },
 ];
 
 export default routes;

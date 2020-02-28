@@ -1,3 +1,3 @@
-import ViewMismatchRules from "./ViewMismatchRules";
+import ViewMismatchRules from './ViewMismatchRules';
 
 export { ViewMismatchRules };

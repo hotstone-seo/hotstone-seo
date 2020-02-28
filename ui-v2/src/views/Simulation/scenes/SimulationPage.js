@@ -1,28 +1,30 @@
-import React from "react";
-import { Form, Input, Button, Row, Col, Card, Alert, Select } from "antd";
-import { Machine, assign } from "xstate";
-import { useMachine } from "@xstate/react";
-import { Link } from "react-router-dom";
-import _ from "lodash";
-import parse from "url-parse";
+import React from 'react';
+import {
+  Form, Input, Button, Row, Col, Card, Alert, Select,
+} from 'antd';
+import { Machine, assign } from 'xstate';
+import { useMachine } from '@xstate/react';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import parse from 'url-parse';
 
-import { match, fetchTags } from "api/provider";
-import { RawHtmlPreview } from "components/Simulation";
+import { match, fetchTags } from 'api/provider';
+import { RawHtmlPreview } from 'components/Simulation';
 
-import locales from "locales";
+import locales from 'locales';
 
 const { Option } = Select;
 
 const pageMachine = Machine({
-  id: "simulation",
-  initial: "idle",
+  id: 'simulation',
+  initial: 'idle',
   context: {
     url: null,
     locale: process.env.REACT_APP_LOCALE,
     listLocale: locales,
     matchResp: null,
     matchError: null,
-    pageError: null
+    pageError: null,
   },
   states: {
     idle: {},
@@ -30,49 +32,49 @@ const pageMachine = Machine({
     submitting: {
       entry: assign({
         matchResp: null,
-        matchError: null
+        matchError: null,
       }),
       invoke: {
-        src: context => matchThenGetTags(context.locale, context.url),
+        src: (context) => matchThenGetTags(context.locale, context.url),
         onDone: {
-          target: "success",
+          target: 'success',
           actions: assign({
             matchResp: (context, event) => {
-              console.log("RESP: ", event);
+              console.log('RESP: ', event);
               return event.data;
-            }
-          })
+            },
+          }),
         },
         onError: {
-          target: "failed",
+          target: 'failed',
           actions: assign({
             matchError: (context, event) => {
-              console.log("ERR :", event);
+              console.log('ERR :', event);
               return event.data;
-            }
-          })
-        }
-      }
+            },
+          }),
+        },
+      },
     },
     success: {},
     failed: {},
-    pageFailed: {}
+    pageFailed: {},
   },
   on: {
     SUBMIT: {
-      target: ".submitting",
+      target: '.submitting',
       actions: assign({
         url: (context, event) => event.url,
-        locale: (context, event) => event.locale
-      })
-    }
-  }
+        locale: (context, event) => event.locale,
+      }),
+    },
+  },
 });
 
 async function matchThenGetTags(locale, url) {
   const rule = await match(url);
   if (_.isEmpty(rule)) {
-    throw new Error("Not matched");
+    throw new Error('Not matched');
   }
   const tags = await fetchTags(rule, locale);
   const data = { rule, tags };
@@ -88,7 +90,7 @@ function SimulationPage() {
   const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
 
-    send("SUBMIT", { locale, url: urlObj.pathname });
+    send('SUBMIT', { locale, url: urlObj.pathname });
   };
 
   return (
@@ -104,38 +106,33 @@ function SimulationPage() {
             >
               <Form.Item
                 name="url"
-                rules={[{ required: true, message: "Please input URL" }]}
-                style={{ width: "60%" }}
+                rules={[{ required: true, message: 'Please input URL' }]}
+                style={{ width: '60%' }}
               >
                 <Input placeholder="URL" />
               </Form.Item>
               <Form.Item
                 name="locale"
-                rules={[{ required: true, message: "Please select locale" }]}
+                rules={[{ required: true, message: 'Please select locale' }]}
               >
-                <Select
-                // defaultValue={current.context.locale}
-                // onChange={onGenderChange}
-                >
-                  {current.context.listLocale.map((locale, index) => {
-                    return (
-                      <Option key={index} value={locale}>
-                        {locale}
-                      </Option>
-                    );
-                  })}
+                <Select>
+                  {current.context.listLocale.map((locale, index) => (
+                    <Option key={index} value={locale}>
+                      {locale}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
-              <Form.Item shouldUpdate={true}>
+              <Form.Item shouldUpdate>
                 {() => (
                   <Button
                     type="primary"
                     htmlType="submit"
                     disabled={
                       // !form.isFieldsTouched(true) ||
-                      isLoading(current) ||
-                      current.matches("pageFailed") ||
-                      form
+                      isLoading(current)
+                      || current.matches('pageFailed')
+                      || form
                         .getFieldsError()
                         .filter(({ errors }) => errors.length).length
                     }
@@ -163,35 +160,36 @@ function SimulationPage() {
 function renderIfSuccess(matchResp) {
   if (matchResp) {
     const { rule_id, path_param } = matchResp.rule;
-    const tags = matchResp.tags;
+    const { tags } = matchResp;
     return (
       <Card>
         <Alert
           type="success"
-          message={
+          message={(
             <>
               Matched (
-              <Link to={`/rule-detail/?id=${rule_id}`}>Rule Detail</Link>)
+              <Link to={`/rule-detail/?id=${rule_id}`}>Rule Detail</Link>
+              )
             </>
-          }
-          description={
+          )}
+          description={(
             <>
               {!_.isEmpty(path_param) && (
                 <div>
                   <div>Path params:</div>
                   <ul>
-                    {Object.entries(path_param).map(([key, value]) => {
-                      return (
-                        <li key={key}>
-                          {key}: {value}
-                        </li>
-                      );
-                    })}
+                    {Object.entries(path_param).map(([key, value]) => (
+                      <li key={key}>
+                        {key}
+                        :
+                        {value}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )}
             </>
-          }
+          )}
         />
         <br />
         <strong>Raw HTML Tags Preview</strong>
@@ -231,7 +229,7 @@ function renderIfPageError(pageError) {
 }
 
 function isLoading(current) {
-  return current.matches("init") || current.matches("submitting");
+  return current.matches('init') || current.matches('submitting');
 }
 
 export default SimulationPage;

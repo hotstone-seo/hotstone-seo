@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
-import { Menu, Dropdown, Button } from "antd";
-import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
-import { useAuth } from "../../components/AuthProvider";
-import urljoin from "url-join";
+import React, { useRef } from 'react';
+import { Menu, Dropdown, Button } from 'antd';
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import urljoin from 'url-join';
+import { useAuth } from '../../components/AuthProvider';
 
 function HeaderMenu() {
   const auth = useAuth();
@@ -31,7 +31,7 @@ function HeaderMenu() {
           {email}
         </Button>
       </Dropdown>
-      <form ref={logoutForm} action={"/api/logout"} method="post"></form>
+      <form ref={logoutForm} action="/api/logout" method="post" />
     </>
   );
 }

@@ -2,7 +2,7 @@ package typical
 
 import (
 	"github.com/typical-go/typical-go/pkg/typapp"
-	"github.com/typical-go/typical-go/pkg/typbuild"
+	"github.com/typical-go/typical-go/pkg/typbuildtool"
 	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-go/pkg/typcore"
 )
@@ -11,21 +11,19 @@ import (
 var Descriptor = typcore.Descriptor{
 	Name:    "hotstone-seo",
 	Version: "0.0.1",
-	Package: "github.com/hotstone-seo/hotstone-seo",
 
-	App: typapp.New(application).
-		WithDependency(
-			server,
+	App: typapp.New(_server).
+		AppendDependency(
 			redis,
 			postgres,
 		).
-		WithPrepare(
+		AppendPreparer(
 			redis,
 			postgres,
 		),
 
-	Build: typbuild.New().
-		WithCommands(
+	BuildTool: typbuildtool.New().
+		AppendCommander(
 			docker,
 			readme,
 			postgres,
@@ -34,8 +32,7 @@ var Descriptor = typcore.Descriptor{
 
 	Configuration: typcfg.New().
 		WithConfigure(
-			application,
-			server,
+			_server,
 			redis,
 			postgres,
 		),

@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Table, Divider, Button, Popconfirm, Row, Col } from "antd";
-import { format, formatDistance } from "date-fns";
-import { useTableFilterProps } from "hooks/useTableFilterProps";
+import React, { useState, useEffect } from 'react';
+import {
+  Table, Divider, Button, Popconfirm, Row, Col,
+} from 'antd';
+import { format, formatDistance } from 'date-fns';
+import { useTableFilterProps } from 'hooks/useTableFilterProps';
 import {
   buildQueryParam,
   onTableChange,
-  createPageToken
-} from "utils/pagination_cursor";
-import { fetchMismatched } from "api/metric";
-import { useTokenPagination } from "hooks/useTokenPagination";
-import _ from "lodash";
+  createPageToken,
+} from 'utils/pagination_cursor';
+import { fetchMismatched } from 'api/metric';
+import { useTokenPagination } from 'hooks/useTokenPagination';
+import _ from 'lodash';
 
-const formatDate = since => {
+const formatDate = (since) => {
   const sinceDate = new Date(since);
 
-  const full = format(sinceDate, "dd/MM/yyyy - HH:mm");
+  const full = format(sinceDate, 'dd/MM/yyyy - HH:mm');
   const relative = formatDistance(sinceDate, new Date());
 
   return `${full} (${relative} ago)`;
@@ -26,9 +28,9 @@ function ViewMismatchRules(props) {
   const [pageSize, setPageSize] = useState(5);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({
-    order: "descend",
-    field: "since",
-    columnKey: "since"
+    order: 'descend',
+    field: 'since',
+    columnKey: 'since',
   });
 
   const [listData, setListData] = useState([]);
@@ -42,7 +44,7 @@ function ViewMismatchRules(props) {
     nextPage,
     canPreviousPage,
     canNextPage,
-    resetPagination
+    resetPagination,
   } = instTokenPagination;
 
   useEffect(() => {
@@ -52,13 +54,13 @@ function ViewMismatchRules(props) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const nextKey = { id: "count", desc: true };
+        const nextKey = { id: 'count', desc: true };
         const queryParam = buildQueryParam(
           pageSize,
           filteredInfo,
           sortedInfo,
           nextKey,
-          pageToken
+          pageToken,
         );
 
         const listData = await fetchMismatched({ params: queryParam });
@@ -73,7 +75,7 @@ function ViewMismatchRules(props) {
           previousPage();
         }
       } catch (err) {
-        console.log("ERR: ", err);
+        console.log('ERR: ', err);
       }
     }
 
@@ -82,30 +84,30 @@ function ViewMismatchRules(props) {
 
   const columns = [
     {
-      title: "URL",
-      dataIndex: "url",
-      key: "url",
+      title: 'URL',
+      dataIndex: 'url',
+      key: 'url',
       // width: "30%",
       sorter: false,
-      sortOrder: sortedInfo.columnKey === "url" && sortedInfo.order,
-      ...useTableFilterProps("url")
+      sortOrder: sortedInfo.columnKey === 'url' && sortedInfo.order,
+      ...useTableFilterProps('url'),
     },
 
     {
-      title: "Since",
-      dataIndex: "since",
-      key: "since",
+      title: 'Since',
+      dataIndex: 'since',
+      key: 'since',
       sorter: false,
-      sortOrder: sortedInfo.columnKey === "since" && sortedInfo.order,
-      render: (text, record) => <div>{formatDate(record.since)}</div>
+      sortOrder: sortedInfo.columnKey === 'since' && sortedInfo.order,
+      render: (text, record) => <div>{formatDate(record.since)}</div>,
     },
     {
-      title: "Count",
-      dataIndex: "count",
-      key: "count",
+      title: 'Count',
+      dataIndex: 'count',
+      key: 'count',
       sorter: false,
-      sortOrder: sortedInfo.columnKey === "count" && sortedInfo.order
-    }
+      sortOrder: sortedInfo.columnKey === 'count' && sortedInfo.order,
+    },
   ];
 
   return (
@@ -143,14 +145,14 @@ function ViewMismatchRules(props) {
             onClick={() => resetPagination()}
             disabled={!canPreviousPage}
           >
-            {"Latest"}
+            Latest
           </Button>
           <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
-            {"Prev"}
+            Prev
           </Button>
           {` Page: ${pageIndex + 1} `}
           <Button onClick={() => nextPage()} disabled={!canNextPage}>
-            {"Next"}
+            Next
           </Button>
         </Col>
       </Row>

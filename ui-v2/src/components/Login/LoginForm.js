@@ -1,7 +1,9 @@
-import React, {useRef} from "react";
-import PropTypes from "prop-types";
-import { Form, Input, Checkbox, Button, Row, Divider, Typography } from "antd";
-import { GoogleOutlined } from "@ant-design/icons";
+import React, { useRef } from 'react';
+import PropTypes from 'prop-types';
+import {
+  Form, Input, Checkbox, Button, Row, Divider, Typography,
+} from 'antd';
+import { GoogleOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -20,7 +22,7 @@ function LoginForm({ login }) {
         <Form.Item
           label="Email"
           name="email"
-          rules={[{ required: true, message: "Please input your email!" }]}
+          rules={[{ required: true, message: 'Please input your email!' }]}
         >
           <Input />
         </Form.Item>
@@ -28,7 +30,7 @@ function LoginForm({ login }) {
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: "Please input your password!" }]}
+          rules={[{ required: true, message: 'Please input your password!' }]}
         >
           <Input.Password />
         </Form.Item>
@@ -59,13 +61,13 @@ function LoginForm({ login }) {
           </Row>
         </Form.Item>
       </Form>
-      <form ref={loginGoogleForm} action={"/auth/google/login"} method="post"></form>
+      <form ref={loginGoogleForm} action="/auth/google/login" method="post" />
     </>
   );
 }
 
 LoginForm.propTypes = {
-  login: PropTypes.func.isRequired
+  login: PropTypes.func.isRequired,
 };
 
 export default LoginForm;

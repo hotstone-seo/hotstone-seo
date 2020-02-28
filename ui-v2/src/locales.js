@@ -1,1 +1,1 @@
-export default ['en_US', 'id_ID']
+export default ['en_US', 'id_ID'];
