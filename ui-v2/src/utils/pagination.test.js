@@ -1,4 +1,5 @@
-import { buildQueryParam } from './pagination';
+import queryString from 'query-string';
+import { buildQueryParam, buildPagination } from './pagination';
 
 describe('buildQueryParam', () => {
   describe('pagination', () => {
@@ -27,6 +28,31 @@ describe('buildQueryParam', () => {
       const sort = { order: 'descend', field: 'url_pattern' };
       const queryParam = buildQueryParam(null, null, sort);
       expect(queryParam).toStrictEqual({ _sort: '-url_pattern' });
+    });
+  });
+});
+
+describe('buildPagination', () => {
+  describe('pagination', () => {
+    test('good case', () => {
+      const { pagination } = buildPagination(queryString.parse('_limit=6&_offset=3'));
+      expect(pagination).toStrictEqual({ current: 2, pageSize: 3, total: 6 });
+    });
+  });
+  describe('filter', () => {
+    test('good case', () => {
+      const { filter } = buildPagination(queryString.parse('name=%25fooname%25&url_pattern=%25foourl%25'));
+      expect(filter).toStrictEqual({ name: 'fooname', url_pattern: 'foourl' });
+    });
+  });
+  describe('sort', () => {
+    test('ascend', () => {
+      const { sort } = buildPagination(queryString.parse('_sort=name'));
+      expect(sort).toStrictEqual({ order: 'ascend', field: 'name' });
+    });
+    test('descend', () => {
+      const { sort } = buildPagination(queryString.parse('_sort=-url_pattern'));
+      expect(sort).toStrictEqual({ order: 'descend', field: 'url_pattern' });
     });
   });
 });

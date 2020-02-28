@@ -31,6 +31,39 @@ export const buildQueryParam = (pagination = {}, filters = {}, sorters = {}) => 
   return queryParam;
 };
 
+export const buildPagination = (queryParam = {}) => {
+  const pagination = {};
+  const filter = {};
+  const sort = {};
+
+  const {
+    _limit, _offset, _sort, ...filters
+  } = queryParam;
+
+  if (_limit && _offset) {
+    pagination.pageSize = _limit / PageSizeMultiplierHack;
+    pagination.current = (_offset / pagination.pageSize) + 1;
+    pagination.total = pagination.current * pagination.pageSize;
+  }
+
+  Object.entries(filters).forEach(([key, value]) => {
+    const [valWithoutPercent] = value.split('%').filter((x) => x);
+    filter[key] = valWithoutPercent;
+  });
+
+  if (_sort) {
+    if (_sort[0] === '-') {
+      sort.field = _sort.slice(1);
+      sort.order = 'descend';
+    } else {
+      sort.field = _sort;
+      sort.order = 'ascend';
+    }
+  }
+
+  return { pagination, filter, sort };
+};
+
 export const onTableChange = (
   setPaginationInfo,
   setFilteredInfo,
