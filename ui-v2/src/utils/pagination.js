@@ -19,7 +19,9 @@ export const buildQueryParam = (pagination, filters, sorters) => {
 
   if (!_.isEmpty(pagination)) {
     queryParam._offset = (pagination.current - 1) * pagination.pageSize;
-    queryParam._limit = pagination.pageSize * PageSizeMultiplierHack; // THIS IS A WORKAROUND if 'count' of total data is not available in backend response. If 'count' is available, limit = pageSize
+    // THIS IS A WORKAROUND if 'count' of total data is not available in backend response.
+    // If 'count' is available, limit = pageSize
+    queryParam._limit = pagination.pageSize * PageSizeMultiplierHack;
   }
 
   return queryParam;
