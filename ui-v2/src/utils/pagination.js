@@ -2,20 +2,24 @@ import _ from 'lodash';
 
 const PageSizeMultiplierHack = 2;
 
-export const buildQueryParam = (pagination, filters, sorters) => {
+export const buildQueryParam = (pagination = {}, filters = {}, sorters = {}) => {
   const queryParam = {};
 
-  const { order } = sorters;
-  if (!_.isEmpty(order)) {
-    const orderSign = order === 'descend' ? '-' : '';
-    queryParam._sort = `${orderSign}${sorters.field}`;
+  if (!_.isEmpty(sorters)) {
+    const { order } = sorters;
+    if (!_.isEmpty(order)) {
+      const orderSign = order === 'descend' ? '-' : '';
+      queryParam._sort = `${orderSign}${sorters.field}`;
+    }
   }
 
-  Object.entries(filters).forEach(([key, value]) => {
-    if (!_.isEmpty(value)) {
-      queryParam[key] = `%${value[0]}%`;
-    }
-  });
+  if (!_.isEmpty(filters)) {
+    Object.entries(filters).forEach(([key, value]) => {
+      if (!_.isEmpty(value)) {
+        queryParam[key] = `%${value}%`;
+      }
+    });
+  }
 
   if (!_.isEmpty(pagination)) {
     queryParam._offset = (pagination.current - 1) * pagination.pageSize;
