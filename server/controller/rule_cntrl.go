@@ -9,7 +9,6 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 // RuleCntrl is controller to rule entity
@@ -65,7 +64,7 @@ func (c *RuleCntrl) Create(ctx echo.Context) (err error) {
 	if err = ctx.Bind(&rule); err != nil {
 		return err
 	}
-	if err = validator.New().Struct(rule); err != nil {
+	if err = rule.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if lastInsertID, err = c.RuleService.Insert(ctx0, rule); err != nil {
@@ -101,7 +100,7 @@ func (c *RuleCntrl) Update(ctx echo.Context) (err error) {
 	if rule.ID <= 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if err = validator.New().Struct(rule); err != nil {
+	if err = rule.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if err = c.RuleService.Update(ctx0, rule); err != nil {
