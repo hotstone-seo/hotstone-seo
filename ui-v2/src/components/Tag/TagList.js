@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table, Button, Popconfirm, Divider, List,
+  Table, Button, Popconfirm, Divider, List, Tooltip
 } from 'antd';
+
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 function TagList({ tags, onEdit, onDelete }) {
   const columns = [
@@ -37,20 +39,23 @@ function TagList({ tags, onEdit, onDelete }) {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Button
-            type="link"
-            onClick={() => onEdit(record)}
-            style={{ padding: 0 }}
-          >
-            Edit
-          </Button>
+          <Tooltip title="Edit">
+            <Button
+              onClick={() => onEdit(record)}
+              icon={<EditOutlined />}
+            >
+              Edit
+            </Button>
+          </Tooltip>
           <Divider type="vertical" />
           <Popconfirm
             title="Are you sure to delete this tag?"
             placement="topRight"
             onConfirm={() => onDelete(record)}
           >
-            <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
+            <Tooltip title="Delete">
+              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+            </Tooltip>
           </Popconfirm>
         </span>
       ),
