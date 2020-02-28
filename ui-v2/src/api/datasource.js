@@ -1,6 +1,6 @@
 import client from './client';
 
-function fetchDataSources() {
+export function fetchDataSources() {
   return client.get('/data_sources')
     .then((response) => response.data)
     .catch((error) => {
@@ -8,7 +8,7 @@ function fetchDataSources() {
     });
 }
 
-function getDataSource(id) {
+export function getDataSource(id) {
   return client.get(`/data_sources/${id}`)
     .then((response) => response.data)
     .catch((error) => {
@@ -16,7 +16,7 @@ function getDataSource(id) {
     });
 }
 
-function createDataSource(dataSource) {
+export function createDataSource(dataSource) {
   return client.post('/data_sources', dataSource)
     .then((response) => response.data)
     .catch((error) => {
@@ -24,7 +24,7 @@ function createDataSource(dataSource) {
     });
 }
 
-function updateDataSource(dataSource) {
+export function updateDataSource(dataSource) {
   return client.put('/data_sources', dataSource)
     .then((response) => response.data)
     .catch((error) => {
@@ -32,17 +32,13 @@ function updateDataSource(dataSource) {
     });
 }
 
-function deleteDataSource(id) {
+export function deleteDataSource(id) {
   return client.delete(`/data_sources/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
-
-export {
-  fetchDataSources, getDataSource, createDataSource, updateDataSource, deleteDataSource,
-};
 
 const DataSourceAPI = {
   fetch: fetchDataSources,
