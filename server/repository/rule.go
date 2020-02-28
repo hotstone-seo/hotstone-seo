@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"time"
+
+	"gopkg.in/go-playground/validator.v9"
 )
 
 // Rule Entity
@@ -27,4 +29,8 @@ type RuleRepo interface {
 // NewRuleRepo return new instance of RuleRepo [constructor]
 func NewRuleRepo(impl RuleRepoImpl) RuleRepo {
 	return &impl
+}
+
+func (rule Rule) Validate() error {
+	return validator.New().Struct(rule)
 }
