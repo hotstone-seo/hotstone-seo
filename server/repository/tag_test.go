@@ -3,7 +3,7 @@ package repository_test
 import (
 	"testing"
 
-	"github.com/hotstone-seo/hotstone-seo/app/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/stretchr/testify/require"
 )
 
