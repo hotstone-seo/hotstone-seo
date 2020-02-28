@@ -5,10 +5,10 @@ import {
 import { format } from 'date-fns';
 import { fetchRules } from 'api/rule';
 import { getDataSource } from 'api/datasource';
-import { useTableFilterProps } from '../../hooks/useTableFilterProps';
-import { buildQueryParam, onTableChange } from '../../utils/pagination';
-import { useTablePaginationTotal } from '../../hooks/useTablePaginationTotal';
-import { useTablePaginationNormalizedListData } from '../../hooks/useTablePaginationNormalizedListData';
+import { useTableFilterProps } from 'hooks/useTableFilterProps';
+import { buildQueryParam, onTableChange } from 'utils/pagination';
+import { useTablePaginationTotal } from 'hooks/useTablePaginationTotal';
+import { useTablePaginationNormalizedListData } from 'hooks/useTablePaginationNormalizedListData';
 
 const defaultPagination = {
   current: 1,
