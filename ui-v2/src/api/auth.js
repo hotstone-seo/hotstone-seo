@@ -5,26 +5,26 @@ import client from 'api/client';
 // his/her credentials through a backend service. If the authentication is successful,
 // the application will store the user info until the user is logged out.
 
-function login(email, password) {
+export function login(email, password) {
   // TODO: Should be calling API, but the service is yet to be created
   return new Promise((resolve, reject) => {
     resolve({ username: 'johndoe', email: 'john@doe.com', name: 'John Doe' });
   });
 }
 
-function logout() {
+export function logout() {
   return new Promise((resolve, reject) => {
     resolve('Success!');
   });
 }
 
-function register(user) {
+export function register(user) {
   return new Promise((resolve, reject) => {
     resolve({ username: 'johndoe', email: 'john@doe.com', name: 'John Doe' });
   });
 }
 
-function googleOAuth2GetToken(holder) {
+export function googleOAuth2GetToken(holder) {
   return client
     .post(
       '/auth/google/token',
@@ -36,8 +36,6 @@ function googleOAuth2GetToken(holder) {
       throw error;
     });
 }
-
-export { login, logout, register };
 
 const AuthAPI = {
   login, logout, register, googleOAuth2GetToken,
