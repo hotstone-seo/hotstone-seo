@@ -1,11 +1,14 @@
 package server
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
 	"github.com/juju/errors"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
+	"github.com/typical-go/typical-rest-server/pkg/typserver"
 
 	log "github.com/sirupsen/logrus"
 
@@ -14,7 +17,7 @@ import (
 
 type server struct {
 	dig.In
-	*echo.Echo
+	*typserver.Server
 	config.Config
 	controller.AuthCntrl
 	controller.RuleCntrl
@@ -23,9 +26,18 @@ type server struct {
 	controller.ProviderCntrl
 	controller.CenterCntrl
 	controller.MetricsCntrl
+
+	Postgres *typpostgres.DB
+	Redis    *redis.Client
 }
 
-func (s *server) Start() error {
+func start(s server) error {
+	s.SetDebug(s.Debug)
+
+	// health check
+	s.PutHealthChecker("postgres", s.Postgres.Ping)
+	s.PutHealthChecker("redis", s.Redis.Ping().Err)
+
 	s.HTTPErrorHandler = func(err error, c echo.Context) {
 		s.DefaultHTTPErrorHandler(err, c)
 		log.Print(errors.Details(err))
@@ -53,5 +65,5 @@ func (s *server) Start() error {
 	s.CenterCntrl.Route(api)
 	s.MetricsCntrl.Route(api)
 
-	return s.Echo.Start(s.Config.Address)
+	return s.Start(s.Address)
 }

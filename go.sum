@@ -134,10 +134,14 @@ github.com/typical-go/typical-go v0.9.30 h1:3nvUwxAbIEgzJ0VgvzAUz2fBG5VcVVAV7UAQ
 github.com/typical-go/typical-go v0.9.30/go.mod h1:RS9Ja1daRu4WzqjWByyyYjIQEsJDAjSXzdIxrwPT2jc=
 github.com/typical-go/typical-go v0.9.36 h1:nKTU+GM4enr9jXYIPn0G8Jtzobts8Ufh48kGmIIZHgg=
 github.com/typical-go/typical-go v0.9.36/go.mod h1:zdUHjpZ0UxecfSWlu9RPw8OsEw5IieH5qflvgA67dCI=
+github.com/typical-go/typical-go v0.9.37 h1:fbe1CUNYG2bqSHaCfM76vBTR+0+P2AyZWKLQ0Ih4wQ8=
+github.com/typical-go/typical-go v0.9.37/go.mod h1:zdUHjpZ0UxecfSWlu9RPw8OsEw5IieH5qflvgA67dCI=
 github.com/typical-go/typical-rest-server v0.8.19 h1:yqRzuPFCmxa5VzgV/yvgbXlrN40RnCTSoWQHD3kRAHA=
 github.com/typical-go/typical-rest-server v0.8.19/go.mod h1:4NpXZ/DaIikJ37w/QwEGSktd99E0WohQPoy2ckJCCGY=
 github.com/typical-go/typical-rest-server v0.8.20 h1:i36zlIT/G3Ug/KJ5GP+PV/ltfJoc/u+TBHzDsxL9Pu0=
 github.com/typical-go/typical-rest-server v0.8.20/go.mod h1:WVL+reQCESeqEvSLbry3zt436xB8IYqnK/mb4isyDC8=
+github.com/typical-go/typical-rest-server v0.8.21 h1:YcI74POTibVL80lJW4FlzUKyns9+hB0LgRcCU7LxJAs=
+github.com/typical-go/typical-rest-server v0.8.21/go.mod h1:YbQxDmpmsR76TnrAffxWexU4gxNx1aSFpDqcdupDHiM=
 github.com/urfave/cli/v2 v2.0.0 h1:+HU9SCbu8GnEUFtIBfuUNXN39ofWViIEJIp6SURMpCg=
 github.com/urfave/cli/v2 v2.0.0/go.mod h1:SE9GqnLQmjVa0iPEY0f1w3ygNIYcIJ0OKPMoW2caLfQ=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

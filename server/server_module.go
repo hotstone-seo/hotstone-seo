@@ -2,10 +2,9 @@ package server
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/server/config"
-	"github.com/labstack/echo"
 	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-go/pkg/typdep"
-	"github.com/typical-go/typical-rest-server/pkg/serverkit"
+	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
 // Module of application
@@ -45,22 +44,20 @@ func (*Module) EntryPoint() *typdep.Invocation {
 			return err
 		}
 
-		return s.Start()
+		return start(s)
 	})
 }
 
 // Provide dependencies
 func (m *Module) Provide() []*typdep.Constructor {
 	return []*typdep.Constructor{
-		typdep.NewConstructor(func(cfg config.Config) *echo.Echo {
-			return serverkit.Create(cfg.Debug)
-		}),
+		typdep.NewConstructor(typserver.New),
 	}
 }
 
 // Destroy dependencies
 func (m *Module) Destroy() []*typdep.Invocation {
 	return []*typdep.Invocation{
-		typdep.NewInvocation(serverkit.Shutdown),
+		typdep.NewInvocation(typserver.Shutdown),
 	}
 }
