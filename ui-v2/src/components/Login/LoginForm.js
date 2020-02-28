@@ -19,9 +19,6 @@ function LoginForm({ login }) {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
       >
-
-      
-
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Row>
             <Divider type="vertical" />
