@@ -2,18 +2,16 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
-import AuthAPI, { register } from '../api/auth';
+import AuthAPI from 'api/auth';
 
 const AuthContext = React.createContext();
 
 const loadUserFromCookie = () => {
   const token = Cookies.get('token');
-  console.log(`TOKEN: ${token}`);
 
   if (_.isEmpty(token)) {
     return null;
   }
-  // console.log(jwt.decode(token));
 
   const tokenDecoded = jwt.decode(token);
   const user = {
@@ -21,17 +19,11 @@ const loadUserFromCookie = () => {
     picture: tokenDecoded.picture,
   };
 
-  console.log(user);
   return user;
 };
 
 function AuthProvider(props) {
-  // TODO: Try to get data from localStorage to initialize the state
   const [currentUser, setCurrentUser] = React.useState(loadUserFromCookie());
-
-  // React.useEffect(() => {
-  //   localStorage.setItem("currentUser", JSON.stringify(currentUser));
-  // }, [currentUser]);
 
   const login = (email, password) => {
     if (!currentUser) {
@@ -49,6 +41,8 @@ function AuthProvider(props) {
     }
     throw new Error("Error logout: there's no user currently logged in");
   };
+
+  const register = () => AuthAPI.register();
 
   return (
     <AuthContext.Provider
