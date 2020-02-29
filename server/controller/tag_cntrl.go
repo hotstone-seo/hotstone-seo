@@ -10,7 +10,6 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 // TagCntrl is controller to tag entity
@@ -37,7 +36,7 @@ func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 	if err = ctx.Bind(&tag); err != nil {
 		return err
 	}
-	if err = validator.New().Struct(tag); err != nil {
+	if err = tag.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if lastInsertID, err = c.TagService.Insert(ctx0, tag); err != nil {
@@ -114,7 +113,7 @@ func (c *TagCntrl) Update(ctx echo.Context) (err error) {
 	if tag.ID <= 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if err = validator.New().Struct(tag); err != nil {
+	if err = tag.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if err = c.TagService.Update(ctx0, tag); err != nil {

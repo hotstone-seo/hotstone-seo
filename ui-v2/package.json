@@ -10,7 +10,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@use-hooks/interval": "^1.0.1",
     "@xstate/react": "^0.8.1",
-    "antd": "^4.0.0-rc.5",
+    "antd": "^4.0.0",
     "axios": "^0.19.2",
     "date-fns": "^2.9.0",
     "http-proxy-middleware": "^1.0.0",
@@ -55,6 +55,7 @@
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.18.3",
-    "eslint-plugin-react-hooks": "^2.5.0"
+    "eslint-plugin-react-hooks": "^2.5.0",
+    "react-test-renderer": "^16.13.0"
   }
 }

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Table, Divider, Button, Popconfirm,
+  Table, Divider, Button, Popconfirm, Tooltip
 } from 'antd';
 import { format } from 'date-fns';
 import { fetchRules } from 'api/rule';
 import { getDataSource } from 'api/datasource';
-import { useTableFilterProps } from '../../hooks/useTableFilterProps';
-import { buildQueryParam, onTableChange } from '../../utils/pagination';
-import { useTablePaginationTotal } from '../../hooks/useTablePaginationTotal';
-import { useTablePaginationNormalizedListData } from '../../hooks/useTablePaginationNormalizedListData';
+import { useTableFilterProps } from 'hooks/useTableFilterProps';
+import { buildQueryParam, onTableChange } from 'utils/pagination';
+import { useTablePaginationTotal } from 'hooks/useTablePaginationTotal';
+import { useTablePaginationNormalizedListData } from 'hooks/useTablePaginationNormalizedListData';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const defaultPagination = {
   current: 1,
@@ -120,22 +121,23 @@ function RuleListV2(props) {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Button
-            type="link"
-            onClick={() => onEdit(record)}
-            style={{ padding: 0 }}
-          >
-            Edit
-          </Button>
+          <Tooltip title="Edit">
+            <Button
+              onClick={() => onEdit(record)}
+              icon={<EditOutlined />}
+            >
+              Edit
+            </Button>
+          </Tooltip>
           <Divider type="vertical" />
           <Popconfirm
             title="Are you sure to delete this rule?"
             placement="topRight"
             onConfirm={() => onDelete(record)}
           >
-            <Button type="link" danger style={{ padding: 0 }}>
-              Delete
-            </Button>
+            <Tooltip title="Delete">
+              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+            </Tooltip>
           </Popconfirm>
         </span>
       ),

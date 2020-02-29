@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table, Button, Divider, Popconfirm,
+  Table, Button, Divider, Popconfirm, Tooltip
 } from 'antd';
+
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 function RuleList(props) {
   const {
@@ -30,20 +32,23 @@ function RuleList(props) {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Button
-            type="link"
-            onClick={() => onEdit(record)}
-            style={{ padding: 0 }}
-          >
-            Edit
-          </Button>
+          <Tooltip title="Edit">
+            <Button
+              onClick={() => onEdit(record)}
+              icon={<EditOutlined />}
+            >
+              Edit
+            </Button>
+          </Tooltip>
           <Divider type="vertical" />
           <Popconfirm
             title="Are you sure to delete this rule?"
             placement="topRight"
             onConfirm={() => onDelete(record)}
           >
-            <Button type="link" danger style={{ padding: 0 }}>Delete</Button>
+            <Tooltip title="Delete">
+              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+            </Tooltip>
           </Popconfirm>
         </span>
       ),
