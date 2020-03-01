@@ -21,7 +21,7 @@ type RuleService interface {
 type RuleServiceImpl struct {
 	dig.In
 	RuleRepo    repository.RuleRepo
-	URLSyncRepo urlstore.URLStoreSyncRepo
+	URLSyncRepo urlstore.URLSyncRepo
 	repository.Transactional
 }
 
@@ -47,7 +47,7 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLStoreSync{
+	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLSync{
 		Operation:        "INSERT",
 		RuleID:           newRuleID,
 		LatestURLPattern: &rule.UrlPattern,
@@ -65,7 +65,7 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLStoreSync{
+	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLSync{
 		Operation:        "DELETE",
 		RuleID:           id,
 		LatestURLPattern: nil,
@@ -83,7 +83,7 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLStoreSync{
+	if _, err = r.URLSyncRepo.Insert(ctx, urlstore.URLSync{
 		Operation:        "UPDATE",
 		RuleID:           rule.ID,
 		LatestURLPattern: &rule.UrlPattern,

@@ -1,4 +1,4 @@
-CREATE TABLE urlstore_sync (
+CREATE TABLE url_sync (
     "version" serial PRIMARY KEY,
     operation TEXT NOT NULL,
     rule_id INTEGER NOT NULL,

@@ -11,13 +11,13 @@ import (
 // TaskManager responsible manage the task
 type TaskManager struct {
 	dig.In
-	urlstore.URLStoreServer
+	urlstore.URLService
 }
 
 // Start the task
 func (m *TaskManager) Start() (err error) {
 	c := cron.New()
-	if _, err = c.AddFunc("* * * * *", task(m.URLStoreServer.Sync)); err != nil {
+	if _, err = c.AddFunc("* * * * *", task(m.URLService.Sync)); err != nil {
 		return
 	}
 	c.Start()

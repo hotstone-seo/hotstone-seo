@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS urlstore_sync;
+DROP TABLE IF EXISTS url_sync;

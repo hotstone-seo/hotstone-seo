@@ -41,7 +41,7 @@ type ProviderServiceImpl struct {
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo
-	urlstore.URLStoreServer
+	urlstore.URLService
 	Redis *redis.Client
 }
 
@@ -67,7 +67,7 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 		return
 	}
 
-	ruleID, pathParam := p.URLStoreServer.Match(url.Path)
+	ruleID, pathParam := p.URLService.Match(url.Path)
 	if ruleID == -1 {
 		// mismatched
 		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
@@ -206,7 +206,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 
 // DumpRuleTree to dump the rule tree
 func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, err error) {
-	return p.URLStoreServer.DumpTree(), nil
+	return p.URLService.DumpTree(), nil
 }
 
 func interpolateAttribute(ori dbtype.JSON, data interface{}) (interpolated dbtype.JSON, err error) {

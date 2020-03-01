@@ -24,8 +24,7 @@ func init() {
 		typdep.NewConstructor(service.NewProviderService),
 		typdep.NewConstructor(service.NewRuleService),
 		typdep.NewConstructor(service.NewTagService),
-		typdep.NewConstructor(urlstore.NewURLStoreServer),
-		typdep.NewConstructor(urlstore.NewURLStoreSyncRepo),
-		typdep.NewConstructor(urlstore.NewURLStoreSyncService),
+		typdep.NewConstructor(urlstore.NewURLService),
+		typdep.NewConstructor(urlstore.NewURLSyncRepo),
 	)
 }
