@@ -3,7 +3,6 @@ package config
 // Config is configuration of app
 type Config struct {
 	Address                     string `default:":8089" required:"true"`
-	DefaultLocale               string `default:"id_ID"`
 	CookieSecure                bool   `envconfig:"COOKIE_SECURE" default:"false"`
 	JwtSecret                   string `envconfig:"JWT_SECRET"`
 	Oauth2GoogleClientID        string `envconfig:"OAUTH2_GOOGLE_CLIENT_ID"`

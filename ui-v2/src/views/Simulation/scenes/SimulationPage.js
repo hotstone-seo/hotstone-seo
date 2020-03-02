@@ -20,7 +20,7 @@ const pageMachine = Machine({
   initial: 'idle',
   context: {
     url: null,
-    locale: process.env.REACT_APP_LOCALE,
+    locale: locales[0],
     listLocale: locales,
     matchResp: null,
     matchError: null,
