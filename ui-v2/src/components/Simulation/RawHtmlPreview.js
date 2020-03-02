@@ -10,7 +10,7 @@ export default function RawHTMLPreview({ ruleID, tags }) {
       <div>
         No tags data. Register tags at
         {' '}
-        <Link to={`/rule-detail/?id=${ruleID}`}>Rule Detail</Link>
+        <Link to={`/rules/${ruleID}`}>Rule Detail</Link>
       </div>
     );
   }

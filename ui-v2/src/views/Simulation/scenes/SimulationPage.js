@@ -168,7 +168,7 @@ function renderIfSuccess(matchResp) {
           message={(
             <>
               Matched (
-              <Link to={`/rule-detail/?id=${rule_id}`}>Rule Detail</Link>
+              <Link to={`/rules/${rule_id}`}>Rule Detail</Link>
               )
             </>
           )}
