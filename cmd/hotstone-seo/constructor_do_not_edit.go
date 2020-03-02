@@ -5,7 +5,6 @@ package main
 import (
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"github.com/typical-go/typical-go/pkg/typapp"
 	"github.com/typical-go/typical-go/pkg/typdep"
 )
@@ -16,6 +15,7 @@ func init() {
 		typdep.NewConstructor(repository.NewMetricsRuleMatchingRepo),
 		typdep.NewConstructor(repository.NewRuleRepo),
 		typdep.NewConstructor(repository.NewTagRepo),
+		typdep.NewConstructor(repository.NewURLSyncRepo),
 		typdep.NewConstructor(service.NewOauth2Config),
 		typdep.NewConstructor(service.NewAuthGoogleService),
 		typdep.NewConstructor(service.NewCenterService),
@@ -24,7 +24,6 @@ func init() {
 		typdep.NewConstructor(service.NewProviderService),
 		typdep.NewConstructor(service.NewRuleService),
 		typdep.NewConstructor(service.NewTagService),
-		typdep.NewConstructor(urlstore.NewURLService),
-		typdep.NewConstructor(urlstore.NewURLSyncRepo),
+		typdep.NewConstructor(service.NewURLService),
 	)
 }
