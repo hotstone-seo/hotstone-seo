@@ -32,7 +32,7 @@ function EditRule() {
   const [tagFormLoading, setTagFormLoading] = useState(false);
 
   useEffect(() => {
-    if (location.state) {
+    if (location.state && location.state.message) {
       message.success(location.state.message);
     }
   }, [])
