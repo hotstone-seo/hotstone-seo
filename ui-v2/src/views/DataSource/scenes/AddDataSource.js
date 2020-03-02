@@ -11,8 +11,8 @@ function AddDataSource() {
 
   const handleCreate = (dataSource) => {
     createDataSource(dataSource)
-      .then(() => {
-        history.push('/datasources');
+      .then((newDataSource) => {
+        history.push('/datasources', { message: `${newDataSource.name} is successfully created` });
       })
       .catch((error) => {
         message.error(error.message);
