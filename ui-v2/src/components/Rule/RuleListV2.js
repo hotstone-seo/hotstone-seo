@@ -13,7 +13,7 @@ import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const defaultPagination = {
   current: 1,
-  pageSize: 3,
+  pageSize: 5,
 };
 
 const formatDate = (since) => {

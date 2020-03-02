@@ -5,6 +5,8 @@ import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import routes from 'routes';
 import HeaderMenu from './HeaderMenu';
 import styles from './DashboardLayout.module.css';
+import logo from 'assets/hotstone-logo.png';
+import miniLogo from 'assets/hotstone-logo-mini.png';
 
 const { Header, Content, Sider } = Layout;
 
@@ -19,7 +21,13 @@ function DashboardLayout(props) {
         collapsible
         collapsed={collapsed}
       >
-        <div className={styles.logo} />
+        <div
+          className={styles.logo}
+          style={{
+            backgroundImage: (collapsed ? `url(${miniLogo})` : `url(${logo})`),
+            backgroundSize: (collapsed ? '50px 32px' : '100px 32px')
+          }}
+        />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
           {routes.map(({ path, name, icon }) => (
             <Menu.Item key={path}>

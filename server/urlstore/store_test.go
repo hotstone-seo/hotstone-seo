@@ -14,7 +14,7 @@ import (
 )
 
 type storeTestEntry struct {
-	id        int
+	id        int64
 	key, data string
 	params    int
 }
@@ -50,7 +50,7 @@ func testStorePlay(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := urlstore.NewURLStoreTree()
+		h := urlstore.NewStore()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -160,7 +160,7 @@ func TestStoreAdd(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		h := urlstore.NewURLStoreTree()
+		h := urlstore.NewStore()
 		for _, entry := range test.entries {
 			n := h.Add(entry.id, entry.key, entry.data)
 			assert.Equal(t, entry.params, n, test.id+" > "+entry.key+" > param count =")
@@ -171,7 +171,7 @@ func TestStoreAdd(t *testing.T) {
 
 func TestStoreGetAndDelete(t *testing.T) {
 	pairs := []struct {
-		id         int
+		id         int64
 		key, value string
 	}{
 		{1, "/gopher/bumper.png", "1"},
@@ -191,7 +191,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 		{15, "", "15"},
 		{16, "/all/<:.*>", "16"},
 	}
-	h := urlstore.NewURLStoreTree()
+	h := urlstore.NewStore()
 	maxParams := 0
 	for _, pair := range pairs {
 		// fmt.Printf("=== ID (by order): %d\n", pair.id)

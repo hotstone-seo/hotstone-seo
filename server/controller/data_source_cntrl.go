@@ -42,9 +42,8 @@ func (c *DataSourceCntrl) Create(ctx echo.Context) (err error) {
 	if lastInsertID, err = c.DataSourceService.Insert(ctx0, dataSource); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ctx.JSON(http.StatusCreated, GeneralResponse{
-		Message: fmt.Sprintf("Success insert new data_source #%d", lastInsertID),
-	})
+	dataSource.ID = lastInsertID
+	return ctx.JSON(http.StatusCreated, dataSource)
 }
 
 // Find of data_source

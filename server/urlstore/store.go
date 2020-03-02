@@ -12,27 +12,26 @@ import (
 	"strings"
 )
 
-// URLStoreTree [nomock]
-type URLStoreTree interface {
-	Add(id int, key string, data interface{}) int
+// Store is a radix tree that supports storing data with parametric keys and retrieving them back with concrete keys.
+// When retrieving a data item with a concrete key, the matching parameter names and values will be returned as well.
+// A parametric key is a string containing tokens in the format of "<name>", "<name:pattern>", or "<:pattern>".
+// Each token represents a single parameter.
+type Store interface {
+	Add(id int64, key string, data interface{}) int
 	Get(path string, pvalues []string) (data interface{}, pnames []string)
-	Delete(id int) bool
+	Delete(id int64) bool
 	String() string
 	Count() int
 }
 
-// urlStoreTreeImpl is a radix tree that supports storing data with parametric keys and retrieving them back with concrete keys.
-// When retrieving a data item with a concrete key, the matching parameter names and values will be returned as well.
-// A parametric key is a string containing tokens in the format of "<name>", "<name:pattern>", or "<:pattern>".
-// Each token represents a single parameter.
-type urlStoreTreeImpl struct {
+type storeImpl struct {
 	root  *node // the root node of the radix tree
 	count int   // the number of data nodes in the tree
 }
 
-// NewURLStoreTree creates a new store. [nowire]
-func NewURLStoreTree() URLStoreTree {
-	return &urlStoreTreeImpl{
+// NewStore return new instance of Store
+func NewStore() Store {
+	return &storeImpl{
 		root: &node{
 			static:      true,
 			id:          -1,
@@ -45,13 +44,13 @@ func NewURLStoreTree() URLStoreTree {
 	}
 }
 
-func (s *urlStoreTreeImpl) Count() int {
+func (s *storeImpl) Count() int {
 	return s.count
 }
 
 // Add adds a new data item with the given parametric key.
 // The number of parameters in the key is returned.
-func (s *urlStoreTreeImpl) Add(id int, key string, data interface{}) int {
+func (s *storeImpl) Add(id int64, key string, data interface{}) int {
 	s.count++
 	return s.root.add(id, key, data, s.count)
 }
@@ -59,13 +58,13 @@ func (s *urlStoreTreeImpl) Add(id int, key string, data interface{}) int {
 // Get returns the data item matching the given concrete key.
 // If the data item was added to the store with a parametric key before, the matching
 // parameter names and values will be returned as well.
-func (s *urlStoreTreeImpl) Get(path string, pvalues []string) (data interface{}, pnames []string) {
+func (s *storeImpl) Get(path string, pvalues []string) (data interface{}, pnames []string) {
 	data, pnames, _ = s.root.get(path, pvalues)
 	return
 }
 
 // Delete deletes the data item matching the given ID. It returns existness of deleted item.
-func (s *urlStoreTreeImpl) Delete(id int) bool {
+func (s *storeImpl) Delete(id int64) bool {
 	found, _, _, _ := s.root.delete(id)
 	if found {
 		s.count--
@@ -75,7 +74,7 @@ func (s *urlStoreTreeImpl) Delete(id int) bool {
 }
 
 // String dumps the radix tree kept in the store as a string.
-func (s *urlStoreTreeImpl) String() string {
+func (s *storeImpl) String() string {
 	return s.root.print(0)
 }
 
@@ -83,7 +82,7 @@ func (s *urlStoreTreeImpl) String() string {
 type node struct {
 	static bool // whether the node is a static node or param node
 
-	id   int         // ID of this node in the DB
+	id   int64       // ID of this node in the DB
 	key  string      // the key identifying this node
 	data interface{} // the data associated with this node. nil if not a data node.
 
@@ -133,7 +132,7 @@ func (n *node) String() string {
 
 // add adds a new data item to the tree rooted at the current node.
 // The number of parameters in the key is returned.
-func (n *node) add(id int, key string, data interface{}, order int) int {
+func (n *node) add(id int64, key string, data interface{}, order int) int {
 	matched := 0
 
 	// find the common prefix
@@ -223,7 +222,7 @@ func (n *node) add(id int, key string, data interface{}, order int) int {
 }
 
 // addChild creates static and param nodes to store the given data
-func (n *node) addChild(id int, key string, data interface{}, order int) int {
+func (n *node) addChild(id int64, key string, data interface{}, order int) int {
 	param := CreateParam(key)
 	// find the first occurrence of a param token
 
@@ -411,7 +410,7 @@ func (n *node) print(level int) string {
 	return r
 }
 
-func (n *node) delete(id int) (found, foundInThisNode bool, numChildStatic, numChildParam int) {
+func (n *node) delete(id int64) (found, foundInThisNode bool, numChildStatic, numChildParam int) {
 	if id == n.id {
 		n.id = -1
 		n.data = nil
