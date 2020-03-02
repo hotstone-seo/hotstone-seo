@@ -31,7 +31,7 @@ type server struct {
 	Redis    *redis.Client
 }
 
-func start(s server) error {
+func startServer(s server) error {
 	s.SetDebug(s.Debug)
 
 	// health check

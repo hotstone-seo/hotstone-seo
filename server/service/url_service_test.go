@@ -43,7 +43,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(len(list1And2URLSync)), nil)
 		mockRepo.EXPECT().GetListDiff(ctx, gomock.Eq(int64(-1))).Return(list1And2URLSync, nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
 		require.Equal(t, 2, urlStoreServer.LatestVersion)
@@ -57,7 +57,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		ctx := context.Background()
 		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(2), nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
 		require.Equal(t, 2, urlStoreServer.LatestVersion)
@@ -72,7 +72,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(4), nil)
 		mockRepo.EXPECT().GetListDiff(ctx, gomock.Eq(int64(2))).Return(list3And4URLSync, nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
 		require.Equal(t, 4, urlStoreServer.LatestVersion)
@@ -87,7 +87,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(2), nil) // latestVersion from DB = 2 (somehow some rows has been deleted)
 		mockRepo.EXPECT().Find(ctx).Return(list1And2URLSync, nil)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
 		require.Equal(t, 2, urlStoreServer.LatestVersion)
@@ -101,7 +101,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		ctx := context.Background()
 		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(0), nil) // latestVersion from DB = 0 (all data have been deleted)
 
-		err := urlStoreServer.Sync()
+		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
 		require.Equal(t, 0, urlStoreServer.LatestVersion)

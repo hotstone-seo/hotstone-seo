@@ -13,8 +13,8 @@ import (
 
 // URLService contain logic of url [mock]
 type URLService interface {
-	FullSync() error
-	Sync() error
+	FullSync(context.Context) error
+	Sync(context.Context) error
 	Match(url string) (int, map[string]string)
 	DumpTree() string
 	Get(path string, pvalues []string) (data interface{}, pnames []string)
@@ -42,9 +42,9 @@ type URLServiceImpl struct {
 }
 
 // FullSync to sync from url-sync data to in-memory url-store from beginning
-func (s *URLServiceImpl) FullSync() error {
+func (s *URLServiceImpl) FullSync(ctx context.Context) error {
 
-	list, err := s.Find(context.Background())
+	list, err := s.Find(ctx)
 	if err != nil {
 		return err
 	}
@@ -63,8 +63,7 @@ func (s *URLServiceImpl) FullSync() error {
 }
 
 // Sync to  from url-sync data to in-memory url-store based on diff
-func (s *URLServiceImpl) Sync() error {
-	ctx := context.Background()
+func (s *URLServiceImpl) Sync(ctx context.Context) error {
 
 	LatestVersionSync, err := s.GetLatestVersion(ctx)
 	if err != nil {
@@ -82,7 +81,7 @@ func (s *URLServiceImpl) Sync() error {
 	}
 
 	if s.LatestVersion > int(LatestVersionSync) {
-		return s.FullSync()
+		return s.FullSync(ctx)
 	}
 
 	if s.LatestVersion < int(LatestVersionSync) {

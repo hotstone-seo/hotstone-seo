@@ -39,12 +39,14 @@ func (m *Module) Configure(loader typcfg.Loader) *typcfg.Detail {
 
 // EntryPoint of application
 func (*Module) EntryPoint() *typdep.Invocation {
-	return typdep.NewInvocation(func(s server, m TaskManager) error {
-		if err := m.Start(); err != nil {
-			return err
+	return typdep.NewInvocation(func(s server, m taskManager) (err error) {
+		if err = startTaskManager(m); err != nil {
+			return
 		}
-
-		return start(s)
+		if err = startServer(s); err != nil {
+			return
+		}
+		return
 	})
 }
 
