@@ -31,7 +31,7 @@ function AddRule() {
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
-            <RuleForm handleSubmit={handleCreate} dataSources={dataSources} />
+            <RuleForm onSubmit={handleCreate} dataSources={dataSources} />
           </Col>
         </Row>
       </div>
