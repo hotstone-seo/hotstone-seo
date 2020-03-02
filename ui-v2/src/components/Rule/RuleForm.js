@@ -33,7 +33,7 @@ function RuleForm(props) {
         label="Name"
         rules={[{ required: true, message: 'Please input the name of your Rule' }]}
       >
-        <Input placeholder="My Rule" />
+        <Input placeholder="My Rule" maxLength="200" />
       </Form.Item>
 
       <Form.Item
@@ -48,6 +48,7 @@ function RuleForm(props) {
               <QuestionCircleOutlined />
             </Tooltip>
           )}
+          maxLength="5000"
         />
       </Form.Item>
 
