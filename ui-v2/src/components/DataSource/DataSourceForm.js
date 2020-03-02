@@ -23,7 +23,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
         label="Name"
         rules={[{ required: true, message: 'Please input the name of your Data Source' }]}
       >
-        <Input placeholder="My Data Source" />
+        <Input placeholder="My Data Source" maxLength="100" />
       </Form.Item>
 
       <Form.Item
@@ -38,6 +38,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
               <QuestionCircleOutlined />
             </Tooltip>
           )}
+          maxLength="255"
         />
       </Form.Item>
 
