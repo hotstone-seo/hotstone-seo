@@ -1,9 +1,11 @@
-package urlstore
+package service
 
 import (
 	"context"
 	"strconv"
 
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	log "github.com/sirupsen/logrus"
 
 	"go.uber.org/dig"
@@ -23,10 +25,10 @@ type URLService interface {
 }
 
 // NewURLService return new instance of URLService [constructor]
-func NewURLService(svc URLSyncRepo) URLService {
+func NewURLService(svc repository.URLSyncRepo) URLService {
 	return &URLServiceImpl{
 		URLSyncRepo:   svc,
-		Store:         NewStore(),
+		Store:         urlstore.NewStore(),
 		LatestVersion: 0,
 	}
 }
@@ -34,8 +36,8 @@ func NewURLService(svc URLSyncRepo) URLService {
 // URLServiceImpl is implementation of URLService
 type URLServiceImpl struct {
 	dig.In
-	URLSyncRepo
-	Store
+	repository.URLSyncRepo
+	urlstore.Store
 	LatestVersion int
 }
 
@@ -51,7 +53,7 @@ func (s *URLServiceImpl) FullSync() error {
 		return nil
 	}
 
-	s.Store = NewStore()
+	s.Store = urlstore.NewStore()
 	s.setStore(list)
 
 	oldestURLSync := list[len(list)-1]
@@ -74,7 +76,7 @@ func (s *URLServiceImpl) Sync() error {
 	}
 
 	if s.LatestVersion != 0 && LatestVersionSync == 0 {
-		s.Store = NewStore()
+		s.Store = urlstore.NewStore()
 		s.LatestVersion = int(LatestVersionSync)
 		return nil
 	}
@@ -147,7 +149,7 @@ func (s *URLServiceImpl) DumpTree() string {
 	return s.Store.String()
 }
 
-func (s *URLServiceImpl) setStore(listURLSync []*URLSync) {
+func (s *URLServiceImpl) setStore(listURLSync []*repository.URLSync) {
 	for _, sync := range listURLSync {
 		switch sync.Operation {
 		case "INSERT":

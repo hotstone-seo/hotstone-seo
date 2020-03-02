@@ -1,11 +1,13 @@
-package urlstore_test
+package service_test
 
 import (
 	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_urlstore"
+	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"github.com/stretchr/testify/require"
 	"github.com/xorcare/pointer"
@@ -15,19 +17,19 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	list1And2URLSync := []*urlstore.URLSync{
-		&urlstore.URLSync{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: pointer.String("/url/1")},
-		&urlstore.URLSync{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: pointer.String("/url/1update")},
+	list1And2URLSync := []*repository.URLSync{
+		&repository.URLSync{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: pointer.String("/url/1")},
+		&repository.URLSync{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: pointer.String("/url/1update")},
 	}
 
-	list3And4URLSync := []*urlstore.URLSync{
-		&urlstore.URLSync{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: pointer.String("/url/b")},
-		&urlstore.URLSync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
+	list3And4URLSync := []*repository.URLSync{
+		&repository.URLSync{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: pointer.String("/url/b")},
+		&repository.URLSync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
 	}
 
-	mockRepo := mock_urlstore.NewMockURLSyncRepo(ctrl)
+	mockRepo := mock_repository.NewMockURLSyncRepo(ctrl)
 
-	urlStoreServer := &urlstore.URLServiceImpl{
+	urlStoreServer := &service.URLServiceImpl{
 		URLSyncRepo:   mockRepo,
 		Store:         urlstore.NewStore(),
 		LatestVersion: -1,
@@ -206,7 +208,7 @@ func TestURLStoreImpl_DeleteURL(t *testing.T) {
 	})
 }
 
-func buildStore(t *testing.T) urlstore.URLService {
+func buildStore(t *testing.T) service.URLService {
 	t.Helper()
 
 	pairs := []struct {
@@ -233,5 +235,5 @@ func buildStore(t *testing.T) urlstore.URLService {
 
 	require.Equal(t, 10, store.Count())
 
-	return &urlstore.URLServiceImpl{Store: store}
+	return &service.URLServiceImpl{Store: store}
 }
