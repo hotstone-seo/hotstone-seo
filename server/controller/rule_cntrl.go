@@ -70,9 +70,8 @@ func (c *RuleCntrl) Create(ctx echo.Context) (err error) {
 	if lastInsertID, err = c.RuleService.Insert(ctx0, rule); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ctx.JSON(http.StatusCreated, GeneralResponse{
-		Message: fmt.Sprintf("Success create new rule #%d", lastInsertID),
-	})
+	rule.ID = lastInsertID
+	return ctx.JSON(http.StatusCreated, rule)
 }
 
 // Delete rule
