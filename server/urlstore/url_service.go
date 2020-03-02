@@ -2,6 +2,9 @@ package urlstore
 
 import (
 	"context"
+	"strconv"
+
+	log "github.com/sirupsen/logrus"
 
 	"go.uber.org/dig"
 )
@@ -10,16 +13,20 @@ import (
 type URLService interface {
 	FullSync() error
 	Sync() error
-
 	Match(url string) (int, map[string]string)
 	DumpTree() string
+	Get(path string, pvalues []string) (data interface{}, pnames []string)
+	Delete(id int64) bool
+	Insert(id int64, key string)
+	Update(id int64, key string)
+	Count() int
 }
 
 // NewURLService return new instance of URLService [constructor]
 func NewURLService(svc URLSyncRepo) URLService {
 	return &URLServiceImpl{
 		URLSyncRepo:   svc,
-		URLStore:      InitURLStore(),
+		Store:         NewStore(),
 		LatestVersion: 0,
 	}
 }
@@ -28,10 +35,11 @@ func NewURLService(svc URLSyncRepo) URLService {
 type URLServiceImpl struct {
 	dig.In
 	URLSyncRepo
-	URLStore
+	Store
 	LatestVersion int
 }
 
+// FullSync to sync from url-sync data to in-memory url-store from beginning
 func (s *URLServiceImpl) FullSync() error {
 
 	list, err := s.Find(context.Background())
@@ -43,19 +51,16 @@ func (s *URLServiceImpl) FullSync() error {
 		return nil
 	}
 
-	newURLStore := InitURLStore()
-	if err = s.buildURLStore(newURLStore, list); err != nil {
-		return err
-	}
+	s.Store = NewStore()
+	s.setStore(list)
 
 	oldestURLSync := list[len(list)-1]
-
-	s.URLStore = newURLStore
 	s.LatestVersion = int(oldestURLSync.Version)
 
 	return nil
 }
 
+// Sync to  from url-sync data to in-memory url-store based on diff
 func (s *URLServiceImpl) Sync() error {
 	ctx := context.Background()
 
@@ -69,7 +74,7 @@ func (s *URLServiceImpl) Sync() error {
 	}
 
 	if s.LatestVersion != 0 && LatestVersionSync == 0 {
-		s.URLStore = InitURLStore()
+		s.Store = NewStore()
 		s.LatestVersion = int(LatestVersionSync)
 		return nil
 	}
@@ -83,9 +88,7 @@ func (s *URLServiceImpl) Sync() error {
 		if err != nil {
 			return err
 		}
-		if err = s.buildURLStore(s.URLStore, listDiffURLSync); err != nil {
-			return err
-		}
+		s.setStore(listDiffURLSync)
 
 		oldestURLSync := listDiffURLSync[len(listDiffURLSync)-1]
 		s.LatestVersion = int(oldestURLSync.Version)
@@ -94,26 +97,65 @@ func (s *URLServiceImpl) Sync() error {
 	return nil
 }
 
+// Match return rule id and parameter map
 func (s *URLServiceImpl) Match(url string) (int, map[string]string) {
-	return s.URLStore.Get(url)
-}
+	maxParams := 256
+	pvalues := make([]string, maxParams)
+	varValue := map[string]string{}
 
-func (s *URLServiceImpl) DumpTree() string {
-	return s.URLStore.String()
-}
+	data, pnames := s.Store.Get(url, pvalues)
+	// fmt.Printf("[DATA:%s][PNAMES:%+v]", data, pnames)
+	if data == nil {
+		return -1, varValue
+	}
 
-func (s *URLServiceImpl) buildURLStore(urlStore URLStore, listURLSync []*URLSync) error {
-
-	for _, URLSync := range listURLSync {
-		switch URLSync.Operation {
-		case "INSERT":
-			urlStore.Add(int(URLSync.RuleID), *URLSync.LatestURLPattern)
-		case "UPDATE":
-			urlStore.Update(int(URLSync.RuleID), *URLSync.LatestURLPattern)
-		case "DELETE":
-			urlStore.Delete(int(URLSync.RuleID))
+	if len(pnames) > 0 {
+		for i, name := range pnames {
+			varValue[name] = pvalues[i]
 		}
 	}
 
-	return nil
+	idStr, ok := data.(string)
+	if !ok {
+		log.Warnf("[GetURL] Failed to cast data to string. data=%+v", data)
+		return -1, varValue
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		log.Warnf("[GetURL] Failed to convert string data to int. idStr=%+v", idStr)
+		return -1, varValue
+	}
+
+	return id, varValue
+}
+
+// Insert to store
+func (s *URLServiceImpl) Insert(id int64, key string) {
+	data := strconv.FormatInt(id, 10)
+	s.Store.Add(id, key, data)
+}
+
+// Update store
+func (s *URLServiceImpl) Update(id int64, key string) {
+	s.Delete(id)
+	s.Insert(id, key)
+}
+
+// DumpTree to debug purpose
+func (s *URLServiceImpl) DumpTree() string {
+	return s.Store.String()
+}
+
+func (s *URLServiceImpl) setStore(listURLSync []*URLSync) {
+	for _, sync := range listURLSync {
+		switch sync.Operation {
+		case "INSERT":
+			s.Insert(sync.RuleID, *sync.LatestURLPattern)
+		case "UPDATE":
+			s.Update(sync.RuleID, *sync.LatestURLPattern)
+		case "DELETE":
+			s.Store.Delete(sync.RuleID)
+		}
+	}
 }
