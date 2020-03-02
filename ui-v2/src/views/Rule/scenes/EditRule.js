@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import {
   PageHeader, Row, Col, message, Select, Button, Modal, Form,
 } from 'antd';
@@ -20,6 +20,7 @@ const { Option } = Select;
 function EditRule() {
   const { id } = useParams();
   const history = useHistory();
+  const location = useLocation();
   const [dataSources] = useDataSources();
   const [tagForm] = Form.useForm();
 
@@ -29,6 +30,12 @@ function EditRule() {
   const [isEditingRule, setIsEditingRule] = useState(false);
   const [tagFormVisible, setTagFormVisible] = useState(false);
   const [tagFormLoading, setTagFormLoading] = useState(false);
+
+  useEffect(() => {
+    if (location.state) {
+      message.success(location.state.message);
+    }
+  }, [])
 
   useEffect(() => {
     getRule(id)
