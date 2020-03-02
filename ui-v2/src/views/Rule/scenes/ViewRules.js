@@ -5,6 +5,8 @@ import { PageHeader, Button, message } from 'antd';
 import { fetchRules, deleteRule } from 'api/rule';
 import { RuleListV2 } from 'components/Rule';
 
+import { PlusCircleOutlined } from '@ant-design/icons';
+
 function ViewRules({ match }) {
   const [rules, setRules] = useState([]);
 
@@ -38,6 +40,10 @@ function ViewRules({ match }) {
       });
   };
 
+  const addDataRule = () => {
+    history.push(`${match.url}/new`);
+  };
+
   return (
     <div>
       <PageHeader
@@ -46,8 +52,7 @@ function ViewRules({ match }) {
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
-        <Button type="primary" style={{ marginBottom: 16 }}>
-          <Link to={`${match.url}/new`}>Add new Rule</Link>
+        <Button type="primary" style={{ marginBottom: 16 }} icon={<PlusCircleOutlined />} onClick={() => addDataRule()}>Add New Rule
         </Button>
         <RuleListV2
           rules={rules}
