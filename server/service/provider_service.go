@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"text/template"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -85,13 +84,13 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (data []byte, err error) {
 	var (
 		dataSource *repository.DataSource
-		tmpl       *template.Template
+		tmpl       *mario.Template
 		buf        bytes.Buffer
 	)
 	if dataSource, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
 		return
 	}
-	if tmpl, err = template.New("tmpl").Parse(dataSource.Url); err != nil {
+	if tmpl, err = mario.New().Parse(dataSource.Url); err != nil {
 		return
 	}
 	if err = tmpl.Execute(&buf, req.PathParam); err != nil {
