@@ -37,7 +37,7 @@ function ViewDataSources({ match }) {
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
-        <Button type="primary" style={{ marginBottom: 16 }} icon={<PlusCircleOutlined />}  onClick={() => addDataSource() } >
+        <Button type="primary" style={{ marginBottom: 16 }} icon={<PlusCircleOutlined />}  onClick={() => addDataSource()}>
            Add New Data Source
         </Button>
         <DataSourceList
@@ -55,7 +55,6 @@ ViewDataSources.propTypes = {
   match: PropTypes.shape({
     url: PropTypes.string,
   }).isRequired,
-  onClick: PropTypes.func.isRequired,
 };
 
 export default ViewDataSources;
