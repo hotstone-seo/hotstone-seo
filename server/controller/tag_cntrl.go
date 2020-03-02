@@ -42,9 +42,8 @@ func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 	if lastInsertID, err = c.TagService.Insert(ctx0, tag); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ctx.JSON(http.StatusCreated, GeneralResponse{
-		Message: fmt.Sprintf("Success insert new tag #%d", lastInsertID),
-	})
+	tag.ID = lastInsertID
+	return ctx.JSON(http.StatusCreated, tag)
 }
 
 // Find all tag
