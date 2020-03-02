@@ -13,6 +13,8 @@ import {
 import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
 
+import { EditOutlined } from '@ant-design/icons';
+
 const { Option } = Select;
 
 function EditRule() {
@@ -114,6 +116,7 @@ function EditRule() {
             key="edit"
             type={isEditingRule ? 'default' : 'primary'}
             onClick={() => setIsEditingRule(!isEditingRule)}
+            icon={<EditOutlined />}
           >
             {isEditingRule ? 'Cancel' : 'Edit Rule'}
           </Button>,
