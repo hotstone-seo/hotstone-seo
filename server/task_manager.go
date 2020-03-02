@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/server/service"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/robfig/cron/v3"
@@ -11,7 +11,7 @@ import (
 // TaskManager responsible manage the task
 type TaskManager struct {
 	dig.In
-	urlstore.URLService
+	service.URLService
 }
 
 // Start the task

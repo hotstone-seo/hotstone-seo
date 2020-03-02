@@ -16,8 +16,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
-
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -41,7 +39,7 @@ type ProviderServiceImpl struct {
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo
-	urlstore.URLService
+	URLService
 	Redis *redis.Client
 }
 
