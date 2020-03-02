@@ -7,6 +7,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
@@ -66,12 +67,17 @@ func (r *TagRepoImpl) Find(ctx context.Context, filter TagFilter) (list []*Tag, 
 
 // Insert tag
 func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, err error) {
+	if e.Attributes == nil {
+		e.Attributes = dbtype.JSON("{}")
+	}
+
 	builder := sq.
 		Insert("tags").
 		Columns("rule_id", "locale", "type", "attributes", "value").
 		Values(e.RuleID, e.Locale, e.Type, e.Attributes, e.Value).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		return
 	}
@@ -91,6 +97,10 @@ func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update tag
 func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
+	if e.Attributes == nil {
+		e.Attributes = dbtype.JSON("{}")
+	}
+
 	builder := sq.
 		Update("tags").
 		Set("rule_id", e.RuleID).
