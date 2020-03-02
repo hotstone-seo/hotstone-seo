@@ -97,6 +97,10 @@ func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update tag
 func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
+	if e.Attributes == nil {
+		e.Attributes = dbtype.JSON("{}")
+	}
+
 	builder := sq.
 		Update("tags").
 		Set("rule_id", e.RuleID).
