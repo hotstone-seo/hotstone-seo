@@ -61,9 +61,6 @@ func (c *TagCntrl) Find(ctx echo.Context) (err error) {
 		filter.RuleID = ruleID
 	}
 	filter.Locale = ctx.QueryParam("locale")
-	if filter.Locale == "" {
-		filter.Locale = c.Config.DefaultLocale
-	}
 	if tags, err = c.TagService.Find(ctx0, filter); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
