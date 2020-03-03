@@ -13,7 +13,6 @@ import {
 import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
 
-
 const { Option } = Select;
 
 function EditRule() {
@@ -33,9 +32,14 @@ function EditRule() {
     getRule(id)
       .then((newRule) => { setRule(newRule); })
       .catch((error) => {
-        message.error(error.message);
+        history.push('/rules', {
+          message: {
+            level: 'error',
+            content: error.message,
+          },
+        });
       });
-  }, [id]);
+  }, [id, history]);
 
   useEffect(() => {
     fetchTags({ rule_id: id, locale })
