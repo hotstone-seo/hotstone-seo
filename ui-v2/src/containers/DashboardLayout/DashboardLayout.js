@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Link, Route, Switch, useLocation,
 } from 'react-router-dom';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, message } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import routes from 'routes';
 import logo from 'assets/hotstone-logo.png';
@@ -15,6 +15,13 @@ const { Header, Content, Sider } = Layout;
 function DashboardLayout() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (location.state && location.state.message) {
+      const { level, content } = location.state.message;
+      message[level](content);
+    }
+  }, [location.state]);
 
   return (
     <Layout className={styles.base}>

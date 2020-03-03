@@ -14,7 +14,12 @@ function AddRule() {
   const handleCreate = (rule) => {
     createRule(rule)
       .then((newRule) => {
-        history.push(`/rules/${newRule.id}`, { message: `${newRule.name} is successfully created` });
+        history.push(`/rules/${newRule.id}`, {
+          message: {
+            level: 'success',
+            content: `${newRule.name} is successfully created`,
+          },
+        });
       })
       .catch((error) => {
         message.error(error.message);

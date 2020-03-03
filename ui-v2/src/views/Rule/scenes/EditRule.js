@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   PageHeader, Row, Col, message, Select, Button, Modal, Form,
 } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { RuleForm, RuleDetail } from 'components/Rule';
 import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
@@ -13,14 +13,12 @@ import {
 import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
 
-import { EditOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
 function EditRule() {
   const { id } = useParams();
   const history = useHistory();
-  const location = useLocation();
   const [dataSources] = useDataSources();
   const [tagForm] = Form.useForm();
 
@@ -30,12 +28,6 @@ function EditRule() {
   const [isEditingRule, setIsEditingRule] = useState(false);
   const [tagFormVisible, setTagFormVisible] = useState(false);
   const [tagFormLoading, setTagFormLoading] = useState(false);
-
-  useEffect(() => {
-    if (location.state && location.state.message) {
-      message.success(location.state.message);
-    }
-  }, [])
 
   useEffect(() => {
     getRule(id)
@@ -93,7 +85,7 @@ function EditRule() {
 
   const addTag = () => {
     tagForm.setFieldsValue({ rule_id: parseInt(id, 10) });
-    tagForm.setFieldsValue({ locale: locale });
+    tagForm.setFieldsValue({ locale });
     setTagFormVisible(true);
   };
 

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
 import { deleteDataSource } from 'api/datasource';
 import useDataSources from 'hooks/useDataSources';
@@ -11,13 +11,6 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 function ViewDataSources({ match }) {
   const [dataSources, setDataSources] = useDataSources();
   const history = useHistory();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state && location.state.message) {
-      message.success(location.state.message);
-    }
-  }, []);
 
   const showEditScene = (dataSource) => {
     history.push(`${match.url}/${dataSource.id}`);
@@ -46,8 +39,8 @@ function ViewDataSources({ match }) {
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
-        <Button type="primary" style={{ marginBottom: 16 }} icon={<PlusCircleOutlined />}  onClick={() => addDataSource()}>
-           Add New Data Source
+        <Button type="primary" style={{ marginBottom: 16 }} icon={<PlusCircleOutlined />} onClick={() => addDataSource()}>
+          Add New Data Source
         </Button>
         <DataSourceList
           dataSources={dataSources}
