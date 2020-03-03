@@ -38,13 +38,13 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 	subQuery := sq.
 		Select("url").
 		Column("count(url)").
-		Column(sq.Alias(sq.Expr("max(time)"), "since")).
+		Column(sq.Alias(sq.Expr("max(time)"), "last_seen")).
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 0}).
 		GroupBy("url")
 
 	builder := sq.
-		Select("url", "count", "since").
+		Select("url", "count", "last_seen").
 		FromSelect(subQuery, "u").
 		PlaceholderFormat(sq.Dollar)
 
@@ -56,7 +56,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 	list = make([]*MetricsMismatchedCount, 0)
 	for rows.Next() {
 		var e0 MetricsMismatchedCount
-		if err = rows.Scan(&e0.URL, &e0.Count, &e0.Since); err != nil {
+		if err = rows.Scan(&e0.URL, &e0.Count, &e0.LastSeen); err != nil {
 			return
 		}
 		list = append(list, &e0)

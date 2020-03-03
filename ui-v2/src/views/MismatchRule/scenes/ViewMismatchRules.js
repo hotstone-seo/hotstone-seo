@@ -13,11 +13,11 @@ import { fetchMismatched } from 'api/metric';
 import { useTokenPagination } from 'hooks/useTokenPagination';
 import _ from 'lodash';
 
-const formatDate = (since) => {
-  const sinceDate = new Date(since);
+const formatDate = (dateStr) => {
+  const date = new Date(dateStr);
 
-  const full = format(sinceDate, 'dd/MM/yyyy - HH:mm');
-  const relative = formatDistance(sinceDate, new Date());
+  const full = format(date, 'dd/MM/yyyy - HH:mm');
+  const relative = formatDistance(date, new Date());
 
   return `${full} (${relative} ago)`;
 };
@@ -29,8 +29,8 @@ function ViewMismatchRules(props) {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({
     order: 'descend',
-    field: 'since',
-    columnKey: 'since',
+    field: 'last_seen',
+    columnKey: 'last_seen',
   });
 
   const [listData, setListData] = useState([]);
@@ -94,12 +94,12 @@ function ViewMismatchRules(props) {
     },
 
     {
-      title: 'Since',
-      dataIndex: 'since',
-      key: 'since',
+      title: 'Last Seen',
+      dataIndex: 'last_seen',
+      key: 'last_seen',
       sorter: false,
-      sortOrder: sortedInfo.columnKey === 'since' && sortedInfo.order,
-      render: (text, record) => <div>{formatDate(record.since)}</div>,
+      sortOrder: sortedInfo.columnKey === 'last_seen' && sortedInfo.order,
+      render: (text, record) => <div>{formatDate(record.last_seen)}</div>,
     },
     {
       title: 'Count',
