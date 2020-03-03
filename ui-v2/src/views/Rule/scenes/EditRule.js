@@ -93,6 +93,7 @@ function EditRule() {
 
   const addTag = () => {
     tagForm.setFieldsValue({ rule_id: parseInt(id, 10) });
+    tagForm.setFieldsValue({ locale: locale });
     setTagFormVisible(true);
   };
 
