@@ -29,7 +29,7 @@ func (c *MetricsCntrl) ListMismatched(ctx echo.Context) (err error) {
 	var metrics_mismatcheds []*repository.MetricsMismatchedCount
 	ctx0 := ctx.Request().Context()
 
-	validCols := []string{"url", "last_seen", "count"}
+	validCols := []string{"url", "first_seen", "last_seen", "count"}
 	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
 
 	if metrics_mismatcheds, err = c.MetricsRuleMatchingService.ListMismatchedCount(ctx0, paginationParam); err != nil {

@@ -92,7 +92,14 @@ function ViewMismatchRules(props) {
       sortOrder: sortedInfo.columnKey === 'url' && sortedInfo.order,
       ...useTableFilterProps('url'),
     },
-
+    {
+      title: 'First Seen',
+      dataIndex: 'first_seen',
+      key: 'first_seen',
+      sorter: false,
+      sortOrder: sortedInfo.columnKey === 'first_seen' && sortedInfo.order,
+      render: (text, record) => <div>{formatDate(record.first_seen)}</div>,
+    },
     {
       title: 'Last Seen',
       dataIndex: 'last_seen',
