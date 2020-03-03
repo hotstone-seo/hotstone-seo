@@ -5,6 +5,15 @@ import {
 } from 'antd';
 
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { format } from 'date-fns';
+
+const formatDate = (since) => {
+  const sinceDate = new Date(since);
+
+  const full = format(sinceDate, 'dd/MM/yyyy - HH:mm');
+
+  return `${full}`;
+};
 
 function DataSourceList(props) {
   const {
@@ -26,7 +35,7 @@ function DataSourceList(props) {
       ),
     },
     { title: 'URL', dataIndex: 'url', key: 'url' },
-    { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated' },
+    { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated',render: (text, record) => <div>{formatDate(record.updated_at)}</div> },
     {
       title: 'Action',
       key: 'action',
