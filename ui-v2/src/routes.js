@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  HomeOutlined,
   FormOutlined,
   DatabaseOutlined,
   TagsOutlined,
@@ -15,12 +14,6 @@ const Analytic = React.lazy(() => import('views/Analytic'));
 const Simulation = React.lazy(() => import('views/Simulation'));
 
 const routes = [
-  {
-    path: '/',
-    exact: true,
-    name: 'Home',
-    icon: HomeOutlined,
-  },
   {
     path: '/rules',
     name: 'Rules',
