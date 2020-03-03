@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Form, Input, Button, Row, Col, Card, Alert, Select,
+  Form, Input, Button, Row, Col, Card, Alert, Select, Descriptions,
 } from 'antd';
 import { Machine, assign } from 'xstate';
 import { useMachine } from '@xstate/react';
@@ -9,6 +9,7 @@ import _ from 'lodash';
 import parse from 'url-parse';
 
 import { match, fetchTags } from 'api/provider';
+import { getRule } from 'api/rule';
 import { RawHtmlPreview } from 'components/Simulation';
 
 import locales from 'locales';
@@ -77,7 +78,8 @@ async function matchThenGetTags(locale, url) {
     throw new Error('Not matched');
   }
   const tags = await fetchTags(rule, locale);
-  const data = { rule, tags };
+  const ruleDetail = await getRule(rule.rule_id);
+  const data = { rule, tags, ruleDetail };
   return data;
 }
 
@@ -159,38 +161,44 @@ function SimulationPage() {
 
 function renderIfSuccess(matchResp) {
   if (matchResp) {
-    const { rule_id, path_param } = matchResp.rule;
-    const { tags } = matchResp;
+    const { rule, tags, ruleDetail } = matchResp;
+    const { rule_id, path_param } = rule;
     return (
       <Card>
         <Alert
           type="success"
-          message={(
-            <>
-              Matched (
-              <Link to={`/rules/${rule_id}`}>Rule Detail</Link>
-              )
-            </>
-          )}
-          description={(
-            <>
-              {!_.isEmpty(path_param) && (
-                <div>
-                  <div>Path params:</div>
-                  <ul>
-                    {Object.entries(path_param).map(([key, value]) => (
-                      <li key={key}>
-                        {key}
-                        :
-                        {value}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </>
-          )}
+          message="Matched"
         />
+        <br />
+        {!_.isEmpty(ruleDetail) && (
+        <Descriptions key={0} title="Rule" column={1} bordered>
+          <Descriptions.Item key={1} label="Name">{ruleDetail.name}</Descriptions.Item>
+          <Descriptions.Item key={2} label="URL Pattern">{ruleDetail.url_pattern}</Descriptions.Item>
+          <Descriptions.Item key={3} label="Detail"><Link to={`/rules/${rule_id}`}>Rule Detail</Link></Descriptions.Item>
+
+          {!_.isEmpty(path_param) && (
+            <Descriptions.Item key={4} label="Path Params">
+              <table className="ant-table">
+                <thead>
+                  <tr key="id">
+                    <th>Path Param</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody className="ant-table-tbody">
+                  {Object.entries(path_param).map(([key, value]) => (
+                    <tr key={key}>
+                      <td>{key}</td>
+                      <td>{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Descriptions.Item>
+          )}
+        </Descriptions>
+        )}
+
         <br />
         <strong>Raw HTML Tags Preview</strong>
         <br />
