@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   PageHeader,
   Row,
@@ -8,19 +8,21 @@ import {
   Select,
   Button,
   Modal,
-  Form
-} from "antd";
+  Form,
+} from 'antd';
 import {
   EditOutlined,
   PlusOutlined,
-  BarChartOutlined
-} from "@ant-design/icons";
-import { RuleForm, RuleDetail } from "components/Rule";
-import { TagList, TagForm } from "components/Tag";
-import { getRule, updateRule } from "api/rule";
-import { fetchTags, createTag, updateTag, deleteTag } from "api/tag";
-import useDataSources from "hooks/useDataSources";
-import locales from "locales";
+  BarChartOutlined,
+} from '@ant-design/icons';
+import { RuleForm, RuleDetail } from 'components/Rule';
+import { TagList, TagForm } from 'components/Tag';
+import { getRule, updateRule } from 'api/rule';
+import {
+ fetchTags, createTag, updateTag, deleteTag 
+} from 'api/tag';
+import useDataSources from 'hooks/useDataSources';
+import locales from 'locales';
 
 const { Option } = Select;
 
@@ -32,44 +34,44 @@ function EditRule() {
 
   const [rule, setRule] = useState({});
   const [tags, setTags] = useState([]);
-  const [locale, setLocale] = useState(locales[0] || "");
+  const [locale, setLocale] = useState(locales[0] || '');
   const [isEditingRule, setIsEditingRule] = useState(false);
-  const [tagFormTitle, setTagFormTitle] = useState("");
+  const [tagFormTitle, setTagFormTitle] = useState('');
   const [tagFormVisible, setTagFormVisible] = useState(false);
   const [tagFormLoading, setTagFormLoading] = useState(false);
 
   useEffect(() => {
     getRule(id)
-      .then(newRule => {
+      .then((newRule) => {
         setRule(newRule);
       })
-      .catch(error => {
-        history.push("/rules", {
+      .catch((error) => {
+        history.push('/rules', {
           message: {
-            level: "error",
-            content: error.message
-          }
+            level: 'error',
+            content: error.message,
+          },
         });
       });
   }, [id, history]);
 
   useEffect(() => {
     fetchTags({ rule_id: id, locale })
-      .then(newTags => {
+      .then((newTags) => {
         setTags(newTags);
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       });
   }, [id, locale]);
 
-  const editRule = newRule => {
+  const editRule = (newRule) => {
     updateRule(newRule)
       .then(() => {
         setRule(newRule);
         setIsEditingRule(false);
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       });
   };
@@ -77,7 +79,7 @@ function EditRule() {
   const submitTag = () => {
     tagForm
       .validateFields()
-      .then(tag => {
+      .then((tag) => {
         setTagFormLoading(true);
         let submitFunc = createTag;
         if (tag.id) {
@@ -90,10 +92,10 @@ function EditRule() {
         setTagFormVisible(false);
         return fetchTags({ rule_id: id, locale });
       })
-      .then(newTags => {
+      .then((newTags) => {
         setTags(newTags);
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       })
       .finally(() => {
@@ -104,22 +106,22 @@ function EditRule() {
   const addTag = () => {
     tagForm.setFieldsValue({ rule_id: parseInt(id, 10) });
     tagForm.setFieldsValue({ locale });
-    setTagFormTitle("Add Tag");
+    setTagFormTitle('Add Tag');
     setTagFormVisible(true);
   };
 
-  const editTag = tag => {
+  const editTag = (tag) => {
     tagForm.setFieldsValue(tag);
-    setTagFormTitle("Edit Tag");
+    setTagFormTitle('Edit Tag');
     setTagFormVisible(true);
   };
 
-  const removeTag = tag => {
+  const removeTag = (tag) => {
     deleteTag(tag.id)
       .then(() => {
-        setTags(tags.filter(item => item.id !== tag.id));
+        setTags(tags.filter((item) => item.id !== tag.id));
       })
-      .catch(error => {
+      .catch((error) => {
         message.error(error.message);
       });
   };
@@ -127,18 +129,18 @@ function EditRule() {
   return (
     <div>
       <PageHeader
-        onBack={() => history.push("/rules")}
+        onBack={() => history.push('/rules')}
         title="Manage Rule"
         subTitle="Organize tags to be rendered"
-        style={{ background: "#fff", minHeight: 120 }}
+        style={{ background: '#fff', minHeight: 120 }}
         extra={[
           <Button
             key="edit"
-            type={isEditingRule ? "default" : "primary"}
+            type={isEditingRule ? 'default' : 'primary'}
             onClick={() => setIsEditingRule(!isEditingRule)}
             icon={<EditOutlined />}
           >
-            {isEditingRule ? "Cancel" : "Edit Rule"}
+            {isEditingRule ? 'Cancel' : 'Edit Rule'}
           </Button>,
           <Button
             key="analytics"
@@ -148,7 +150,7 @@ function EditRule() {
             }}
           >
             Analytics
-          </Button>
+          </Button>,
         ]}
       >
         {isEditingRule ? (
@@ -165,13 +167,13 @@ function EditRule() {
 
       <div style={{ padding: 24 }}>
         <Row>
-          <Col span={24} style={{ background: "#fff", padding: 24 }}>
+          <Col span={24} style={{ background: '#fff', padding: 24 }}>
             <Select
               defaultValue={locale}
-              onChange={value => setLocale(value)}
-              style={{ float: "right", marginBottom: 16 }}
+              onChange={(value) => setLocale(value)}
+              style={{ float: 'right', marginBottom: 16 }}
             >
-              {locales.map(loc => (
+              {locales.map((loc) => (
                 <Option value={loc} key={loc}>
                   {loc}
                 </Option>
@@ -180,7 +182,7 @@ function EditRule() {
             <Button
               type="dashed"
               onClick={addTag}
-              style={{ width: "100%", marginBottom: 16 }}
+              style={{ width: '100%', marginBottom: 16 }}
             >
               <PlusOutlined />
               Add Tag
@@ -215,7 +217,7 @@ function EditRule() {
             onClick={submitTag}
           >
             Save
-          </Button>
+          </Button>,
         ]}
       >
         <TagForm form={tagForm} />
