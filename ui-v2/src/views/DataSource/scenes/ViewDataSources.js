@@ -6,7 +6,7 @@ import { deleteDataSource } from 'api/datasource';
 import useDataSources from 'hooks/useDataSources';
 import { DataSourceList } from 'components/DataSource';
 
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 
 function ViewDataSources({ match }) {
   const [dataSources, setDataSources] = useDataSources();
@@ -39,7 +39,12 @@ function ViewDataSources({ match }) {
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
-        <Button type="primary" style={{ marginBottom: 16 }} icon={<PlusCircleOutlined />} onClick={() => addDataSource()}>
+        <Button
+          type="primary"
+          style={{ marginBottom: 16 }}
+          icon={<PlusOutlined />}
+          onClick={() => addDataSource()}
+        >
           Add New Data Source
         </Button>
         <DataSourceList
