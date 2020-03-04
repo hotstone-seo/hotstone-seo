@@ -25,9 +25,9 @@ function EditRule() {
   const [tags, setTags] = useState([]);
   const [locale, setLocale] = useState(locales[0] || '');
   const [isEditingRule, setIsEditingRule] = useState(false);
+  const [tagFormTitle, setTagFormTitle] = useState('');
   const [tagFormVisible, setTagFormVisible] = useState(false);
   const [tagFormLoading, setTagFormLoading] = useState(false);
-  let titleForm = tagForm.getFieldValue("type")!==undefined?"Edit Tag":"Add Tag";
 
   useEffect(() => {
     getRule(id)
@@ -91,11 +91,13 @@ function EditRule() {
   const addTag = () => {
     tagForm.setFieldsValue({ rule_id: parseInt(id, 10) });
     tagForm.setFieldsValue({ locale });
+    setTagFormTitle('Add Tag');
     setTagFormVisible(true);
   };
 
   const editTag = (tag) => {
     tagForm.setFieldsValue(tag);
+    setTagFormTitle('Edit Tag');
     setTagFormVisible(true);
   };
 
@@ -165,7 +167,7 @@ function EditRule() {
       </div>
 
       <Modal
-        title={titleForm}
+        title={tagFormTitle}
         visible={tagFormVisible}
         onOk={submitTag}
         onCancel={() => {
