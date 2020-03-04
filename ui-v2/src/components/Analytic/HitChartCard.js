@@ -1,7 +1,9 @@
 import React, {
   useState, useEffect, useReducer, useCallback,
 } from 'react';
-import { Card, Select, Typography } from 'antd';
+import {
+  Card, Select, Typography, Alert,
+} from 'antd';
 import { ResponsiveLine } from '@nivo/line';
 import useInterval from '@use-hooks/interval';
 import { format, subDays, startOfMonth } from 'date-fns';
@@ -94,10 +96,12 @@ function HitChartCard() {
     <Card>
       <div>
         {isAxiosError(error) && (
-          <div className="alert alert-danger" role="alert">
-            Failed to fetch data
-          </div>
+          <>
+            <Alert type="error" message="Failed to fetch data" />
+            <br />
+          </>
         )}
+
         <div>
           <Text strong>Hit Count in </Text>
           <Select value={state.selectedOption} onChange={onChangeRange}>
