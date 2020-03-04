@@ -92,7 +92,7 @@ function HitChartCard({ ruleID }) {
   }, [state, ruleID]);
 
   useInterval(() => {
-    fetchData(state.startDate, state.endDate);
+    fetchData(state.startDate, state.endDate, ruleID);
   }, 5_000);
 
   return (
