@@ -53,15 +53,18 @@ function toDataChart(dataListCountHit) {
   return dataListCountHit.map(({ date, count }) => ({ x: format(new Date(date), 'dd/MM'), y: count }));
 }
 
-function HitChartCard() {
+function HitChartCard({ ruleID }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [dataChart, setDataChart] = useState([{ id: 'count', data: [] }]);
   const [dataListCountHit, setDataListCountHit] = useState([]);
   const [error, setError] = useState();
 
   const fetchData = useCallback(
-    (startDate, endDate) => {
-      const queryParm = { start: startDate, end: endDate };
+    (startDate, endDate, ruleID) => {
+      let queryParm = { start: startDate, end: endDate };
+      if (ruleID) {
+        queryParm = { ...queryParm, rule_id: ruleID };
+      }
       fetchListCountHitPerDay({ params: queryParm })
         .then((data) => {
           setDataListCountHit(data);
@@ -85,8 +88,8 @@ function HitChartCard() {
   }, [dataListCountHit]);
 
   useEffect(() => {
-    fetchData(state.startDate, state.endDate);
-  }, [state]);
+    fetchData(state.startDate, state.endDate, ruleID);
+  }, [state, ruleID]);
 
   useInterval(() => {
     fetchData(state.startDate, state.endDate);
