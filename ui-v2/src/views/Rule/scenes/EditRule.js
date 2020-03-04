@@ -27,7 +27,7 @@ function EditRule() {
   const [isEditingRule, setIsEditingRule] = useState(false);
   const [tagFormVisible, setTagFormVisible] = useState(false);
   const [tagFormLoading, setTagFormLoading] = useState(false);
-  let titleForm = tagForm.getFieldValue("type")!==undefined?"Edit Tag":"Add Tag";
+  const titleForm = tagForm.getFieldValue("type") !== undefined? "Edit Tag":"Add Tag";
 
   useEffect(() => {
     getRule(id)
