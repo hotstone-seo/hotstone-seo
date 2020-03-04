@@ -30,6 +30,7 @@ function EditRule() {
   const [isEditingRule, setIsEditingRule] = useState(false);
   const [tagFormVisible, setTagFormVisible] = useState(false);
   const [tagFormLoading, setTagFormLoading] = useState(false);
+  let titleForm = tagForm.getFieldValue("type")!==undefined?"Edit Tag":"Add Tag";
 
   useEffect(() => {
     if (location.state && location.state.message) {
@@ -168,7 +169,7 @@ function EditRule() {
       </div>
 
       <Modal
-        title="Add/Edit Tag"
+        title={titleForm}
         visible={tagFormVisible}
         onOk={submitTag}
         onCancel={() => {
