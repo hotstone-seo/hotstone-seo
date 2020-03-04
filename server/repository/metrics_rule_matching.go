@@ -20,7 +20,7 @@ type MetricsRuleMatchingRepo interface {
 	ListMismatchedCount(ctx context.Context, paginationParam PaginationParam) (list []*MetricsMismatchedCount, err error)
 	CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
 	CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
-	ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error)
+	ListCountHitPerDay(ctx context.Context, startDate, endDate, ruleID string) (list []*MetricsCountHitPerDay, err error)
 }
 
 // NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [constructor]

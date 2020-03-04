@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {
-  Table, Divider, Button, Popconfirm, Tooltip
+  Table, Divider, Button, Popconfirm, Tooltip, message,
 } from 'antd';
-import { format } from 'date-fns';
+import moment from 'moment';
 import { fetchRules } from 'api/rule';
 import { getDataSource } from 'api/datasource';
 import { useTableFilterProps } from 'hooks/useTableFilterProps';
@@ -16,20 +18,14 @@ const defaultPagination = {
   pageSize: 5,
 };
 
-const formatDate = (since) => {
-  const sinceDate = new Date(since);
-
-  const full = format(sinceDate, 'dd/MM/yyyy - HH:mm');
-
-  return `${full}`;
-};
+const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
   const { onClick, onEdit, onDelete } = props;
+
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-
   const [listRule, setListRule] = useState([]);
 
   const total = useTablePaginationTotal(paginationInfo, listRule);
@@ -46,26 +42,22 @@ function RuleListV2(props) {
           filteredInfo,
           sortedInfo,
         );
-
         const rules = await fetchRules({ params: queryParam });
         const updatedListRule = await Promise.all(
           rules.map(async (rule) => {
-            if (rule.data_source_id == null) {
-              rule.data_source = '';
-            } else {
+            const modifiedRule = rule;
+            if (rule.data_source_id !== null) {
               const dataSource = await getDataSource(rule.data_source_id);
-              rule.data_source = dataSource.name;
+              modifiedRule.dataSource = dataSource;
             }
-            return rule;
+            return modifiedRule;
           }),
         );
-
         setListRule(updatedListRule);
-      } catch (err) {
-        console.log('ERR: ', err);
+      } catch (error) {
+        message.error(error.message);
       }
     }
-
     fetchData();
   }, [paginationInfo, filteredInfo, sortedInfo]);
 
@@ -103,13 +95,19 @@ function RuleListV2(props) {
     },
     {
       title: 'Data Source',
-      dataIndex: 'data_source',
+      dataIndex: 'dataSource',
       key: 'data_source',
       sorter: false,
       sortOrder: sortedInfo.columnKey === 'data_source' && sortedInfo.order,
+      render: (dataSource) => {
+        if (dataSource) {
+          return <Link to={`/datasources/${dataSource.id}`}>{dataSource.name}</Link>;
+        }
+        return null;
+      },
     },
     {
-      title: 'Updated Date',
+      title: 'Last Updated',
       dataIndex: 'updated_at',
       key: 'updated_at',
       sorter: true,
@@ -160,5 +158,13 @@ function RuleListV2(props) {
     </div>
   );
 }
+
+RuleListV2.propTypes = {
+  onClick: PropTypes.func.isRequired,
+
+  onEdit: PropTypes.func.isRequired,
+
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default RuleListV2;

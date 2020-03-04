@@ -100,7 +100,7 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context, where
 	return
 }
 
-func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, startDate string, endDate string) (list []*MetricsCountHitPerDay, err error) {
+func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, startDate, endDate, ruleID string) (list []*MetricsCountHitPerDay, err error) {
 	var rows *sql.Rows
 
 	query := `
@@ -109,14 +109,19 @@ func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, st
 	),
 	count_per_day AS (
 		select date(time), count(is_matched) from metrics_rule_matching
-		WHERE is_matched = 1
+		WHERE is_matched = 1 AND (
+			CASE WHEN $3 != '' THEN
+				rule_id = $3::int
+			ELSE true
+			END
+		)
 		GROUP BY date(time)
 	)
 	select rd.date, coalesce(cpd.count, 0) as count from range_date rd
 	left join count_per_day cpd on rd.date = cpd.date
 	`
 
-	if rows, err = r.DB.Query(query, startDate, endDate); err != nil {
+	if rows, err = r.DB.Query(query, startDate, endDate, ruleID); err != nil {
 		return
 	}
 

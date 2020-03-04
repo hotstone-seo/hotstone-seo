@@ -62,12 +62,13 @@ func (c *MetricsCntrl) ListCountHitPerDay(ctx echo.Context) (err error) {
 
 	startDate := ctx.QueryParam("start")
 	endDate := ctx.QueryParam("end")
+	ruleID := ctx.QueryParam("rule_id")
 
 	if startDate == "" || endDate == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "'start' and 'end' query params are required")
 	}
 
-	if counts, err = c.MetricsRuleMatchingService.ListCountHitPerDay(ctx0, startDate, endDate); err != nil {
+	if counts, err = c.MetricsRuleMatchingService.ListCountHitPerDay(ctx0, startDate, endDate, ruleID); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, counts)

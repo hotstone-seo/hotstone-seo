@@ -24,7 +24,7 @@ function UniquePageCounterCard({ ruleID }) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [ruleID]);
 
   return <CounterCard counter={countUniquePage} label="Unique Page" />;
 }

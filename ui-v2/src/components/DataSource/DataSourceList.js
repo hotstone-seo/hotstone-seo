@@ -1,19 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table, Button, Divider, Popconfirm, Tooltip
+  Table, Button, Divider, Popconfirm, Tooltip,
 } from 'antd';
-
+import moment from 'moment';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { format } from 'date-fns';
 
-const formatDate = (since) => {
-  const sinceDate = new Date(since);
-
-  const full = format(sinceDate, 'dd/MM/yyyy - HH:mm');
-
-  return `${full}`;
-};
+const formatDate = (dateString) => moment(dateString).fromNow();
 
 function DataSourceList(props) {
   const {
@@ -35,7 +28,12 @@ function DataSourceList(props) {
       ),
     },
     { title: 'URL', dataIndex: 'url', key: 'url' },
-    { title: 'Last Updated', dataIndex: 'updated_at', key: 'lastUpdated',render: (text, record) => <div>{formatDate(record.updated_at)}</div> },
+    {
+      title: 'Last Updated',
+      dataIndex: 'updated_at',
+      key: 'lastUpdated',
+      render: (text, record) => <div>{formatDate(record.updated_at)}</div>,
+    },
     {
       title: 'Action',
       key: 'action',
