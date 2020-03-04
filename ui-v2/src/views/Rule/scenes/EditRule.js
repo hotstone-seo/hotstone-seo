@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import {
   PageHeader, Row, Col, message, Select, Button, Modal, Form,
 } from 'antd';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, BarChartOutlined } from '@ant-design/icons';
 import { RuleForm, RuleDetail } from 'components/Rule';
 import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
@@ -126,6 +126,15 @@ function EditRule() {
             icon={<EditOutlined />}
           >
             {isEditingRule ? 'Cancel' : 'Edit Rule'}
+          </Button>,
+          <Button
+            key="analytics"
+            icon={<BarChartOutlined />}
+            onClick={() => {
+              history.push(`/analytic?ruleID=${rule.id}`);
+            }}
+          >
+            Analytics
           </Button>,
         ]}
       >
