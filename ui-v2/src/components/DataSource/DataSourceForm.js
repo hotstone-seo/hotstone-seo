@@ -44,7 +44,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
 
       <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
         <Button type="primary" htmlType="submit">
-          Submit
+          Save
         </Button>
       </Form.Item>
     </Form>

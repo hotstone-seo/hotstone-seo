@@ -75,7 +75,7 @@ function RuleForm(props) {
         }
       >
         <Button type="primary" htmlType="submit">
-          Submit
+          Save
         </Button>
       </Form.Item>
     </Form>
