@@ -1,18 +1,28 @@
-import React, { useState } from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
-import { Layout, Menu } from 'antd';
+import React, { useState, useEffect } from 'react';
+import {
+  Link, Route, Switch, useLocation,
+} from 'react-router-dom';
+import { Layout, Menu, message } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import routes from 'routes';
-import HeaderMenu from './HeaderMenu';
-import styles from './DashboardLayout.module.css';
 import logo from 'assets/hotstone-logo.png';
 import miniLogo from 'assets/hotstone-logo-mini.png';
+import HeaderMenu from './HeaderMenu';
+import styles from './DashboardLayout.module.css';
 
 const { Header, Content, Sider } = Layout;
 
-function DashboardLayout(props) {
+function DashboardLayout() {
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
-  const { location } = props;
+
+  useEffect(() => {
+    if (location.state && location.state.message) {
+      const { level, content } = location.state.message;
+      message[level](content);
+    }
+  }, [location.state]);
+
   return (
     <Layout className={styles.base}>
       <Sider
@@ -25,7 +35,7 @@ function DashboardLayout(props) {
           className={styles.logo}
           style={{
             backgroundImage: (collapsed ? `url(${miniLogo})` : `url(${logo})`),
-            backgroundSize: (collapsed ? '50px 32px' : '100px 32px')
+            backgroundSize: (collapsed ? '50px 32px' : '100px 32px'),
           }}
         />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
@@ -50,13 +60,13 @@ function DashboardLayout(props) {
         </Header>
         <Content className={styles.content}>
           <Switch>
-            {routes.map((route, idx) => (route.component ? (
+            {routes.map((route) => (route.component ? (
               <Route
-                key={idx}
+                key={route.path}
                 path={route.path}
                 exact={route.exact}
                 name={route.name}
-                render={(props) => <route.component {...props} />}
+                component={route.component}
               />
             ) : null))}
           </Switch>

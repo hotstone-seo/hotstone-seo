@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import { Menu, Dropdown, Button } from 'antd';
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import urljoin from 'url-join';
 import { useAuth } from '../../components/AuthProvider';
 
 function HeaderMenu() {

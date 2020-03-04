@@ -40,6 +40,12 @@ function RuleForm(props) {
         name="url_pattern"
         label="URL Pattern"
         rules={[{ required: true, message: 'Please input the URL Pattern' }]}
+        normalize={(value) => {
+          if (value[0] !== '/') {
+            return `/${value}`;
+          }
+          return value;
+        }}
       >
         <Input
           placeholder="/my/rule/pattern"
