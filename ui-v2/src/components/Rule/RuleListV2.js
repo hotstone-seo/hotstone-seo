@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Table, Divider, Button, Popconfirm, Tooltip, message,
 } from 'antd';
-import { format } from 'date-fns';
+import moment from 'moment';
 import { fetchRules } from 'api/rule';
 import { getDataSource } from 'api/datasource';
 import { useTableFilterProps } from 'hooks/useTableFilterProps';
@@ -17,13 +17,7 @@ const defaultPagination = {
   pageSize: 5,
 };
 
-const formatDate = (since) => {
-  const sinceDate = new Date(since);
-
-  const full = format(sinceDate, 'dd/MM/yyyy - HH:mm');
-
-  return `${full}`;
-};
+const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
   const { onClick, onEdit, onDelete } = props;
@@ -108,7 +102,7 @@ function RuleListV2(props) {
       sortOrder: sortedInfo.columnKey === 'data_source' && sortedInfo.order,
     },
     {
-      title: 'Updated Date',
+      title: 'Last Updated',
       dataIndex: 'updated_at',
       key: 'updated_at',
       sorter: true,
