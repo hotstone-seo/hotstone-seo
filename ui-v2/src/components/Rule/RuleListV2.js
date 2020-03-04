@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
-  Table, Divider, Button, Popconfirm, Tooltip
+  Table, Divider, Button, Popconfirm, Tooltip, message,
 } from 'antd';
 import { format } from 'date-fns';
 import { fetchRules } from 'api/rule';
@@ -26,10 +27,10 @@ const formatDate = (since) => {
 
 function RuleListV2(props) {
   const { onClick, onEdit, onDelete } = props;
+
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-
   const [listRule, setListRule] = useState([]);
 
   const total = useTablePaginationTotal(paginationInfo, listRule);
@@ -46,26 +47,24 @@ function RuleListV2(props) {
           filteredInfo,
           sortedInfo,
         );
-
         const rules = await fetchRules({ params: queryParam });
         const updatedListRule = await Promise.all(
           rules.map(async (rule) => {
+            const modifiedRule = rule;
             if (rule.data_source_id == null) {
-              rule.data_source = '';
+              modifiedRule.data_source = '';
             } else {
               const dataSource = await getDataSource(rule.data_source_id);
-              rule.data_source = dataSource.name;
+              modifiedRule.data_source = dataSource.name;
             }
             return rule;
           }),
         );
-
         setListRule(updatedListRule);
-      } catch (err) {
-        console.log('ERR: ', err);
+      } catch (error) {
+        message.error(error.message);
       }
     }
-
     fetchData();
   }, [paginationInfo, filteredInfo, sortedInfo]);
 
@@ -160,5 +159,13 @@ function RuleListV2(props) {
     </div>
   );
 }
+
+RuleListV2.propTypes = {
+  onClick: PropTypes.func.isRequired,
+
+  onEdit: PropTypes.func.isRequired,
+
+  onDelete: PropTypes.func.isRequired,
+};
 
 export default RuleListV2;
