@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
 import { fetchRules, deleteRule } from 'api/rule';
 import { RuleListV2 } from 'components/Rule';
-
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 
 function ViewRules({ match }) {
   const [rules, setRules] = useState([]);
@@ -52,7 +51,13 @@ function ViewRules({ match }) {
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
-        <Button type="primary" style={{ marginBottom: 16 }} icon={<PlusCircleOutlined />} onClick={() => addDataRule()}>Add New Rule
+        <Button
+          type="primary"
+          style={{ marginBottom: 16 }}
+          icon={<PlusOutlined />}
+          onClick={() => addDataRule()}
+        >
+          Add New Rule
         </Button>
         <RuleListV2
           rules={rules}
