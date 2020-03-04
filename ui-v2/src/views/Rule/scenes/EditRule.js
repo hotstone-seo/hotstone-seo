@@ -19,7 +19,7 @@ import { RuleForm, RuleDetail } from 'components/Rule';
 import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
 import {
- fetchTags, createTag, updateTag, deleteTag 
+  fetchTags, createTag, updateTag, deleteTag,
 } from 'api/tag';
 import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
