@@ -24,7 +24,7 @@ function HitCounterCard({ ruleID }) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [ruleID]);
 
   return <CounterCard counter={countHit} label="Hit" />;
 }
