@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Table, Divider, Button, Popconfirm, Tooltip, message,
@@ -45,13 +46,11 @@ function RuleListV2(props) {
         const updatedListRule = await Promise.all(
           rules.map(async (rule) => {
             const modifiedRule = rule;
-            if (rule.data_source_id == null) {
-              modifiedRule.data_source = '';
-            } else {
+            if (rule.data_source_id !== null) {
               const dataSource = await getDataSource(rule.data_source_id);
-              modifiedRule.data_source = dataSource.name;
+              modifiedRule.dataSource = dataSource;
             }
-            return rule;
+            return modifiedRule;
           }),
         );
         setListRule(updatedListRule);
@@ -96,10 +95,16 @@ function RuleListV2(props) {
     },
     {
       title: 'Data Source',
-      dataIndex: 'data_source',
+      dataIndex: 'dataSource',
       key: 'data_source',
       sorter: false,
       sortOrder: sortedInfo.columnKey === 'data_source' && sortedInfo.order,
+      render: (dataSource) => {
+        if (dataSource) {
+          return <Link to={`/datasources/${dataSource.id}`}>{dataSource.name}</Link>;
+        }
+        return null;
+      },
     },
     {
       title: 'Last Updated',
