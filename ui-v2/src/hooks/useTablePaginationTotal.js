@@ -4,7 +4,7 @@ const PageSizeMultiplierHack = 2;
 
 // THIS IS A WORKAROUND if 'count' of total data is not available in backend response.
 // If 'count' is availabe, this hook (useTablePaginationTotal) is not necessary
-export function useTablePaginationTotal(pagination, listData) {
+export default function useTablePaginationTotal(pagination, listData) {
   return useMemo(() => {
     let total = 0;
 

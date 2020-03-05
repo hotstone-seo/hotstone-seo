@@ -3,7 +3,7 @@ import {
   Table, Divider, Button, Popconfirm, Row, Col,
 } from 'antd';
 import { format, formatDistance } from 'date-fns';
-import { useTableFilterProps } from 'hooks/useTableFilterProps';
+import useTableFilterProps from 'hooks/useTableFilterProps';
 import {
   buildQueryParam,
   onTableChange,

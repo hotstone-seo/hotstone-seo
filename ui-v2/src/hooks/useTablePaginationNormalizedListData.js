@@ -1,12 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 const PageSizeMultiplierHack = 2;
 
 // THIS IS A WORKAROUND if 'count' of total data is not available in backend response.
 // If 'count' is availabe, this hook (useTablePaginationTotal) is not necessary
-export function useTablePaginationNormalizedListData(pagination, listData) {
-  const [listNormalizedData, setListNormalizedData] = useState(listData);
-
+export default function useTablePaginationNormalizedListData(pagination, listData) {
   return useMemo(() => {
     let normalizedListData = listData;
     if (listData.length / pagination.pageSize > PageSizeMultiplierHack - 1) {
