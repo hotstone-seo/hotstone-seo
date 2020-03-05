@@ -23,6 +23,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 function RuleListV2(props) {
   const { onClick, onEdit, onDelete } = props;
 
+  const [loading, setLoading] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -36,6 +37,7 @@ function RuleListV2(props) {
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       try {
         const queryParam = buildQueryParam(
           paginationInfo,
@@ -57,6 +59,7 @@ function RuleListV2(props) {
       } catch (error) {
         message.error(error.message);
       }
+      setLoading(false);
     }
     fetchData();
   }, [paginationInfo, filteredInfo, sortedInfo]);
@@ -154,6 +157,7 @@ function RuleListV2(props) {
           setFilteredInfo,
           setSortedInfo,
         )}
+        loading={loading}
       />
     </div>
   );
