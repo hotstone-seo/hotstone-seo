@@ -5,7 +5,7 @@ import { Descriptions, message } from 'antd';
 import moment from 'moment';
 import { getDataSource } from 'api/datasource';
 
-const formatDate = (dateString) => moment(dateString).format('DD-MM-YYYY HH:mm:ss');
+const formatDate = (dateString) => moment(dateString).format('DD MMM YYYY HH:mm:ss');
 
 function RuleDetail({ rule }) {
   const {
