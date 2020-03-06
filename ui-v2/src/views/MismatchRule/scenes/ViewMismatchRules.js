@@ -16,7 +16,7 @@ import _ from 'lodash';
 const formatDate = (dateStr) => {
   const date = new Date(dateStr);
 
-  const full = format(date, 'dd/MM/yyyy - HH:mm');
+  const full = format(date, 'dd MMM yyyy - HH:mm');
   const relative = formatDistance(date, new Date());
 
   return `${full} (${relative} ago)`;
