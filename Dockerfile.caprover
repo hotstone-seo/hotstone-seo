@@ -37,6 +37,6 @@ RUN ./typicalw build
 FROM scratch
 # Copy our static executable.
 COPY --from=frontend-builder /usr/src/frontend/build /app/build
-COPY --from=backend-builder /usr/src/backend/hotstone-seo /app/hotstone-seo
+COPY --from=backend-builder /usr/src/backend/bin/hotstone-seo /app/hotstone-seo
 # Run the binary.
 CMD ["/app/hotstone-seo"]
