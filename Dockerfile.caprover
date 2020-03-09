@@ -33,7 +33,7 @@ RUN ./typicalw build
 # CMD ["nginx", "-g", "daemon off;"]
 
 # === BUILD FINAL ===
-FROM scratch
+FROM alpine
 # Copy our static executable.
 COPY --from=frontend-builder /usr/src/frontend/build /app/build
 COPY --from=backend-builder /usr/src/backend/bin/hotstone-seo /app/hotstone-seo
