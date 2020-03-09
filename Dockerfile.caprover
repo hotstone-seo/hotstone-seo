@@ -20,6 +20,7 @@ COPY . .
 # Using go get.
 RUN go get -u -v golang.org/x/tools/cmd/goimports
 
+RUN ls -hal .
 RUN ./typicalw build
 
 # RUN mkdir /usr/src/backend
