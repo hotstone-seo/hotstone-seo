@@ -65,5 +65,7 @@ func startServer(s server) error {
 	s.CenterCntrl.Route(api)
 	s.MetricsCntrl.Route(api)
 
+	s.Static("/", "build")
+
 	return s.Start(s.Address)
 }
