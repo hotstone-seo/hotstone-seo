@@ -12,7 +12,7 @@ FROM golang:alpine AS backend-builder
 
 # Install git.
 # Git is required for fetching the dependencies.
-RUN apk update && apk add --no-cache git
+RUN apk update && apk add --no-cache git bash
 # WORKDIR $GOPATH/src/hotstone-seo/
 WORKDIR /usr/src/backend
 COPY . .
