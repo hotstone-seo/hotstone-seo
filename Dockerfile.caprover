@@ -7,8 +7,6 @@ COPY ./ui-v2 /usr/src/frontend
 RUN npm install
 RUN npm run build
 
-hotstone123
-
 # === build backend ===
 FROM golang:alpine AS backend-builder
 
