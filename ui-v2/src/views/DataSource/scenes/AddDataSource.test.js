@@ -34,8 +34,8 @@ describe('AddDataSource', () => {
     expect(input.value).toBe('data source airport');
   });
 
-  //test('save new data source', () => {
+  test('save new data source', () => {
   //  form.simulate('click');
   //  expect(saveDataSource).toHaveBeenNthCalledWith(1, dataSource);
-  //});
+  });
 });
