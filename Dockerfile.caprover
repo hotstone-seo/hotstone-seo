@@ -16,7 +16,7 @@ COPY . .
 
 RUN go get -u -v golang.org/x/tools/cmd/goimports
 
-RUN ./typicalw pg reset
+RUN ./typicalw && cat env > .env && ./typicalw pg reset
 RUN ./typicalw build
 
 # === BUILD FINAL ===
