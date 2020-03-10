@@ -19,9 +19,9 @@ RUN go get -u -v golang.org/x/tools/cmd/goimports
 RUN ./typicalw build
 
 # === BUILD FINAL ===
-FROM golang:buster
+FROM golang:alpine
 
-# RUN apk update && apk add --no-cache git bash bind-tools
+RUN apk update && apk add --no-cache git bash bind-tools
 
 COPY --from=frontend-builder /usr/src/frontend/build /app/build
 COPY --from=backend-builder /usr/src/backend/bin/hotstone-seo /app/hotstone-seo
