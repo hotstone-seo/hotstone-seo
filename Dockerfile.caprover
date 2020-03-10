@@ -19,7 +19,7 @@ RUN go get -u -v golang.org/x/tools/cmd/goimports
 RUN ./typicalw build
 
 # === BUILD FINAL ===
-FROM golang:alpine
+FROM golang:alpine:3.9.5
 
 RUN apk update && apk add --no-cache git bash
 
