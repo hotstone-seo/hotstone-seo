@@ -69,5 +69,5 @@ func startServer(s server) error {
 	s.CenterCntrl.Route(api)
 	s.MetricsCntrl.Route(api)
 
-	return s.Start(s.Address)
+	return s.Echo.Start(s.Address)
 }
