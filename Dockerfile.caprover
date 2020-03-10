@@ -29,4 +29,6 @@ COPY --from=backend-builder /usr/src/backend/bin/hotstone-seo /app/hotstone-seo
 COPY --from=backend-builder /usr/src/backend /src/backend
 
 RUN ls -hal /app
-CMD ["/app/hotstone-seo"]
+
+WORKDIR /app
+CMD ["./hotstone-seo"]
