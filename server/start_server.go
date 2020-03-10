@@ -33,6 +33,10 @@ type server struct {
 
 func startServer(s server) error {
 	s.SetDebug(s.Debug)
+	s.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:  "build",
+		HTML5: true,
+	}))
 
 	// health check
 	s.PutHealthChecker("postgres", s.Postgres.Ping)
@@ -64,8 +68,6 @@ func startServer(s server) error {
 	s.ProviderCntrl.Route(api)
 	s.CenterCntrl.Route(api)
 	s.MetricsCntrl.Route(api)
-
-	s.Static("/", "build")
 
 	return s.Start(s.Address)
 }
