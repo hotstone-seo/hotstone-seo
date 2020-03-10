@@ -3,14 +3,14 @@ import {
   Table, Divider, Button, Popconfirm, Row, Col,
 } from 'antd';
 import { format, formatDistance } from 'date-fns';
-import useTableFilterProps from 'hooks/useTableFilterProps';
+import useTableFilterProps from '../../../hooks/useTableFilterProps';
 import {
   buildQueryParam,
   onTableChange,
   createPageToken,
-} from 'utils/pagination_cursor';
-import { fetchMismatched } from 'api/metric';
-import { useTokenPagination } from 'hooks/useTokenPagination';
+} from '../../../utils/pagination_cursor';
+import { fetchMismatched } from '../../../api/metric';
+import { useTokenPagination } from '../../../hooks/useTokenPagination';
 import _ from 'lodash';
 
 const formatDate = (dateStr) => {

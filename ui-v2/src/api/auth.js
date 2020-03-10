@@ -1,4 +1,4 @@
-import client from 'api/client';
+import client from './client';
 
 // NOTE:
 // In this context, authentication simply means the act of a user proving

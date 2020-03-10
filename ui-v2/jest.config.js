@@ -2,6 +2,18 @@ module.exports = {
   moduleFileExtensions: [
     'web.js', 'js', 'web.ts', 'ts', 'web.tsx', 'tsx', 'json', 'web.jsx', 'jsx', 'node',
   ],
+  coverageThreshold: {
+    global: {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
+  coverageReporters: [
+    'lcov',
+    'html',
+  ],
   collectCoverageFrom: [
     'src/views/**/*.{js,jsx}',
     'src/components/**/*.{js,jsx}',

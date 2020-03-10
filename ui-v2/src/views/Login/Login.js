@@ -3,9 +3,9 @@ import { Redirect } from 'react-router-dom';
 import {
   Layout, Row, Col, message, Alert,
 } from 'antd';
-import { useAuth } from 'components/AuthProvider';
-import { LoginForm } from 'components/Login';
-import useRouter from 'hooks/useRouter';
+import { useAuth } from '../../components/AuthProvider';
+import { LoginForm } from '../../components/Login';
+import useRouter from '../../hooks/useRouter';
 
 function Login() {
   const { query } = useRouter();

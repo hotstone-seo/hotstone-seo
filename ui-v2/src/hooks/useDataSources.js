@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchDataSources } from 'api/datasource';
+import { fetchDataSources } from '../api/datasource';
 
 function useDataSources() {
   const [dataSources, setDataSources] = useState([]);

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Descriptions, message } from 'antd';
 import moment from 'moment';
-import { getDataSource } from 'api/datasource';
+import { getDataSource } from '../../api/datasource';
 
 const formatDate = (dateString) => moment(dateString).format('DD MMM YYYY HH:mm:ss');
 

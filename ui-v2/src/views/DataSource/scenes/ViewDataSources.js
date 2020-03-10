@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
-import { deleteDataSource } from 'api/datasource';
-import useDataSources from 'hooks/useDataSources';
-import { DataSourceList } from 'components/DataSource';
-
 import { PlusOutlined } from '@ant-design/icons';
+
+import { deleteDataSource } from '../../../api/datasource';
+import useDataSources from '../../../hooks/useDataSources';
+import { DataSourceList } from '../../../components/DataSource';
+
 
 function ViewDataSources({ match }) {
   const [dataSources, setDataSources] = useDataSources();

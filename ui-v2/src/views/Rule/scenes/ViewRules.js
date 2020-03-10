@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
-import { fetchRules, deleteRule } from 'api/rule';
-import { RuleListV2 } from 'components/Rule';
+import { fetchRules, deleteRule } from '../../../api/rule';
+import { RuleListV2 } from '../../../components/Rule';
 import { PlusOutlined } from '@ant-design/icons';
 
 function ViewRules({ match }) {

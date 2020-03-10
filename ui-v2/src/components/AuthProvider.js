@@ -2,7 +2,7 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
-import AuthAPI from 'api/auth';
+import AuthAPI from '../api/auth';
 
 const AuthContext = React.createContext();
 

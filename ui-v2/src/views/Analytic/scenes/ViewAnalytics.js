@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   Button, Row, Col, Card, Form, Select,
 } from 'antd';
-import useRouter from 'hooks/useRouter';
-import { fetchRules } from 'api/rule';
-import { HitChartCard, HitCounterCard, UniquePageCounterCard } from 'components/Analytic';
+import useRouter from '../../../hooks/useRouter';
+import { fetchRules } from '../../../api/rule';
+import { HitChartCard, HitCounterCard, UniquePageCounterCard } from '../../../components/Analytic';
 
 import _ from 'lodash';
 

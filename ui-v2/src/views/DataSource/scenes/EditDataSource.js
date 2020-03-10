@@ -3,8 +3,8 @@ import { useHistory, useParams } from 'react-router-dom';
 import {
   PageHeader, Row, Col, message,
 } from 'antd';
-import { DataSourceForm } from 'components/DataSource';
-import { getDataSource, updateDataSource } from 'api/datasource';
+import { DataSourceForm } from '../../../components/DataSource';
+import { getDataSource, updateDataSource } from '../../../api/datasource';
 
 function EditDataSource() {
   const { id } = useParams();
