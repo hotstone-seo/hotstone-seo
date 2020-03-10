@@ -10,33 +10,19 @@ RUN npm run build
 # === build backend ===
 FROM golang:alpine AS backend-builder
 
-# Install git.
-# Git is required for fetching the dependencies.
 RUN apk update && apk add --no-cache git bash
-# WORKDIR $GOPATH/src/hotstone-seo/
 WORKDIR /usr/src/backend
 COPY . .
-# Fetch dependencies.
-# Using go get.
+
 RUN go get -u -v golang.org/x/tools/cmd/goimports
 
 RUN ./typicalw build
 
-# RUN mkdir /usr/src/backend
-# WORKDIR /usr/src/backend
-
-# RUN rm -rf /etc/nginx/conf.d
-# RUN mkdir -p /etc/nginx/conf.d
-# COPY ./default.conf /etc/nginx/conf.d/
-# COPY --from=frontend-builder /usr/src/frontend/build /usr/share/nginx/html
-# EXPOSE 80
-# CMD ["nginx", "-g", "daemon off;"]
-
 # === BUILD FINAL ===
 FROM alpine
-# Copy our static executable.
+
 COPY --from=frontend-builder /usr/src/frontend/build /app/build
 COPY --from=backend-builder /usr/src/backend/bin/hotstone-seo /app/hotstone-seo
-# Run the binary.
+
 RUN ls -hal /app
 CMD ["/app/hotstone-seo"]
