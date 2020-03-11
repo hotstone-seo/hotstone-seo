@@ -21,13 +21,14 @@ const defaultPagination = {
 const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
-  const { onClick, onEdit, onDelete } = props;
+  const {
+    listRule, setListRule, onClick, onEdit, onDelete,
+  } = props;
 
   const [loading, setLoading] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-  const [listRule, setListRule] = useState([]);
 
   const total = useTablePaginationTotal(paginationInfo, listRule);
   const normalizedListData = useTablePaginationNormalizedListData(
@@ -164,10 +165,10 @@ function RuleListV2(props) {
 }
 
 RuleListV2.propTypes = {
+  listRule: PropTypes.arrayOf.isRequired,
+  setListRule: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
-
   onEdit: PropTypes.func.isRequired,
-
   onDelete: PropTypes.func.isRequired,
 };
 
