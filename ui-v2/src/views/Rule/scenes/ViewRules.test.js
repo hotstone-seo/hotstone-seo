@@ -1,53 +1,69 @@
 import React from 'react';
+import { createMemoryHistory } from 'history';
+import { MemoryRouter, Router, Route } from 'react-router-dom';
 import {
+  cleanup, act,
   render, wait,
 } from '@testing-library/react';
+import { prettyDOM } from '@testing-library/dom';
+
 import '@testing-library/jest-dom/extend-expect';
 import mockAxios from 'jest-mock-axios';
-
-import { shallow, configure, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
 import ViewRules from './ViewRules';
 
-configure({ adapter: new Adapter() });
+afterEach(cleanup);
 
 const respMock = [{
   id: 1, name: 'Airport Rule', url: '/foo-ds', url_pattern: '/airport', updated_at: new Date().toISOString(), created_at: new Date().toISOString(),
 }];
 
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
-}));
+// jest.mock('react-router-dom', () => ({
+//   useHistory: () => ({
+//     push: jest.fn(),
+//   }),
+// }));
 
+function renderWithRouter(children, historyConf = {}) {
+  const history = createMemoryHistory(historyConf);
+  return render(<Router history={history}>{children}</Router>);
+}
 
-test('View Rules unit test', () => {
-  const props = {
-    match: { url: 'tes.com' },
-  };
-  const tree = mount(<ViewRules {...props} />);
-  expect(tree).toMatchSnapshot();
-});
-
-/*
-describe('View Rules unit test', () => {
-  test('Rule List', async () => {
+describe('View Rules', () => {
+  test('first load', async () => {
     const url = '/rules';
     const {
-      queryByText,
-    } = render(<ViewRules match={{ url }} />);
+      queryByText, container,
+    } = renderWithRouter(<ViewRules match={{ url }} />, { initialEntries: [url] });
+
+
+    // act(() => {
+    //   // example: click a <Link> to /products?id=1234
+    // });
+
+    // expect(queryByText('Rules')).toBeInTheDocument();
+    // expect(queryByText('Airport Rule')).toBeInTheDocument();
+
+
+    // const elem = getByText(container, 'Goodbye world'); // will fail by throwing error
+
+
+    const queryParam = { params: { _limit: 10, _offset: 0 } };
+    expect(mockAxios.get).toHaveBeenCalledWith('/rules', queryParam);
+    mockAxios.mockResponse({ data: respMock });
+
+    // console.log(`## CONTAINER: ${prettyDOM(container)}`);
+
 
     await wait(() => {
+    //   const queryParam = { params: { _limit: 10, _offset: 0 } };
+    //   expect(mockAxios.get).toHaveBeenCalledWith('/rules', queryParam);
+    //   mockAxios.mockResponse({ data: respMock });
 
+      // expect(queryByText(/No Data/)).toBeInTheDocument();
 
-      expect(mockAxios.get).toHaveBeenNthCalledWith(2);
-      // expect(mockAxios.get).toHaveBeenCalledWith('/rules');
-      mockAxios.mockResponse({ data: respMock });
+      // console.log(`## CONTAINER: ${prettyDOM(container)}`);
 
-      expect(queryByText(/Rules/)).toBeInTheDocument();
-      expect(queryByText(/Airport Rule/)).toBeInTheDocument();
+    //   // expect(queryByText(/Rules/)).toBeInTheDocument();
     });
   });
 });
-*/

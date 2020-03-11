@@ -21,14 +21,15 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+
+/*
 test('View Mismatch rule unit test', () => {
   const props = {
     match: { url: 'tes.com' },
   };
   const tree = mount(<ViewDataSources {...props} />);
   expect(tree).toMatchSnapshot();
-});
-/*
+}); */
 describe('ViewDataSources', () => {
   test('first load', async () => {
     const url = '/datasources';
@@ -45,4 +46,3 @@ describe('ViewDataSources', () => {
     });
   });
 });
-*/

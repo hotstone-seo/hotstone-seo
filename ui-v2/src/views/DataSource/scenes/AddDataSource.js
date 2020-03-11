@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom';
 import {
   PageHeader, Row, Col, message,
 } from 'antd';
-import { DataSourceForm } from 'components/DataSource';
-import { createDataSource } from 'api/datasource';
+import { DataSourceForm } from '../../../components/DataSource';
+import { createDataSource } from '../../../api/datasource';
 
 function AddDataSource() {
   const history = useHistory();
