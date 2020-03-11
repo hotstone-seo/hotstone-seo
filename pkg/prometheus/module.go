@@ -1,6 +1,8 @@
 package prometheus
 
-import "github.com/typical-go/typical-rest-server/pkg/typdocker"
+import (
+	"github.com/typical-go/typical-go/pkg/typdocker"
+)
 
 // Module of prometheus
 type Module struct{}
