@@ -16,8 +16,6 @@ func init() {
 		typdep.NewConstructor(repository.NewRuleRepo),
 		typdep.NewConstructor(repository.NewTagRepo),
 		typdep.NewConstructor(repository.NewURLSyncRepo),
-		typdep.NewConstructor(service.NewOauth2Config),
-		typdep.NewConstructor(service.NewAuthGoogleService),
 		typdep.NewConstructor(service.NewCenterService),
 		typdep.NewConstructor(service.NewDataSourceService),
 		typdep.NewConstructor(service.NewMetricsRuleMatchingService),

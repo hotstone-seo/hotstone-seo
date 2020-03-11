@@ -1,8 +1,8 @@
 package typical
 
 import (
+	"github.com/hotstone-seo/hotstone-seo/pkg/gsociallogin"
 	"github.com/hotstone-seo/hotstone-seo/server"
-
 	"github.com/typical-go/typical-go/pkg/typdocker"
 	"github.com/typical-go/typical-go/pkg/typreadme"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
@@ -19,6 +19,8 @@ var (
 	postgres = typpostgres.New().
 			WithDBName("hotstone").
 			WithDockerImage("timescale/timescaledb:latest-pg11")
+
+	socialLogin = gsociallogin.New()
 
 	docker = typdocker.New().
 		WithComposers(

@@ -13,6 +13,9 @@ var Descriptor = typcore.Descriptor{
 	Version: "0.0.1",
 
 	App: typapp.New(serverApp).
+		AppendProvider(
+			socialLogin,
+		).
 		AppendDependency(
 			redis,
 			postgres,
@@ -35,5 +38,6 @@ var Descriptor = typcore.Descriptor{
 			serverApp,
 			redis,
 			postgres,
+			socialLogin,
 		),
 }
