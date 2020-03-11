@@ -15,6 +15,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
       onFinish={handleSubmit}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
+      id="dsform"
     >
       <Form.Item name="id" noStyle />
 
@@ -23,7 +24,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
         label="Name"
         rules={[{ required: true, message: 'Please input the name of your Data Source' }]}
       >
-        <Input placeholder="My Data Source" maxLength="100" />
+        <Input placeholder="My Data Source" maxLength="100" data-cy="name" />
       </Form.Item>
 
       <Form.Item
@@ -39,6 +40,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
             </Tooltip>
           )}
           maxLength="255"
+          data-cy="url"
         />
       </Form.Item>
 

@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddDataSource Should render Name correctly 1`] = `ReactWrapper {}`;

@@ -5,9 +5,10 @@ import {
 import '@testing-library/jest-dom/extend-expect';
 import mockAxios from 'jest-mock-axios';
 
-import { shallow, configure, mount } from 'enzyme';
+import { configure, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import ViewDataSources from './ViewDataSources';
+import AddDataSource from './AddDataSource';
 
 configure({ adapter: new Adapter() });
 
@@ -30,8 +31,15 @@ test('View Mismatch rule unit test', () => {
   const tree = mount(<ViewDataSources {...props} />);
   expect(tree).toMatchSnapshot();
 }); */
+
+const props = {
+  onEdit: jest.fn(),
+  onDelete: jest.fn(),
+  handleSubmit: jest.fn()
+};
+
 describe('ViewDataSources', () => {
-  test('first load', async () => {
+  test('first load data source list', async () => {
     const url = '/datasources';
     const {
       queryByText,
@@ -44,5 +52,14 @@ describe('ViewDataSources', () => {
       expect(queryByText(/Data Sources/)).toBeInTheDocument();
       expect(queryByText(/FooDS/)).toBeInTheDocument();
     });
+  });
+
+  test('event click back button', () => { 
+    global.window.matchMedia = function () { return { matches: false, addListener() {}, removeListener() {} }; };
+    const tree = mount(<AddDataSource />);
+    expect(tree.find('.ant-page-header-back-button')).toHaveLength(2);
+    tree.find('.ant-page-header-back-button').at(0).simulate('click');
+    tree.find('.ant-page-header-back-button').at(1).simulate('click');
+    tree.unmount();
   });
 });
