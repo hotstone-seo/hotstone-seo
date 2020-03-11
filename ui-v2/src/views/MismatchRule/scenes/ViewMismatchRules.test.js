@@ -1,4 +1,6 @@
 import React from 'react';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
 import {
   render, wait,
 } from '@testing-library/react';
@@ -12,7 +14,7 @@ import ViewMismatchRules from './ViewMismatchRules';
 configure({ adapter: new Adapter() });
 
 const respMock = [{
-  url: 1, first_seen: '03 Mar 2020 - 08:00(7 days ago)', last_seen: '05 Mar 2020 - 08:00(5 days ago)', count: 2,
+  url: 1, first_seen: new Date(), last_seen: new Date(), count: 2,
 }];
 
 jest.mock('react-router-dom', () => ({
@@ -21,6 +23,7 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+/*
 test('View Rules unit test', () => {
   global.window.matchMedia = function () { return { matches: false, addListener() {}, removeListener() {} }; };
   const props = {
@@ -28,4 +31,20 @@ test('View Rules unit test', () => {
   };
   const tree = mount(<ViewMismatchRules {...props} />);
   expect(tree).toMatchSnapshot();
+});
+*/
+describe('View mismatched rule', () => {
+  test('first load', async () => {
+    global.window.matchMedia = function () { return { matches: false, addListener() {}, removeListener() {} }; };
+    const url = '/metrics/mismatched';
+    const {
+      queryByText, container,
+    } = render(<ViewMismatchRules match={{ url }} />, { initialEntries: [url] });
+
+    await wait(() => {
+      const queryParam = { params: { _limit: 5, _next_key: '-count', _sort: '-last_seen' } };
+      expect(mockAxios.get).toHaveBeenCalledWith('metrics/mismatched', queryParam);
+      mockAxios.mockResponse({ data: respMock });
+    });
+  });
 });
