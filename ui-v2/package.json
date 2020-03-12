@@ -33,6 +33,7 @@
     "start": "react-scripts -r @cypress/instrument-cra start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "npm test -- --coverage --watchAll=false",
     "eject": "react-scripts eject",
     "cy:open": "cypress open",
     "cy:run": "cypress run"
