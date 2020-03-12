@@ -2,27 +2,13 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
-import { fetchRules, deleteRule } from 'api/rule';
+import { deleteRule } from 'api/rule';
 import { RuleListV2 } from 'components/Rule';
 import { PlusOutlined } from '@ant-design/icons';
 
 function ViewRules({ match }) {
-  const [rules, setRules] = useState([]);
-
-  useEffect(() => {
-    let isCancelled = false;
-    fetchRules().then((newRules) => {
-      if (!isCancelled) {
-        setRules(newRules);
-      }
-    });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
-
   const history = useHistory();
+  const [listRule, setListRule] = useState([]);
 
   const showEditForm = (rule) => {
     history.push(`${match.url}/${rule.id}`);
@@ -32,7 +18,7 @@ function ViewRules({ match }) {
     deleteRule(rule.id)
       .then(() => {
         message.success(`Successfully deleted ${rule.name}`);
-        setRules(rules.filter((item) => item.id !== rule.id));
+        setListRule(listRule.filter((item) => item.id !== rule.id));
       })
       .catch((error) => {
         message.error(error.message);
@@ -60,10 +46,11 @@ function ViewRules({ match }) {
           Add New Rule
         </Button>
         <RuleListV2
-          rules={rules}
           onClick={showEditForm}
           onEdit={showEditForm}
           onDelete={handleDelete}
+          listRule={listRule}
+          setListRule={setListRule}
         />
       </div>
     </div>

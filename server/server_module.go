@@ -9,29 +9,29 @@ import (
 
 // Module of application
 type Module struct {
-	prefix string
+	configName string
 }
 
 // New application
 func New() *Module {
 	return &Module{
-		prefix: "APP",
+		configName: "APP",
 	}
 }
 
-// WithPrefix return app module with new prefix
-func (m *Module) WithPrefix(prefix string) *Module {
-	m.prefix = prefix
+// WithConfigName return app module with new prefix
+func (m *Module) WithConfigName(configName string) *Module {
+	m.configName = configName
 	return m
 }
 
 // Configure the application
-func (m *Module) Configure(loader typcfg.Loader) *typcfg.Detail {
-	return &typcfg.Detail{
-		Prefix: m.prefix,
-		Spec:   &config.Config{},
+func (m *Module) Configure(loader typcfg.Loader) *typcfg.Configuration {
+	return &typcfg.Configuration{
+		Name: m.configName,
+		Spec: &config.Config{},
 		Constructor: typdep.NewConstructor(func() (cfg config.Config, err error) {
-			err = loader.Load(m.prefix, &cfg)
+			err = loader.Load(m.configName, &cfg)
 			return
 		}),
 	}

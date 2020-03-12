@@ -10,9 +10,9 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/gsociallogin"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
+
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
@@ -25,7 +25,7 @@ var (
 type AuthCntrl struct {
 	dig.In
 	config.Config
-	service.AuthGoogleService
+	gsociallogin.AuthGoogleService
 }
 
 // AuthGoogleLogin handle Google auth login
@@ -35,7 +35,7 @@ func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
 	// 	log.Warnf("[auth/google/login] REQ:\n%s\n\n", requestDump)
 	// }
 
-	authCodeURL := c.AuthGoogleService.GetAuthCodeURL(ce)
+	authCodeURL := c.AuthGoogleService.GetAuthCodeURL(ce, c.CookieSecure)
 	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
 }
 
@@ -50,7 +50,7 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 		return errors.Trace(err)
 	}
 
-	jwtToken, err := c.AuthGoogleService.VerifyCallback(ce)
+	jwtToken, err := c.AuthGoogleService.VerifyCallback(ce, c.JwtSecret)
 	if err != nil {
 		log.Error(errors.Details(err))
 		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
@@ -80,40 +80,6 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 	ce.SetCookie(tokenCookie)
 
 	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
-}
-
-func (c *AuthCntrl) AuthGoogleToken(ce echo.Context) (err error) {
-	var (
-		req      repository.TokenReq
-		jwtToken []byte
-		ctx      = ce.Request().Context()
-	)
-	if err = ce.Bind(&req); err != nil {
-		return
-	}
-	if jwtToken, err = c.AuthGoogleService.GetThenDeleteJwtToken(ctx, req.Holder); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-
-	if req.SetCookie {
-		secureTokenCookie := &http.Cookie{
-			Name: "secure_token", Value: string(jwtToken),
-			Expires:  time.Now().Add(JwtTokenCookieExpire),
-			Path:     "/",
-			HttpOnly: true, Secure: c.Config.CookieSecure,
-		}
-		ce.SetCookie(secureTokenCookie)
-
-		tokenCookie := &http.Cookie{
-			Name: "token", Value: string(jwtToken),
-			Expires:  time.Now().Add(JwtTokenCookieExpire),
-			Path:     "/",
-			HttpOnly: false, Secure: c.Config.CookieSecure,
-		}
-		ce.SetCookie(tokenCookie)
-	}
-
-	return ce.JSON(http.StatusOK, repository.TokenResp{Token: string(jwtToken)})
 }
 
 // AuthLogout handle logout by invalidating cookies

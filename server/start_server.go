@@ -32,7 +32,8 @@ type server struct {
 }
 
 func startServer(s server) error {
-	s.SetDebug(s.Debug)
+	s.SetLogger(s.Debug)
+
 	s.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  "build",
 		HTML5: true,
@@ -69,5 +70,5 @@ func startServer(s server) error {
 	s.CenterCntrl.Route(api)
 	s.MetricsCntrl.Route(api)
 
-	return s.Start(s.Address)
+	return s.Echo.Start(s.Address)
 }

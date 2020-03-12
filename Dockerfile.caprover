@@ -21,12 +21,12 @@ RUN ./typicalw build
 # === BUILD FINAL ===
 FROM golang:alpine
 
-RUN apk update && apk add --no-cache git bash bind-tools
+RUN apk update && apk add --no-cache git bash 
 
 COPY --from=frontend-builder /usr/src/frontend/build /app/build
 COPY --from=backend-builder /usr/src/backend/bin/hotstone-seo /app/hotstone-seo
 
 COPY --from=backend-builder /usr/src/backend /src/backend
 
-RUN ls -hal /app
-CMD ["/app/hotstone-seo"]
+WORKDIR /app
+CMD ["./hotstone-seo"]

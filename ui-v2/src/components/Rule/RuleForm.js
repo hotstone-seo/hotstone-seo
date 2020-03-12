@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Select, Button, Tooltip,
@@ -12,7 +12,10 @@ function RuleForm(props) {
     rule, dataSources, onSubmit, formLayout,
   } = props;
   const [form] = Form.useForm();
-  form.setFieldsValue(rule);
+
+  useEffect(() => {
+    form.setFieldsValue(rule);
+  }, []);
 
   return (
     <Form
@@ -33,7 +36,7 @@ function RuleForm(props) {
         label="Name"
         rules={[{ required: true, message: 'Please input the name of your Rule' }]}
       >
-        <Input placeholder="My Rule" maxLength="200" />
+        <Input data-testid="input-name" placeholder="My Rule" maxLength="200" />
       </Form.Item>
 
       <Form.Item
@@ -48,6 +51,7 @@ function RuleForm(props) {
         }}
       >
         <Input
+          data-testid="input-url-pattern"
           placeholder="/my/rule/pattern"
           suffix={(
             <Tooltip title="If a request matched this pattern, the tags in the Rule will be returned">
@@ -62,7 +66,10 @@ function RuleForm(props) {
         name="data_source_id"
         label="Data Source"
       >
-        <Select allowClear>
+        <Select
+          data-testid="select-data-source-id"
+          allowClear
+        >
           {dataSources.map(({ id, name }) => (
             <Option value={id} key={id}>{name}</Option>
           ))}
@@ -74,7 +81,7 @@ function RuleForm(props) {
           formLayout === 'horizontal' ? { offset: 6, span: 14 } : null
         }
       >
-        <Button type="primary" htmlType="submit">
+        <Button data-testid="btn-save" type="primary" htmlType="submit">
           Save
         </Button>
       </Form.Item>

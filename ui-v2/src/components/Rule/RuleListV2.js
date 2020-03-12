@@ -12,6 +12,7 @@ import { buildQueryParam, onTableChange } from 'utils/pagination';
 import useTablePaginationTotal from 'hooks/useTablePaginationTotal';
 import useTablePaginationNormalizedListData from 'hooks/useTablePaginationNormalizedListData';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import _ from 'lodash';
 
 const defaultPagination = {
   current: 1,
@@ -21,13 +22,14 @@ const defaultPagination = {
 const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
-  const { onClick, onEdit, onDelete } = props;
+  const {
+    listRule, setListRule, onClick, onEdit, onDelete,
+  } = props;
 
   const [loading, setLoading] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-  const [listRule, setListRule] = useState([]);
 
   const total = useTablePaginationTotal(paginationInfo, listRule);
   const normalizedListData = useTablePaginationNormalizedListData(
@@ -48,7 +50,7 @@ function RuleListV2(props) {
         const updatedListRule = await Promise.all(
           rules.map(async (rule) => {
             const modifiedRule = rule;
-            if (rule.data_source_id !== null) {
+            if (!_.isEmpty(rule.data_source_id)) {
               const dataSource = await getDataSource(rule.data_source_id);
               modifiedRule.dataSource = dataSource;
             }
@@ -163,11 +165,19 @@ function RuleListV2(props) {
   );
 }
 
+const ruleType = PropTypes.shape({
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  url_pattern: PropTypes.string.isRequired,
+  data_source: PropTypes.string,
+  updated_at: PropTypes.instanceOf(Date).isRequired,
+});
+
 RuleListV2.propTypes = {
+  listRule: PropTypes.arrayOf(ruleType).isRequired,
+  setListRule: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
-
   onEdit: PropTypes.func.isRequired,
-
   onDelete: PropTypes.func.isRequired,
 };
 

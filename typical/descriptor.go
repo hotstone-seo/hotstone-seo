@@ -12,7 +12,10 @@ var Descriptor = typcore.Descriptor{
 	Name:    "hotstone-seo",
 	Version: "0.0.1",
 
-	App: typapp.New(_server).
+	App: typapp.New(serverApp).
+		AppendProvider(
+			socialLogin,
+		).
 		AppendDependency(
 			redis,
 			postgres,
@@ -31,9 +34,10 @@ var Descriptor = typcore.Descriptor{
 		),
 
 	Configuration: typcfg.New().
-		WithConfigure(
-			_server,
+		AppendConfigurer(
+			serverApp,
 			redis,
 			postgres,
+			socialLogin,
 		),
 }
