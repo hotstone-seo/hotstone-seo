@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Select, Button, Tooltip,
@@ -12,7 +12,10 @@ function RuleForm(props) {
     rule, dataSources, onSubmit, formLayout,
   } = props;
   const [form] = Form.useForm();
-  form.setFieldsValue(rule);
+
+  useEffect(() => {
+    form.setFieldsValue(rule);
+  }, []);
 
   return (
     <Form
