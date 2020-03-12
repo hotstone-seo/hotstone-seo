@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Button, Tooltip,
@@ -7,7 +7,10 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 
 function DataSourceForm({ dataSource, handleSubmit }) {
   const [form] = Form.useForm();
-  form.setFieldsValue(dataSource);
+
+  useEffect(() => {
+    form.setFieldsValue(dataSource);
+  }, []);
 
   return (
     <Form
@@ -23,7 +26,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
         label="Name"
         rules={[{ required: true, message: 'Please input the name of your Data Source' }]}
       >
-        <Input placeholder="My Data Source" maxLength="100" />
+        <Input data-testid="input-name" placeholder="My Data Source" maxLength="100" />
       </Form.Item>
 
       <Form.Item
@@ -39,11 +42,12 @@ function DataSourceForm({ dataSource, handleSubmit }) {
             </Tooltip>
           )}
           maxLength="255"
+          data-testid="input-url"
         />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
-        <Button type="primary" htmlType="submit">
+        <Button data-testid="btn-save" type="primary" htmlType="submit">
           Save
         </Button>
       </Form.Item>
