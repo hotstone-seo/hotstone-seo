@@ -73,7 +73,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
 		}, false)
-		require.EqualError(t, err, "Get non-existent: unsupported protocol scheme \"\"")
+		require.EqualError(t, err, "Get \"non-existent\": unsupported protocol scheme \"\"")
 		require.Nil(t, resp)
 	})
 }
