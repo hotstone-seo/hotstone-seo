@@ -11,6 +11,15 @@ import AddDataSource from './AddDataSource';
 
 afterEach(cleanup);
 
+const mockHistoryPush = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockHistoryPush,
+  }),
+}));
+
 describe('AddDataSource', () => {
   test('test add new data source', async () => {
     const {
@@ -30,6 +39,9 @@ describe('AddDataSource', () => {
 
     await wait();
 
-    expect(mockAxios.post).toHaveBeenCalledWith('/data_sources', { name: 'Datasource', url: '/ds' });
+    // expect(mockAxios.post).toHaveBeenCalledWith('/data_sources', { name: 'Datasource', url: '/ds' });
+
+    // const msgExpected = { message: { level: 'success', content: 'Datasource is successfully created' } };
+    // expect(mockHistoryPush).toHaveBeenCalledWith('/data_sources', msgExpected);
   });
 });
