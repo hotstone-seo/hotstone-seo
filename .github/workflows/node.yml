@@ -1,0 +1,23 @@
+name: Node
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./ui-v2
+    strategy:
+      matrix:
+        node: [ '12', '10' ]
+    name: Node ${{ matrix.node }} sample
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install
+        working-directory: ${{env.working-directory}}
+      - run: npm run test:coverage
+        working-directory: ${{env.working-directory}}
+      - run: npm run build
+        working-directory: ${{env.working-directory}}

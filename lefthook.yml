@@ -8,5 +8,5 @@ pre-push:
     backend-test:
       run: ./typicalw test
     frontend-test:
-      run: cd ui-v2 && npm test -- --watchAll=false
+      run: 'cd ui-v2 && npm run test:coverage'
     
