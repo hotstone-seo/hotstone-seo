@@ -1,7 +1,7 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import {
-  cleanup, render, wait,
+  cleanup, render, wait, act,
 } from '@testing-library/react';
 
 import '@testing-library/jest-dom/extend-expect';
@@ -21,10 +21,10 @@ describe('Add Rule', () => {
       getByTestId,
     } = render(<AddRule />, { wrapper: MemoryRouter });
 
-    expect(mockAxios.get).toHaveBeenCalledWith('/data_sources');
-    mockAxios.mockResponse({ data: respMock });
-
-    await wait();
+    act(() => {
+      expect(mockAxios.get).toHaveBeenCalledWith('/data_sources');
+      mockAxios.mockResponse({ data: respMock });
+    });
 
     const nameInput = getByTestId('input-name');
     await userEvent.type(nameInput, 'Rule ABC');
@@ -33,8 +33,6 @@ describe('Add Rule', () => {
     const urlPatternInput = getByTestId('input-url-pattern');
     await userEvent.type(urlPatternInput, '/abc');
     expect(urlPatternInput.value).toBe('/abc');
-
-    await wait();
 
     const saveBtn = getByTestId('btn-save');
     userEvent.click(saveBtn);
