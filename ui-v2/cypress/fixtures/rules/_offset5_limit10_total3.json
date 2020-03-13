@@ -1,0 +1,26 @@
+[
+  {
+    "id": 6,
+    "name": "Hotel Rule 6",
+    "url_pattern": "/hotels",
+    "data_source_id": null,
+    "updated_at": "2020-03-10T08:53:35.142925Z",
+    "created_at": "2020-03-10T08:53:35.142925Z"
+  },
+  {
+    "id": 7,
+    "name": "Event Rule 7",
+    "url_pattern": "/events",
+    "data_source_id": null,
+    "updated_at": "2020-03-10T08:53:35.142925Z",
+    "created_at": "2020-03-10T08:53:35.142925Z"
+  },
+  {
+    "id": 8,
+    "name": "Event Rule with Path Params 8",
+    "url_pattern": "/events/\u003ceventName\u003e-\u003ceventDate\u003e",
+    "data_source_id": null,
+    "updated_at": "2020-03-10T08:53:35.142925Z",
+    "created_at": "2020-03-10T08:53:35.142925Z"
+  }
+]
