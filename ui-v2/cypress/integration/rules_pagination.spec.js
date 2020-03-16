@@ -1,4 +1,4 @@
-describe('/rules', () => {
+describe('rules_pagination', () => {
   beforeEach(() => {
     cy.fixture('cookies.json').then((cookies) => {
       cy.setCookie('token', cookies.token);
