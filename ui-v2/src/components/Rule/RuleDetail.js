@@ -34,7 +34,7 @@ function RuleDetail({ rule }) {
       <Descriptions.Item key="name" label="Name">{name}</Descriptions.Item>
       <Descriptions.Item key="urlPattern" label="URL Pattern">{urlPattern}</Descriptions.Item>
       {dataSource && (
-        <Descriptions.Item key="dataSource" label="Data Source">
+        <Descriptions.Item data-testid="lbl-data-source" key="dataSource" label="Data Source">
           <Link to={`/datasources/${dataSource.id}`}>
             {dataSource.name}
           </Link>

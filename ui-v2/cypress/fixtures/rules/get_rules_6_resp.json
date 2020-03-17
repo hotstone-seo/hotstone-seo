@@ -1,0 +1,8 @@
+{
+    "id": 6,
+    "name": "Dummy Rule",
+    "url_pattern": "/dummy/rule",
+    "data_source_id": 1,
+    "updated_at": "0001-01-01T00:00:00Z",
+    "created_at": "0001-01-01T00:00:00Z"
+}

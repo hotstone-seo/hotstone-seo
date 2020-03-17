@@ -68,7 +68,9 @@ function RuleForm(props) {
       >
         <Select
           data-testid="select-data-source-id"
+          showSearch
           allowClear
+          filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {dataSources.map(({ id, name }) => (
             <Option value={id} key={id}>{name}</Option>

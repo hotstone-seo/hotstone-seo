@@ -38,6 +38,7 @@ function ViewRules({ match }) {
       />
       <div style={{ padding: 24 }}>
         <Button
+          data-testid="btn-new-rule"
           type="primary"
           style={{ marginBottom: 16 }}
           icon={<PlusOutlined />}
