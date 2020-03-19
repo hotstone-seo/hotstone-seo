@@ -9,7 +9,7 @@ function TitleForm() {
         name="value"
         rules={[{ required: true, message: 'Must provide a title' }]}
       >
-        <Input data-testid="input-title"/>
+        <Input data-testid="input-title" />
       </Form.Item>
     </>
   );
