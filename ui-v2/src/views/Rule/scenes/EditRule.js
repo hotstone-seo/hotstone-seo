@@ -181,6 +181,7 @@ function EditRule() {
               ))}
             </Select>
             <Button
+              data-testid="btn-new-tag"
               type="dashed"
               onClick={addTag}
               style={{ width: '100%', marginBottom: 16 }}
@@ -213,6 +214,7 @@ function EditRule() {
             Cancel
           </Button>,
           <Button
+            data-testid="btn-save-tag"
             key="submit"
             type="primary"
             onClick={submitTag}

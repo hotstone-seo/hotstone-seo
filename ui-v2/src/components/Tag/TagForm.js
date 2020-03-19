@@ -58,7 +58,12 @@ function TagForm({ form }) {
           name="type"
           rules={[{ required: true, message: 'A type must be selected' }]}
         >
-          <Select onChange={(value) => setCurrentType(value)}>
+          <Select
+            data-testid="select-type"
+            onChange={(value) => setCurrentType(value)}
+            showSearch
+            filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
             {tagTypes.map(({ label, value }) => (
               <Option key={value} value={value}>{label}</Option>
             ))}
@@ -70,7 +75,11 @@ function TagForm({ form }) {
           name="locale"
           rules={[{ required: true, message: 'Please set a locale for the tag' }]}
         >
-          <Select>
+          <Select
+            data-testid="select-locale"
+            showSearch
+            filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
             {locales.map((locale) => (
               <Option key={locale} value={locale}>{locale}</Option>
             ))}
