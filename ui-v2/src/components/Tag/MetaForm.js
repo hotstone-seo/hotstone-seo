@@ -9,7 +9,7 @@ function MetaForm() {
         name={['attributes', 'name']}
         rules={[{ required: true, message: 'Must provide meta name' }]}
       >
-        <Input />
+        <Input data-testid="input-name" />
       </Form.Item>
 
       <Form.Item
@@ -17,7 +17,7 @@ function MetaForm() {
         name={['attributes', 'content']}
         rules={[{ required: true, message: 'Must provide meta content' }]}
       >
-        <Input />
+        <Input data-testid="input-content" />
       </Form.Item>
     </>
   );
