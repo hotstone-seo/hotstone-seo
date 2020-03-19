@@ -33,7 +33,7 @@ function TagForm({ form }) {
       mock.value = null;
     }
     return (
-      <pre>
+      <pre data-testid="text-preview-tag">
         {renderToStaticMarkup(
           React.createElement(mock.type, mock.attributes, mock.value),
         )}

@@ -40,6 +40,8 @@ describe('Tags', () => {
       cy.get('[data-testid="select-locale"]').type('id_ID{enter}');
       cy.get('[data-testid="input-title"]').type('Foo Title Tag');
 
+      cy.get('[data-testid="text-preview-tag"]').should('have.text', '<title>Foo Title Tag</title>');
+
       cy.get('[data-testid="btn-save-tag"]').click();
 
       cy.get('@post_tags')
