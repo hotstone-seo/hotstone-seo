@@ -93,5 +93,44 @@ describe('Tags', () => {
           },
         });
     });
+
+    it('new Canonical Tag', () => {
+      cy.route('GET', '/api/rules?_offset=0&_limit=10', '@get_rules_resp_offset0_limit10_total5')
+        .as('get_rules_offset0_limit10');
+      cy.route('GET', '/api/rules/5', '@get_rules_5_resp')
+        .as('get_rules_5');
+      cy.route('POST', '/api/tags', {})
+        .as('post_tags');
+
+      cy.visit('/rules');
+      cy.wait('@get_rules_offset0_limit10');
+
+      cy.get('[data-row-key=5] > :nth-child(2) > [data-testid=btn-detail]').click();
+
+      cy.url().should('eq', `${Cypress.config().baseUrl}/rules/5`);
+      cy.wait('@get_rules_5');
+
+      cy.get('[data-testid=btn-new-tag]').click();
+
+      cy.get('[data-testid="select-type"]').type('Canonical{enter}');
+      cy.get('[data-testid="select-locale"]').type('id_ID{enter}');
+      cy.get('[data-testid="input-url"]').type('https://foo.com/test');
+
+      cy.get('[data-testid="text-preview-tag"]').should('have.text', '<link rel="canonical" href="https://foo.com/test"/>');
+
+      cy.get('[data-testid="btn-save-tag"]').click();
+
+      cy.get('@post_tags')
+        .its('request.body')
+        .should('deep.equal', {
+          rule_id: 5,
+          type: 'link',
+          locale: 'id_ID',
+          attributes: {
+            rel: 'canonical',
+            href: 'https://foo.com/test',
+          },
+        });
+    });
   });
 });
