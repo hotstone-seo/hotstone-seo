@@ -9,7 +9,7 @@ function ScriptForm() {
         name={['attributes', 'src']}
         rules={[{ required: true, message: 'Must provide script URL' }]}
       >
-        <Input />
+        <Input data-testid="input-src" />
       </Form.Item>
     </>
   );
