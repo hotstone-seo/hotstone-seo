@@ -135,6 +135,7 @@ function EditRule() {
         style={{ background: '#fff', minHeight: 120 }}
         extra={[
           <Button
+            data-testid="btn-edit"
             key="edit"
             type={isEditingRule ? 'default' : 'primary'}
             onClick={() => setIsEditingRule(!isEditingRule)}

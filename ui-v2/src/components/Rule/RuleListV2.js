@@ -126,6 +126,7 @@ function RuleListV2(props) {
         <span>
           <Tooltip title="Edit">
             <Button
+              data-testid="btn-edit"
               onClick={() => onEdit(record)}
               icon={<EditOutlined />}
             >
@@ -139,7 +140,7 @@ function RuleListV2(props) {
             onConfirm={() => onDelete(record)}
           >
             <Tooltip title="Delete">
-              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+              <Button data-testid="btn-delete" type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
             </Tooltip>
           </Popconfirm>
         </span>
