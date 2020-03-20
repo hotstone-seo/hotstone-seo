@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -67,7 +68,9 @@ func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) s
 	}
 
 	// compose WHERE
-	for _, filter := range paginationParam.Filters {
+	keysFilter := getSortedFilterKeys(paginationParam.Filters)
+	for _, k := range keysFilter {
+		filter := paginationParam.Filters[k]
 		if strings.ContainsAny(filter.Cond, "%") {
 			base = base.Where(sq.Like{filter.Col: filter.Cond})
 		} else {
@@ -147,6 +150,15 @@ func extractToNextKey(colQueryParam string) *Next {
 		return nil
 	}
 	return &Next{Col: col, Order: order}
+}
+
+func getSortedFilterKeys(filters map[string]*Filter) []string {
+	keys := make([]string, 0)
+	for k := range filters {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
 }
 
 func BuildPaginationParam(queryParams url.Values, validColumns []string) PaginationParam {
