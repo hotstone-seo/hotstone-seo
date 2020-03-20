@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/server/config"
-	"github.com/typical-go/typical-go/pkg/typcfg"
+	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typdep"
 	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
@@ -26,15 +26,8 @@ func (m *Module) WithConfigName(configName string) *Module {
 }
 
 // Configure the application
-func (m *Module) Configure(loader typcfg.Loader) *typcfg.Configuration {
-	return &typcfg.Configuration{
-		Name: m.configName,
-		Spec: &config.Config{},
-		Constructor: typdep.NewConstructor(func() (cfg config.Config, err error) {
-			err = loader.Load(m.configName, &cfg)
-			return
-		}),
-	}
+func (m *Module) Configure() *typcore.Configuration {
+	return typcore.NewConfiguration(m.configName, &config.Config{})
 }
 
 // EntryPoint of application

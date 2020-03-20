@@ -1,7 +1,7 @@
 package gsociallogin
 
 import (
-	"github.com/typical-go/typical-go/pkg/typcfg"
+	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typdep"
 )
 
@@ -18,15 +18,8 @@ func New() *Module {
 }
 
 // Configure the social login module
-func (m *Module) Configure(loader typcfg.Loader) *typcfg.Configuration {
-	return &typcfg.Configuration{
-		Name: m.configName,
-		Spec: &Config{},
-		Constructor: typdep.NewConstructor(func() (cfg Config, err error) {
-			err = loader.Load(m.configName, &cfg)
-			return
-		}),
-	}
+func (m *Module) Configure() *typcore.Configuration {
+	return typcore.NewConfiguration(m.configName, &Config{})
 }
 
 // Provide the dependencies
