@@ -92,17 +92,17 @@ func TestTagController_FindOne(t *testing.T) {
 		require.EqualError(t, err, "code=400, message=Invalid ID")
 	})
 	t.Run("WHEN received error", func(t *testing.T) {
-		tagSvcMock.EXPECT().FindOne(gomock.Any(), gomock.Any()).Return(nil, errors.New("find error"))
+		tagSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, errors.New("find error"))
 		_, err := echotest.DoGET(tagCntrl.FindOne, "/", map[string]string{"id": "999"})
 		require.EqualError(t, err, "code=500, message=find error")
 	})
 	t.Run("WHEN tag not found", func(t *testing.T) {
-		tagSvcMock.EXPECT().FindOne(gomock.Any(), gomock.Any()).Return(nil, nil)
+		tagSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, nil)
 		_, err := echotest.DoGET(tagCntrl.FindOne, "/", map[string]string{"id": "999"})
 		require.EqualError(t, err, "code=404, message=Tag#999 not found")
 	})
 	t.Run("WHEN successful", func(t *testing.T) {
-		tagSvcMock.EXPECT().FindOne(gomock.Any(), gomock.Any()).Return(
+		tagSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(
 			&repository.Tag{
 				ID:         999,
 				RuleID:     999,
@@ -117,5 +117,46 @@ func TestTagController_FindOne(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
 		require.Equal(t, "{\"id\":999,\"rule_id\":999,\"locale\":\"en_US\",\"type\":\"title\",\"attributes\":{},\"value\":\"Page Title\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+	})
+}
+
+func TestTagController_Delete(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	tagSvcMock := mock_service.NewMockTagService(ctrl)
+	tagCntrl := controller.TagCntrl{
+		TagService: tagSvcMock,
+	}
+	t.Run("WHEN id is not an integer", func(t *testing.T) {
+		_, err := echotest.DoDELETE(tagCntrl.Delete, "/", map[string]string{"id": "invalid"})
+		require.EqualError(t, err, "code=400, message=Invalid ID")
+	})
+	t.Run("WHEN received error", func(t *testing.T) {
+		tagSvcMock.EXPECT().Delete(gomock.Any(), int64(999)).Return(errors.New("delete error"))
+		_, err := echotest.DoDELETE(tagCntrl.Delete, "/", map[string]string{"id": "999"})
+		require.EqualError(t, err, "code=500, message=delete error")
+	})
+	t.Run("WHEN successfully delete", func(t *testing.T) {
+		tagSvcMock.EXPECT().Delete(gomock.Any(), int64(999)).Return(nil)
+		rr, err := echotest.DoDELETE(tagCntrl.Delete, "/", map[string]string{"id": "999"})
+		require.NoError(t, err)
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.Equal(t, "{\"message\":\"Success delete tag #999\"}\n", rr.Body.String())
+	})
+}
+
+func TestTagController_Update(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	tagSvcMock := mock_service.NewMockTagService(ctrl)
+	tagCntrl := controller.TagCntrl{
+		TagService: tagSvcMock,
+	}
+	t.Run("WHEN body is malformed", func(t *testing.T) {
+		_, err := echotest.DoPUT(tagCntrl.Update, "/", `{ "rule_id", "type": "title" }`)
+		require.EqualError(t, err, "code=400, message=Syntax error: offset=12, error=invalid character ',' after object key")
+	})
+	t.Run("WHEN id is not an integer", func(t *testing.T) {
+		// TODO: echotest DoPUT should allow passing context param
 	})
 }
