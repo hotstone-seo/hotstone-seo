@@ -60,6 +60,7 @@ describe('rules_add', () => {
 
       cy.get('[data-testid="btn-save"]').click();
 
+      cy.wait('@post_rules');
       cy.get('@post_rules')
         .its('request.body')
         .should('deep.equal', {
@@ -94,6 +95,7 @@ describe('rules_add', () => {
       cy.get('.ant-select-item-option-active').click();
       cy.get('[data-testid="btn-save"]').click();
 
+      cy.wait('@post_rules');
       cy.get('@post_rules')
         .its('request.body')
         .should('deep.equal', {

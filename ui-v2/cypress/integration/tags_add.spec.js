@@ -44,6 +44,7 @@ describe('Tags', () => {
 
       cy.get('[data-testid="btn-save-tag"]').click();
 
+      cy.wait('@post_tags');
       cy.get('@post_tags')
         .its('request.body')
         .should('deep.equal', {
@@ -81,6 +82,7 @@ describe('Tags', () => {
 
       cy.get('[data-testid="btn-save-tag"]').click();
 
+      cy.wait('@post_tags');
       cy.get('@post_tags')
         .its('request.body')
         .should('deep.equal', {
@@ -120,6 +122,7 @@ describe('Tags', () => {
 
       cy.get('[data-testid="btn-save-tag"]').click();
 
+      cy.wait('@post_tags');
       cy.get('@post_tags')
         .its('request.body')
         .should('deep.equal', {
@@ -159,6 +162,7 @@ describe('Tags', () => {
 
       cy.get('[data-testid="btn-save-tag"]').click();
 
+      cy.wait('@post_tags');
       cy.get('@post_tags')
         .its('request.body')
         .should('deep.equal', {

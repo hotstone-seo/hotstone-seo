@@ -48,6 +48,7 @@ describe('rules_edit', () => {
 
       cy.get('[data-testid="btn-save"]').click();
 
+      cy.wait('@put_rules_5');
       cy.get('@put_rules_5')
         .its('request.body')
         .should('deep.equal', {
