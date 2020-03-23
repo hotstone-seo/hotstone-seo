@@ -132,6 +132,8 @@ github.com/typical-go/typical-go v0.9.43 h1:8cmyc5E+Zgcve0G6/AtMqDgFexDYzVfmBQ7R
 github.com/typical-go/typical-go v0.9.43/go.mod h1:dcYOWxJ1mC80yml4kp58YUh5dTY/+JMnOejUm5v9i3A=
 github.com/typical-go/typical-rest-server v0.8.23 h1:3HWTM7dWIQ2Qw06fks0O/Unzc9/Efa9KsMwVXG94Vys=
 github.com/typical-go/typical-rest-server v0.8.23/go.mod h1:xIl86xRy1EMTz0rG7vB3T7Fe/+Xl0h/a1zRiKWbxUs0=
+github.com/typical-go/typical-rest-server v0.8.24 h1:M+VCdlA+W9yLIXiQ1HbsUimlUOAasix4C5TrbEPb9JE=
+github.com/typical-go/typical-rest-server v0.8.24/go.mod h1:xIl86xRy1EMTz0rG7vB3T7Fe/+Xl0h/a1zRiKWbxUs0=
 github.com/urfave/cli/v2 v2.0.0 h1:+HU9SCbu8GnEUFtIBfuUNXN39ofWViIEJIp6SURMpCg=
 github.com/urfave/cli/v2 v2.0.0/go.mod h1:SE9GqnLQmjVa0iPEY0f1w3ygNIYcIJ0OKPMoW2caLfQ=
 github.com/urfave/cli/v2 v2.2.0 h1:JTTnM6wKzdA0Jqodd966MVj4vWbbquZykeX1sKbe2C4=

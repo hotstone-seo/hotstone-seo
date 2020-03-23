@@ -28,7 +28,7 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/thoas/go-funk v0.5.0
 	github.com/typical-go/typical-go v0.9.43
-	github.com/typical-go/typical-rest-server v0.8.23
+	github.com/typical-go/typical-rest-server v0.8.24
 	github.com/xorcare/pointer v1.0.0
 	go.uber.org/dig v1.8.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
