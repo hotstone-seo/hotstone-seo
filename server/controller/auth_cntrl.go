@@ -24,7 +24,7 @@ var (
 // AuthCntrl is controller to handle authentication
 type AuthCntrl struct {
 	dig.In
-	config.Config
+	*config.Config
 	gsociallogin.AuthGoogleService
 }
 

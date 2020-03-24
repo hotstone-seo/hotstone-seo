@@ -18,7 +18,7 @@ import (
 type server struct {
 	dig.In
 	*typserver.Server
-	config.Config
+	*config.Config
 	controller.AuthCntrl
 	controller.RuleCntrl
 	controller.DataSourceCntrl
