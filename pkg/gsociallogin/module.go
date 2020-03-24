@@ -25,7 +25,6 @@ func (m *Module) Configure() *typcore.Configuration {
 // Provide the dependencies
 func (m *Module) Provide() []*typdep.Constructor {
 	return []*typdep.Constructor{
-		typdep.NewConstructor(NewAuthGoogleService),
-		typdep.NewConstructor(NewOauth2Config),
+		typdep.NewConstructor(NewService),
 	}
 }

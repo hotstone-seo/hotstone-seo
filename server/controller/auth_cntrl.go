@@ -25,7 +25,7 @@ var (
 type AuthCntrl struct {
 	dig.In
 	*config.Config
-	gsociallogin.AuthGoogleService
+	gsociallogin.Service
 }
 
 // AuthGoogleLogin handle Google auth login
@@ -35,7 +35,7 @@ func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
 	// 	log.Warnf("[auth/google/login] REQ:\n%s\n\n", requestDump)
 	// }
 
-	authCodeURL := c.AuthGoogleService.GetAuthCodeURL(ce, c.CookieSecure)
+	authCodeURL := c.Service.GetAuthCodeURL(ce, c.CookieSecure)
 	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
 }
 
@@ -50,7 +50,7 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 		return errors.Trace(err)
 	}
 
-	jwtToken, err := c.AuthGoogleService.VerifyCallback(ce, c.JwtSecret)
+	jwtToken, err := c.VerifyCallback(ce, c.JwtSecret)
 	if err != nil {
 		log.Error(errors.Details(err))
 		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
