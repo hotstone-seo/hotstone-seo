@@ -41,8 +41,7 @@ var Descriptor = typcore.Descriptor{
 		WithCommanders(
 			postgres,
 			typdocker.
-				Create().
-				WithComposers(
+				Create(
 					redis,
 					postgres,
 					// prometheus.New(),
