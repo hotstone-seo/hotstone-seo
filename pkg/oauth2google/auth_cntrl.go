@@ -1,4 +1,4 @@
-package gsociallogin
+package oauth2google
 
 import (
 	"time"
@@ -15,16 +15,11 @@ import (
 	"go.uber.org/dig"
 )
 
-var (
-	// JWTCookieExpire is expiration for JWT cookie
-	JWTCookieExpire time.Duration = 72 * time.Hour // TODO: put in config
-)
-
 // AuthCntrl is controller to handle authentication
 type AuthCntrl struct {
 	dig.In
 	*Config
-	Service
+	AuthService
 }
 
 // Login with google auth
@@ -34,7 +29,7 @@ func (c *AuthCntrl) Login(ce echo.Context) (err error) {
 	// 	log.Warnf("[auth/google/login] REQ:\n%s\n\n", requestDump)
 	// }
 
-	authCodeURL := c.Service.GetAuthCodeURL(ce, c.CookieSecure)
+	authCodeURL := c.GetAuthCodeURL(ce, c.CookieSecure)
 	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
 }
 
@@ -64,7 +59,7 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 
 	secureTokenCookie := &http.Cookie{
 		Name: "secure_token", Value: string(jwtToken),
-		Expires:  time.Now().Add(JWTCookieExpire),
+		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
 		HttpOnly: true, Secure: c.Config.CookieSecure,
 	}
@@ -72,7 +67,7 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 
 	tokenCookie := &http.Cookie{
 		Name: "token", Value: string(jwtToken),
-		Expires:  time.Now().Add(JWTCookieExpire),
+		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
 		HttpOnly: false, Secure: c.Config.CookieSecure,
 	}

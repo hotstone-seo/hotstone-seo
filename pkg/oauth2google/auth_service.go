@@ -1,4 +1,4 @@
-package gsociallogin
+package oauth2google
 
 import (
 	"context"
@@ -18,28 +18,22 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-var (
-	OAuthStateCookieExpire time.Duration = 20 * time.Minute
-	JwtTokenHolderExpire   time.Duration = 60 * time.Second
-	JwtTokenExpire         time.Duration = 72 * time.Hour
-)
-
-// Service is center related logic [mock]
-type Service interface {
+// AuthService is center related logic [mock]
+type AuthService interface {
 	VerifyCallback(ce echo.Context, jwtSecret string) (string, error)
 	GetAuthCodeURL(ce echo.Context, cookieSecure bool) string
 }
 
-// ServiceImpl implementation of Service
-type ServiceImpl struct {
+// AuthServiceImpl implementation of AuthService
+type AuthServiceImpl struct {
 	dig.In
 	*oauth2.Config
 	cfg *Config
 }
 
 // NewService return new instance of AuthGoogleService
-func NewService(cfg *Config) Service {
-	return &ServiceImpl{
+func NewService(cfg *Config) AuthService {
+	return &AuthServiceImpl{
 		cfg: cfg,
 		Config: &oauth2.Config{
 			RedirectURL:  cfg.Callback,
@@ -51,9 +45,9 @@ func NewService(cfg *Config) Service {
 	}
 }
 
-func (c *ServiceImpl) GetAuthCodeURL(ce echo.Context, cookieSecure bool) (authCodeURL string) {
+func (c *AuthServiceImpl) GetAuthCodeURL(ce echo.Context, cookieSecure bool) (authCodeURL string) {
 	// Create oauthState cookie
-	oauthState := c.setRandomCookie(ce, "oauthstate", time.Now().Add(OAuthStateCookieExpire), cookieSecure)
+	oauthState := c.setRandomCookie(ce, "oauthstate", time.Now().Add(StateExpiration), cookieSecure)
 
 	// AuthCodeURL receive state that is a token to protect the user from CSRF attacks. You must always provide a non-empty string and
 	// validate that it matches the the state query parameter on your redirect callback.
@@ -63,7 +57,7 @@ func (c *ServiceImpl) GetAuthCodeURL(ce echo.Context, cookieSecure bool) (authCo
 }
 
 // VerifyCallback to add metaTag
-func (c *ServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (string, error) {
+func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (string, error) {
 	oauthState, err := ce.Cookie("oauthstate")
 	if err != nil {
 		return "", errors.Trace(err)
@@ -91,14 +85,14 @@ func (c *ServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (string,
 	return jwtToken, nil
 }
 
-func (c *ServiceImpl) setRandomCookie(ce echo.Context, cookieName string, expiration time.Time, cookieSecure bool) string {
+func (c *AuthServiceImpl) setRandomCookie(ce echo.Context, cookieName string, expiration time.Time, cookieSecure bool) string {
 	randomVal := generateRandomBase64(64)
 	cookie := &http.Cookie{Name: cookieName, Value: randomVal, Expires: expiration, HttpOnly: true, Secure: cookieSecure}
 	ce.SetCookie(cookie)
 	return randomVal
 }
 
-func (c *ServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string) (userInfoResp repository.GoogleOauth2UserInfoResp, err error) {
+func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string) (userInfoResp repository.GoogleOauth2UserInfoResp, err error) {
 	// Use code to get token and get user info from Google.
 	token, err := c.Exchange(ctx, code)
 	if err != nil {
@@ -123,7 +117,7 @@ func (c *ServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string) (u
 	return userInfoResp, nil
 }
 
-func (c *ServiceImpl) validateUserInfoResp(userInfoResp repository.GoogleOauth2UserInfoResp) error {
+func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp repository.GoogleOauth2UserInfoResp) error {
 	if verifiedEmail, ok := userInfoResp["verified_email"]; !ok || !verifiedEmail.(bool) {
 		return errors.New("invalid or empty verified_email")
 	}
@@ -136,7 +130,7 @@ func (c *ServiceImpl) validateUserInfoResp(userInfoResp repository.GoogleOauth2U
 	return nil
 }
 
-func (c *ServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string) (string, error) {
+func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string) (string, error) {
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -145,7 +139,7 @@ func (c *ServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserI
 	claims := token.Claims.(jwt.MapClaims)
 	claims["email"] = userInfoResp["email"]
 	claims["picture"] = userInfoResp["picture"]
-	claims["exp"] = time.Now().Add(JwtTokenExpire).Unix()
+	claims["exp"] = time.Now().Add(TokenEpiration).Unix()
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))

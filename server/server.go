@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/go-redis/redis"
-	"github.com/hotstone-seo/hotstone-seo/pkg/gsociallogin"
+	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
 	"github.com/juju/errors"
@@ -20,7 +20,7 @@ type server struct {
 	dig.In
 	*typserver.Server
 	*config.Config
-	gsociallogin.AuthCntrl
+	oauth2google.AuthCntrl
 	controller.RuleCntrl
 	controller.DataSourceCntrl
 	controller.TagCntrl

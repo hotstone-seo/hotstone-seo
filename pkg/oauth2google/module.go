@@ -1,4 +1,4 @@
-package gsociallogin
+package oauth2google
 
 import (
 	"github.com/typical-go/typical-go/pkg/typcore"

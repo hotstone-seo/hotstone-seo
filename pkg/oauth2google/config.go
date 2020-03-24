@@ -1,4 +1,4 @@
-package gsociallogin
+package oauth2google
 
 // Config is configuration of google social login
 type Config struct {
