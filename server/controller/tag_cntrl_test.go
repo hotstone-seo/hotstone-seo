@@ -164,12 +164,12 @@ func TestTagController_Update(t *testing.T) {
 		_, err := echotest.DoPUT(tagCntrl.Update, "/", `{ "id": 999, "rule_id": 999, "locale": "en_US", "type": "title" }`, nil)
 		require.EqualError(t, err, "code=400, message=Key: 'Tag.Value' Error:Field validation for 'Value' failed on the 'noempty' tag")
 	})
-	t.Run("WHEN received error after inserting", func(t *testing.T) {
+	t.Run("WHEN received error after updating", func(t *testing.T) {
 		tagSvcMock.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update error"))
 		_, err := echotest.DoPUT(tagCntrl.Update, "/", `{ "id": 999, "rule_id": 999, "locale": "en_US", "type": "title", "value": "Page Title" }`, nil)
 		require.EqualError(t, err, "code=500, message=update error")
 	})
-	t.Run("WHEN successfully insert new tag", func(t *testing.T) {
+	t.Run("WHEN successfully update tag", func(t *testing.T) {
 		tagSvcMock.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 		rr, err := echotest.DoPUT(tagCntrl.Update, "/", `{ "id": 999, "rule_id": 999, "locale": "en_US", "type": "title", "value": "Page Title" }`, nil)
 		require.NoError(t, err)
