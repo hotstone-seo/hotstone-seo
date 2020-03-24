@@ -1,4 +1,4 @@
-package controller
+package gsociallogin
 
 import (
 	"time"
@@ -10,10 +10,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/gsociallogin"
-	"github.com/hotstone-seo/hotstone-seo/server/config"
-
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"go.uber.org/dig"
 )
 
@@ -25,8 +23,8 @@ var (
 // AuthCntrl is controller to handle authentication
 type AuthCntrl struct {
 	dig.In
-	*config.Config
-	gsociallogin.Service
+	*Config
+	Service
 }
 
 // Login with google auth
@@ -46,19 +44,19 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	// if err == nil {
 	// 	log.Warnf("[auth/google/callback] REQ:\n%s\n\n", requestDump)
 	// }
-	failureURL, err := urlWithQueryParams(c.Oauth2GoogleRedirectFailure, url.Values{"oauth_error": {"true"}})
+	failureURL, err := urlWithQueryParams(c.RedirectFailure, url.Values{"oauth_error": {"true"}})
 	if err != nil {
 		return errors.Trace(err)
 	}
 
-	jwtToken, err := c.VerifyCallback(ce, c.JwtSecret)
+	jwtToken, err := c.VerifyCallback(ce, c.JWTSecret)
 	if err != nil {
 		log.Error(errors.Details(err))
 		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
 	}
 
 	// successUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{"holder": {holder}})
-	successURL, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{})
+	successURL, err := urlWithQueryParams(c.RedirectSuccess, url.Values{})
 	if err != nil {
 		log.Error(errors.Details(err))
 		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
@@ -91,7 +89,15 @@ func (c *AuthCntrl) Logout(ce echo.Context) (err error) {
 	tokenCookie := &http.Cookie{Name: "token", MaxAge: -1, Path: "/"}
 	ce.SetCookie(tokenCookie)
 
-	return ce.Redirect(http.StatusSeeOther, c.Config.AuthLogoutRedirect)
+	return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
+}
+
+// Middleware for google social login
+func (c *AuthCntrl) Middleware() echo.MiddlewareFunc {
+	jwtCfg := middleware.DefaultJWTConfig
+	jwtCfg.SigningKey = []byte(c.JWTSecret)
+	jwtCfg.TokenLookup = "cookie:secure_token"
+	return middleware.JWTWithConfig(jwtCfg)
 }
 
 func urlWithQueryParams(urlStr string, queryParam url.Values) (string, error) {

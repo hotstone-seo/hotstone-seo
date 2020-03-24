@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-redis/redis"
+	"github.com/hotstone-seo/hotstone-seo/pkg/gsociallogin"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
 	"github.com/juju/errors"
@@ -19,7 +20,7 @@ type server struct {
 	dig.In
 	*typserver.Server
 	*config.Config
-	controller.AuthCntrl
+	gsociallogin.AuthCntrl
 	controller.RuleCntrl
 	controller.DataSourceCntrl
 	controller.TagCntrl
@@ -53,10 +54,7 @@ func startServer(s server) error {
 
 	api := s.Group("/api")
 
-	jwtCfg := middleware.DefaultJWTConfig
-	jwtCfg.SigningKey = []byte(s.Config.JwtSecret)
-	jwtCfg.TokenLookup = "cookie:secure_token"
-	api.Use(middleware.JWTWithConfig(jwtCfg))
+	api.Use(s.AuthCntrl.Middleware())
 
 	api.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	api.Use(middleware.Recover())
