@@ -18,7 +18,8 @@ import (
 )
 
 var (
-	JwtTokenCookieExpire time.Duration = 72 * time.Hour
+	// JWTCookieExpire is expiration for JWT cookie
+	JWTCookieExpire time.Duration = 72 * time.Hour // TODO: put in config
 )
 
 // AuthCntrl is controller to handle authentication
@@ -28,8 +29,8 @@ type AuthCntrl struct {
 	gsociallogin.Service
 }
 
-// AuthGoogleLogin handle Google auth login
-func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
+// Login with google auth
+func (c *AuthCntrl) Login(ce echo.Context) (err error) {
 	// requestDump, err := httputil.DumpRequest(ce.Request(), true)
 	// if err == nil {
 	// 	log.Warnf("[auth/google/login] REQ:\n%s\n\n", requestDump)
@@ -39,8 +40,8 @@ func (c *AuthCntrl) AuthGoogleLogin(ce echo.Context) (err error) {
 	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
 }
 
-// AuthGoogleCallback handle Google auth callback
-func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
+// Callback for google auth
+func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	// requestDump, err := httputil.DumpRequest(ce.Request(), true)
 	// if err == nil {
 	// 	log.Warnf("[auth/google/callback] REQ:\n%s\n\n", requestDump)
@@ -65,7 +66,7 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 
 	secureTokenCookie := &http.Cookie{
 		Name: "secure_token", Value: string(jwtToken),
-		Expires:  time.Now().Add(JwtTokenCookieExpire),
+		Expires:  time.Now().Add(JWTCookieExpire),
 		Path:     "/",
 		HttpOnly: true, Secure: c.Config.CookieSecure,
 	}
@@ -73,7 +74,7 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 
 	tokenCookie := &http.Cookie{
 		Name: "token", Value: string(jwtToken),
-		Expires:  time.Now().Add(JwtTokenCookieExpire),
+		Expires:  time.Now().Add(JWTCookieExpire),
 		Path:     "/",
 		HttpOnly: false, Secure: c.Config.CookieSecure,
 	}
@@ -82,8 +83,8 @@ func (c *AuthCntrl) AuthGoogleCallback(ce echo.Context) (err error) {
 	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
 }
 
-// AuthLogout handle logout by invalidating cookies
-func (c *AuthCntrl) AuthLogout(ce echo.Context) (err error) {
+// Logout by invalidating cookies
+func (c *AuthCntrl) Logout(ce echo.Context) (err error) {
 	secureTokenCookie := &http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"}
 	ce.SetCookie(secureTokenCookie)
 

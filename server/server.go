@@ -48,8 +48,8 @@ func startServer(s server) error {
 		log.Print(errors.Details(err))
 	}
 
-	s.POST("auth/google/login", s.AuthCntrl.AuthGoogleLogin)
-	s.GET("auth/google/callback", s.AuthCntrl.AuthGoogleCallback)
+	s.POST("auth/google/login", s.AuthCntrl.Login)
+	s.GET("auth/google/callback", s.AuthCntrl.Callback)
 
 	api := s.Group("/api")
 
@@ -61,7 +61,7 @@ func startServer(s server) error {
 	api.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	api.Use(middleware.Recover())
 
-	api.POST("/logout", s.AuthCntrl.AuthLogout)
+	api.POST("/logout", s.AuthCntrl.Logout)
 
 	s.RuleCntrl.Route(api)
 	s.DataSourceCntrl.Route(api)
