@@ -33,7 +33,7 @@ type AuthGoogleService interface {
 // AuthGoogleServiceImpl implementation of AuthGoogleService
 type AuthGoogleServiceImpl struct {
 	dig.In
-	Config
+	*Config
 	Oauth2Config *oauth2.Config
 }
 
@@ -43,7 +43,7 @@ func NewAuthGoogleService(impl AuthGoogleServiceImpl) AuthGoogleService {
 }
 
 // NewOauth2Config return new instance of oauth2.Config
-func NewOauth2Config(config Config) *oauth2.Config {
+func NewOauth2Config(config *Config) *oauth2.Config {
 	c := oauth2.Config{
 		RedirectURL:  config.Callback,
 		ClientID:     config.ClientID,

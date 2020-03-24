@@ -16,7 +16,7 @@ import (
 type TagCntrl struct {
 	dig.In
 	service.TagService
-	config.Config
+	*config.Config
 }
 
 // Route to define API Route

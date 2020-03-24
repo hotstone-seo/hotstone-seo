@@ -9,13 +9,16 @@ import (
 )
 
 func TestModule(t *testing.T) {
-	t.Run("SHOULD implement configurer", func(t *testing.T) {
+	t.Run("SHOULD implement Configurer", func(t *testing.T) {
 		var _ typcfg.Configurer = server.New()
 	})
-	t.Run("SHOULD implement provider", func(t *testing.T) {
+	t.Run("SHOULD implement Provider", func(t *testing.T) {
 		var _ typapp.Provider = server.New()
 	})
-	t.Run("SHOULD implement destroyer", func(t *testing.T) {
+	t.Run("SHOULD implement Destroyer", func(t *testing.T) {
 		var _ typapp.Destroyer = server.New()
+	})
+	t.Run("SHOULD implement EntryPointer", func(t *testing.T) {
+		var _ typapp.EntryPointer = server.New()
 	})
 }
