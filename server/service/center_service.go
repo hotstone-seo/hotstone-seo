@@ -12,6 +12,7 @@ import (
 
 // CenterService is center related logic [mock]
 type CenterService interface {
+	AddTag(ctx context.Context, tag interface{}) (*repository.Tag, error)
 	AddMetaTag(ctx context.Context, req AddMetaTagRequest) (int64, error)
 	AddTitleTag(ctx context.Context, req AddTitleTagRequest) (int64, error)
 	AddCanonicalTag(ctx context.Context, req AddCanonicalTagRequest) (int64, error)
@@ -27,6 +28,10 @@ type CenterServiceImpl struct {
 // NewCenterService return new instance of CenterService [constructor]
 func NewCenterService(impl CenterServiceImpl) CenterService {
 	return &impl
+}
+
+func (i *CenterServiceImpl) AddTag(ctx context.Context, tag interface{}) (*repository.Tag, error) {
+	return nil, nil
 }
 
 // AddMetaTag to add metaTag
