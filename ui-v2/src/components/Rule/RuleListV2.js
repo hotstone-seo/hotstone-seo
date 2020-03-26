@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-  Table, Divider, Button, Popconfirm, Tooltip, message,
+  Table, Divider, Button, Popconfirm, Tooltip, message, Switch,
 } from 'antd';
 import moment from 'moment';
 import { fetchRules } from 'api/rule';
@@ -20,6 +20,10 @@ const defaultPagination = {
 };
 
 const formatDate = (dateString) => moment(dateString).fromNow();
+
+function onChange(checked, record) {
+  console.log(`switch to ${checked}`);
+}
 
 function RuleListV2(props) {
   const {
@@ -144,6 +148,13 @@ function RuleListV2(props) {
             </Tooltip>
           </Popconfirm>
         </span>
+      ),
+    },
+    {
+      title: 'Status',
+      key: 'status_start',
+      render: (e, record) => (
+        <Switch onChange={(value) => onChange(value, record)} defaultChecked={e} />
       ),
     },
   ];
