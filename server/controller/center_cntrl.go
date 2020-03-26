@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -17,11 +18,31 @@ type CenterCntrl struct {
 
 // Route to define API Route
 func (c *CenterCntrl) Route(e *echo.Group) {
+	e.POST("/center/addTag/:type", c.AddTag)
 	e.POST("/center/addMetaTag", c.AddMetaTag)
 	e.POST("/center/addTitleTag", c.AddTitleTag)
 	e.POST("/center/addCanonicalTag", c.AddCanonicalTag)
 	e.POST("/center/addScriptTag", c.AddScriptTag)
 	e.POST("/center/addArticle", c.AddArticle)
+}
+
+func (c *CenterCntrl) AddTag(e echo.Context) (err error) {
+	var (
+		req     interface{}
+		ctx     = e.Request().Context()
+		tagType = e.Param("type")
+		tag     *repository.Tag
+	)
+	if req = service.NewTagRequest(tagType); req == nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%s is not a valid type", tagType))
+	}
+	if err = e.Bind(req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	if tag, err = c.CenterService.AddTag(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return e.JSON(http.StatusCreated, tag)
 }
 
 // AddMetaTag add meta tag

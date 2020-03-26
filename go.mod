@@ -32,7 +32,7 @@ require (
 	github.com/xorcare/pointer v1.0.0
 	go.uber.org/dig v1.8.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
-	golang.org/x/tools v0.0.0-20200321224714-0d839f3cf2ed // indirect
+	golang.org/x/tools v0.0.0-20200325203130-f53864d0dba1 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
