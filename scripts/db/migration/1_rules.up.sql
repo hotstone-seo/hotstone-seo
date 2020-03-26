@@ -9,6 +9,6 @@ CREATE TABLE rules (
     status enum_status DEFAULT '',
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP DEFAULT NULL,
-    change_status_at TIMESTAMP DEFAULT NULL
+    deleted_at TIMESTAMPTZ DEFAULT NULL,
+    change_status_at TIMESTAMPTZ DEFAULT NULL
 );
