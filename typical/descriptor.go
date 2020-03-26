@@ -1,7 +1,7 @@
 package typical
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/pkg/gsociallogin"
+	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/hotstone-seo/hotstone-seo/server"
 	"github.com/typical-go/typical-go/pkg/typapp"
 	"github.com/typical-go/typical-go/pkg/typbuildtool"
@@ -19,7 +19,7 @@ var (
 	postgres  = typpostgres.New().
 			WithDBName("hotstone").
 			WithDockerImage("timescale/timescaledb:latest-pg11")
-	socialLogin = gsociallogin.New()
+	googleOauth = oauth2google.New()
 )
 
 // Descriptor of hotstone-seo
@@ -31,7 +31,7 @@ var Descriptor = typcore.Descriptor{
 		WithModules(
 			redis,
 			postgres,
-			socialLogin,
+			googleOauth,
 		),
 
 	BuildTool: typbuildtool.
@@ -55,6 +55,6 @@ var Descriptor = typcore.Descriptor{
 			serverApp,
 			redis,
 			postgres,
-			socialLogin,
+			googleOauth,
 		),
 }

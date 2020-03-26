@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/go-redis/redis"
+	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
 	"github.com/juju/errors"
@@ -19,7 +20,7 @@ type server struct {
 	dig.In
 	*typserver.Server
 	*config.Config
-	controller.AuthCntrl
+	oauth2google.AuthCntrl
 	controller.RuleCntrl
 	controller.DataSourceCntrl
 	controller.TagCntrl
@@ -48,20 +49,17 @@ func startServer(s server) error {
 		log.Print(errors.Details(err))
 	}
 
-	s.POST("auth/google/login", s.AuthCntrl.AuthGoogleLogin)
-	s.GET("auth/google/callback", s.AuthCntrl.AuthGoogleCallback)
+	s.POST("auth/google/login", s.AuthCntrl.Login)
+	s.GET("auth/google/callback", s.AuthCntrl.Callback)
 
 	api := s.Group("/api")
 
-	jwtCfg := middleware.DefaultJWTConfig
-	jwtCfg.SigningKey = []byte(s.Config.JwtSecret)
-	jwtCfg.TokenLookup = "cookie:secure_token"
-	api.Use(middleware.JWTWithConfig(jwtCfg))
+	api.Use(s.AuthCntrl.Middleware())
 
 	api.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	api.Use(middleware.Recover())
 
-	api.POST("/logout", s.AuthCntrl.AuthLogout)
+	api.POST("/logout", s.AuthCntrl.Logout)
 
 	s.RuleCntrl.Route(api)
 	s.DataSourceCntrl.Route(api)
