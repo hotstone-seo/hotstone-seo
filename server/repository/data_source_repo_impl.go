@@ -44,6 +44,7 @@ func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err 
 	builder := sq.
 		Select("id", "name", "url", "updated_at", "created_at").
 		From("data_sources").
+		Where(sq.Eq{"is_active": "1"}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
@@ -77,7 +78,9 @@ func (r *DataSourceRepoImpl) Insert(ctx context.Context, e DataSource) (lastInse
 // Delete data_source
 func (r *DataSourceRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
-		Delete("data_sources").
+		Update("data_sources").
+		Set("deleted_at", time.Now()).
+		Set("is_active", "0").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	_, err = builder.ExecContext(ctx)
