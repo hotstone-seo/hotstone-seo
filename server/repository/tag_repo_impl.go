@@ -89,7 +89,9 @@ func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, er
 // Delete tag
 func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
-		Delete("tags").
+		Update("tags").
+		Set("deleted_at", time.Now()).
+		Set("is_active", "0").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	_, err = builder.ExecContext(ctx)
