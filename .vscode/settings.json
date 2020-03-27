@@ -1,6 +1,8 @@
 {
-  "eslint.workingDirectories":["./ui-v2"],
+  "eslint.workingDirectories": [
+    "./ui"
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-}
+  }
 }

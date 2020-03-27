@@ -3,7 +3,7 @@ FROM node:12 AS frontend-builder
 RUN mkdir /usr/src/frontend
 WORKDIR /usr/src/frontend
 ENV PATH /usr/src/frontend/node_modules/.bin:$PATH
-COPY ./ui-v2 /usr/src/frontend
+COPY ./ui /usr/src/frontend
 RUN npm install
 RUN npm run build
 
