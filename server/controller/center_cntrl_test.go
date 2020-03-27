@@ -2,50 +2,15 @@ package controller_test
 
 import (
 	"errors"
-	"net/http"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
 
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 )
-
-func TestCenterCntrl_AddTag(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	svc := mock_service.NewMockCenterService(ctrl)
-	cntrl := controller.CenterCntrl{
-		CenterService: svc,
-	}
-	t.Run("WHEN type is not recognized", func(t *testing.T) {
-		_, err := echotest.DoPOST(cntrl.AddTag, "/", "{}", map[string]string{"type": "invalid"})
-		require.EqualError(t, err, "code=400, message=invalid is not a valid type")
-	})
-	t.Run("WHEN body is malformed", func(t *testing.T) {
-		_, err := echotest.DoPOST(cntrl.AddTag, "/", `{ "title" }`, map[string]string{"type": "title"})
-		require.EqualError(t, err, "code=400, message=code=400, message=Syntax error: offset=11, error=invalid character '}' after object key")
-	})
-	t.Run("WHEN received error", func(t *testing.T) {
-		svc.EXPECT().AddTag(gomock.Any(), &service.AddTitleTagRequest{Title: "Page Title"}).Return(nil, errors.New("insert error"))
-		_, err := echotest.DoPOST(cntrl.AddTag, "/", `{ "title": "Page Title" }`, map[string]string{"type": "title"})
-		require.EqualError(t, err, "code=422, message=insert error")
-	})
-	t.Run("WHEN successful", func(t *testing.T) {
-		svc.EXPECT().AddTag(gomock.Any(), &service.AddTitleTagRequest{Title: "Page Title"}).Return(
-			&repository.Tag{Value: "Page Title", Attributes: []byte("{}")},
-			nil,
-		)
-		rr, err := echotest.DoPOST(cntrl.AddTag, "/", `{ "title": "Page Title" }`, map[string]string{"type": "title"})
-		require.NoError(t, err)
-		require.Equal(t, http.StatusCreated, rr.Code)
-		require.Equal(t, "{\"id\":0,\"rule_id\":0,\"locale\":\"\",\"type\":\"\",\"attributes\":{},\"value\":\"Page Title\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
-	})
-}
 
 func TestCenterCntrl_AddMetaTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
