@@ -120,6 +120,13 @@ function RuleListV2(props) {
       render: (text, record) => <div>{formatDate(record.updated_at)}</div>,
     },
     {
+      title: 'Status',
+      key: 'status_start',
+      render: (e, record) => (
+        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} checkedChildren="Start" unCheckedChildren="Stop"/>
+      ),
+    },
+    {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
@@ -144,13 +151,6 @@ function RuleListV2(props) {
             </Tooltip>
           </Popconfirm>
         </span>
-      ),
-    },
-    {
-      title: 'Status',
-      key: 'status_start',
-      render: (e, record) => (
-        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} />
       ),
     },
   ];
