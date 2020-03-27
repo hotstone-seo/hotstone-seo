@@ -7,7 +7,6 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
@@ -78,21 +77,6 @@ func (m *MockCenterService) AddScriptTag(arg0 context.Context, arg1 service.AddS
 func (mr *MockCenterServiceMockRecorder) AddScriptTag(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddScriptTag", reflect.TypeOf((*MockCenterService)(nil).AddScriptTag), arg0, arg1)
-}
-
-// AddTag mocks base method
-func (m *MockCenterService) AddTag(arg0 context.Context, arg1 interface{}) (*repository.Tag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddTag", arg0, arg1)
-	ret0, _ := ret[0].(*repository.Tag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// AddTag indicates an expected call of AddTag
-func (mr *MockCenterServiceMockRecorder) AddTag(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTag", reflect.TypeOf((*MockCenterService)(nil).AddTag), arg0, arg1)
 }
 
 // AddTitleTag mocks base method
