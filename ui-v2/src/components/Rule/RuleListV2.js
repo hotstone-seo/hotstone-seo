@@ -21,13 +21,9 @@ const defaultPagination = {
 
 const formatDate = (dateString) => moment(dateString).fromNow();
 
-function onChange(checked, record) {
-  console.log(`switch to ${checked}`);
-}
-
 function RuleListV2(props) {
   const {
-    listRule, setListRule, onClick, onEdit, onDelete,
+    listRule, setListRule, onClick, onEdit, onDelete, onChangeToggleButton ,
   } = props;
 
   const [loading, setLoading] = useState(false);
@@ -154,7 +150,7 @@ function RuleListV2(props) {
       title: 'Status',
       key: 'status_start',
       render: (e, record) => (
-        <Switch onChange={(value) => onChange(value, record)} defaultChecked={e} />
+        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} />
       ),
     },
   ];
@@ -191,6 +187,7 @@ RuleListV2.propTypes = {
   onClick: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onChangeToggleButton: PropTypes.func.isRequired,
 };
 
 export default RuleListV2;

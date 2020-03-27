@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
-import { deleteRule } from 'api/rule';
+import { deleteRule, updateStatusStartRule } from 'api/rule';
 import { RuleListV2 } from 'components/Rule';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -23,6 +23,20 @@ function ViewRules({ match }) {
       .catch((error) => {
         message.error(error.message);
       });
+  };
+
+  const handleUpdateStatusStart = (checked, rule) => {
+    const onOFF = checked === true ? 'START' : 'STOP';
+    /* updateStatusStartRule(rule.id)
+      .then(() => {
+
+        setListRule(listRule.filter((item) => item.id !== rule.id));
+      })
+      .catch((error) => {
+        message.error(error.message);
+      }); */
+    message.success(`Successfully switch ${rule.name} to be ${onOFF}`);
+    // console.log(`switch to ${checked}`);
   };
 
   const addDataRule = () => {
@@ -52,6 +66,7 @@ function ViewRules({ match }) {
           onDelete={handleDelete}
           listRule={listRule}
           setListRule={setListRule}
+          onChangeToggleButton={handleUpdateStatusStart}
         />
       </div>
     </div>
