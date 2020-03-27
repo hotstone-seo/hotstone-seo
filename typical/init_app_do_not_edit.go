@@ -16,6 +16,7 @@ import (
 
 func init() {
 	typapp.AppendConstructor(
+		typdep.NewConstructor(repository.NewAuditTrailRepo),
 		typdep.NewConstructor(repository.NewDataSourceRepo),
 		typdep.NewConstructor(repository.NewMetricsRuleMatchingRepo),
 		typdep.NewConstructor(repository.NewRuleRepo),
