@@ -12,3 +12,4 @@ CREATE TABLE rules (
     deleted_at TIMESTAMPTZ DEFAULT NULL,
     change_status_at TIMESTAMPTZ DEFAULT NULL
 );
+create index rules_status ON rules(status);
