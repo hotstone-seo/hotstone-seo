@@ -35,6 +35,7 @@ func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSour
 			return nil, err
 		}
 	}
+	rows.Close()
 	return
 }
 
