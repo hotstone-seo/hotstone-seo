@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
@@ -37,4 +38,27 @@ func (s *DataSourceServiceImpl) Insert(ctx context.Context, ds repository.DataSo
 		return
 	}
 	return newDsID, nil
+}
+
+// Update data source
+func (s *DataSourceServiceImpl) Update(ctx context.Context, ds repository.DataSource) (err error) {
+	defer s.CommitMe(&ctx)()
+	var oldDs *repository.DataSource
+	oldDs, err = s.DataSourceRepo.FindOne(ctx, ds.ID)
+	if err != nil {
+		s.CancelMe(ctx, err)
+		log.Warnf("ERR findone: %+v", err)
+		return
+	}
+	if err = s.DataSourceRepo.Update(ctx, ds); err != nil {
+		s.CancelMe(ctx, err)
+		log.Warnf("ERR update: %+v", err)
+		return
+	}
+	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_source", ds.ID, repository.Update, oldDs, ds); err != nil {
+		s.CancelMe(ctx, err)
+		log.Warnf("ERR recordChange: %+v", err)
+		return
+	}
+	return nil
 }
