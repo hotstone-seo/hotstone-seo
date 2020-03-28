@@ -13,7 +13,7 @@ const (
 )
 
 func GetUsername(ctx context.Context) string {
-	token, ok := ctx.Value(TokenCtxKey).(jwt.Token)
+	token, ok := ctx.Value(TokenCtxKey).(*jwt.Token)
 	if !ok {
 		return ""
 	}
