@@ -29,7 +29,7 @@ describe('Tags', () => {
       cy.visit('/rules');
       cy.wait('@get_rules_offset0_limit10');
 
-      cy.get('[data-row-key=5] > :nth-child(2) > [data-testid=btn-detail]').click();
+      cy.get('[data-row-key=5] > .col-name > [data-testid=btn-detail]').click();
 
       cy.url().should('eq', `${Cypress.config().baseUrl}/rules/5`);
       cy.wait('@get_rules_5');
@@ -66,7 +66,7 @@ describe('Tags', () => {
       cy.visit('/rules');
       cy.wait('@get_rules_offset0_limit10');
 
-      cy.get('[data-row-key=5] > :nth-child(2) > [data-testid=btn-detail]').click();
+      cy.get('[data-row-key=5] > .col-name > [data-testid=btn-detail]').click();
 
       cy.url().should('eq', `${Cypress.config().baseUrl}/rules/5`);
       cy.wait('@get_rules_5');
@@ -107,7 +107,7 @@ describe('Tags', () => {
       cy.visit('/rules');
       cy.wait('@get_rules_offset0_limit10');
 
-      cy.get('[data-row-key=5] > :nth-child(2) > [data-testid=btn-detail]').click();
+      cy.get('[data-row-key=5] > .col-name > [data-testid=btn-detail]').click();
 
       cy.url().should('eq', `${Cypress.config().baseUrl}/rules/5`);
       cy.wait('@get_rules_5');
@@ -147,7 +147,7 @@ describe('Tags', () => {
       cy.visit('/rules');
       cy.wait('@get_rules_offset0_limit10');
 
-      cy.get('[data-row-key=5] > :nth-child(2) > [data-testid=btn-detail]').click();
+      cy.get('[data-row-key=5] > .col-name > [data-testid=btn-detail]').click();
 
       cy.url().should('eq', `${Cypress.config().baseUrl}/rules/5`);
       cy.wait('@get_rules_5');
