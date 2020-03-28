@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"time"
+
 	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 )
 
@@ -18,9 +19,18 @@ type AuditTrail struct {
 	NewData    dbtype.JSON
 }
 
+// OperationType is type of changes operation
+type OperationType string
+
+const (
+	Insert OperationType = "INSERT"
+	Update               = "UPDATE"
+	Delete               = "DELETE"
+)
+
 // AuditTrailRepo is rule repository [mock]
 type AuditTrailRepo interface {
-	Insert(ctx context.Context, rule AuditTrail) (lastInsertID int64, err error)
+	Insert(ctx context.Context, auditTrail AuditTrail) (lastInsertID int64, err error)
 }
 
 // NewAuditTrailRepo return new instance of AuditTrailRepo [constructor]

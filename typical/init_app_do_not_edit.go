@@ -22,6 +22,7 @@ func init() {
 		typdep.NewConstructor(repository.NewRuleRepo),
 		typdep.NewConstructor(repository.NewTagRepo),
 		typdep.NewConstructor(repository.NewURLSyncRepo),
+		typdep.NewConstructor(service.NewAuditTrailService),
 		typdep.NewConstructor(service.NewCenterService),
 		typdep.NewConstructor(service.NewDataSourceService),
 		typdep.NewConstructor(service.NewMetricsRuleMatchingService),
