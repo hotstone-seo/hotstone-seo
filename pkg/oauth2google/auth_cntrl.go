@@ -1,8 +1,10 @@
 package oauth2google
 
 import (
+	"context"
 	"time"
 
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/juju/errors"
@@ -93,6 +95,22 @@ func (c *AuthCntrl) Middleware() echo.MiddlewareFunc {
 	jwtCfg.SigningKey = []byte(c.JWTSecret)
 	jwtCfg.TokenLookup = "cookie:secure_token"
 	return middleware.JWTWithConfig(jwtCfg)
+}
+
+// SetTokenCtxMiddleware re-set token to request context for informational purpose (getting username, etc)
+func (c *AuthCntrl) SetTokenCtxMiddleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			token := c.Get("user")
+			currCtx := c.Request().Context()
+			modifiedReq := c.Request().Clone(
+				context.WithValue(currCtx, repository.TokenCtxKey, token))
+			// log.Warnf("# TOKEN: %+v", token)
+
+			c.SetRequest(modifiedReq)
+			return next(c)
+		}
+	}
 }
 
 func urlWithQueryParams(urlStr string, queryParam url.Values) (string, error) {

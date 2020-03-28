@@ -16,16 +16,16 @@ type AuditTrailRepoImpl struct {
 }
 
 // Insert auditTrail
-func (r *AuditTrailRepoImpl) Insert(ctx context.Context, auditTrail AuditTrail) (lastInsertID int64, err error) {
+func (r *AuditTrailRepoImpl) Insert(ctx context.Context, m AuditTrail) (lastInsertID int64, err error) {
 	query := sq.Insert("audit_trail").
 		Columns("entity_name", "entity_id", "operation", "username", "old_data", "new_data").
-		Values(auditTrail.EntityName, auditTrail.EntityID, auditTrail.Operation, auditTrail.Username, auditTrail.OldData, auditTrail.NewData).
+		Values(m.EntityName, m.EntityID, m.Operation, m.Username, m.OldData, m.NewData).
 		Suffix("RETURNING \"id\"").
 		RunWith(dbkit.TxCtx(ctx, r)).
 		PlaceholderFormat(sq.Dollar)
-	if err = query.QueryRowContext(ctx).Scan(&auditTrail.ID); err != nil {
+	if err = query.QueryRowContext(ctx).Scan(&m.ID); err != nil {
 		return
 	}
-	lastInsertID = auditTrail.ID
+	lastInsertID = m.ID
 	return
 }

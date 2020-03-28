@@ -34,7 +34,7 @@ describe('rules_edit', () => {
       cy.visit('/rules');
       cy.wait('@get_rules_offset0_limit10');
 
-      cy.get('[data-row-key=5] > :nth-child(6) > :nth-child(1) > [data-testid=btn-edit]').click();
+      cy.get('[data-row-key=5] > .col-action > [data-testid=colgroup-action] > [data-testid=btn-edit]').click();
 
       cy.url().should('eq', `${Cypress.config().baseUrl}/rules/5`);
       cy.wait('@get_rules_5');

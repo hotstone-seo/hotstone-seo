@@ -3,6 +3,8 @@
 # hotstone-seo
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+![HotStone Build Status](https://github.com/hotstone-seo/hotstone-seo/workflows/HotStone/badge.svg)
+![HotStoneUI Build Status](https://github.com/hotstone-seo/hotstone-seo/workflows/HotStoneUI/badge.svg)
 
 
 

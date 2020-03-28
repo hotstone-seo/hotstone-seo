@@ -1,4 +1,4 @@
-name: Go
+name: HotStone
 on: [push]
 jobs:
 

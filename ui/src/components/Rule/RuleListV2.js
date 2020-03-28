@@ -23,7 +23,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
   const {
-    listRule, setListRule, onClick, onEdit, onDelete, onChangeToggleButton ,
+    listRule, setListRule, onClick, onEdit, onDelete, onChangeToggleButton,
   } = props;
 
   const [loading, setLoading] = useState(false);
@@ -79,6 +79,7 @@ function RuleListV2(props) {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      className: 'col-name',
       width: '20%',
       sorter: true,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
@@ -123,14 +124,15 @@ function RuleListV2(props) {
       title: 'Status',
       key: 'status_start',
       render: (e, record) => (
-        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} checkedChildren="Start" unCheckedChildren="Stop"/>
+        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} checkedChildren="Start" unCheckedChildren="Stop" />
       ),
     },
     {
       title: 'Action',
       key: 'action',
+      className: 'col-action',
       render: (text, record) => (
-        <span>
+        <span data-testid="colgroup-action">
           <Tooltip title="Edit">
             <Button
               data-testid="btn-edit"
