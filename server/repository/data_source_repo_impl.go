@@ -29,13 +29,13 @@ func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSour
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	if rows.Next() {
 		e = new(DataSource)
 		if err = rows.Scan(&e.ID, &e.Name, &e.Url, &e.UpdatedAt, &e.CreatedAt); err != nil {
 			return nil, err
 		}
 	}
-	rows.Close()
 	return
 }
 
