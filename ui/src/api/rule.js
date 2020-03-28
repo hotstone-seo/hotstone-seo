@@ -45,17 +45,8 @@ function deleteRule(id) {
     });
 }
 
-function updateStatusStartRule(rule) {
-  return client
-    .put('/rules', rule)
-    .then((response) => response.data)
-    .catch((error) => {
-      throw error;
-    });
-}
-
 export {
-  fetchRules, getRule, createRule, updateRule, deleteRule, updateStatusStartRule,
+  fetchRules, getRule, createRule, updateRule, deleteRule,
 };
 
 const RuleAPI = {
@@ -63,8 +54,7 @@ const RuleAPI = {
   get: getRule,
   create: createRule,
   update: updateRule,
-  delete: deleteRule,
-  updateStatusStart: updateStatusStartRule
+  delete: deleteRule
 };
 
 export default RuleAPI;
