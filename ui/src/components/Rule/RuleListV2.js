@@ -23,7 +23,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
   const {
-    listRule, setListRule, onClick, onEdit, onDelete, onChangeToggleButton ,
+    listRule, setListRule, onClick, onEdit, onDelete, onChangeToggleButton,
   } = props;
 
   const [loading, setLoading] = useState(false);
@@ -123,7 +123,7 @@ function RuleListV2(props) {
       title: 'Status',
       key: 'status_start',
       render: (e, record) => (
-        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} checkedChildren="Start" unCheckedChildren="Stop"/>
+        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} checkedChildren="Start" unCheckedChildren="Stop" />
       ),
     },
     {
