@@ -1,4 +1,4 @@
-name: Node
+name: HotStoneUI
 on: [push]
 jobs:
   build:
