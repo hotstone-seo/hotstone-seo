@@ -55,6 +55,7 @@ func startServer(s server) error {
 	api := s.Group("/api")
 
 	api.Use(s.AuthCntrl.Middleware())
+	api.Use(s.AuthCntrl.SetTokenCtxMiddleware())	
 
 	api.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	api.Use(middleware.Recover())
