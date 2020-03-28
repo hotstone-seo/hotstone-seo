@@ -10,7 +10,7 @@ function DataSourceForm({ dataSource, handleSubmit }) {
 
   useEffect(() => {
     form.setFieldsValue(dataSource);
-  }, []);
+  }, [dataSource]);
 
   return (
     <Form
