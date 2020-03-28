@@ -32,7 +32,7 @@ describe('rules_edit', () => {
       cy.visit('/rules');
       cy.wait('@get_rules_offset0_limit10');
 
-      cy.get('[data-row-key=5] > :nth-child(6) > :nth-child(1) > [data-testid=btn-delete]').click();
+      cy.get('[data-row-key=5] > .col-action > [data-testid=colgroup-action] > [data-testid=btn-delete]').click();
       cy.get('.ant-popover-buttons > .ant-btn-primary').click({ force: true });
 
       cy.wait('@delete_rules_5');

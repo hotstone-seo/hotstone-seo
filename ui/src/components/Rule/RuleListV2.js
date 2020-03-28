@@ -129,8 +129,9 @@ function RuleListV2(props) {
     {
       title: 'Action',
       key: 'action',
+      className: 'col-action',
       render: (text, record) => (
-        <span>
+        <span data-testid="colgroup-action">
           <Tooltip title="Edit">
             <Button
               data-testid="btn-edit"
