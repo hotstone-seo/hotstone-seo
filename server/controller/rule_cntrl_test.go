@@ -105,7 +105,7 @@ func TestRuleController_FindOne(t *testing.T) {
 		rr, err := echotest.DoGET(ruleCntrl.FindOne, "/", map[string]string{"id": "999"})
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":999,\"name\":\"Airport Rule\",\"url_pattern\":\"/airport\",\"data_source_id\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":999,\"name\":\"Airport Rule\",\"url_pattern\":\"/airport\",\"data_source_id\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\",\"status\":\"\",\"change_status_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 
