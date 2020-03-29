@@ -82,6 +82,7 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
+	// TODO: why oldRule still exists though it's already deleted ?
 	oldRule, err := r.RuleRepo.FindOne(ctx, id)
 	if err != nil {
 		r.CancelMe(ctx, err)
