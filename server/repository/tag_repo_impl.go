@@ -29,6 +29,7 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	if rows.Next() {
 		e = new(Tag)
 		if err = rows.Scan(&e.ID, &e.RuleID, &e.Locale, &e.Type, &e.Attributes, &e.Value, &e.UpdatedAt, &e.CreatedAt); err != nil {
@@ -55,6 +56,7 @@ func (r *TagRepoImpl) Find(ctx context.Context, filter TagFilter) (list []*Tag, 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	list = make([]*Tag, 0)
 	for rows.Next() {
 		var e Tag

@@ -50,6 +50,7 @@ func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	list = make([]*DataSource, 0)
 	for rows.Next() {
 		var e0 DataSource
