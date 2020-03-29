@@ -32,7 +32,7 @@ func (s *DataSourceServiceImpl) Insert(ctx context.Context, ds repository.DataSo
 		s.CancelMe(ctx, err)
 		return
 	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_source", newDsID, repository.Insert, nil, ds); err != nil {
+	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", newDsID, repository.Insert, nil, ds); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
@@ -52,7 +52,7 @@ func (s *DataSourceServiceImpl) Update(ctx context.Context, ds repository.DataSo
 		s.CancelMe(ctx, err)
 		return
 	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_source", ds.ID, repository.Update, oldDs, ds); err != nil {
+	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", ds.ID, repository.Update, oldDs, ds); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
@@ -71,7 +71,7 @@ func (s *DataSourceServiceImpl) Delete(ctx context.Context, id int64) (err error
 		s.CancelMe(ctx, err)
 		return
 	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_source", id, repository.Delete, oldDs, nil); err != nil {
+	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", id, repository.Delete, oldDs, nil); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
