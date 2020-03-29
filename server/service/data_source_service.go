@@ -32,7 +32,12 @@ func (s *DataSourceServiceImpl) Insert(ctx context.Context, ds repository.DataSo
 		s.CancelMe(ctx, err)
 		return
 	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", newDsID, repository.Insert, nil, ds); err != nil {
+	newDS, err := s.DataSourceRepo.FindOne(ctx, newDsID)
+	if err != nil {
+		s.CancelMe(ctx, err)
+		return
+	}
+	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", newDsID, repository.Insert, nil, newDS); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
@@ -42,8 +47,7 @@ func (s *DataSourceServiceImpl) Insert(ctx context.Context, ds repository.DataSo
 // Update data source
 func (s *DataSourceServiceImpl) Update(ctx context.Context, ds repository.DataSource) (err error) {
 	defer s.CommitMe(&ctx)()
-	var oldDs *repository.DataSource
-	oldDs, err = s.DataSourceRepo.FindOne(ctx, ds.ID)
+	oldDS, err := s.DataSourceRepo.FindOne(ctx, ds.ID)
 	if err != nil {
 		s.CancelMe(ctx, err)
 		return
@@ -52,7 +56,12 @@ func (s *DataSourceServiceImpl) Update(ctx context.Context, ds repository.DataSo
 		s.CancelMe(ctx, err)
 		return
 	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", ds.ID, repository.Update, oldDs, ds); err != nil {
+	newDS, err := s.DataSourceRepo.FindOne(ctx, ds.ID)
+	if err != nil {
+		s.CancelMe(ctx, err)
+		return
+	}
+	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", ds.ID, repository.Update, oldDS, newDS); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
