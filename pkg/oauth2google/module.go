@@ -1,30 +1,24 @@
 package oauth2google
 
 import (
-	"github.com/typical-go/typical-go/pkg/typcore"
-	"github.com/typical-go/typical-go/pkg/typdep"
+	"github.com/typical-go/typical-go/pkg/typapp"
+	"github.com/typical-go/typical-go/pkg/typcfg"
 )
 
-// Module for Social Login
-type Module struct {
-	configName string
+var (
+	// DefaultConfigName is default config name of oauth2 google
+	DefaultConfigName = "OAUTH2_GOOGLE"
+)
+
+// Configuration the social login module
+func Configuration() *typcfg.Configuration {
+	return typcfg.NewConfiguration(DefaultConfigName, &Config{})
 }
 
-// New instance of module
-func New() *Module {
-	return &Module{
-		configName: "OAUTH2_GOOGLE",
-	}
-}
-
-// Configure the social login module
-func (m *Module) Configure() *typcore.Configuration {
-	return typcore.NewConfiguration(m.configName, &Config{})
-}
-
-// Provide the dependencies
-func (m *Module) Provide() []*typdep.Constructor {
-	return []*typdep.Constructor{
-		typdep.NewConstructor(NewService),
-	}
+// Module of google oauth
+func Module() *typapp.Module {
+	return typapp.NewModule().
+		WithProviders(
+			typapp.NewConstructor(NewService),
+		)
 }

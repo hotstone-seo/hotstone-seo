@@ -11,50 +11,47 @@ import (
 	"github.com/typical-go/typical-go/pkg/typreadme"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
+	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
-var (
-	serverApp = server.New()
-	redis     = typredis.New()
-	postgres  = typpostgres.New().
-			WithDBName("hotstone").
-			WithDockerImage("timescale/timescaledb:latest-pg11")
-	googleOauth = oauth2google.New()
-)
+var _ = func() bool {
+	typpostgres.DefaultDockerImage = "timescale/timescaledb:latest-pg11"
+	typpostgres.DefaultDBName = "hotstone"
+
+	return true
+}()
 
 // Descriptor of hotstone-seo
 var Descriptor = typcore.Descriptor{
 	Name:    "hotstone-seo",
 	Version: "0.0.1",
 
-	App: typapp.Create(serverApp).
+	App: typapp.EntryPoint(server.Main, "server").
 		WithModules(
-			redis,
-			postgres,
-			googleOauth,
+			typredis.Module(),
+			typpostgres.Module(),
+			typserver.Module(),
+			oauth2google.Module(),
 		),
 
 	BuildTool: typbuildtool.
-		Create(
+		BuildSequences(
 			typbuildtool.StandardBuild(),
 		).
-		WithCommanders(
-			postgres,
-			typdocker.
-				Create(
-					redis,
-					postgres,
-					// prometheus.New(),
-					// grafana.New(),
-				),
-			typreadme.Create(),
+		WithUtilities(
+			typpostgres.Utility(),
+			typredis.Utility(),
+			typreadme.Generator(),
+			typdocker.Compose(
+				typredis.DockerRecipeV3(),
+				typpostgres.DockerRecipeV3(),
+			),
 		),
 
-	ConfigManager: typcfg.
-		Create(
-			serverApp,
-			redis,
-			postgres,
-			googleOauth,
-		),
+	ConfigManager: typcfg.Configures(
+		server.Configuration(),
+		typredis.Configuration(),
+		typpostgres.Configuration(),
+		oauth2google.Configuration(),
+	),
 }
