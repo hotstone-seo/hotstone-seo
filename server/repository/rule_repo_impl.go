@@ -21,7 +21,7 @@ type RuleRepoImpl struct {
 func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err error) {
 	var rows *sql.Rows
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at").
+	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at", "status").
 		From("rules").
 		Where(sq.Eq{"id": id})
 	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
@@ -87,7 +87,6 @@ func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	if rule.Status != "" {
-
 		builder := psql.Update("rules").
 			Set("status", rule.Status).
 			Set("change_status_at", time.Now()).
