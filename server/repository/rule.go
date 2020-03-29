@@ -9,12 +9,14 @@ import (
 
 // Rule Entity
 type Rule struct {
-	ID           int64     `json:"id"`
-	Name         string    `json:"name" validate:"required"`
-	UrlPattern   string    `json:"url_pattern" validate:"required,uri"`
-	DataSourceID *int64    `json:"data_source_id"`
-	UpdatedAt    time.Time `json:"updated_at"`
-	CreatedAt    time.Time `json:"created_at"`
+	ID             int64     `json:"id"`
+	Name           string    `json:"name" validate:"required"`
+	UrlPattern     string    `json:"url_pattern" validate:"required,uri"`
+	DataSourceID   *int64    `json:"data_source_id"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	CreatedAt      time.Time `json:"created_at"`
+	Status         string    `json:"status"`
+	ChangeStatusAt time.Time `json:"change_status_at"`
 }
 
 // RuleRepo is rule repository [mock]
