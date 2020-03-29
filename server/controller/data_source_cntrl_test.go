@@ -104,3 +104,57 @@ func TestDataSourceController_FindOne(t *testing.T) {
 		require.Equal(t, "{\"id\":100,\"name\":\"Airport Data Source\",\"url\":\"dssource1.com\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
+
+func TestDataSourceController_Delete(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	dataSourceSvcMock := mock_service.NewMockDataSourceService(ctrl)
+	dataSourceCntrl := controller.DataSourceCntrl{
+		DataSourceService: dataSourceSvcMock,
+	}
+	t.Run("WHEN id is not an integer", func(t *testing.T) {
+		_, err := echotest.DoDELETE(dataSourceCntrl.Delete, "/", map[string]string{"id": "invalid"})
+		require.EqualError(t, err, "code=400, message=Invalid ID")
+	})
+	t.Run("WHEN received error", func(t *testing.T) {
+		dataSourceSvcMock.EXPECT().Delete(gomock.Any(), int64(100)).Return(errors.New("find error"))
+		_, err := echotest.DoDELETE(dataSourceCntrl.Delete, "/", map[string]string{"id": "100"})
+		require.EqualError(t, err, "code=500, message=find error")
+	})
+	t.Run("WHEN successful", func(t *testing.T) {
+		dataSourceSvcMock.EXPECT().Delete(gomock.Any(), int64(100)).Return(nil)
+		rr, err := echotest.DoDELETE(dataSourceCntrl.Delete, "/", map[string]string{"id": "100"})
+		require.NoError(t, err)
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.Equal(t, "{\"message\":\"Success delete data_source #100\"}\n", rr.Body.String())
+	})
+}
+
+func TestDataSourceController_Update(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	dataSourceSvcMock := mock_service.NewMockDataSourceService(ctrl)
+	dataSourceCntrl := controller.DataSourceCntrl{
+		DataSourceService: dataSourceSvcMock,
+	}
+	t.Run("WHEN body is malformed", func(t *testing.T) {
+		_, err := echotest.DoPUT(dataSourceCntrl.Update, "/", "invalid", nil)
+		require.EqualError(t, err, "code=400, message=Syntax error: offset=1, error=invalid character 'i' looking for beginning of value")
+	})
+	t.Run("WHEN id is invalid", func(t *testing.T) {
+		_, err := echotest.DoPUT(dataSourceCntrl.Update, "/", `{ "id": -1, "name": "Airport Rule", "url_pattern": "/airport"}`, nil)
+		require.EqualError(t, err, "code=400, message=Invalid ID")
+	})
+	t.Run("WHEN received error after updating", func(t *testing.T) {
+		dataSourceSvcMock.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update error"))
+		_, err := echotest.DoPUT(dataSourceCntrl.Update, "/", `{ "id": 100, "name": "Airport Data Source", "url": "dssource1.com" }`, nil)
+		require.EqualError(t, err, "code=500, message=update error")
+	})
+	t.Run("WHEN successfully update data source", func(t *testing.T) {
+		dataSourceSvcMock.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+		rr, err := echotest.DoPUT(dataSourceCntrl.Update, "/", `{ "id": 100, "name": "Airport Data Source", "url": "dssource1.com" }`, nil)
+		require.NoError(t, err)
+		require.Equal(t, http.StatusOK, rr.Code)
+		require.Equal(t, "{\"message\":\"Success update data_source #100\"}\n", rr.Body.String())
+	})
+}
