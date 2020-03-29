@@ -128,6 +128,19 @@ function RuleListV2(props) {
       ),
     },
     {
+      title: 'Last Updated Status',
+      key: 'updated_at',
+      render: (text, record) => (
+        <div>
+          {record.status}
+          {' '}
+          since
+          {' '}
+          {formatDate(record.change_status_at)}
+        </div>
+      ),
+    },
+    {
       title: 'Action',
       key: 'action',
       className: 'col-action',
