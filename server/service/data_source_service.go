@@ -47,17 +47,14 @@ func (s *DataSourceServiceImpl) Update(ctx context.Context, ds repository.DataSo
 	oldDs, err = s.DataSourceRepo.FindOne(ctx, ds.ID)
 	if err != nil {
 		s.CancelMe(ctx, err)
-		log.Warnf("ERR findone: %+v", err)
 		return
 	}
 	if err = s.DataSourceRepo.Update(ctx, ds); err != nil {
 		s.CancelMe(ctx, err)
-		log.Warnf("ERR update: %+v", err)
 		return
 	}
 	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_source", ds.ID, repository.Update, oldDs, ds); err != nil {
 		s.CancelMe(ctx, err)
-		log.Warnf("ERR recordChange: %+v", err)
 		return
 	}
 	return nil
