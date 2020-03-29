@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
@@ -54,6 +53,25 @@ func (s *DataSourceServiceImpl) Update(ctx context.Context, ds repository.DataSo
 		return
 	}
 	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_source", ds.ID, repository.Update, oldDs, ds); err != nil {
+		s.CancelMe(ctx, err)
+		return
+	}
+	return nil
+}
+
+// Delete data source
+func (s *DataSourceServiceImpl) Delete(ctx context.Context, id int64) (err error) {
+	defer s.CommitMe(&ctx)()
+	oldDs, err := s.DataSourceRepo.FindOne(ctx, id)
+	if err != nil {
+		s.CancelMe(ctx, err)
+		return
+	}
+	if err = s.DataSourceRepo.Delete(ctx, id); err != nil {
+		s.CancelMe(ctx, err)
+		return
+	}
+	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_source", id, repository.Delete, oldDs, nil); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
