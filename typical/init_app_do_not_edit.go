@@ -9,49 +9,48 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/typical-go/typical-go/pkg/typapp"
 	"github.com/typical-go/typical-go/pkg/typcore"
-	"github.com/typical-go/typical-go/pkg/typdep"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
 )
 
 func init() {
 	typapp.AppendConstructor(
-		typdep.NewConstructor(repository.NewAuditTrailRepo),
-		typdep.NewConstructor(repository.NewDataSourceRepo),
-		typdep.NewConstructor(repository.NewMetricsRuleMatchingRepo),
-		typdep.NewConstructor(repository.NewRuleRepo),
-		typdep.NewConstructor(repository.NewTagRepo),
-		typdep.NewConstructor(repository.NewURLSyncRepo),
-		typdep.NewConstructor(service.NewAuditTrailService),
-		typdep.NewConstructor(service.NewCenterService),
-		typdep.NewConstructor(service.NewDataSourceService),
-		typdep.NewConstructor(service.NewMetricsRuleMatchingService),
-		typdep.NewConstructor(service.NewProviderService),
-		typdep.NewConstructor(service.NewRuleService),
-		typdep.NewConstructor(service.NewTagService),
-		typdep.NewConstructor(service.NewURLService),
-		typdep.NewConstructor(func(cfgMngr typcore.ConfigManager) (*config.Config, error) {
+		typapp.NewConstructor(repository.NewAuditTrailRepo),
+		typapp.NewConstructor(repository.NewDataSourceRepo),
+		typapp.NewConstructor(repository.NewMetricsRuleMatchingRepo),
+		typapp.NewConstructor(repository.NewRuleRepo),
+		typapp.NewConstructor(repository.NewTagRepo),
+		typapp.NewConstructor(repository.NewURLSyncRepo),
+		typapp.NewConstructor(service.NewAuditTrailService),
+		typapp.NewConstructor(service.NewCenterService),
+		typapp.NewConstructor(service.NewDataSourceService),
+		typapp.NewConstructor(service.NewMetricsRuleMatchingService),
+		typapp.NewConstructor(service.NewProviderService),
+		typapp.NewConstructor(service.NewRuleService),
+		typapp.NewConstructor(service.NewTagService),
+		typapp.NewConstructor(service.NewURLService),
+		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*config.Config, error) {
 			cfg, err := cfgMngr.RetrieveConfig("APP")
 			if err != nil {
 				return nil, err
 			}
 			return cfg.(*config.Config), nil
 		}),
-		typdep.NewConstructor(func(cfgMngr typcore.ConfigManager) (*typredis.Config, error) {
+		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*typredis.Config, error) {
 			cfg, err := cfgMngr.RetrieveConfig("REDIS")
 			if err != nil {
 				return nil, err
 			}
 			return cfg.(*typredis.Config), nil
 		}),
-		typdep.NewConstructor(func(cfgMngr typcore.ConfigManager) (*typpostgres.Config, error) {
+		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*typpostgres.Config, error) {
 			cfg, err := cfgMngr.RetrieveConfig("PG")
 			if err != nil {
 				return nil, err
 			}
 			return cfg.(*typpostgres.Config), nil
 		}),
-		typdep.NewConstructor(func(cfgMngr typcore.ConfigManager) (*oauth2google.Config, error) {
+		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*oauth2google.Config, error) {
 			cfg, err := cfgMngr.RetrieveConfig("OAUTH2_GOOGLE")
 			if err != nil {
 				return nil, err

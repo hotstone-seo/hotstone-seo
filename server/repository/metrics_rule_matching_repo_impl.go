@@ -54,6 +54,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	list = make([]*MetricsMismatchedCount, 0)
 	for rows.Next() {
 		var e0 MetricsMismatchedCount
@@ -124,6 +125,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, st
 	if rows, err = r.DB.Query(query, startDate, endDate, ruleID); err != nil {
 		return
 	}
+	defer rows.Close()
 
 	list = make([]*MetricsCountHitPerDay, 0)
 	for rows.Next() {

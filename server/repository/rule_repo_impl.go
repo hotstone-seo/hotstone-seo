@@ -27,6 +27,7 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err e
 	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	if rows.Next() {
 		rule, err = scanRule(rows)
 	}
@@ -43,6 +44,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 	if rows, err = composePagination(builder, paginationParam).RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	list = make([]*Rule, 0)
 	for rows.Next() {
 		var rule *Rule

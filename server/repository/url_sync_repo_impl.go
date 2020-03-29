@@ -27,6 +27,7 @@ func (r *URLSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreS
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	if rows.Next() {
 		urlStoreSync, err = scanURLSync(rows)
 	}
@@ -44,6 +45,7 @@ func (r *URLSyncRepoImpl) Find(ctx context.Context) (list []*URLSync, err error)
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	list = make([]*URLSync, 0)
 	for rows.Next() {
 		var urlStoreSync *URLSync
@@ -99,6 +101,7 @@ func (r *URLSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var urlStoreSync *URLSync
 		if urlStoreSync, err = scanURLSync(rows); err != nil {
