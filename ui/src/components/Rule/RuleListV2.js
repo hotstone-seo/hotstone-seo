@@ -124,7 +124,7 @@ function RuleListV2(props) {
       title: 'Status',
       key: 'status_start',
       render: (e, record) => (
-        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={e} checkedChildren="Start" unCheckedChildren="Stop" />
+        <Switch onChange={(value) => onChangeToggleButton(value, record)} defaultChecked={record.status === 'start'} checkedChildren="start" unCheckedChildren="stop" />
       ),
     },
     {
