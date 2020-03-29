@@ -10,9 +10,6 @@ require (
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/golang/mock v1.4.1
 	github.com/imantung/mario v0.9.0
-	github.com/juju/errors v0.0.0-20190930114154-d42613fe1ab9
-	github.com/juju/loggo v0.0.0-20190526231331-6e530bcce5d8 // indirect
-	github.com/juju/testing v0.0.0-20191001232224-ce9dec17d28b // indirect
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/robfig/cron/v3 v3.0.0
 	github.com/sirupsen/logrus v1.4.2
@@ -25,5 +22,4 @@ require (
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
 	golang.org/x/tools v0.0.0-20200325203130-f53864d0dba1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
-	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 // indirect
 )

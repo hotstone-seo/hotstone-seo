@@ -2,12 +2,11 @@ package oauth2google
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/juju/errors"
 
 	"net/http"
 	"net/url"
@@ -43,19 +42,19 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	// }
 	failureURL, err := urlWithQueryParams(c.RedirectFailure, url.Values{"oauth_error": {"true"}})
 	if err != nil {
-		return errors.Trace(err)
+		return fmt.Errorf("AuthCallback: %s", err.Error())
 	}
 
 	jwtToken, err := c.VerifyCallback(ce, c.JWTSecret)
 	if err != nil {
-		log.Error(errors.Details(err))
+		log.Errorf("AuthCallback: %s", err.Error())
 		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
 	}
 
 	// successUrl, err := urlWithQueryParams(c.Oauth2GoogleRedirectSuccess, url.Values{"holder": {holder}})
 	successURL, err := urlWithQueryParams(c.RedirectSuccess, url.Values{})
 	if err != nil {
-		log.Error(errors.Details(err))
+		log.Errorf("AuthCallback: %s", err.Error())
 		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
 	}
 
@@ -113,11 +112,11 @@ func (c *AuthCntrl) SetTokenCtxMiddleware() echo.MiddlewareFunc {
 	}
 }
 
-func urlWithQueryParams(urlStr string, queryParam url.Values) (string, error) {
-	u, err := url.Parse(urlStr)
-	if err != nil {
-		return "", errors.Trace(err)
+func urlWithQueryParams(rawurl string, values url.Values) (s string, err error) {
+	var u *url.URL
+	if u, err = url.Parse(rawurl); err != nil {
+		return
 	}
-	u.RawQuery = queryParam.Encode()
+	u.RawQuery = values.Encode()
 	return u.String(), nil
 }

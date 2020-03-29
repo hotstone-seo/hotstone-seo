@@ -5,7 +5,6 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/juju/errors"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
@@ -46,7 +45,7 @@ func startServer(s server) error {
 
 	s.HTTPErrorHandler = func(err error, c echo.Context) {
 		s.DefaultHTTPErrorHandler(err, c)
-		log.Print(errors.Details(err))
+		log.Error(err.Error())
 	}
 
 	s.POST("auth/google/login", s.AuthCntrl.Login)
@@ -55,7 +54,7 @@ func startServer(s server) error {
 	api := s.Group("/api")
 
 	api.Use(s.AuthCntrl.Middleware())
-	api.Use(s.AuthCntrl.SetTokenCtxMiddleware())	
+	api.Use(s.AuthCntrl.SetTokenCtxMiddleware())
 
 	api.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	api.Use(middleware.Recover())

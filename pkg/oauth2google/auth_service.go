@@ -5,13 +5,14 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/juju/errors"
+
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 	"golang.org/x/oauth2"
@@ -60,7 +61,7 @@ func (c *AuthServiceImpl) GetAuthCodeURL(ce echo.Context, cookieSecure bool) (au
 func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (string, error) {
 	oauthState, err := ce.Cookie("oauthstate")
 	if err != nil {
-		return "", errors.Trace(err)
+		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
 
 	if ce.QueryParam("state") != oauthState.Value {
@@ -69,17 +70,17 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 
 	userInfoResp, err := c.getUserInfoFromGoogle(ce.Request().Context(), ce.QueryParam("code"))
 	if err != nil {
-		return "", errors.Trace(err)
+		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
 
 	err = c.validateUserInfoResp(userInfoResp)
 	if err != nil {
-		return "", errors.Trace(err)
+		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
 
 	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret)
 	if err != nil {
-		return "", errors.Trace(err)
+		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
 
 	return jwtToken, nil
@@ -96,22 +97,22 @@ func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string
 	// Use code to get token and get user info from Google.
 	token, err := c.Exchange(ctx, code)
 	if err != nil {
-		return nil, errors.Trace(err)
+		return nil, fmt.Errorf("AuthGetUserInfo: %w", err)
 	}
 
 	if !token.Valid() {
-		return nil, errors.New("invalid token")
+		return nil, errors.New("AuthGetUserInfo: invalid token")
 	}
 
 	response, err := http.Get(fmt.Sprintf("https://www.googleapis.com/oauth2/v2/userinfo?access_token=%s", token.AccessToken))
 	if err != nil {
-		return nil, errors.Trace(err)
+		return nil, fmt.Errorf("AuthGetUserInfo: %w", err)
 	}
 	defer response.Body.Close()
 
 	err = json.NewDecoder(response.Body).Decode(&userInfoResp)
 	if err != nil {
-		return nil, errors.Trace(err)
+		return nil, fmt.Errorf("AuthGetUserInfo: %w", err)
 	}
 
 	return userInfoResp, nil
@@ -119,12 +120,12 @@ func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string
 
 func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp repository.GoogleOauth2UserInfoResp) error {
 	if verifiedEmail, ok := userInfoResp["verified_email"]; !ok || !verifiedEmail.(bool) {
-		return errors.New("invalid or empty verified_email")
+		return errors.New("AuthUserInfo: invalid or empty verified_email")
 	}
 
 	if c.cfg.HostedDomain != "" {
 		if hd, ok := userInfoResp["hd"]; !ok || hd != c.cfg.HostedDomain {
-			return errors.New("invalid or empty hd")
+			return errors.New("AuthUserInfo: invalid or empty hd")
 		}
 	}
 	return nil
@@ -144,7 +145,7 @@ func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2U
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", errors.Trace(err)
+		return "", err
 	}
 
 	return t, nil
