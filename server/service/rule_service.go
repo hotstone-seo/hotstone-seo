@@ -21,6 +21,7 @@ type RuleServiceImpl struct {
 	dig.In
 	RuleRepo    repository.RuleRepo
 	URLSyncRepo repository.URLSyncRepo
+	AuditTrailService
 	repository.Transactional
 }
 
@@ -54,6 +55,15 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 		r.CancelMe(ctx, err)
 		return newRuleID, err
 	}
+	newRule, err := r.RuleRepo.FindOne(ctx, newRuleID)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	if _, err = r.AuditTrailService.RecordChanges(ctx, "rules", newRuleID, repository.Insert, nil, newRule); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
 	return newRuleID, nil
 }
 
@@ -72,12 +82,26 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
+	oldRule, err := r.RuleRepo.FindOne(ctx, id)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	if _, err = r.AuditTrailService.RecordChanges(ctx, "rules", id, repository.Delete, oldRule, nil); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
 	return nil
 }
 
 // Update rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
 	defer r.CommitMe(&ctx)()
+	oldRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
 	if err = r.RuleRepo.Update(ctx, rule); err != nil {
 		r.CancelMe(ctx, err)
 		return
@@ -87,6 +111,15 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 		RuleID:           rule.ID,
 		LatestURLPattern: &rule.UrlPattern,
 	}); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	newRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	if _, err = r.AuditTrailService.RecordChanges(ctx, "rules", rule.ID, repository.Update, oldRule, newRule); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
