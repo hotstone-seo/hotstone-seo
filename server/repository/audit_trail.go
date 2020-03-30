@@ -9,14 +9,14 @@ import (
 
 // AuditTrail Entity
 type AuditTrail struct {
-	ID         int64
-	Time       time.Time
-	EntityName string
-	EntityID   int64
-	Operation  string
-	Username   string
-	OldData    dbtype.JSON
-	NewData    dbtype.JSON
+	ID         int64       `json:"id,omitempty"`
+	Time       time.Time   `json:"time,omitempty"`
+	EntityName string      `json:"entity_name,omitempty"`
+	EntityID   int64       `json:"entity_id,omitempty"`
+	Operation  string      `json:"operation,omitempty"`
+	Username   string      `json:"username,omitempty"`
+	OldData    dbtype.JSON `json:"old_data,omitempty"`
+	NewData    dbtype.JSON `json:"new_data,omitempty"`
 }
 
 // OperationType is type of changes operation

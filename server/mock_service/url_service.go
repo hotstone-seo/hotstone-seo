@@ -5,6 +5,7 @@
 package mock_service
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -75,17 +76,17 @@ func (mr *MockURLServiceMockRecorder) DumpTree() *gomock.Call {
 }
 
 // FullSync mocks base method
-func (m *MockURLService) FullSync() error {
+func (m *MockURLService) FullSync(arg0 context.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FullSync")
+	ret := m.ctrl.Call(m, "FullSync", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // FullSync indicates an expected call of FullSync
-func (mr *MockURLServiceMockRecorder) FullSync() *gomock.Call {
+func (mr *MockURLServiceMockRecorder) FullSync(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FullSync", reflect.TypeOf((*MockURLService)(nil).FullSync))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FullSync", reflect.TypeOf((*MockURLService)(nil).FullSync), arg0)
 }
 
 // Get mocks base method
@@ -131,17 +132,17 @@ func (mr *MockURLServiceMockRecorder) Match(arg0 interface{}) *gomock.Call {
 }
 
 // Sync mocks base method
-func (m *MockURLService) Sync() error {
+func (m *MockURLService) Sync(arg0 context.Context) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Sync")
+	ret := m.ctrl.Call(m, "Sync", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Sync indicates an expected call of Sync
-func (mr *MockURLServiceMockRecorder) Sync() *gomock.Call {
+func (mr *MockURLServiceMockRecorder) Sync(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sync", reflect.TypeOf((*MockURLService)(nil).Sync))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sync", reflect.TypeOf((*MockURLService)(nil).Sync), arg0)
 }
 
 // Update mocks base method
