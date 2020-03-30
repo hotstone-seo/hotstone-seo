@@ -75,10 +75,7 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 // Delete rule
 func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-	builder := psql.Update("rules").
-		Set("deleted_at", time.Now()).
-		Set("is_active", "0").
-		Where(sq.Eq{"id": id})
+	builder := psql.Delete("rules").Where(sq.Eq{"id": id})
 	_, err = builder.RunWith(dbkit.TxCtx(ctx, r)).ExecContext(ctx)
 	return
 }

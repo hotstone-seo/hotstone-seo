@@ -80,9 +80,7 @@ func (r *DataSourceRepoImpl) Insert(ctx context.Context, e DataSource) (lastInse
 // Delete data_source
 func (r *DataSourceRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
-		Update("data_sources").
-		Set("deleted_at", time.Now()).
-		Set("is_active", "0").
+		Delete("data_sources").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	_, err = builder.ExecContext(ctx)
