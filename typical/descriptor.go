@@ -8,7 +8,6 @@ import (
 	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typdocker"
-	"github.com/typical-go/typical-go/pkg/typreadme"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
 	"github.com/typical-go/typical-rest-server/pkg/typserver"
@@ -41,7 +40,6 @@ var Descriptor = typcore.Descriptor{
 		WithUtilities(
 			typpostgres.Utility(),
 			typredis.Utility(),
-			typreadme.Generator(),
 			typdocker.Compose(
 				typredis.DockerRecipeV3(),
 				typpostgres.DockerRecipeV3(),
