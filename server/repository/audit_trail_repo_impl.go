@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
@@ -13,6 +14,27 @@ import (
 type AuditTrailRepoImpl struct {
 	dig.In
 	*typpostgres.DB
+}
+
+// Find rule
+func (r *AuditTrailRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*AuditTrail, err error) {
+	var rows *sql.Rows
+	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+	builder := psql.Select("id", "time", "entity_name", "entity_id", "operation", "username", "old_data", "new_data").
+		From("audit_trail")
+	if rows, err = composePagination(builder, paginationParam).RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
+		return
+	}
+	defer rows.Close()
+	list = make([]*AuditTrail, 0)
+	for rows.Next() {
+		var rule *AuditTrail
+		if rule, err = scanAuditTrail(rows); err != nil {
+			return
+		}
+		list = append(list, rule)
+	}
+	return
 }
 
 // Insert auditTrail
@@ -28,4 +50,13 @@ func (r *AuditTrailRepoImpl) Insert(ctx context.Context, m AuditTrail) (lastInse
 	}
 	lastInsertID = m.ID
 	return
+}
+
+func scanAuditTrail(rows *sql.Rows) (*AuditTrail, error) {
+	var m AuditTrail
+	var err error
+	if err = rows.Scan(&m.ID, &m.Time, &m.EntityName, &m.EntityID, &m.Operation, &m.Username, &m.OldData, &m.NewData); err != nil {
+		return nil, err
+	}
+	return &m, nil
 }
