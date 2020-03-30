@@ -17,7 +17,7 @@ type TagServiceImpl struct {
 	dig.In
 	repository.TagRepo
 	repository.Transactional
-	AuditTrailService
+	AuditTrailService AuditTrailService
 }
 
 // NewTagService return new instance of TagService [constructor]

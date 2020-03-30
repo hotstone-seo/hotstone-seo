@@ -17,7 +17,7 @@ type DataSourceServiceImpl struct {
 	dig.In
 	repository.DataSourceRepo
 	repository.Transactional
-	AuditTrailService
+	AuditTrailService AuditTrailService
 }
 
 // NewDataSourceService return new instance of DataSourceService [constructor]
