@@ -26,6 +26,7 @@ type server struct {
 	controller.ProviderCntrl
 	controller.CenterCntrl
 	controller.MetricsCntrl
+	controller.AuditTrailCntrl
 
 	Postgres *typpostgres.DB
 	Redis    *redis.Client
@@ -67,6 +68,7 @@ func startServer(s server) error {
 	s.ProviderCntrl.Route(api)
 	s.CenterCntrl.Route(api)
 	s.MetricsCntrl.Route(api)
+	s.AuditTrailCntrl.Route(api)
 
 	return s.Start(s.Address)
 }
