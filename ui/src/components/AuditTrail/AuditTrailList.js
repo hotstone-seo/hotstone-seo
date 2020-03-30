@@ -17,7 +17,7 @@ const defaultPagination = {
   pageSize: 5,
 };
 
-const formatDate = (dateString) => moment(dateString).fromNow();
+const formatDate = (dateString) => moment(dateString).format('YYYY-MM-DD HH:mm');
 
 function AuditTrailList(props) {
   const { listAuditTrail, setListAuditTrail } = props;
