@@ -45,7 +45,6 @@ func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err 
 	builder := sq.
 		Select("id", "name", "url", "updated_at", "created_at").
 		From("data_sources").
-		Where(sq.Eq{"is_active": "1"}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
