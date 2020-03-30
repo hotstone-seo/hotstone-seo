@@ -30,6 +30,7 @@ const (
 
 // AuditTrailRepo is rule repository [mock]
 type AuditTrailRepo interface {
+	Find(ctx context.Context, paginationParam PaginationParam) ([]*AuditTrail, error)
 	Insert(ctx context.Context, auditTrail AuditTrail) (lastInsertID int64, err error)
 }
 

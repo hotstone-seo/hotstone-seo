@@ -11,6 +11,7 @@ import (
 
 // AuditTrailService contain logic for AuditTrail Controller [mock]
 type AuditTrailService interface {
+	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error)
 	RecordChanges(ctx context.Context, entityName string, entityID int64, opsType repository.OperationType,
 		oldData interface{}, newData interface{}) (lastInsertID int64, err error)
 }
@@ -24,6 +25,11 @@ type AuditTrailServiceImpl struct {
 // NewAuditTrailService return new instance of AuditTrailService [constructor]
 func NewAuditTrailService(impl AuditTrailServiceImpl) AuditTrailService {
 	return &impl
+}
+
+// Find audit trail data
+func (r *AuditTrailServiceImpl) Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error) {
+	return r.AuditTrailRepo.Find(ctx, paginationParam)
 }
 
 // RecordChanges insert changes
