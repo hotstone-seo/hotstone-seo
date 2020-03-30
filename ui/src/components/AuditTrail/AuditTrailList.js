@@ -63,6 +63,12 @@ function AuditTrailList(props) {
       render: (text, record) => <div>{formatDate(record.time)}</div>,
     },
     {
+      title: 'Changed By',
+      dataIndex: 'username',
+      key: 'username',
+      ...useTableFilterProps('username'),
+    },
+    {
       title: 'Entity Name',
       dataIndex: 'entity_name',
       key: 'entity_name',
@@ -78,12 +84,6 @@ function AuditTrailList(props) {
       dataIndex: 'operation',
       key: 'operation',
       ...useTableFilterProps('operation'),
-    },
-    {
-      title: 'Changed By',
-      dataIndex: 'username',
-      key: 'username',
-      ...useTableFilterProps('username'),
     },
     {
       title: 'Old Data',
