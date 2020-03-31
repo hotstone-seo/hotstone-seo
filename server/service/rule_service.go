@@ -22,6 +22,7 @@ type RuleServiceImpl struct {
 	RuleRepo    repository.RuleRepo
 	URLSyncRepo repository.URLSyncRepo
 	AuditTrailService
+	HistoryService
 	repository.Transactional
 }
 
@@ -70,6 +71,15 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 // Delete rule
 func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 	defer r.CommitMe(&ctx)()
+	oldRule, err := r.RuleRepo.FindOne(ctx, id)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	if _, err = r.HistoryService.RecordHistory(ctx, "rules", id, oldRule); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
 	if err = r.RuleRepo.Delete(ctx, id); err != nil {
 		r.CancelMe(ctx, err)
 		return
@@ -83,11 +93,6 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		return
 	}
 	// TODO: why oldRule still exists though it's already deleted ?
-	oldRule, err := r.RuleRepo.FindOne(ctx, id)
-	if err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
 	if _, err = r.AuditTrailService.RecordChanges(ctx, "rules", id, repository.Delete, oldRule, nil); err != nil {
 		r.CancelMe(ctx, err)
 		return
