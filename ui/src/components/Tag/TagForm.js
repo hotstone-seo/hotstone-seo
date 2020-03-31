@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
 import PropTypes from 'prop-types';
-import { Form, Select } from 'antd';
-import locales from 'locales';
+import { Select } from 'antd';
 
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
@@ -18,91 +16,49 @@ const tagTypes = [
   { label: 'Script', value: 'script' },
 ];
 
-function TagForm({ form }) {
-  const [currentType, setCurrentType] = useState(form.getFieldValue('type'));
-  const [tagValues, setTagValues] = useState(
-    form.getFieldsValue(['type', 'attributes', 'value']),
-  );
+function TagForm({ tag }) {
+  const [currentType, setCurrentType] = useState(tag.type);
 
-  const renderTagMock = (tag) => {
-    if (!tag.type) {
-      return null;
+  const renderSelectedForm = (type) => {
+    switch (type) {
+      case 'title':
+        return <TitleForm tag={tag} />;
+      case 'meta':
+        return <MetaForm tag={tag} />;
+      case 'link':
+        return <CanonicalForm tag={tag} />;
+      case 'script':
+        return <ScriptForm tag={tag} />;
+      default:
+        return null;
     }
-    const mock = tag;
-    if (['meta', 'link'].includes(mock.type)) {
-      mock.value = null;
-    }
-    return (
-      <pre data-testid="text-preview-tag">
-        {renderToStaticMarkup(
-          React.createElement(mock.type, mock.attributes, mock.value),
-        )}
-      </pre>
-    );
   };
 
   return (
     <>
-      <Form
-        form={form}
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 14 }}
-        onValuesChange={(changedValues, allValues) => setTagValues(allValues)}
+      <Select
+        data-testid="select-type"
+        onChange={(value) => setCurrentType(value)}
+        showSearch
+        filterOption={(input, option) => (
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        )}
       >
-        <Form.Item name="id" noStyle />
+        {tagTypes.map(({ label, value }) => (
+          <Option key={value} value={value}>{label}</Option>
+        ))}
+      </Select>
 
-        <Form.Item name="rule_id" noStyle />
-
-        <Form.Item
-          label="Type"
-          name="type"
-          rules={[{ required: true, message: 'A type must be selected' }]}
-        >
-          <Select
-            data-testid="select-type"
-            onChange={(value) => setCurrentType(value)}
-            showSearch
-            filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {tagTypes.map(({ label, value }) => (
-              <Option key={value} value={value}>{label}</Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Locale"
-          name="locale"
-          rules={[{ required: true, message: 'Please set a locale for the tag' }]}
-        >
-          <Select
-            data-testid="select-locale"
-            showSearch
-            filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {locales.map((locale) => (
-              <Option key={locale} value={locale}>{locale}</Option>
-            ))}
-          </Select>
-        </Form.Item>
-        {
-          {
-            title: <TitleForm />,
-            meta: <MetaForm />,
-            link: <CanonicalForm form={form} />,
-            script: <ScriptForm />,
-          }[currentType]
-        }
-      </Form>
-      {renderTagMock(tagValues)}
+      {renderSelectedForm(currentType)}
     </>
   );
 }
 
 TagForm.propTypes = {
-  form: PropTypes.shape({
-    getFieldValue: PropTypes.func.isRequired,
-    getFieldsValue: PropTypes.func.isRequired,
+  tag: PropTypes.shape({
+    id: PropTypes.number,
+    rule_id: PropTypes.number.isRequired,
+    type: PropTypes.string,
   }).isRequired,
 };
 
