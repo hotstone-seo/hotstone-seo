@@ -1,3 +1,17 @@
-## Heath Check
+### Heath Check
 
 http://localhost:8089/application/health
+
+
+### Dump Rule Tree
+
+http://localhost:8089/api/provider/rule-tree
+
+### Match Rule
+
+http://localhost:8089/api/provider/matchRule
+
+### Tags
+
+http://localhost:8089/api/provider/retrieveData
+
