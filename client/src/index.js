@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Helmet } from "react-helmet";
+import { withRouter } from "react-router-dom";
+import axios from "axios";
 
 /**
  * Returns a tag object after its string values have been interpolated with data
@@ -13,9 +13,9 @@ import axios from 'axios';
  */
 function interpolate(tag, data) {
   // NOTE: This implementation is O(n2), please provide better implementation in the future
-  for(let [key, value] of Object.entries(tag)) {
+  for (let [key, value] of Object.entries(tag)) {
     tag[key] = value.replace(/{(\w+)}/g, function(match, capture) {
-      return data[capture] || '';
+      return data[capture] || "";
     });
   }
 
@@ -30,10 +30,12 @@ class HotStoneClient {
   async match(path) {
     let rule = {};
     try {
-      const { data } = await this.apiCaller.post('/provider/matchRule', { path });
+      const { data } = await this.apiCaller.post("/provider/match-rule", {
+        path
+      });
       rule = data;
     } catch (e) {
-      console.error('Failed to retrieve rule:', e.message);
+      console.error("Failed to retrieve rule:", e.message);
     }
     return rule;
   }
@@ -42,15 +44,15 @@ class HotStoneClient {
     let tags = [];
     const { rule_id, path_param } = rule;
     try {
-      const { data } = await this.apiCaller.post('/provider/tags', {
+      const { data } = await this.apiCaller.post("/provider/tags", {
         rule_id: rule_id,
         locale: locale,
         path_param: path_param,
         data: contentData
       });
       tags = data;
-    } catch(e) {
-      console.error('Failed to retrieve tags:', e.message);
+    } catch (e) {
+      console.error("Failed to retrieve tags:", e.message);
     }
     return tags;
   }
@@ -81,7 +83,7 @@ class HotStoneWrapper extends React.Component {
     }
     return true;
   }
-  
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.fetchTags(this.props.location.pathname);
@@ -107,7 +109,7 @@ class HotStoneWrapper extends React.Component {
           {this.props.children}
         </HotStoneContext.Provider>
       </div>
-    ); 
+    );
   }
 }
 

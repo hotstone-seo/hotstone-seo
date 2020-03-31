@@ -1,10 +1,10 @@
-import client from './client';
+import client from "./client";
 
 function match(path) {
   return client
-    .post('/provider/matchRule', { path })
-    .then((response) => response.data)
-    .catch((error) => {
+    .post("/provider/match-rule", { path })
+    .then(response => response.data)
+    .catch(error => {
       throw error;
     });
 }
@@ -12,14 +12,14 @@ function match(path) {
 function fetchTags(rule, locale, contentData) {
   const { rule_id, path_param } = rule;
   return client
-    .post('/provider/tags', {
+    .post("/provider/tags", {
       rule_id,
       locale,
       path_param,
-      data: contentData,
+      data: contentData
     })
-    .then((response) => response.data)
-    .catch((error) => {
+    .then(response => response.data)
+    .catch(error => {
       throw error;
     });
 }

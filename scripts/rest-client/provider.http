@@ -9,9 +9,28 @@ http://localhost:8089/api/provider/rule-tree
 
 ### Match Rule
 
-http://localhost:8089/api/provider/matchRule
+POST http://localhost:8089/api/provider/match-rule
+content-type: application/json
+
+{
+    "path": "/events/bingbang-2020"
+}
+
+### Retrieve Data
+
+POST http://localhost:8089/api/provider/retrieve-data
+content-type: application/json
+
+{
+    
+}
 
 ### Tags
 
-http://localhost:8089/api/provider/retrieveData
+POST http://localhost:8089/api/provider/tags
+content-type: application/json
+
+{
+
+}
 
