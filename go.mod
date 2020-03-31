@@ -17,6 +17,7 @@ require (
 	github.com/thoas/go-funk v0.5.0
 	github.com/typical-go/typical-go v0.9.47
 	github.com/typical-go/typical-rest-server v0.8.25
+	github.com/urfave/cli/v2 v2.2.0
 	github.com/xorcare/pointer v1.0.0
 	go.uber.org/dig v1.8.0
 	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
