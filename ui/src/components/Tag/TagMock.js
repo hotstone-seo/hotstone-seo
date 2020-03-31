@@ -20,3 +20,5 @@ TagMock.propTypes = {
     value: PropTypes.string,
   }).isRequired,
 };
+
+export default TagMock;
