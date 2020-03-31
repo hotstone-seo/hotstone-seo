@@ -39,7 +39,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 	dataSourceRepo := mock_repository.NewMockDataSourceRepo(ctrl)
 	svc := service.ProviderServiceImpl{DataSourceRepo: dataSourceRepo, Redis: newTestRedisClient()}
 
-	t.Run("Success", func(t *testing.T) {
+	t.Run("", func(t *testing.T) {
 		handler := func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(500)
 			w.Write([]byte("some-data"))
@@ -74,6 +74,15 @@ func TestProvider_RetrieveData(t *testing.T) {
 			DataSourceID: 99999,
 		}, false)
 		require.EqualError(t, err, "Get \"non-existent\": unsupported protocol scheme \"\"")
+		require.Nil(t, resp)
+	})
+
+	t.Run("GIVEN no data-source", func(t *testing.T) {
+		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, nil)
+		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
+			DataSourceID: 99999,
+		}, false)
+		require.EqualError(t, err, "Data-Source#99999 not found")
 		require.Nil(t, resp)
 	})
 }

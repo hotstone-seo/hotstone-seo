@@ -90,6 +90,10 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 	if dataSource, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
 		return
 	}
+	if dataSource == nil {
+		err = fmt.Errorf("Data-Source#%d not found", req.DataSourceID)
+		return
+	}
 	if tmpl, err = mario.New().Parse(dataSource.Url); err != nil {
 		return
 	}
@@ -97,7 +101,7 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 		return
 	}
 
-	log.Warnf("DS_buf: %s", buf.String())
+	log.Debugf("DS_buf: %s", buf.String())
 
 	if useCache {
 		data, err = p.Redis.Get(buf.String()).Bytes()
