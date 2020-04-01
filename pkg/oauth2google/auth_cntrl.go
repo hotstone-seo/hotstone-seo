@@ -79,21 +79,27 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 
 // Logout by invalidating cookies
 func (c *AuthCntrl) Logout(ce echo.Context) (err error) {
-	secureTokenCookie := &http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"}
-	ce.SetCookie(secureTokenCookie)
-
-	tokenCookie := &http.Cookie{Name: "token", MaxAge: -1, Path: "/"}
-	ce.SetCookie(tokenCookie)
-
+	ce.SetCookie(&http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"})
+	ce.SetCookie(&http.Cookie{Name: "token", MaxAge: -1, Path: "/"})
 	return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
 }
 
 // Middleware for google social login
 func (c *AuthCntrl) Middleware() echo.MiddlewareFunc {
-	jwtCfg := middleware.DefaultJWTConfig
-	jwtCfg.SigningKey = []byte(c.JWTSecret)
-	jwtCfg.TokenLookup = "cookie:secure_token"
-	return middleware.JWTWithConfig(jwtCfg)
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(ce echo.Context) error {
+			cfg := middleware.DefaultJWTConfig
+			cfg.SigningKey = []byte(c.JWTSecret)
+			cfg.TokenLookup = "cookie:secure_token"
+
+			if err := middleware.JWTWithConfig(cfg)(next)(ce); err != nil {
+				log.Warnf("JWT Error: %s", err.Error())
+				return c.Logout(ce)
+			}
+
+			return nil
+		}
+	}
 }
 
 // SetTokenCtxMiddleware re-set token to request context for informational purpose (getting username, etc)

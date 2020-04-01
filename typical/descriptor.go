@@ -44,6 +44,7 @@ var Descriptor = typcore.Descriptor{
 				typredis.DockerRecipeV3(),
 				typpostgres.DockerRecipeV3(),
 			),
+			typbuildtool.NewUtility(uiUtility),
 		),
 
 	ConfigManager: typcfg.Configures(

@@ -1,3 +1,36 @@
-## Heath Check
+### Heath Check
 
 http://localhost:8089/application/health
+
+
+### Dump Rule Tree
+
+http://localhost:8089/api/provider/rule-tree
+
+### Match Rule
+
+POST http://localhost:8089/api/provider/match-rule
+content-type: application/json
+
+{
+    "path": "/events/bingbang-2020"
+}
+
+### Retrieve Data
+
+POST http://localhost:8089/api/provider/retrieve-data
+content-type: application/json
+
+{
+    
+}
+
+### Tags
+
+POST http://localhost:8089/api/provider/tags
+content-type: application/json
+
+{
+
+}
+

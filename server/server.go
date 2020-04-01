@@ -2,9 +2,7 @@ package server
 
 import (
 	"github.com/go-redis/redis"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
-	"github.com/hotstone-seo/hotstone-seo/server/controller"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
@@ -19,14 +17,9 @@ type server struct {
 	dig.In
 	*typserver.Server
 	*config.Config
-	oauth2google.AuthCntrl
-	controller.RuleCntrl
-	controller.DataSourceCntrl
-	controller.TagCntrl
-	controller.ProviderCntrl
-	controller.CenterCntrl
-	controller.MetricsCntrl
-	controller.AuditTrailCntrl
+
+	API      api
+	Provider provider
 
 	Postgres *typpostgres.DB
 	Redis    *redis.Client
@@ -49,26 +42,8 @@ func startServer(s server) error {
 		log.Error(err.Error())
 	}
 
-	s.POST("auth/google/login", s.AuthCntrl.Login)
-	s.GET("auth/google/callback", s.AuthCntrl.Callback)
-
-	api := s.Group("/api")
-
-	api.Use(s.AuthCntrl.Middleware())
-	api.Use(s.AuthCntrl.SetTokenCtxMiddleware())
-
-	api.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
-	api.Use(middleware.Recover())
-
-	api.POST("/logout", s.AuthCntrl.Logout)
-
-	s.RuleCntrl.Route(api)
-	s.DataSourceCntrl.Route(api)
-	s.TagCntrl.Route(api)
-	s.ProviderCntrl.Route(api)
-	s.CenterCntrl.Route(api)
-	s.MetricsCntrl.Route(api)
-	s.AuditTrailCntrl.Route(api)
+	s.API.route(s)
+	s.Provider.route(s)
 
 	return s.Start(s.Address)
 }

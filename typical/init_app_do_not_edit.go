@@ -17,6 +17,7 @@ func init() {
 	typapp.AppendConstructor(
 		typapp.NewConstructor(repository.NewAuditTrailRepo),
 		typapp.NewConstructor(repository.NewDataSourceRepo),
+		typapp.NewConstructor(repository.NewHistoryRepo),
 		typapp.NewConstructor(repository.NewMetricsRuleMatchingRepo),
 		typapp.NewConstructor(repository.NewRuleRepo),
 		typapp.NewConstructor(repository.NewTagRepo),
@@ -24,6 +25,7 @@ func init() {
 		typapp.NewConstructor(service.NewAuditTrailService),
 		typapp.NewConstructor(service.NewCenterService),
 		typapp.NewConstructor(service.NewDataSourceService),
+		typapp.NewConstructor(service.NewHistoryService),
 		typapp.NewConstructor(service.NewMetricsRuleMatchingService),
 		typapp.NewConstructor(service.NewProviderService),
 		typapp.NewConstructor(service.NewRuleService),

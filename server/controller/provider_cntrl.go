@@ -15,14 +15,6 @@ type ProviderCntrl struct {
 	service.ProviderService
 }
 
-// Route to define API Route
-func (c *ProviderCntrl) Route(e *echo.Group) {
-	e.POST("/provider/matchRule", c.MatchRule)
-	e.POST("/provider/retrieveData", c.RetrieveData)
-	e.POST("/provider/tags", c.Tags)
-	e.GET("/provider/rule-tree", c.DumpRuleTree)
-}
-
 // MatchRule to match rule
 func (p *ProviderCntrl) MatchRule(c echo.Context) (err error) {
 	var (
@@ -39,6 +31,7 @@ func (p *ProviderCntrl) MatchRule(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, resp)
 }
 
+// RetrieveData retrieve data
 func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	var (
 		req  service.RetrieveDataRequest
@@ -54,6 +47,7 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	return c.Blob(http.StatusOK, echo.MIMEApplicationJSON, data)
 }
 
+// Tags to get tag
 func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	var (
 		req  service.ProvideTagsRequest
@@ -69,6 +63,7 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, tags)
 }
 
+// DumpRuleTree to dump rule tree
 func (p *ProviderCntrl) DumpRuleTree(c echo.Context) (err error) {
 	var (
 		req     service.ProvideTagsRequest
