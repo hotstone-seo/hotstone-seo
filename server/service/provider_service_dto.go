@@ -17,6 +17,11 @@ type RetrieveDataRequest struct {
 	PathParam    map[string]string `json:"path_param"`
 }
 
+// RetrieveDataResponse is response for retreieve data
+type RetrieveDataResponse struct {
+	Data []byte
+}
+
 // ProvideTagsRequest us reques for provide tags
 type ProvideTagsRequest struct {
 	RuleID    int64             `json:"rule_id"`

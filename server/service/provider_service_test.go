@@ -54,7 +54,9 @@ func TestProvider_RetrieveData(t *testing.T) {
 			DataSourceID: 99999,
 		}, false)
 		require.NoError(t, err)
-		require.Equal(t, []byte("some-data"), resp)
+		require.Equal(t, &service.RetrieveDataResponse{
+			Data: []byte("some-data"),
+		}, resp)
 	})
 
 	t.Run("WHEN FindOne returns Error", func(t *testing.T) {
