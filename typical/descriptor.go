@@ -45,6 +45,7 @@ var Descriptor = typcore.Descriptor{
 				typpostgres.DockerRecipeV3(),
 			),
 			typbuildtool.NewUtility(uiUtility),
+			typbuildtool.NewUtility(jsonServer),
 		),
 
 	ConfigManager: typcfg.Configures(
