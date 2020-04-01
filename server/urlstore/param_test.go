@@ -1,13 +1,6 @@
 package urlstore_test
 
-import (
-	"testing"
-
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
-	"github.com/stretchr/testify/require"
-)
-
-func TestParam(t *testing.T) {
+func TestFindFirstParam(t *testing.T) {
 	testcases := []struct {
 		s        string
 		expected *urlstore.Param
@@ -72,6 +65,6 @@ func TestParam(t *testing.T) {
 	}
 
 	for _, tt := range testcases {
-		require.Equal(t, tt.expected, urlstore.CreateParam(tt.s))
+		require.Equal(t, tt.expected, urlstore.FindFirstParam(tt.s))
 	}
 }

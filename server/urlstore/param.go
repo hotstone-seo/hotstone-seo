@@ -1,8 +1,6 @@
 package urlstore
 
-import (
-	"strings"
-)
+import "strings"
 
 // Param is parameter in string as represented by <PARAM>
 type Param struct {
@@ -27,8 +25,8 @@ type Param struct {
 	AtLastPos bool
 }
 
-// CreateParam to create first occurence param in string
-func CreateParam(s string) *Param {
+// FindFirstParam to create first occurence param in string
+func FindFirstParam(s string) *Param {
 	var (
 		name    string
 		pattern string

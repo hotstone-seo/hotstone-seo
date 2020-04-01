@@ -4,6 +4,7 @@ package urlstore
 // Copyright 2016 Qiang Xue. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
+// OG: https://github.com/go-ozzo/ozzo-routing/blob/master/store.go
 
 import (
 	"fmt"
@@ -223,7 +224,7 @@ func (n *node) add(id int64, key string, data interface{}, order int) int {
 
 // addChild creates static and param nodes to store the given data
 func (n *node) addChild(id int64, key string, data interface{}, order int) int {
-	param := CreateParam(key)
+	param := FindFirstParam(key)
 	// find the first occurrence of a param token
 
 	if param == nil {
