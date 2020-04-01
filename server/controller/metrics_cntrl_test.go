@@ -14,7 +14,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 )
 
-func TestMetricsController_Find(t *testing.T) {
+func TestMetricsController_ListMismatched(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	metricsSvcMock := mock_service.NewMockMetricsRuleMatchingService(ctrl)
