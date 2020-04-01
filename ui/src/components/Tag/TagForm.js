@@ -16,19 +16,20 @@ const tagTypes = [
   { label: 'Script', value: 'script' },
 ];
 
+// TODO: adjust onSubmit to use appropriate API function for each type
 function TagForm({ tag, onSubmit }) {
   const [currentType, setCurrentType] = useState(tag.type);
 
   const renderSelectedForm = (type) => {
     switch (type) {
       case 'title':
-        return <TitleForm tag={tag} />;
+        return <TitleForm tag={tag} onSubmit={onSubmit} />;
       case 'meta':
-        return <MetaForm tag={tag} />;
+        return <MetaForm tag={tag} onSubmit={onSubmit} />;
       case 'link':
-        return <CanonicalForm tag={tag} />;
+        return <CanonicalForm tag={tag} onSubmit={onSubmit} />;
       case 'script':
-        return <ScriptForm tag={tag} />;
+        return <ScriptForm tag={tag} onSubmit={onSubmit} />;
       default:
         return null;
     }
