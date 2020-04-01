@@ -70,6 +70,8 @@ function RuleForm(props) {
           data-testid="select-data-source-id"
           showSearch
           allowClear
+          placeholder="Select Data Source"
+          style={{ width: 150 }}
           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {dataSources.map(({ id, name }) => (
