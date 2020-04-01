@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	jsonServerSrc = "scripts/json-server/db.json"
+	jsonServerSrc  = "scripts/json-server/db.json"
+	jsonServerPort = "3021"
 )
 
 func jsonServer(c *typbuildtool.Context) []*cli.Command {
@@ -32,7 +33,7 @@ func jsonServer(c *typbuildtool.Context) []*cli.Command {
 				}
 
 				c.Infof("Run %s", jsonServer)
-				cmd := exec.CommandContext(ctx, jsonServer, jsonServerSrc)
+				cmd := exec.CommandContext(ctx, jsonServer, "--port", jsonServerPort, jsonServerSrc)
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
 				return cmd.Run()

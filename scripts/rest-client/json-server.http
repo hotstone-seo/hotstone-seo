@@ -1,0 +1,8 @@
+### events
+
+http://localhost:3021/events
+
+
+### events filter by name
+
+http://localhost:3021/events?name=bigbang
