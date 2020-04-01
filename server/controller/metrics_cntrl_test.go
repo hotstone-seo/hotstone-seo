@@ -1,6 +1,7 @@
 package controller_test
 
 import (
+	"errors"
 	"net/http"
 	"testing"
 	"time"
@@ -24,6 +25,13 @@ func TestMetricsController_ListMismatched(t *testing.T) {
 
 	firstSeen := time.Now()
 	lastSeen := time.Now()
+
+	t.Run("WHEN retrieved error", func(t *testing.T) {
+		metricsSvcMock.EXPECT().ListMismatchedCount(gomock.Any(), gomock.Any()).Return(nil, errors.New("retrieve error"))
+		_, err := echotest.DoGET(metricsCntrl.ListMismatched, "/", nil)
+		require.EqualError(t, err, "code=500, message=retrieve error")
+	})
+
 	t.Run("WHEN successful", func(t *testing.T) {
 		metricsSvcMock.EXPECT().ListMismatchedCount(gomock.Any(), gomock.Any()).Return(
 			[]*repository.MetricsMismatchedCount{
