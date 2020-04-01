@@ -83,7 +83,21 @@ function AuditTrailList(props) {
       title: 'Operation',
       dataIndex: 'operation',
       key: 'operation',
-      ...useTableFilterProps('operation'),
+      filters: [
+        {
+          text: 'INSERT',
+          value: 'INSERT',
+        },
+        {
+          text: 'UPDATE',
+          value: 'UPDATE',
+        },
+        {
+          text: 'DELETE',
+          value: 'DELETE',
+        },
+      ],
+      filterMultiple: false,
     },
     {
       title: 'Old Data',
