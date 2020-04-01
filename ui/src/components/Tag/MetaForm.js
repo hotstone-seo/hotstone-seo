@@ -7,7 +7,8 @@ const { Option } = Select;
 
 function MetaForm({ tag, onSubmit }) {
   const [form] = Form.useForm();
-  const { id, rule_id, locale, attributes: { name, content } } = tag;
+  const { id, rule_id, locale, attributes = {} } = tag;
+  const { name, content } = attributes;
 
   const onFinish = (values) => {
     const formTag = Object.assign(values, { id, rule_id });

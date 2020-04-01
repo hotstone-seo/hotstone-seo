@@ -7,7 +7,8 @@ const { Option } = Select;
 
 function ScriptForm({ tag, onSubmit }) {
   const [form] = Form.useForm();
-  const { id, rule_id, locale, attributes: { src } } = tag;
+  const { id, rule_id, locale, attributes = {} } = tag;
+  const { src } = attributes;
 
   const onFinish = (values) => {
     const formTag = Object.assign(values, { id, rule_id });
