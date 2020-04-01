@@ -65,10 +65,10 @@ func (mr *MockProviderServiceMockRecorder) MatchRule(arg0, arg1 interface{}) *go
 }
 
 // RetrieveData mocks base method
-func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 bool) ([]byte, error) {
+func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 bool) (*service.RetrieveDataResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RetrieveData", arg0, arg1, arg2)
-	ret0, _ := ret[0].([]byte)
+	ret0, _ := ret[0].(*service.RetrieveDataResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

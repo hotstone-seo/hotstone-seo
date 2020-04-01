@@ -6,10 +6,9 @@ package mock_repository
 
 import (
 	context "context"
-	reflect "reflect"
-
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
+	reflect "reflect"
 )
 
 // MockHistoryRepo is a mock of HistoryRepo interface

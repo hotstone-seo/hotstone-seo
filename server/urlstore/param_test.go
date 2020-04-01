@@ -1,5 +1,12 @@
 package urlstore_test
 
+import (
+	"testing"
+
+	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
+	"github.com/stretchr/testify/require"
+)
+
 func TestFindFirstParam(t *testing.T) {
 	testcases := []struct {
 		s        string
