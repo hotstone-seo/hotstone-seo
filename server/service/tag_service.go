@@ -18,6 +18,7 @@ type TagServiceImpl struct {
 	repository.TagRepo
 	repository.Transactional
 	AuditTrailService AuditTrailService
+	HistoryService    HistoryService
 }
 
 // NewTagService return new instance of TagService [constructor]
@@ -73,6 +74,10 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 	defer s.CommitMe(&ctx)()
 	oldData, err := s.TagRepo.FindOne(ctx, id)
 	if err != nil {
+		s.CancelMe(ctx, err)
+		return
+	}
+	if _, err = s.HistoryService.RecordHistory(ctx, oldData.Type+"-tag", id, oldData); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}

@@ -18,6 +18,7 @@ type DataSourceServiceImpl struct {
 	repository.DataSourceRepo
 	repository.Transactional
 	AuditTrailService AuditTrailService
+	HistoryService    HistoryService
 }
 
 // NewDataSourceService return new instance of DataSourceService [constructor]
@@ -73,6 +74,10 @@ func (s *DataSourceServiceImpl) Delete(ctx context.Context, id int64) (err error
 	defer s.CommitMe(&ctx)()
 	oldDs, err := s.DataSourceRepo.FindOne(ctx, id)
 	if err != nil {
+		s.CancelMe(ctx, err)
+		return
+	}
+	if _, err = s.HistoryService.RecordHistory(ctx, "data_source", id, oldDs); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
