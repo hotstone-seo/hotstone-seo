@@ -100,14 +100,8 @@ function AuditTrailList(props) {
       filterMultiple: false,
     },
     {
-      title: 'Old Data',
-      dataIndex: 'old_data',
-      key: 'old_data',
-    },
-    {
-      title: 'New Data',
-      dataIndex: 'new_data',
-      key: 'new_data',
+      title: 'Data Changes',
+      render: (text, record) => <>{JSON.stringify(difference(record.new_data, record.old_data))}</>,
     },
   ];
 
@@ -139,6 +133,17 @@ function AuditTrailList(props) {
       />
     </div>
   );
+}
+
+function difference(object, base) {
+  function changes(object, base) {
+    return _.transform(object, (result, value, key) => {
+      if (!_.isEqual(value, base[key])) {
+        result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
+      }
+    });
+  }
+  return changes(object, base);
 }
 
 // const auditTrailType = PropTypes.shape({
