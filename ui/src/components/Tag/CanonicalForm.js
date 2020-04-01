@@ -5,7 +5,8 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-function CanonicalForm({ form, tag, onSubmit }) {
+function CanonicalForm({ tag, onSubmit }) {
+  const [form] = Form.useForm();
   const { id, rule_id, locale, attributes: { href } } = tag;
 
   const onFinish = (values) => {
@@ -51,14 +52,10 @@ function CanonicalForm({ form, tag, onSubmit }) {
 }
 
 CanonicalForm.defaultProps = {
-  form: Form.useForm(),
   tag: {},
 };
 
 CanonicalForm.propTypes = {
-  form: PropTypes.shape({
-    setFieldsValue: PropTypes.func.isRequired,
-  }),
   onSubmit: PropTypes.func.isRequired,
   tag: PropTypes.shape({
     id: PropTypes.number,

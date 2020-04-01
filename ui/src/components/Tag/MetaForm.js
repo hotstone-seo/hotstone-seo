@@ -5,7 +5,8 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-function MetaForm({ form, tag, onSubmit }) {
+function MetaForm({ tag, onSubmit }) {
+  const [form] = Form.useForm();
   const { id, rule_id, locale, attributes: { name, content } } = tag;
 
   const onFinish = (values) => {
@@ -58,14 +59,10 @@ function MetaForm({ form, tag, onSubmit }) {
 }
 
 MetaForm.defaultProps = {
-  form: Form.useForm(),
   tag: {},
 };
 
 MetaForm.propTypes = {
-  form: PropTypes.shape({
-    setFieldsValue: PropTypes.func,
-  }),
   onSubmit: PropTypes.func.isRequired,
   tag: PropTypes.shape({
     id: PropTypes.number,

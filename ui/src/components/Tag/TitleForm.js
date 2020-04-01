@@ -5,7 +5,8 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-function TitleForm({ form, tag, onSubmit }) {
+function TitleForm({ tag, onSubmit }) {
+  const [form] = Form.useForm();
   const { id, rule_id, locale, value } = tag;
 
   const onFinish = (values) => {
@@ -51,14 +52,10 @@ function TitleForm({ form, tag, onSubmit }) {
 }
 
 TitleForm.defaultProps = {
-  form: Form.useForm(),
   tag: {},
 };
 
 TitleForm.propTypes = {
-  form: PropTypes.shape({
-    setFieldsValue: PropTypes.func,
-  }),
   onSubmit: PropTypes.func.isRequired,
   tag: PropTypes.shape({
     id: PropTypes.number,

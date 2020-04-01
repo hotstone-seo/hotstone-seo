@@ -5,7 +5,8 @@ import locales from 'locales';
 
 const { Option } = Select;
 
-function ScriptForm({ form, tag, onSubmit }) {
+function ScriptForm({ tag, onSubmit }) {
+  const [form] = Form.useForm();
   const { id, rule_id, locale, attributes: { src } } = tag;
 
   const onFinish = (values) => {
@@ -51,14 +52,10 @@ function ScriptForm({ form, tag, onSubmit }) {
 }
 
 ScriptForm.defaultProps = {
-  form: Form.useForm(),
   tag: {},
 };
 
 ScriptForm.propTypes = {
-  form: PropTypes.shape({
-    setFieldsValue: PropTypes.func,
-  }),
   onSubmit: PropTypes.func.isRequired,
   tag: PropTypes.shape({
     id: PropTypes.number,
