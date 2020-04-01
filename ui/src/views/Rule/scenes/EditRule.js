@@ -7,20 +7,12 @@ import {
   message,
   Select,
   Button,
-  Modal,
-  Form,
 } from 'antd';
-import {
-  EditOutlined,
-  PlusOutlined,
-  BarChartOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, BarChartOutlined } from '@ant-design/icons';
 import { RuleForm, RuleDetail } from 'components/Rule';
 import { TagList, TagForm } from 'components/Tag';
 import { getRule, updateRule } from 'api/rule';
-import {
-  fetchTags, createTag, updateTag, deleteTag,
-} from 'api/tag';
+import { fetchTags, deleteTag } from 'api/tag';
 import useDataSources from 'hooks/useDataSources';
 import locales from 'locales';
 
@@ -30,15 +22,12 @@ function EditRule() {
   const { id } = useParams();
   const history = useHistory();
   const [dataSources] = useDataSources();
-  const [tagForm] = Form.useForm();
 
   const [rule, setRule] = useState({});
   const [tags, setTags] = useState([]);
+  const [currentTag, setCurrentTag] = useState(null);
   const [locale, setLocale] = useState(locales[0] || '');
   const [isEditingRule, setIsEditingRule] = useState(false);
-  const [tagFormTitle, setTagFormTitle] = useState('');
-  const [tagFormVisible, setTagFormVisible] = useState(false);
-  const [tagFormLoading, setTagFormLoading] = useState(false);
 
   useEffect(() => {
     getRule(id)
@@ -77,43 +66,15 @@ function EditRule() {
   };
 
   const submitTag = () => {
-    tagForm
-      .validateFields()
-      .then((tag) => {
-        setTagFormLoading(true);
-        let submitFunc = createTag;
-        if (tag.id) {
-          submitFunc = updateTag;
-        }
-        return submitFunc(tag);
-      })
-      .then(() => {
-        tagForm.resetFields();
-        setTagFormVisible(false);
-        return fetchTags({ rule_id: id, locale });
-      })
-      .then((newTags) => {
-        setTags(newTags);
-      })
-      .catch((error) => {
-        message.error(error.message);
-      })
-      .finally(() => {
-        setTagFormLoading(false);
-      });
+    setCurrentTag(null);
   };
 
   const addTag = () => {
-    tagForm.setFieldsValue({ rule_id: parseInt(id, 10) });
-    tagForm.setFieldsValue({ locale });
-    setTagFormTitle('Add Tag');
-    setTagFormVisible(true);
+    setCurrentTag({ rule_id: parseInt(id, 10), locale });
   };
 
   const editTag = (tag) => {
-    tagForm.setFieldsValue(tag);
-    setTagFormTitle('Edit Tag');
-    setTagFormVisible(true);
+    setCurrentTag(tag);
   };
 
   const removeTag = (tag) => {
@@ -169,62 +130,36 @@ function EditRule() {
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={24} style={{ background: '#fff', padding: 24 }}>
-            <Select
-              defaultValue={locale}
-              onChange={(value) => setLocale(value)}
-              style={{ float: 'right', marginBottom: 16 }}
-            >
-              {locales.map((loc) => (
-                <Option value={loc} key={loc}>
-                  {loc}
-                </Option>
-              ))}
-            </Select>
-            <Button
-              data-testid="btn-new-tag"
-              type="dashed"
-              onClick={addTag}
-              style={{ width: '100%', marginBottom: 16 }}
-            >
-              <PlusOutlined />
-              Add Tag
-            </Button>
-            <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
+            {currentTag ? (
+              <TagForm tag={currentTag} onSubmit={submitTag} />
+            ) : (
+              <>
+                <Select
+                  defaultValue={locale}
+                  onChange={(value) => setLocale(value)}
+                  style={{ float: 'right', marginBottom: 16 }}
+                >
+                  {locales.map((loc) => (
+                    <Option value={loc} key={loc}>
+                      {loc}
+                    </Option>
+                  ))}
+                </Select>
+                <Button
+                  data-testid="btn-new-tag"
+                  type="dashed"
+                  onClick={addTag}
+                  style={{ width: '100%', marginBottom: 16 }}
+                >
+                  <PlusOutlined />
+                  Add Tag
+                </Button>
+                <TagList tags={tags} onEdit={editTag} onDelete={removeTag} />
+              </>
+            )}
           </Col>
         </Row>
       </div>
-
-      <Modal
-        title={tagFormTitle}
-        visible={tagFormVisible}
-        onCancel={() => {
-          setTagFormVisible(false);
-          tagForm.resetFields();
-        }}
-        confirmLoading={tagFormLoading}
-        destroyOnClose
-        footer={[
-          <Button
-            key="back"
-            onClick={() => {
-              setTagFormVisible(false);
-              tagForm.resetFields();
-            }}
-          >
-            Cancel
-          </Button>,
-          <Button
-            data-testid="btn-save-tag"
-            key="submit"
-            type="primary"
-            onClick={submitTag}
-          >
-            Save
-          </Button>,
-        ]}
-      >
-        <TagForm form={tagForm} />
-      </Modal>
     </div>
   );
 }

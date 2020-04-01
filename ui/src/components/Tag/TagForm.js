@@ -16,7 +16,7 @@ const tagTypes = [
   { label: 'Script', value: 'script' },
 ];
 
-function TagForm({ tag }) {
+function TagForm({ tag, onSubmit }) {
   const [currentType, setCurrentType] = useState(tag.type);
 
   const renderSelectedForm = (type) => {
@@ -60,6 +60,7 @@ TagForm.propTypes = {
     rule_id: PropTypes.number.isRequired,
     type: PropTypes.string,
   }).isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default TagForm;
