@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, Select, Button } from 'antd';
 import locales from 'locales';
 
 const { Option } = Select;
@@ -54,6 +54,11 @@ function MetaForm({ tag, onSubmit }) {
         rules={[{ required: true, message: 'Must provide meta content' }]}
       >
         <Input data-testid="input-content" />
+      </Form.Item>
+      <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
+        <Button data-testid="btn-save" type="primary" htmlType="submit">
+          Save
+        </Button>
       </Form.Item>
     </Form>
   );

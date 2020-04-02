@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Select } from 'antd';
+import { Form, Input, Select, Button } from 'antd';
 import locales from 'locales';
 
 const { Option } = Select;
@@ -47,6 +47,11 @@ function CanonicalForm({ tag, onSubmit }) {
         rules={[{ required: true, message: 'Must provide canonical URL' }]}
       >
         <Input data-testid="input-url" />
+      </Form.Item>
+      <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
+        <Button data-testid="btn-save" type="primary" htmlType="submit">
+          Save
+        </Button>
       </Form.Item>
     </Form>
   );
