@@ -44,6 +44,7 @@ function TagForm({ tag, onSubmit }) {
         filterOption={(input, option) => (
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         )}
+        dropdownMatchSelectWidth={false}
       >
         {tagTypes.map(({ label, value }) => (
           <Option key={value} value={value}>{label}</Option>
