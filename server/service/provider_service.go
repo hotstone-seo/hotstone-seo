@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -26,7 +27,7 @@ var (
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
-	RetrieveData(context.Context, RetrieveDataRequest, bool) ([]byte, error)
+	RetrieveData(context.Context, RetrieveDataRequest, bool) (*RetrieveDataResponse, error)
 	Tags(context.Context, ProvideTagsRequest, bool) ([]*InterpolatedTag, error)
 	DumpRuleTree(context.Context) (string, error)
 }
@@ -39,6 +40,7 @@ type ProviderServiceImpl struct {
 	repository.RuleRepo
 	repository.TagRepo
 	URLService
+
 	Redis *redis.Client
 }
 
@@ -81,76 +83,63 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 }
 
 // RetrieveData to retrieve the data from data provider
-func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (data []byte, err error) {
+func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (*RetrieveDataResponse, error) {
 	var (
 		dataSource *repository.DataSource
+		resp       RetrieveDataResponse
 		tmpl       *mario.Template
 		buf        bytes.Buffer
+		err        error
 	)
 	if dataSource, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
-		return
+		return nil, err
 	}
 	if dataSource == nil {
-		err = fmt.Errorf("Data-Source#%d not found", req.DataSourceID)
-		return
+		return nil, fmt.Errorf("Data-Source#%d not found", req.DataSourceID)
 	}
 	if tmpl, err = mario.New().Parse(dataSource.Url); err != nil {
-		return
+		return nil, err
 	}
-	if err = tmpl.Execute(&buf, req.PathParam); err != nil {
-		return
+	if err := tmpl.Execute(&buf, req.PathParam); err != nil {
+		return nil, err
 	}
 
-	log.Debugf("DS_buf: %s", buf.String())
+	url := buf.String()
 
-	if useCache {
-		data, err = p.Redis.Get(buf.String()).Bytes()
-		if err == redis.Nil {
-			// data not exist in cache
-			return p.getDataThenSetCache(buf.String())
-		} else if err != nil {
-			// err when getting data in cache
-			return
-		} else {
-			// data exist in cache
+	cacheStore := cachekit.New(p.Redis)
+	_, err = cacheStore.Retrieve(ctx, url, &resp, func() (v interface{}, err error) {
+		var (
+			resp *http.Response
+			data []byte
+		)
+
+		if resp, err = http.Get(url); err != nil {
 			return data, err
 		}
-	} else {
-		return p.getDataThenSetCache(buf.String())
-	}
-}
 
-func (p *ProviderServiceImpl) getData(dsURL string) (data []byte, err error) {
-	resp, err := http.Get(dsURL)
+		defer resp.Body.Close()
+		if data, err = ioutil.ReadAll(resp.Body); err != nil {
+			return data, err
+		}
+		return &RetrieveDataResponse{
+			Data: data,
+		}, nil
+	})
+
 	if err != nil {
-		return data, err
-	}
-	defer resp.Body.Close()
-
-	data, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return data, err
+		return nil, err
 	}
 
-	return data, err
-}
+	return &resp, nil
 
-func (p *ProviderServiceImpl) getDataThenSetCache(url string) (data []byte, err error) {
-	if data, err = p.getData(url); err != nil {
-		return
-	}
-	if err = p.Redis.Set(url, data, DataCacheExpire).Err(); err != nil {
-		return
-	}
-	return
 }
 
 // Tags to return interpolated tag
 func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, useCache bool) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
-		tags       []*repository.Tag
-		data       = req.Data
-		dataFromDS []byte
+		tags     []*repository.Tag
+		data     = req.Data
+		dataResp *RetrieveDataResponse
 	)
 	if tags, err = p.TagRepo.Find(ctx, repository.TagFilter{RuleID: req.RuleID, Locale: req.Locale}); err != nil {
 		return
@@ -165,7 +154,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 			return
 		}
 		if rule.DataSourceID != nil {
-			if dataFromDS, err = p.RetrieveData(
+			if dataResp, err = p.RetrieveData(
 				ctx,
 				RetrieveDataRequest{
 					DataSourceID: *rule.DataSourceID,
@@ -174,7 +163,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 			); err != nil {
 				return
 			}
-			if err = json.Unmarshal(dataFromDS, &data); err != nil {
+			if err = json.Unmarshal(dataResp.Data, &data); err != nil {
 				return
 			}
 		}

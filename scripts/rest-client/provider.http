@@ -13,7 +13,7 @@ POST http://localhost:8089/api/provider/match-rule
 content-type: application/json
 
 {
-    "path": "/events/bingbang-2020"
+    "path": "/events/bingbang"
 }
 
 ### Retrieve Data
@@ -22,8 +22,12 @@ POST http://localhost:8089/api/provider/retrieve-data
 content-type: application/json
 
 {
-    
+    "data_source_id": 1, 
+    "path_param": {
+        "eventName":"bigbang"
+    }
 }
+
 
 ### Tags
 

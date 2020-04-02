@@ -34,6 +34,21 @@ func (m *MockAuditTrailService) EXPECT() *MockAuditTrailServiceMockRecorder {
 	return m.recorder
 }
 
+// Find mocks base method
+func (m *MockAuditTrailService) Find(arg0 context.Context, arg1 repository.PaginationParam) ([]*repository.AuditTrail, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Find", arg0, arg1)
+	ret0, _ := ret[0].([]*repository.AuditTrail)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Find indicates an expected call of Find
+func (mr *MockAuditTrailServiceMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockAuditTrailService)(nil).Find), arg0, arg1)
+}
+
 // RecordChanges mocks base method
 func (m *MockAuditTrailService) RecordChanges(arg0 context.Context, arg1 string, arg2 int64, arg3 repository.OperationType, arg4, arg5 interface{}) (int64, error) {
 	m.ctrl.T.Helper()

@@ -53,8 +53,11 @@ func TestProviderCntrl_RetrieveData(t *testing.T) {
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any(), gomock.Any()).
-			Return([]byte("{\"content\": \"some-string\"}"), nil)
+		svc.EXPECT().
+			RetrieveData(gomock.Any(), gomock.Any(), gomock.Any()).
+			Return(&service.RetrieveDataResponse{
+				Data: []byte("{\"content\": \"some-string\"}"),
+			}, nil)
 		rec, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{"rule_id": 99999}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, 200, rec.Code)

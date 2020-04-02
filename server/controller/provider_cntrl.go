@@ -35,16 +35,16 @@ func (p *ProviderCntrl) MatchRule(c echo.Context) (err error) {
 func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	var (
 		req  service.RetrieveDataRequest
-		data []byte
+		resp *service.RetrieveDataResponse
 		ctx  = c.Request().Context()
 	)
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if data, err = p.ProviderService.RetrieveData(ctx, req, isUseCache(c.Request().Header)); err != nil {
+	if resp, err = p.ProviderService.RetrieveData(ctx, req, useCache(c)); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return c.Blob(http.StatusOK, echo.MIMEApplicationJSON, data)
+	return c.Blob(http.StatusOK, echo.MIMEApplicationJSON, resp.Data)
 }
 
 // Tags to get tag
@@ -57,7 +57,7 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if tags, err = p.ProviderService.Tags(ctx, req, isUseCache(c.Request().Header)); err != nil {
+	if tags, err = p.ProviderService.Tags(ctx, req, useCache(c)); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, tags)
@@ -79,8 +79,8 @@ func (p *ProviderCntrl) DumpRuleTree(c echo.Context) (err error) {
 	return c.String(http.StatusOK, strTree)
 }
 
-func isUseCache(headers http.Header) bool {
-	xCache := headers.Get("X-Cache")
+func useCache(c echo.Context) bool {
+	xCache := c.Request().Header.Get("X-Cache")
 	if xCache == "" {
 		return true
 	} else if xCache == "true" || xCache == "false" {
