@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
@@ -31,7 +31,7 @@ function ViewRules({ match }) {
     updateRule(rule)
       .then(() => {
         message.success(`Successfully switch ${rule.name} to be ${onOFF}`);
-        // window.location.reload();
+        window.location.reload();
       })
       .catch((error) => {
         message.error(error.message);
