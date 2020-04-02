@@ -31,7 +31,7 @@ function ViewRules({ match }) {
     updateRule(rule)
       .then(() => {
         message.success(`Successfully switch ${rule.name} to be ${onOFF}`);
-        window.location.reload();
+        // window.location.reload();
       })
       .catch((error) => {
         message.error(error.message);
