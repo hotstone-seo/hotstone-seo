@@ -1,0 +1,8 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+    <ShortName>Tiket.com</ShortName>
+    <Description>Tiket.com Search</Description>
+    <Url type="text/html" method="get" template="http://tiket.com/search?q={searchTerms}&amp;utm_source=ops&amp;utm_medium=wb&amp;utm_campaign=OpenSearch"/>
+    <Image width="16" height="16">https://tiket.com/favicon.ico?v=20140313</Image>
+    <InputEncoding>UTF-8</InputEncoding>
+    <moz:SearchForm>http://tiket.com</moz:SearchForm>
+</OpenSearchDescription>

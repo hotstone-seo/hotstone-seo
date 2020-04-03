@@ -1,0 +1,41 @@
+.error-boundary-wrapper {
+  background-color: #fff;
+  box-sizing: border-box;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  position: absolute;
+
+  .error-boundary-box {
+    display: block;
+    position: absolute;
+    top:50%;
+    left:50%;
+    max-width: 90%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+
+    img {
+      width: 120px;
+      height: 120px;
+    }
+
+    p {
+      font-size: 14px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      margin-top: 10px;
+    }
+
+    .error-boundary-stack {
+      margin-top: 16px;
+      text-align: left;
+      overflow: auto;
+      width: 100%;
+    }
+  }
+}

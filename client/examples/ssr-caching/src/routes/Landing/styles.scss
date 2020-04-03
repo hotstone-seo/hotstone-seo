@@ -1,0 +1,157 @@
+@import "../../styles/colors";
+
+.payment-list {
+
+  .additional-payment-cancel {
+    cursor: pointer;
+
+    &:before {
+      content: 'x';
+      color: #ff7200;
+      display: inline-block;
+      margin: 0 7px;
+      font-weight: bolder;
+    }
+  }
+}
+/* VERY SHORT ORDER INFORMATION */
+.payment-order-total-payment {
+  display: flex;
+
+  .card-label-key {
+    padding: 15px 20px 15px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-grey-darkest;
+  }
+
+  .card-label-value {
+    padding: 15px 16px 15px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-orange;
+  }
+}
+
+/* TIX POINT */
+.payment-tix-point-wrap {
+  height: 50px;
+  margin-top: 16px;
+}
+
+.payment-tixpoint-usage {
+  display: flex;
+
+  .card-label-key {
+    padding: 15px 20px 15px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-grey-darkest;
+  }
+
+  .card-label-value {
+    padding: 15px 16px 15px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-orange;
+  }
+
+  .micro-icon-forward {
+    color: $color-orange;
+    font-size: 15px;
+    line-height: 40px;
+    margin-right: 10px;
+
+    &:before {
+      vertical-align: middle;
+    }
+  }
+}
+
+.payment-methods-list {
+  margin-top: 8px;
+}
+
+.payment-methods-list a:active, .payment-methods-list a:hover, .payment-methods-list a:link, .payment-methods-list a:visited {
+  color: #222222;
+}
+
+.payment-method-item {
+  margin-bottom: 8px;
+
+  &.disabled {
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+  }
+}
+
+.tix-modal-content {
+  margin-bottom: 10px;
+
+  strong {
+    font-size: 16px;
+    line-height: 35px;
+    vertical-align: middle;
+  }
+
+  span {
+    font-size: 25px;
+    line-height: 35px;
+    vertical-align: middle;
+    color: $color-orange;
+    display: inline-block;
+  }
+
+  img {
+    float: right;
+    height: 35px;
+    width: 35px;
+  }
+}
+
+.method-type-name {
+  display: flex;
+  height: 39px;
+  margin-left: 16px;
+  margin-right: 16px;
+
+  span:first-child {
+    padding-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  span:nth-child(2) {
+    padding-top: 12px;
+    font-size: 12px;
+    color: $color-grey-darker;
+  }
+
+  span:nth-child(2) i {
+    margin-left: 15px;
+    font-weight: 500;
+    color: $color-orange;
+  }
+}
+
+.method-type-logo {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0;
+
+  .logo-item {
+    margin-left: 16px;
+    padding: 0;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  .logo-item img {
+    width: auto;
+    height: 20px;
+  }
+}

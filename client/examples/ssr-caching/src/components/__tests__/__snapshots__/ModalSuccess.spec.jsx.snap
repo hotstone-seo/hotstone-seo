@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Should render ModalSuccess correctly 1`] = `
+<ModalSuccess>
+  <Modal
+    className="modal-success"
+    footer={
+      <div
+        className="row"
+      >
+        <div
+          className="col-12"
+        >
+          <a
+            className="btn large block"
+            href="https://m.renan.tiket.com/myorder"
+          >
+            Back to My Order
+          </a>
+        </div>
+      </div>
+    }
+    style={
+      Object {
+        "maxWidth": "80%",
+      }
+    }
+  >
+    <div
+      className="modal"
+      style={Object {}}
+    >
+      <div
+        className="modal-content modal-success"
+        style={
+          Object {
+            "maxWidth": "80%",
+          }
+        }
+      >
+        <div
+          className="modal-body"
+        >
+          Thank you for booking at tiket.com. You can still continue your payment from My Order
+        </div>
+        <div
+          className="modal-footer"
+        >
+          <div
+            className="row"
+          >
+            <div
+              className="col-12"
+            >
+              <a
+                className="btn large block"
+                href="https://m.renan.tiket.com/myorder"
+              >
+                Back to My Order
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Modal>
+</ModalSuccess>
+`;

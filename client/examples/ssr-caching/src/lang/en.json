@@ -1,0 +1,21 @@
+{
+  "test": {
+    "withParams": "test {0}",
+    "default": "test"
+  },
+  "yes": "Yes",
+  "no": "No",
+  "cancel": "Cancel",
+  "payment": {
+    "header": {
+      "title": "Test {0} {1} {2}"
+    }
+  },
+  "error": {
+    "unknown": "Unknown Error, please try again later.",
+    "expired": {
+      "errorMessage": "This order has been expired<br/>Please make a new order",
+      "buttonText": "Back to Home"
+    }
+  }
+}
