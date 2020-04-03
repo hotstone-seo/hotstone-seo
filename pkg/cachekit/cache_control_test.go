@@ -55,3 +55,31 @@ func TestCacheContro_NoCache(t *testing.T) {
 		require.Equal(t, tt.expected, tt.NoCache())
 	}
 }
+
+func TestCacheContro_MaxAge(t *testing.T) {
+	testcases := []struct {
+		*cachekit.CacheControl
+		expected int
+	}{
+		{
+			CacheControl: cachekit.NewCacheControl(),
+			expected:     cachekit.DefaultMaxAge,
+		},
+		{
+			CacheControl: cachekit.NewCacheControl().WithDefaultMaxAge(1),
+			expected:     1,
+		},
+		{
+			CacheControl: cachekit.NewCacheControl("max-age=100").WithDefaultMaxAge(1),
+			expected:     100,
+		},
+		{
+			CacheControl: cachekit.NewCacheControl("max-age=invalid"),
+			expected:     cachekit.DefaultMaxAge,
+		},
+	}
+
+	for _, tt := range testcases {
+		require.Equal(t, tt.expected, tt.MaxAge())
+	}
+}
