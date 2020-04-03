@@ -106,8 +106,7 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 
 	url := buf.String()
 
-	cacheStore := cachekit.New(p.Redis)
-	_, err = cacheStore.Retrieve(ctx, url, &resp, func() (v interface{}, err error) {
+	cache := cachekit.New(url, func() (v interface{}, err error) {
 		var (
 			resp *http.Response
 			data []byte
@@ -126,7 +125,7 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 		}, nil
 	})
 
-	if err != nil {
+	if err = cache.Execute(p.Redis.WithContext(ctx), &resp, cachekit.NewCacheControl()); err != nil {
 		return nil, err
 	}
 

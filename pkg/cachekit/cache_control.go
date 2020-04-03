@@ -4,17 +4,18 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
 	// DefaultMaxAge is default max-age value
-	DefaultMaxAge = 30
+	DefaultMaxAge = 30 * time.Second
 )
 
 // CacheControl is directive for cacche
 type CacheControl struct {
 	directives    []string
-	defaultMaxAge int // NOTE: in seconds
+	defaultMaxAge time.Duration
 }
 
 // NewCacheControl return new instance of CacheControl
@@ -26,7 +27,7 @@ func NewCacheControl(directives ...string) *CacheControl {
 }
 
 // WithDefaultMaxAge retunr CacheControl with new default max age
-func (c *CacheControl) WithDefaultMaxAge(defaultMaxAge int) *CacheControl {
+func (c *CacheControl) WithDefaultMaxAge(defaultMaxAge time.Duration) *CacheControl {
 	c.defaultMaxAge = defaultMaxAge
 	return c
 }
@@ -54,7 +55,7 @@ func (c *CacheControl) NoCache() bool {
 }
 
 // MaxAge return max-age cache (in seconds)
-func (c *CacheControl) MaxAge() int {
+func (c *CacheControl) MaxAge() time.Duration {
 	for _, dir := range c.directives {
 		dir = strings.ToLower(dir)
 		keyName := "max-age="
@@ -63,7 +64,7 @@ func (c *CacheControl) MaxAge() int {
 			if err != nil {
 				break
 			}
-			return maxAge
+			return time.Duration(maxAge) * time.Second
 		}
 	}
 
