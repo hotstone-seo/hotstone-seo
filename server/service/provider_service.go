@@ -44,8 +44,11 @@ type ProviderServiceImpl struct {
 	Redis *redis.Client
 }
 
-// InterpolatedTag is tag after interpolated with data
+// InterpolatedTag is tag after interpolate with data
 type InterpolatedTag repository.Tag
+
+// InterpolatedDataSource is datasource after interpolate with data
+type InterpolatedDataSource repository.DataSource
 
 // NewProviderService return new instance of ProviderService [constructor]
 func NewProviderService(impl ProviderServiceImpl) ProviderService {
@@ -83,72 +86,73 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 }
 
 // RetrieveData to retrieve the data from data provider
-func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (*RetrieveDataResponse, error) {
+func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (resp *RetrieveDataResponse, err error) {
 	var (
-		dataSource *repository.DataSource
-		resp       RetrieveDataResponse
-		tmpl       *mario.Template
-		buf        bytes.Buffer
-		err        error
+		ds           *repository.DataSource
+		interpolated *InterpolatedDataSource
 	)
-	if dataSource, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
+
+	if ds, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
 		return nil, err
 	}
-	if dataSource == nil {
+	if ds == nil {
 		return nil, fmt.Errorf("Data-Source#%d not found", req.DataSourceID)
 	}
-	if tmpl, err = mario.New().Parse(dataSource.Url); err != nil {
-		return nil, err
-	}
-	if err := tmpl.Execute(&buf, req.PathParam); err != nil {
-		return nil, err
+
+	if interpolated, err = interpolateDataSource(ds, req.PathParam); err != nil {
+		return
 	}
 
-	url := buf.String()
+	cache := cachekit.New(interpolated.Url, callDatasoure(interpolated))
 
-	cache := cachekit.New(url, func() (v interface{}, err error) {
-		var (
-			resp *http.Response
-			data []byte
-		)
+	resp = new(RetrieveDataResponse)
+	if err = cache.Execute(p.Redis.WithContext(ctx), resp, cachekit.NewCacheControl()); err != nil {
+		return nil, err
+	}
 
-		if resp, err = http.Get(url); err != nil {
+	return resp, nil
+}
+
+func callDatasoure(ds *InterpolatedDataSource) cachekit.RefreshFn {
+	var (
+		resp *http.Response
+		data []byte
+		err  error
+	)
+
+	return func() (interface{}, error) {
+		if resp, err = http.Get(ds.Url); err != nil {
 			return data, err
 		}
-
 		defer resp.Body.Close()
+
 		if data, err = ioutil.ReadAll(resp.Body); err != nil {
 			return data, err
 		}
+
 		return &RetrieveDataResponse{
 			Data: data,
 		}, nil
-	})
-
-	if err = cache.Execute(p.Redis.WithContext(ctx), &resp, cachekit.NewCacheControl()); err != nil {
-		return nil, err
 	}
-
-	return &resp, nil
-
 }
 
 // Tags to return interpolated tag
 func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, useCache bool) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
-		tags     []*repository.Tag
-		data     = req.Data
-		dataResp *RetrieveDataResponse
+		tags         []*repository.Tag
+		data         = req.Data
+		dataResp     *RetrieveDataResponse
+		rule         *repository.Rule
+		interpolated *InterpolatedTag
 	)
+
 	if tags, err = p.TagRepo.Find(ctx, repository.TagFilter{RuleID: req.RuleID, Locale: req.Locale}); err != nil {
 		return
 	}
+
 	if data == nil {
 		// NOTE: We can omit another call to the repository here by including the whole rule object in
 		// ProvideTagsRequest. Will be done later since the change impact is not local.
-		var (
-			rule *repository.Rule
-		)
 		if rule, err = p.RuleRepo.FindOne(ctx, req.RuleID); err != nil {
 			return
 		}
@@ -167,28 +171,13 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 			}
 		}
 	}
+
 	interpolatedTags = make([]*InterpolatedTag, 0)
 	for _, tag := range tags {
-		var (
-			attribute dbtype.JSON
-			value     string
-		)
-		if attribute, err = interpolateAttribute(tag.Attributes, data); err != nil {
+		if interpolated, err = interpolateTag(tag, data); err != nil {
 			return
 		}
-		if value, err = interpolateValue(tag.Value, data); err != nil {
-			return
-		}
-		interpolatedTags = append(interpolatedTags, &InterpolatedTag{
-			ID:         tag.ID,
-			RuleID:     tag.RuleID,
-			Locale:     tag.Locale,
-			Type:       tag.Type,
-			Attributes: attribute,
-			Value:      value,
-			UpdatedAt:  tag.UpdatedAt,
-			CreatedAt:  tag.CreatedAt,
-		})
+		interpolatedTags = append(interpolatedTags, interpolated)
 	}
 	return
 }
@@ -196,6 +185,54 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 // DumpRuleTree to dump the rule tree
 func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, err error) {
 	return p.URLService.DumpTree(), nil
+}
+
+func interpolateDataSource(ds *repository.DataSource, data interface{}) (*InterpolatedDataSource, error) {
+	var (
+		buf  bytes.Buffer
+		tmpl *mario.Template
+		err  error
+	)
+
+	if tmpl, err = mario.New().Parse(ds.Url); err != nil {
+		return nil, err
+	}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return nil, err
+	}
+
+	return &InterpolatedDataSource{
+		ID:        ds.ID,
+		Name:      ds.Name,
+		Url:       buf.String(),
+		UpdatedAt: ds.UpdatedAt,
+		CreatedAt: ds.CreatedAt,
+	}, nil
+}
+
+func interpolateTag(tag *repository.Tag, data interface{}) (*InterpolatedTag, error) {
+	var (
+		attribute dbtype.JSON
+		value     string
+		err       error
+	)
+	if attribute, err = interpolateAttribute(tag.Attributes, data); err != nil {
+		return nil, err
+	}
+	if value, err = interpolateValue(tag.Value, data); err != nil {
+		return nil, err
+	}
+	return &InterpolatedTag{
+		ID:         tag.ID,
+		RuleID:     tag.RuleID,
+		Locale:     tag.Locale,
+		Type:       tag.Type,
+		Attributes: attribute,
+		Value:      value,
+		UpdatedAt:  tag.UpdatedAt,
+		CreatedAt:  tag.CreatedAt,
+	}, nil
+
 }
 
 func interpolateAttribute(ori dbtype.JSON, data interface{}) (interpolated dbtype.JSON, err error) {
