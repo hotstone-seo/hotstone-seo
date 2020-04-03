@@ -7,6 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
@@ -35,10 +36,10 @@ func (m *MockCenterService) EXPECT() *MockCenterServiceMockRecorder {
 }
 
 // AddCanonicalTag mocks base method
-func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.AddCanonicalTagRequest) (int64, error) {
+func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.AddCanonicalTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddCanonicalTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +51,10 @@ func (mr *MockCenterServiceMockRecorder) AddCanonicalTag(arg0, arg1 interface{})
 }
 
 // AddMetaTag mocks base method
-func (m *MockCenterService) AddMetaTag(arg0 context.Context, arg1 service.AddMetaTagRequest) (int64, error) {
+func (m *MockCenterService) AddMetaTag(arg0 context.Context, arg1 service.AddMetaTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddMetaTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -65,10 +66,10 @@ func (mr *MockCenterServiceMockRecorder) AddMetaTag(arg0, arg1 interface{}) *gom
 }
 
 // AddScriptTag mocks base method
-func (m *MockCenterService) AddScriptTag(arg0 context.Context, arg1 service.AddScriptTagRequest) (int64, error) {
+func (m *MockCenterService) AddScriptTag(arg0 context.Context, arg1 service.AddScriptTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddScriptTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -80,10 +81,10 @@ func (mr *MockCenterServiceMockRecorder) AddScriptTag(arg0, arg1 interface{}) *g
 }
 
 // AddTitleTag mocks base method
-func (m *MockCenterService) AddTitleTag(arg0 context.Context, arg1 service.AddTitleTagRequest) (int64, error) {
+func (m *MockCenterService) AddTitleTag(arg0 context.Context, arg1 service.AddTitleTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddTitleTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

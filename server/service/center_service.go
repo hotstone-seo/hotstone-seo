@@ -12,10 +12,10 @@ import (
 
 // CenterService is center related logic [mock]
 type CenterService interface {
-	AddMetaTag(ctx context.Context, req AddMetaTagRequest) (int64, error)
-	AddTitleTag(ctx context.Context, req AddTitleTagRequest) (int64, error)
-	AddCanonicalTag(ctx context.Context, req AddCanonicalTagRequest) (int64, error)
-	AddScriptTag(ctx context.Context, req AddScriptTagRequest) (int64, error)
+	AddMetaTag(ctx context.Context, req AddMetaTagRequest) (*repository.Tag, error)
+	AddTitleTag(ctx context.Context, req AddTitleTagRequest) (*repository.Tag, error)
+	AddCanonicalTag(ctx context.Context, req AddCanonicalTagRequest) (*repository.Tag, error)
+	AddScriptTag(ctx context.Context, req AddScriptTagRequest) (*repository.Tag, error)
 }
 
 // CenterServiceImpl implementation of CenterService
@@ -29,13 +29,9 @@ func NewCenterService(impl CenterServiceImpl) CenterService {
 	return &impl
 }
 
-func (i *CenterServiceImpl) AddTag(ctx context.Context, tag interface{}) (*repository.Tag, error) {
-	return nil, nil
-}
-
 // AddMetaTag to add metaTag
-func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagRequest) (lastInsertedID int64, err error) {
-	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
+func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagRequest) (tag *repository.Tag, err error) {
+	tag = &repository.Tag{
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "meta",
@@ -43,13 +39,14 @@ func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req AddMetaTagReques
 		Value:      "",
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
-	})
+	}
+	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
 	return
 }
 
 // AddTitleTag to add titleTag
-func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req AddTitleTagRequest) (lastInsertedID int64, err error) {
-	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
+func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req AddTitleTagRequest) (tag *repository.Tag, err error) {
+	tag = &repository.Tag{
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "title",
@@ -57,13 +54,14 @@ func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req AddTitleTagRequ
 		Value:      req.Title,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
-	})
+	}
+	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
 	return
 }
 
 // AddCanonicalTag to add canonicalTag
-func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonicalTagRequest) (lastInsertedID int64, err error) {
-	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
+func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonicalTagRequest) (tag *repository.Tag, err error) {
+	tag = &repository.Tag{
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "link",
@@ -71,13 +69,14 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req AddCanonica
 		Value:      "",
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
-	})
+	}
+	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
 	return
 }
 
 // AddScriptTag to add scriptTag
-func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req AddScriptTagRequest) (lastInsertedID int64, err error) {
-	lastInsertedID, err = i.TagRepo.Insert(ctx, repository.Tag{
+func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req AddScriptTagRequest) (tag *repository.Tag, err error) {
+	tag = &repository.Tag{
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "script",
@@ -85,6 +84,7 @@ func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req AddScriptTagRe
 		Value:      req.Type,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
-	})
+	}
+	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
 	return
 }

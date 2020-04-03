@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -27,73 +27,65 @@ func (c *CenterCntrl) Route(e *echo.Group) {
 // AddMetaTag add meta tag
 func (c *CenterCntrl) AddMetaTag(ce echo.Context) (err error) {
 	var (
-		req            service.AddMetaTagRequest
-		lastInsertedID int64
-		ctx            = ce.Request().Context()
+		req service.AddMetaTagRequest
+		tag *repository.Tag
+		ctx = ce.Request().Context()
 	)
 	if err = ce.Bind(&req); err != nil {
 		return
 	}
-	if lastInsertedID, err = c.CenterService.AddMetaTag(ctx, req); err != nil {
+	if tag, err = c.CenterService.AddMetaTag(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ce.JSON(http.StatusCreated, GeneralResponse{
-		Message: fmt.Sprintf("Success insert new meta tag #%d", lastInsertedID),
-	})
+	return ce.JSON(http.StatusCreated, tag)
 }
 
 // AddTitleTag add title tag
 func (c *CenterCntrl) AddTitleTag(ce echo.Context) (err error) {
 	var (
-		req            service.AddTitleTagRequest
-		lastInsertedID int64
-		ctx            = ce.Request().Context()
+		req service.AddTitleTagRequest
+		tag *repository.Tag
+		ctx = ce.Request().Context()
 	)
 	if err = ce.Bind(&req); err != nil {
 		return
 	}
-	if lastInsertedID, err = c.CenterService.AddTitleTag(ctx, req); err != nil {
+	if tag, err = c.CenterService.AddTitleTag(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ce.JSON(http.StatusCreated, GeneralResponse{
-		Message: fmt.Sprintf("Success insert new title tag #%d", lastInsertedID),
-	})
+	return ce.JSON(http.StatusCreated, tag)
 }
 
 // AddCanoncicalTag add canonical tag
 func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
 	var (
-		req            service.AddCanonicalTagRequest
-		lastInsertedID int64
-		ctx            = ce.Request().Context()
+		req service.AddCanonicalTagRequest
+		tag *repository.Tag
+		ctx = ce.Request().Context()
 	)
 	if err = ce.Bind(&req); err != nil {
 		return
 	}
-	if lastInsertedID, err = c.CenterService.AddCanonicalTag(ctx, req); err != nil {
+	if tag, err = c.CenterService.AddCanonicalTag(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ce.JSON(http.StatusCreated, GeneralResponse{
-		Message: fmt.Sprintf("Success insert new canonical tag #%d", lastInsertedID),
-	})
+	return ce.JSON(http.StatusCreated, tag)
 }
 
 // AddScriptTag add script tag
 func (c *CenterCntrl) AddScriptTag(ce echo.Context) (err error) {
 	var (
-		req            service.AddScriptTagRequest
-		lastInsertedID int64
-		ctx            = ce.Request().Context()
+		req service.AddScriptTagRequest
+		tag *repository.Tag
+		ctx = ce.Request().Context()
 	)
 	if err = ce.Bind(&req); err != nil {
 		return
 	}
-	if lastInsertedID, err = c.CenterService.AddScriptTag(ctx, req); err != nil {
+	if tag, err = c.CenterService.AddScriptTag(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return ce.JSON(http.StatusCreated, GeneralResponse{
-		Message: fmt.Sprintf("Success insert new canonical tag #%d", lastInsertedID),
-	})
+	return ce.JSON(http.StatusCreated, tag)
 }
 
 // AddArticle add article
