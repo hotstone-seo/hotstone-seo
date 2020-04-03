@@ -36,7 +36,7 @@ func (m *MockCenterService) EXPECT() *MockCenterServiceMockRecorder {
 }
 
 // AddCanonicalTag mocks base method
-func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.AddCanonicalTagRequest) (*repository.Tag, error) {
+func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.CanonicalTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddCanonicalTag", arg0, arg1)
 	ret0, _ := ret[0].(*repository.Tag)
@@ -51,7 +51,7 @@ func (mr *MockCenterServiceMockRecorder) AddCanonicalTag(arg0, arg1 interface{})
 }
 
 // AddMetaTag mocks base method
-func (m *MockCenterService) AddMetaTag(arg0 context.Context, arg1 service.AddMetaTagRequest) (*repository.Tag, error) {
+func (m *MockCenterService) AddMetaTag(arg0 context.Context, arg1 service.MetaTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddMetaTag", arg0, arg1)
 	ret0, _ := ret[0].(*repository.Tag)
@@ -66,7 +66,7 @@ func (mr *MockCenterServiceMockRecorder) AddMetaTag(arg0, arg1 interface{}) *gom
 }
 
 // AddScriptTag mocks base method
-func (m *MockCenterService) AddScriptTag(arg0 context.Context, arg1 service.AddScriptTagRequest) (*repository.Tag, error) {
+func (m *MockCenterService) AddScriptTag(arg0 context.Context, arg1 service.ScriptTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddScriptTag", arg0, arg1)
 	ret0, _ := ret[0].(*repository.Tag)
@@ -81,7 +81,7 @@ func (mr *MockCenterServiceMockRecorder) AddScriptTag(arg0, arg1 interface{}) *g
 }
 
 // AddTitleTag mocks base method
-func (m *MockCenterService) AddTitleTag(arg0 context.Context, arg1 service.AddTitleTagRequest) (*repository.Tag, error) {
+func (m *MockCenterService) AddTitleTag(arg0 context.Context, arg1 service.TitleTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddTitleTag", arg0, arg1)
 	ret0, _ := ret[0].(*repository.Tag)

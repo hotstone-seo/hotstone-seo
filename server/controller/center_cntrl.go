@@ -27,7 +27,7 @@ func (c *CenterCntrl) Route(e *echo.Group) {
 // AddMetaTag add meta tag
 func (c *CenterCntrl) AddMetaTag(ce echo.Context) (err error) {
 	var (
-		req service.AddMetaTagRequest
+		req service.MetaTagRequest
 		tag *repository.Tag
 		ctx = ce.Request().Context()
 	)
@@ -43,7 +43,7 @@ func (c *CenterCntrl) AddMetaTag(ce echo.Context) (err error) {
 // AddTitleTag add title tag
 func (c *CenterCntrl) AddTitleTag(ce echo.Context) (err error) {
 	var (
-		req service.AddTitleTagRequest
+		req service.TitleTagRequest
 		tag *repository.Tag
 		ctx = ce.Request().Context()
 	)
@@ -59,7 +59,7 @@ func (c *CenterCntrl) AddTitleTag(ce echo.Context) (err error) {
 // AddCanoncicalTag add canonical tag
 func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
 	var (
-		req service.AddCanonicalTagRequest
+		req service.CanonicalTagRequest
 		tag *repository.Tag
 		ctx = ce.Request().Context()
 	)
@@ -75,7 +75,7 @@ func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
 // AddScriptTag add script tag
 func (c *CenterCntrl) AddScriptTag(ce echo.Context) (err error) {
 	var (
-		req service.AddScriptTagRequest
+		req service.ScriptTagRequest
 		tag *repository.Tag
 		ctx = ce.Request().Context()
 	)
