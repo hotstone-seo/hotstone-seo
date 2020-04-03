@@ -21,7 +21,7 @@ type CenterService interface {
 // CenterServiceImpl implementation of CenterService
 type CenterServiceImpl struct {
 	dig.In
-	repository.TagRepo
+	TagService
 }
 
 // NewCenterService return new instance of CenterService [constructor]
@@ -40,7 +40,7 @@ func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req MetaTagRequest) 
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 	}
-	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Insert(ctx, *tag)
 	return
 }
 
@@ -55,7 +55,7 @@ func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req TitleTagRequest
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 	}
-	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Insert(ctx, *tag)
 	return
 }
 
@@ -70,7 +70,7 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req CanonicalTa
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 	}
-	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Insert(ctx, *tag)
 	return
 }
 
@@ -85,6 +85,6 @@ func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req ScriptTagReque
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 	}
-	tag.ID, err = i.TagRepo.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Insert(ctx, *tag)
 	return
 }
