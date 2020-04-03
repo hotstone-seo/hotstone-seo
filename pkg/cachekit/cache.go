@@ -2,7 +2,6 @@ package cachekit
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/copier"
@@ -26,22 +25,20 @@ func New(key string, refreshFn RefreshFn) *Cache {
 }
 
 // Execute cache to retreive data and save to target variable
-func (c *Cache) Execute(client *redis.Client, target interface{}, cc *CacheControl) (err error) {
-	var data []byte
-	if data, err = client.Get(c.key).Bytes(); err != nil {
+func (c *Cache) Execute(client *redis.Client, target interface{}, cc *CacheControl) error {
+	data, err := client.Get(c.key).Bytes()
+	if err != nil || len(data) <= 0 || cc.NoCache() {
 		var v interface{}
 		if v, err = c.refreshFn(); err != nil {
-			return
+			return err
 		}
 		if data, err = c.marshal(v); err != nil {
-			return
+			return err
 		}
-		if err = client.Set(c.key, data, cc.MaxAge()*time.Second).Err(); err != nil {
-			return
+		if err = client.Set(c.key, data, cc.MaxAge()).Err(); err != nil {
+			return err
 		}
-
-		err = copier.Copy(target, v)
-		return
+		return copier.Copy(target, v)
 	}
 
 	return c.unmarshal(data, target)

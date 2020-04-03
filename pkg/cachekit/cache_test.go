@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"testing"
+	"time"
 
 	"github.com/alicebob/miniredis"
 	"github.com/go-redis/redis"
@@ -82,16 +83,31 @@ func TestCache(t *testing.T) {
 			})
 			require.NoError(t, cache.Execute(client, &b, cachekit.NewCacheControl()))
 			require.Equal(t, bean{Name: "new-name"}, b)
+			require.Equal(t, `{"Name":"new-name"}`, client.Get("key").Val())
+			require.Equal(t, 30*time.Second, client.TTL("key").Val())
 		})
 	})
 	t.Run("GIVEN cache available", func(t *testing.T) {
-		testRedis.Set("key", `{"name":"cached"}`)
-		var b bean
-		cache := cachekit.New("key", func() (interface{}, error) {
-			return &bean{Name: "new-name"}, nil
+		t.Run("", func(t *testing.T) {
+			testRedis.Set("key", `{"name":"cached"}`)
+			var b bean
+			cache := cachekit.New("key", func() (interface{}, error) {
+				return &bean{Name: "new-name"}, nil
+			})
+			require.NoError(t, cache.Execute(client, &b, cachekit.NewCacheControl()))
+			require.Equal(t, bean{Name: "cached"}, b)
 		})
-		require.NoError(t, cache.Execute(client, &b, cachekit.NewCacheControl()))
-		require.Equal(t, bean{Name: "cached"}, b)
+		t.Run("WHEN cache-control: no-cache", func(t *testing.T) {
+			testRedis.Set("key", `{"name":"cached"}`)
+			var b bean
+			cache := cachekit.New("key", func() (interface{}, error) {
+				return &bean{Name: "new-name"}, nil
+			})
+			require.NoError(t, cache.Execute(client, &b, cachekit.NewCacheControl("no-cache")))
+			require.Equal(t, bean{Name: "new-name"}, b)
+			require.Equal(t, `{"Name":"new-name"}`, client.Get("key").Val())
+			require.Equal(t, 30*time.Second, client.TTL("key").Val())
+		})
 	})
 }
 
