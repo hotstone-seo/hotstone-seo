@@ -49,7 +49,7 @@ function AuditTrailList(props) {
       setLoading(false);
     }
     fetchData();
-  }, [paginationInfo, filteredInfo, sortedInfo]);
+  }, [paginationInfo, filteredInfo, sortedInfo, setListAuditTrail]);
 
   const columns = [
     {

@@ -64,7 +64,7 @@ function RuleListV2(props) {
       setLoading(false);
     }
     fetchData();
-  }, [paginationInfo, filteredInfo, sortedInfo]);
+  }, [paginationInfo, filteredInfo, sortedInfo, setListRule]);
 
   const columns = [
     {

@@ -29,7 +29,7 @@ function ViewAnalytics() {
     });
 
     form.setFieldsValue({ ruleID: ruleID ? _.toNumber(ruleID) : -1 });
-  }, []);
+  }, [form, ruleID]);
 
 
   return (

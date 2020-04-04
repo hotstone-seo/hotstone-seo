@@ -47,7 +47,7 @@ function ViewMismatchRules(props) {
 
   useEffect(() => {
     resetPagination();
-  }, [filteredInfo]);
+  }, [filteredInfo, resetPagination]);
 
   useEffect(() => {
     async function fetchData() {
@@ -78,7 +78,7 @@ function ViewMismatchRules(props) {
     }
 
     fetchData();
-  }, [pageSize, filteredInfo, sortedInfo, pageToken]);
+  }, [pageSize, filteredInfo, sortedInfo, pageToken, previousPage, setNextPageToken]);
 
   const columns = [
     {

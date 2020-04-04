@@ -74,5 +74,5 @@ export default function useTableFilterProps(dataIndex) {
     ) : (
       text
     )),
-  }), [dataIndex, searchText, searchedColumn]);
+  }), [dataIndex, searchText, searchedColumn, handleSearch]);
 }
