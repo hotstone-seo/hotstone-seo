@@ -1,10 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import useWindowSize from '../../hooks/useWindowSize';
 
 export default function RawHTMLPreview({ ruleID, tags }) {
-  const size = useWindowSize();
   if (_.isEmpty(tags)) {
     return (
       <div>
