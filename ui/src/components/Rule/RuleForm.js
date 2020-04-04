@@ -29,7 +29,9 @@ function RuleForm(props) {
         formLayout === 'horizontal' ? { span: 14 } : null
       }
     >
-      <Form.Item name="id" noStyle />
+      <Form.Item name="id" noStyle>
+        <Input type="hidden" />
+      </Form.Item>
 
       <Form.Item
         name="name"
