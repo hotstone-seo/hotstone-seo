@@ -15,8 +15,7 @@ function RuleForm(props) {
 
   useEffect(() => {
     form.setFieldsValue(rule);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [form, rule]);
 
   return (
     <Form

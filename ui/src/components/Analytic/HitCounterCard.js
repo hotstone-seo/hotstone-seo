@@ -24,8 +24,7 @@ function HitCounterCard({ ruleID }) {
 
   useEffect(() => {
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ruleID]);
+  }, [ruleID, fetchData]);
 
   return <CounterCard counter={countHit} label="Hit" />;
 }

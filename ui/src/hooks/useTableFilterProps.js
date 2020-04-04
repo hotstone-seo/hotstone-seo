@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import { Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
@@ -7,7 +7,7 @@ export default function useTableFilterProps(dataIndex) {
   const searchInputEl = useRef(null);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-
+  // let [handleSearch] = useCallback();
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText('');
