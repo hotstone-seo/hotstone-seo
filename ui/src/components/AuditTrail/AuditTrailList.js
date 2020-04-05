@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import {
-  Table, Divider, Button, Popconfirm, Tooltip, message, Switch, Descriptions,
+  Table, message, Descriptions,
 } from 'antd';
 import moment from 'moment';
 import { fetchAuditTrails } from 'api/audit_trail';
@@ -51,7 +49,7 @@ function AuditTrailList(props) {
       setLoading(false);
     }
     fetchData();
-  }, [paginationInfo, filteredInfo, sortedInfo]);
+  }, [paginationInfo, filteredInfo, sortedInfo, setListAuditTrail]);
 
   const columns = [
     {

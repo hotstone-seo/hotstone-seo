@@ -5,7 +5,7 @@ import CounterCard from './CounterCard';
 
 function UniquePageCounterCard({ ruleID }) {
   const [countUniquePage, setCountUniquePage] = useState(0);
-  const [error, setError] = useState();
+  const [setError] = useState();
 
   const fetchData = useCallback(() => {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
@@ -24,7 +24,7 @@ function UniquePageCounterCard({ ruleID }) {
 
   useEffect(() => {
     fetchData();
-  }, [ruleID]);
+  }, [ruleID, fetchData]);
 
   return <CounterCard counter={countUniquePage} label="Unique Page" />;
 }

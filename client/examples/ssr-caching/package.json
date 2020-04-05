@@ -1,0 +1,123 @@
+{
+  "name": "ssr-caching",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-preset-react-optimize": "^1.0.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "config": "^1.30.0",
+    "connect-redis": "^3.3.3",
+    "cookie-parser": "^1.4.3",
+    "cross-env": "^5.1.4",
+    "dotenv": "^5.0.1",
+    "dotenv-expand": "^4.2.0",
+    "express": "^4.16.3",
+    "express-mysql-session": "^1.3.0",
+    "express-session": "^1.15.6",
+    "fbjs": "^1.0.0",
+    "isomorphic-fetch": "^2.2.1",
+    "memorystore": "^1.6.0",
+    "moment": "^2.22.1",
+    "newrelic": "^4.6.0",
+    "node-fetch": "^2.1.2",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-helmet": "^5.2.0",
+    "react-hot-loader": "^4.1.0",
+    "react-overlays": "^0.8.3",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "react-router-config": "^1.0.0-beta.4",
+    "react-router-dom": "^4.2.2",
+    "react-transition-group": "^2.3.1",
+    "recluster": "^0.4.5",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.2.0",
+    "tix-react-ui": "^2.0.94",
+    "tix-react-ssr": "^1.3.36",
+    "winston": "^2.4.1",
+    "winston-logrotate": "^1.3.0",
+    "jest": "^22.4.4",
+    "eslint": "^4.19.1",
+    "prop-types": "^15.6.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!@tiketdotcom)",
+      "<rootDir>/bin/"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/mocks/fileMock.js",
+      "\\.(s?css)$": "<rootDir>/tests/mocks/styleMock.js"
+    },
+    "collectCoverageFrom": [
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/bin/",
+      "!<rootDir>/build/",
+      "!<rootDir>/public/",
+      "!<rootDir>/tests/",
+      "src/**/*.{js,jsx}",
+      "src/**/**/*.{js,jsx}"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "html"
+    ]
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.2",
+    "browser-sync": "^2.23.6",
+    "cross-env": "^5.2.0",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.3",
+    "eslint": "^4.18.2",
+    "eslint-config-tix": "^1.0.1",
+    "jest": "^22.4.2",
+    "stylelint": "^9.1.1",
+    "stylelint-config-recommended-scss": "^3.1.0",
+    "stylelint-no-unsupported-browser-features": "^2.0.0",
+    "stylelint-scss": "^2.4.0",
+    "stylelint-webpack-plugin": "^0.10.3"
+  },
+  "scripts": {
+    "start": "cross-env DEV_SERVER=true tix-react-ssr start",
+    "build": "tix-react-ssr build",
+    "test": "NODE_ENV=test jest --silent --coverage",
+    "eject": "tix-react-ssr eject",
+    "generate-test": "node ./test/tools/runGenerateTest.js ./src",
+    "release": "npm version patch -m 'Release %s'",
+    "preversion": "npm test && npm run lint:js && npm run lint:scss",
+    "version": "npm run build",
+    "postversion": "git push origin develop && git push origin master && git push --tags",
+    "serve": "tix-react-ssr serve",
+    "lint:js": "eslint --ignore-path .eslintignore ./ --ext .jsx,.js --fix",
+    "lint:scss": "stylelint src/**/*.scss --fix",
+    "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner"
+  },
+  "browserslist": [
+    ">1% in ID",
+    "last 4 versions",
+    "Firefox ESR",
+    "not ie < 8"
+  ]
+}

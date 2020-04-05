@@ -1,0 +1,21 @@
+{
+  "test": {
+    "withParams": "test {0}",
+    "default": "test"
+  },
+  "yes": "Ya",
+  "no": "Tidak",
+  "cancel": "Batal",
+  "payment": {
+    "header": {
+      "title": "Test Title"
+    }
+  },
+  "error": {
+    "unknown": "Unknown Error, please try again later.",
+    "expired": {
+      "errorMessage": "Pesanan ini sudah Kadaluarsa, Harap lakukan pemesanan baru",
+      "buttonText": "Kembali ke Home"
+    }
+  }
+}

@@ -1,0 +1,285 @@
+@import "../styles/colors";
+@import "grid-system";
+
+body, html {
+  overflow-x: hidden;
+}
+
+body, #app {
+  background: $color-grey-lighter;
+}
+
+#modal-root {
+  position: relative;
+  z-index: 999;
+
+  .modal-content {
+    max-width: 90%;
+  }
+}
+
+// Flex
+.flex {
+  display: flex;
+}
+
+.f1 {
+  flex: 1;
+}
+
+.f1point4 {
+  flex: 1.4;
+}
+
+a {
+
+  &:hover, &:active, &:focus {
+    text-decoration: none;
+  }
+}
+
+// Flash Messages
+.flash {
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  background-color: orange;
+
+  &.success {
+    background-color: #14ac33;
+  }
+
+  &.error {
+    background-color: red;
+  }
+}
+
+// Card
+.card {
+  box-shadow: 0 2px 7px 0 rgba(0,0,0,0.1);
+  background-color: $color-grey-lightest;
+}
+
+.card-no-shadow {
+  background-color: $color-grey-lightest;
+}
+
+// Input
+.input, .check, .radio {
+  position: relative;
+  display: block;
+
+  &.inline {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+  }
+
+  &:not(.inline) {
+
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  }
+
+  .help-block {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+    position: relative;
+
+    &:before {
+      content: '*';
+      display: block;
+      margin-left: -10px;
+      position: absolute;
+    }
+  }
+
+  .info-block {
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    border-radius: 60%;
+    background: #d8d8d8;
+    text-align: center;
+    font-size: .7em;
+    vertical-align: middle;
+    top: -1.5rem;
+    right: 0;
+    color: #fff;
+  }
+}
+
+// Tabs
+.tab {
+  padding: 5px 0 !important;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bolder;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.tab-active {
+    border-bottom: 3px solid #ed7a30;
+  }
+
+  img {
+    background-color: white;
+    border-radius: 50px;
+    vertical-align:  middle;
+    width: 35px;
+    height: 35px;
+    margin-right: 2px;
+  }
+}
+
+// Button
+.btn {
+  display: inline-block;
+  padding: 6px 20px;
+  font-size: 14px;
+  color: #fff;
+  background-color: $color-orange;
+  cursor: pointer;
+
+  &.block {
+    display: block;
+  }
+
+  &:hover {
+    color: #fff;
+    background-color: darken($color-orange, 10%);
+  }
+
+  &.large {
+    padding: 12px 20px;
+  }
+
+  &.secondary {
+    background-color: #fff;
+    border: solid 1px $color-orange;
+    color: $color-orange;
+  }
+}
+
+// Tooltip last digit notify
+.last-digit-tooltip {
+  position: relative;
+
+  .notify {
+    position: relative;
+    color: #222222 !important;
+
+
+    &:after {
+      display: inline-block;
+      content: attr(data-lastdigit);
+      position: absolute;
+      color: #ff7200;
+      top: 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 2px;
+      margin-top: -3px;
+      right: -3px;
+    }
+  }
+}
+
+.payment-button-next-step {
+  padding: 0 15px 0 15px;
+}
+
+.payment-button-next-step .btn {
+  width: 100%;
+  padding: 11px 0;
+  margin-bottom: 20px;
+}
+
+.payment-done-button {
+  margin: 0;
+  width: 100%;
+}
+
+.payment-done-button .btn {
+  width: 100%;
+  padding: 9px 0;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.input-group {
+  display: table;
+  width: 100%;
+
+  > *, >.input, >.btn {
+    display: table-cell;
+  }
+}
+
+// Margins
+.margin-top-20 {
+  margin-top: 20px;
+}
+
+.margin-10 {
+  margin: 10px;
+}
+
+// Paddings
+.padding-0 {
+  padding: 0;
+}
+
+// Fonts
+.weight-600 {
+  font-weight: 600;
+}
+
+.weight-normal {
+  font-weight: normal;
+}
+
+.font-size-13 {
+  font-size: 13px;
+}
+
+.margin-left-15 {
+  margin-left: 15px;
+}
+
+// Colors
+.color-grey {
+  color: $color-grey-darker;
+}
+
+.color-blue {
+  color: $color-blue;
+}
+
+.color-orange {
+  color: $color-orange;
+}
+
+// Utilities
+.border-bottom {
+  border-bottom: 1px solid $color-grey;
+}
+
+.round {
+  border-radius: 10px;
+}
+
+.round4px {
+  border-radius: 4px;
+}
+
+.background {
+  background-color: #f7f7f7;
+}

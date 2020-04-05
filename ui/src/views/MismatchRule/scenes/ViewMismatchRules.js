@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Table, Divider, Button, Popconfirm, Row, Col,
+  Table, Button, Row, Col,
 } from 'antd';
 import { format, formatDistance } from 'date-fns';
 import useTableFilterProps from 'hooks/useTableFilterProps';
@@ -23,9 +23,7 @@ const formatDate = (dateStr) => {
 };
 
 function ViewMismatchRules(props) {
-  const { onClick, onEdit, onDelete } = props;
-
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize] = useState(5);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({
     order: 'descend',
@@ -49,7 +47,7 @@ function ViewMismatchRules(props) {
 
   useEffect(() => {
     resetPagination();
-  }, [filteredInfo]);
+  }, [filteredInfo, resetPagination]);
 
   useEffect(() => {
     async function fetchData() {
@@ -80,7 +78,7 @@ function ViewMismatchRules(props) {
     }
 
     fetchData();
-  }, [pageSize, filteredInfo, sortedInfo, pageToken]);
+  }, [pageSize, filteredInfo, sortedInfo, pageToken, previousPage, setNextPageToken]);
 
   const columns = [
     {

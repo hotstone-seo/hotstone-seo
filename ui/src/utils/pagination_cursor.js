@@ -31,8 +31,9 @@ export const buildQueryParam = (
   if (!_.isEmpty(pageToken)) {
     pageToken.map(({ id, desc, val }) => {
       let { _next } = queryParam;
-      _next = `${_next == undefined ? '' : `${_next},`}${val}`;
+      _next = `${_next === undefined ? '' : `${_next},`}${val}`;
       queryParam._next = _next;
+      return true;
     });
   }
 

@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Should render ErrorView correctly 1`] = `
+<BrowserRouter>
+  <ErrorBoundary
+    error={[Error: test]}
+    info={Object {}}
+  />
+</BrowserRouter>
+`;
