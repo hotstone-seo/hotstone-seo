@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Select } from 'antd';
 
+import TagAPI from 'api/tag';
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
 import CanonicalForm from './CanonicalForm';
@@ -16,9 +17,26 @@ const tagTypes = [
   { label: 'Script', value: 'script' },
 ];
 
+const APISets = {
+  createAPI: {
+    meta: TagAPI.addMeta,
+    title: TagAPI.addTitle,
+    link: TagAPI.addCanonical,
+    script: TagAPI.addScript,
+  },
+  updateAPI: {
+    meta: TagAPI.updateMeta,
+    title: TagAPI.updateTitle,
+    link: TagAPI.updateCanonical,
+    script: TagAPI.updateScript,
+  },
+};
+
 // TODO: adjust onSubmit to use appropriate API function for each type
-function TagForm({ tag, onSubmit }) {
+function TagForm({ tag }) {
   const [currentType, setCurrentType] = useState(tag.type);
+  const APISet = tag.id ? APISets.updateAPI : APISets.createAPI;
+  const onSubmit = useMemo(() => APISet[currentType], [APISet, currentType]);
 
   const renderSelectedForm = (type) => {
     switch (type) {
@@ -62,7 +80,6 @@ TagForm.propTypes = {
     rule_id: PropTypes.number.isRequired,
     type: PropTypes.string,
   }).isRequired,
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default TagForm;
