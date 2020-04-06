@@ -33,21 +33,25 @@ const APISets = {
 };
 
 // TODO: adjust onSubmit to use appropriate API function for each type
-function TagForm({ tag }) {
+function TagForm({ tag, onSubmit }) {
   const [currentType, setCurrentType] = useState(tag.type);
   const APISet = tag.id ? APISets.updateAPI : APISets.createAPI;
-  const onSubmit = useMemo(() => APISet[currentType], [APISet, currentType]);
+  const submitTag = useMemo(() => APISet[currentType], [APISet, currentType]);
+
+  const handleSubmit = (formTag) => {
+    submitTag(formTag).then(onSubmit);
+  };
 
   const renderSelectedForm = (type) => {
     switch (type) {
       case 'title':
-        return <TitleForm tag={tag} onSubmit={onSubmit} />;
+        return <TitleForm tag={tag} onSubmit={handleSubmit} />;
       case 'meta':
-        return <MetaForm tag={tag} onSubmit={onSubmit} />;
+        return <MetaForm tag={tag} onSubmit={handleSubmit} />;
       case 'link':
-        return <CanonicalForm tag={tag} onSubmit={onSubmit} />;
+        return <CanonicalForm tag={tag} onSubmit={handleSubmit} />;
       case 'script':
-        return <ScriptForm tag={tag} onSubmit={onSubmit} />;
+        return <ScriptForm tag={tag} onSubmit={handleSubmit} />;
       default:
         return null;
     }
@@ -80,6 +84,7 @@ TagForm.propTypes = {
     rule_id: PropTypes.number.isRequired,
     type: PropTypes.string,
   }).isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
 
 export default TagForm;
