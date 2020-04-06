@@ -5,7 +5,7 @@ import CounterCard from './CounterCard';
 
 function HitCounterCard({ ruleID }) {
   const [countHit, setCountHit] = useState(0);
-  const [setError] = useState();
+  const [error, setError] = useState();
 
   const fetchData = useCallback(() => {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
@@ -16,7 +16,7 @@ function HitCounterCard({ ruleID }) {
       .catch((error) => {
         setError(error);
       });
-  }, [ruleID, setCountHit, setError]);
+  }, [ruleID]);
 
   useInterval(() => {
     fetchData();

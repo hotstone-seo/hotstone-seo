@@ -33,7 +33,6 @@ export const buildQueryParam = (
       let { _next } = queryParam;
       _next = `${_next === undefined ? '' : `${_next},`}${val}`;
       queryParam._next = _next;
-      return true;
     });
   }
 
