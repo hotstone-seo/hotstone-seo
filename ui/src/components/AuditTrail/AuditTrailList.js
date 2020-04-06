@@ -41,8 +41,10 @@ function AuditTrailList(props) {
           sortedInfo,
         );
         const auditTrails = await fetchAuditTrails({ params: queryParam });
-        const updatedListAuditTrail = auditTrails;
-        setListAuditTrail(updatedListAuditTrail);
+        if (auditTrails !== undefined) {
+          const updatedListAuditTrail = auditTrails;
+          setListAuditTrail(updatedListAuditTrail);
+        }
       } catch (error) {
         message.error(error.message);
       }

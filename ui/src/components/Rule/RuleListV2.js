@@ -47,17 +47,20 @@ function RuleListV2(props) {
           sortedInfo,
         );
         const rules = await fetchRules({ params: queryParam });
-        const updatedListRule = await Promise.all(
-          rules.map(async (rule) => {
-            const modifiedRule = rule;
-            if (!_.isEmpty(rule.data_source_id)) {
-              const dataSource = await getDataSource(rule.data_source_id);
-              modifiedRule.dataSource = dataSource;
-            }
-            return modifiedRule;
-          }),
-        );
-        setListRule(updatedListRule);
+        if (rules !== undefined)
+        {
+          const updatedListRule = await Promise.all(
+            rules.map(async (rule) => {
+              const modifiedRule = rule;
+              if (!_.isEmpty(rule.data_source_id)) {
+                const dataSource = await getDataSource(rule.data_source_id);
+                modifiedRule.dataSource = dataSource;
+              }
+              return modifiedRule;
+            }),
+          );
+          setListRule(updatedListRule);
+        }
       } catch (error) {
         message.error(error.message);
       }

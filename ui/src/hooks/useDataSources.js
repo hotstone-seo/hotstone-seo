@@ -7,7 +7,7 @@ function useDataSources() {
   useEffect(() => {
     fetchDataSources()
       .then((dataSources) => {
-        setDataSources(dataSources);
+        if (dataSources !== undefined) setDataSources(dataSources);
       });
   }, []);
 

@@ -24,8 +24,10 @@ function ViewAnalytics() {
 
   useEffect(() => {
     fetchRules().then((rules) => {
-      rules.unshift({ id: -1, name: 'All Rule' });
-      setListRule(rules);
+      if (rules !== undefined) {
+        rules.unshift({ id: -1, name: 'All Rule' });
+        setListRule(rules);
+      }
     });
 
     form.setFieldsValue({ ruleID: ruleID ? _.toNumber(ruleID) : -1 });

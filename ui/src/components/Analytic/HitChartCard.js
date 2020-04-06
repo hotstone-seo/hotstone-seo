@@ -67,7 +67,7 @@ function HitChartCard({ ruleID }) {
       }
       fetchListCountHitPerDay({ params: queryParm })
         .then((data) => {
-          setDataListCountHit(data);
+          if (data !== undefined) setDataListCountHit(data);
         })
         .catch((error) => {
           setError(error);
