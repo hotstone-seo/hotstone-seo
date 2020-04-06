@@ -10,6 +10,12 @@ import (
 const (
 	// DefaultMaxAge is default max-age value
 	DefaultMaxAge = 30 * time.Second
+
+	// HeaderCacheControl is http header that holds directives (instructions) for caching in both requests and responses. A
+	HeaderCacheControl = "Cache-Control"
+
+	// HeaderExpires is http header that contains the date and time which denotes the period where the object can stay alive.
+	HeaderExpires = "Expires"
 )
 
 // Pragma handle pragmatic information/directives for caching
@@ -30,7 +36,7 @@ func NewPragma(cacheControls ...string) *Pragma {
 // CreatePragma to create new instance of CacheControl from request
 func CreatePragma(req *http.Request) *Pragma {
 	var directives []string
-	raw := req.Header.Get("Cache-Control")
+	raw := req.Header.Get(HeaderCacheControl)
 	if raw != "" {
 		for _, s := range strings.Split(raw, ",") {
 			directives = append(directives, strings.TrimSpace(s))
@@ -84,7 +90,7 @@ func (c *Pragma) ResponseHeaders() map[string]string {
 	)
 
 	if !c.expires.IsZero() {
-		m["Expires"] = c.expires.Format(time.RFC1123)
+		m[HeaderExpires] = c.expires.Format(time.RFC1123)
 	}
 	return m
 }

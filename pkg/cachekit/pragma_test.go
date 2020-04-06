@@ -94,5 +94,5 @@ func TestPragma_SetExpiresByTTL(t *testing.T) {
 	pragma := cachekit.NewPragma()
 	pragma.SetExpiresByTTL(30 * time.Second)
 
-	require.Equal(t, "Thu, 16 Feb 2017 00:00:30 UTC", pragma.ResponseHeaders()["Expires"])
+	require.Equal(t, "Thu, 16 Feb 2017 00:00:30 UTC", pragma.ResponseHeaders()[cachekit.HeaderExpires])
 }
