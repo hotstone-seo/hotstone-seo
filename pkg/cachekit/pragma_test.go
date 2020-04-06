@@ -5,12 +5,13 @@ import (
 	"testing"
 	"time"
 
+	"bou.ke/monkey"
 	"github.com/stretchr/testify/require"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 )
 
-func TestCreateCacheControl(t *testing.T) {
+func TestCreatePragma(t *testing.T) {
 	testcases := []struct {
 		req      *http.Request
 		expected *cachekit.Pragma
@@ -34,7 +35,7 @@ func TestCreateCacheControl(t *testing.T) {
 	}
 }
 
-func TestCacheContro_NoCache(t *testing.T) {
+func TestPragma_NoCache(t *testing.T) {
 	testcases := []struct {
 		*cachekit.Pragma
 		expected bool
@@ -57,7 +58,7 @@ func TestCacheContro_NoCache(t *testing.T) {
 	}
 }
 
-func TestCacheContro_MaxAge(t *testing.T) {
+func TestPragma_MaxAge(t *testing.T) {
 	testcases := []struct {
 		*cachekit.Pragma
 		expected time.Duration
@@ -83,4 +84,15 @@ func TestCacheContro_MaxAge(t *testing.T) {
 	for _, tt := range testcases {
 		require.Equal(t, tt.expected, tt.MaxAge())
 	}
+}
+
+func TestPragma_SetExpiresByTTL(t *testing.T) {
+	defer monkey.Patch(time.Now, func() time.Time {
+		return time.Date(2017, time.February, 16, 0, 0, 0, 0, time.UTC)
+	}).Unpatch()
+
+	pragma := cachekit.NewPragma()
+	pragma.SetExpiresByTTL(30 * time.Second)
+
+	require.Equal(t, "Thu, 16 Feb 2017 00:00:30 UTC", pragma.ResponseHeaders()["Expires"])
 }

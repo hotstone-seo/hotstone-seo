@@ -16,6 +16,7 @@ const (
 type Pragma struct {
 	cacheControls []string
 	defaultMaxAge time.Duration
+	expires       time.Time
 }
 
 // NewPragma return new instance of CacheControl
@@ -42,6 +43,11 @@ func CreatePragma(req *http.Request) *Pragma {
 func (c *Pragma) WithDefaultMaxAge(defaultMaxAge time.Duration) *Pragma {
 	c.defaultMaxAge = defaultMaxAge
 	return c
+}
+
+// SetExpiresByTTL to set expires to current time to TTL
+func (c *Pragma) SetExpiresByTTL(ttl time.Duration) {
+	c.expires = time.Now().Add(ttl)
 }
 
 // NoCache return true if no cache is set
@@ -71,7 +77,14 @@ func (c *Pragma) MaxAge() time.Duration {
 	return c.defaultMaxAge
 }
 
-// Directives return directives for cache-control
-func (c *Pragma) Directives() []string {
-	return c.cacheControls
+// ResponseHeaders return map that contain response header
+func (c *Pragma) ResponseHeaders() map[string]string {
+	var (
+		m = make(map[string]string)
+	)
+
+	if !c.expires.IsZero() {
+		m["Expires"] = c.expires.Format(time.RFC1123)
+	}
+	return m
 }
