@@ -40,36 +40,64 @@ function deleteTag(id) {
     });
 }
 
-function addMetaTag(rule_id, locale, name, content) {
-  return client.post('/center/addMetaTag', {
-    rule_id, locale, name, content,
-  })
+function addMetaTag(metaTag) {
+  return client.post('/center/metaTag', metaTag)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
 
-function addTitleTag(rule_id, locale, title) {
-  return client.post('/center/addTitleTag', { rule_id, locale, title })
+function updateMetaTag(metaTag) {
+  return client.put('/center/metaTag', metaTag)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
 
-function addCanonicalTag(rule_id, locale, canonical) {
-  return client.post('/center/addCanonicalTag', { rule_id, locale, canonical })
+function addTitleTag(titleTag) {
+  return client.post('/center/titleTag', titleTag)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
 
-function addScriptTag(rule_id, locale, type, source) {
-  return client.post('/center/addScriptTag', {
-    rule_id, locale, type, source,
-  })
+function updateTitleTag(titleTag) {
+  return client.put('/center/titleTag', titleTag)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+function addCanonicalTag(canonicalTag) {
+  return client.post('/center/canonicalTag', canonicalTag)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+function updateCanonicalTag(canonicalTag) {
+  return client.put('/center/canonicalTag', canonicalTag)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+function addScriptTag(scriptTag) {
+  return client.post('/center/scriptTag', scriptTag)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+function updateScriptTag(scriptTag) {
+  return client.put('/center/scriptTag', scriptTag)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -88,9 +116,13 @@ const TagAPI = {
   update: updateTag,
   delete: deleteTag,
   addMeta: addMetaTag,
+  updateMeta: updateMetaTag,
   addTitie: addTitleTag,
+  updateTitle: updateTitleTag,
   addCanonical: addCanonicalTag,
+  updateCanonical: updateCanonicalTag,
   addScript: addScriptTag,
+  updateScript: updateScriptTag,
 };
 
 export default TagAPI;
