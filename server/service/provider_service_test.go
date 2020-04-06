@@ -54,7 +54,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, cachekit.NewCacheControl())
+		}, cachekit.NewPragma())
 		require.NoError(t, err)
 		require.Equal(t, &service.RetrieveDataResponse{
 			Data: []byte("some-data"),
@@ -76,7 +76,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, cachekit.NewCacheControl())
+		}, cachekit.NewPragma())
 		require.EqualError(t, err, "Get \"non-existent\": unsupported protocol scheme \"\"")
 		require.Nil(t, resp)
 	})
@@ -85,7 +85,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, cachekit.NewCacheControl())
+		}, cachekit.NewPragma())
 		require.EqualError(t, err, "Data-Source#99999 not found")
 		require.Nil(t, resp)
 	})
@@ -170,7 +170,7 @@ func TestProvider_Tags_Success(t *testing.T) {
 		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).
 			Return([]*repository.Tag{{ID: 1, RuleID: 1, Locale: "en-US", Type: "some-type", Attributes: tt.attribute, Value: tt.value}}, nil)
 
-		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US", Data: tt.data}, cachekit.NewCacheControl())
+		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US", Data: tt.data}, cachekit.NewPragma())
 		require.NoError(t, err, i)
 		require.EqualValues(t, []*service.InterpolatedTag{
 			{ID: 1, RuleID: 1, Locale: "en-US", Type: "some-type", Attributes: tt.expectedAttribute, Value: tt.expectedValue},

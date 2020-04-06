@@ -25,9 +25,9 @@ func New(key string, refreshFn RefreshFn) *Cache {
 }
 
 // Execute cache to retreive data and save to target variable
-func (c *Cache) Execute(client *redis.Client, target interface{}, cc *CacheControl) error {
+func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma) error {
 	data, err := client.Get(c.key).Bytes()
-	if err != nil || len(data) <= 0 || cc.NoCache() {
+	if err != nil || len(data) <= 0 || pragma.NoCache() {
 		var v interface{}
 		if v, err = c.refreshFn(); err != nil {
 			return err
@@ -35,7 +35,7 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, cc *CacheContr
 		if data, err = c.marshal(v); err != nil {
 			return err
 		}
-		if err = client.Set(c.key, data, cc.MaxAge()).Err(); err != nil {
+		if err = client.Set(c.key, data, pragma.MaxAge()).Err(); err != nil {
 			return err
 		}
 		return copier.Copy(target, v)

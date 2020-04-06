@@ -41,7 +41,9 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if resp, err = p.ProviderService.RetrieveData(ctx, req, cachekit.CreateCacheControl(c.Request())); err != nil {
+
+	pragma := cachekit.CreatePragma(c.Request())
+	if resp, err = p.ProviderService.RetrieveData(ctx, req, pragma); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.Blob(http.StatusOK, echo.MIMEApplicationJSON, resp.Data)
@@ -57,7 +59,9 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if tags, err = p.ProviderService.Tags(ctx, req, cachekit.CreateCacheControl(c.Request())); err != nil {
+
+	pragma := cachekit.CreatePragma(c.Request())
+	if tags, err = p.ProviderService.Tags(ctx, req, pragma); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, tags)

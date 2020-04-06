@@ -66,7 +66,7 @@ func (mr *MockProviderServiceMockRecorder) MatchRule(arg0, arg1 interface{}) *go
 }
 
 // RetrieveData mocks base method
-func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 *cachekit.CacheControl) (*service.RetrieveDataResponse, error) {
+func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 *cachekit.Pragma) (*service.RetrieveDataResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RetrieveData", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*service.RetrieveDataResponse)
@@ -81,7 +81,7 @@ func (mr *MockProviderServiceMockRecorder) RetrieveData(arg0, arg1, arg2 interfa
 }
 
 // Tags mocks base method
-func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTagsRequest, arg2 *cachekit.CacheControl) ([]*service.InterpolatedTag, error) {
+func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTagsRequest, arg2 *cachekit.Pragma) ([]*service.InterpolatedTag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Tags", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*service.InterpolatedTag)

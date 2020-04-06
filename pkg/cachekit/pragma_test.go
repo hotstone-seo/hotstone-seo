@@ -13,11 +13,11 @@ import (
 func TestCreateCacheControl(t *testing.T) {
 	testcases := []struct {
 		req      *http.Request
-		expected *cachekit.CacheControl
+		expected *cachekit.Pragma
 	}{
 		{
 			req:      &http.Request{},
-			expected: cachekit.NewCacheControl(),
+			expected: cachekit.NewPragma(),
 		},
 		{
 			req: func() *http.Request {
@@ -25,30 +25,30 @@ func TestCreateCacheControl(t *testing.T) {
 				req.Header.Add("Cache-Control", "a, b, c")
 				return req
 			}(),
-			expected: cachekit.NewCacheControl("a", "b", "c"),
+			expected: cachekit.NewPragma("a", "b", "c"),
 		},
 	}
 
 	for _, tt := range testcases {
-		require.EqualValues(t, tt.expected, cachekit.CreateCacheControl(tt.req))
+		require.EqualValues(t, tt.expected, cachekit.CreatePragma(tt.req))
 	}
 }
 
 func TestCacheContro_NoCache(t *testing.T) {
 	testcases := []struct {
-		*cachekit.CacheControl
+		*cachekit.Pragma
 		expected bool
 	}{
 		{
-			CacheControl: cachekit.NewCacheControl(),
+			Pragma: cachekit.NewPragma(),
 		},
 		{
-			CacheControl: cachekit.NewCacheControl("no-cache"),
-			expected:     true,
+			Pragma:   cachekit.NewPragma("no-cache"),
+			expected: true,
 		},
 		{
-			CacheControl: cachekit.NewCacheControl("No-Cache"),
-			expected:     true,
+			Pragma:   cachekit.NewPragma("No-Cache"),
+			expected: true,
 		},
 	}
 
@@ -59,24 +59,24 @@ func TestCacheContro_NoCache(t *testing.T) {
 
 func TestCacheContro_MaxAge(t *testing.T) {
 	testcases := []struct {
-		*cachekit.CacheControl
+		*cachekit.Pragma
 		expected time.Duration
 	}{
 		{
-			CacheControl: cachekit.NewCacheControl(),
-			expected:     cachekit.DefaultMaxAge,
+			Pragma:   cachekit.NewPragma(),
+			expected: cachekit.DefaultMaxAge,
 		},
 		{
-			CacheControl: cachekit.NewCacheControl().WithDefaultMaxAge(1),
-			expected:     1,
+			Pragma:   cachekit.NewPragma().WithDefaultMaxAge(1),
+			expected: 1,
 		},
 		{
-			CacheControl: cachekit.NewCacheControl("max-age=100").WithDefaultMaxAge(1),
-			expected:     100 * time.Second,
+			Pragma:   cachekit.NewPragma("max-age=100").WithDefaultMaxAge(1),
+			expected: 100 * time.Second,
 		},
 		{
-			CacheControl: cachekit.NewCacheControl("max-age=invalid"),
-			expected:     cachekit.DefaultMaxAge,
+			Pragma:   cachekit.NewPragma("max-age=invalid"),
+			expected: cachekit.DefaultMaxAge,
 		},
 	}
 
