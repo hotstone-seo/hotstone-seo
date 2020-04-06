@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Select } from 'antd';
+import { Select, PageHeader } from 'antd';
 
 import TagAPI from 'api/tag';
 import TitleForm from './TitleForm';
@@ -33,7 +33,7 @@ const APISets = {
 };
 
 // TODO: adjust onSubmit to use appropriate API function for each type
-function TagForm({ tag, onSubmit }) {
+function TagForm({ tag, onSubmit, onCancel }) {
   const [currentType, setCurrentType] = useState(tag.type);
   const APISet = tag.id ? APISets.updateAPI : APISets.createAPI;
   const submitTag = useMemo(() => APISet[currentType], [APISet, currentType]);
@@ -59,20 +59,27 @@ function TagForm({ tag, onSubmit }) {
 
   return (
     <>
-      <Select
-        data-testid="select-type"
-        defaultValue={currentType}
-        onChange={(value) => setCurrentType(value)}
-        showSearch
-        filterOption={(input, option) => (
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        )}
-        dropdownMatchSelectWidth={false}
-      >
-        {tagTypes.map(({ label, value }) => (
-          <Option key={value} value={value}>{label}</Option>
-        ))}
-      </Select>
+      <PageHeader
+        title={tag.id ? 'Edit Tag' : 'Add new Tag'}
+        onBack={onCancel}
+        extra={[
+          <Select
+            defaultValue={currentType}
+            placeholder="Select a type"
+            onChange={(value) => setCurrentType(value)}
+            showSearch
+            filterOption={(input, option) => (
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            )}
+            dropdownMatchSelectWidth={false}
+            data-testid="select-type"
+          >
+            {tagTypes.map(({ label, value }) => (
+              <Option key={value} value={value}>{label}</Option>
+            ))}
+          </Select>,
+        ]}
+      />
 
       {renderSelectedForm(currentType)}
     </>
@@ -86,6 +93,7 @@ TagForm.propTypes = {
     type: PropTypes.string,
   }).isRequired,
   onSubmit: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
 };
 
 export default TagForm;

@@ -80,6 +80,10 @@ function EditRule() {
     setCurrentTag({ rule_id: parseInt(id, 10), locale });
   };
 
+  const cancelTag = () => {
+    setCurrentTag(null);
+  };
+
   const editTag = (tag) => {
     setCurrentTag(tag);
   };
@@ -138,7 +142,7 @@ function EditRule() {
         <Row>
           <Col span={24} style={{ background: '#fff', padding: 24 }}>
             {currentTag ? (
-              <TagForm tag={currentTag} onSubmit={submitTag} />
+              <TagForm tag={currentTag} onSubmit={submitTag} onCancel={cancelTag} />
             ) : (
               <>
                 <Select
