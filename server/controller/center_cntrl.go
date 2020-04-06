@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
@@ -17,14 +18,18 @@ type CenterCntrl struct {
 
 // Route to define API Route
 func (c *CenterCntrl) Route(e *echo.Group) {
-	e.POST("/center/addMetaTag", c.AddMetaTag)
-	e.POST("/center/addTitleTag", c.AddTitleTag)
-	e.POST("/center/addCanonicalTag", c.AddCanonicalTag)
-	e.POST("/center/addScriptTag", c.AddScriptTag)
+	e.POST("/center/metaTag", c.AddMetaTag)
+	e.PUT("/center/metaTag", c.UpdateMetaTag)
+	e.POST("/center/titleTag", c.AddTitleTag)
+	e.PUT("/center/titleTag", c.UpdateTitleTag)
+	e.POST("/center/canonicalTag", c.AddCanonicalTag)
+	e.PUT("/center/canonicalTag", c.UpdateCanonicalTag)
+	e.POST("/center/scriptTag", c.AddScriptTag)
+	e.PUT("/center/scriptTag", c.UpdateScriptTag)
 	e.POST("/center/addArticle", c.AddArticle)
 }
 
-// AddMetaTag add meta tag
+// AddMetaTag provides endpoint to add meta tag
 func (c *CenterCntrl) AddMetaTag(ce echo.Context) (err error) {
 	var (
 		req service.MetaTagRequest
@@ -40,7 +45,27 @@ func (c *CenterCntrl) AddMetaTag(ce echo.Context) (err error) {
 	return ce.JSON(http.StatusCreated, tag)
 }
 
-// AddTitleTag add title tag
+// UpdateMetaTag provides endpoint to update meta tag
+func (c *CenterCntrl) UpdateMetaTag(ce echo.Context) (err error) {
+	var (
+		req service.MetaTagRequest
+		ctx = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.CenterService.UpdateMetaTag(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully update meta tag #%d", req.ID),
+	})
+}
+
+// AddTitleTag provides endpoint to add title tag
 func (c *CenterCntrl) AddTitleTag(ce echo.Context) (err error) {
 	var (
 		req service.TitleTagRequest
@@ -56,7 +81,27 @@ func (c *CenterCntrl) AddTitleTag(ce echo.Context) (err error) {
 	return ce.JSON(http.StatusCreated, tag)
 }
 
-// AddCanoncicalTag add canonical tag
+// UpdateTitleTag provides endpoint to update title tag
+func (c *CenterCntrl) UpdateTitleTag(ce echo.Context) (err error) {
+	var (
+		req service.TitleTagRequest
+		ctx = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.CenterService.UpdateTitleTag(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully update title tag #%d", req.ID),
+	})
+}
+
+// AddCanonicalTag provides endpoint to add canonical tag
 func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
 	var (
 		req service.CanonicalTagRequest
@@ -72,7 +117,27 @@ func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
 	return ce.JSON(http.StatusCreated, tag)
 }
 
-// AddScriptTag add script tag
+// UpdateCanonicalTag provides endpoint to update canonical tag
+func (c *CenterCntrl) UpdateCanonicalTag(ce echo.Context) (err error) {
+	var (
+		req service.CanonicalTagRequest
+		ctx = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.CenterService.UpdateCanonicalTag(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully update canonical tag #%d", req.ID),
+	})
+}
+
+// AddScriptTag provides endpoint to add script tag
 func (c *CenterCntrl) AddScriptTag(ce echo.Context) (err error) {
 	var (
 		req service.ScriptTagRequest
@@ -86,6 +151,26 @@ func (c *CenterCntrl) AddScriptTag(ce echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return ce.JSON(http.StatusCreated, tag)
+}
+
+// UpdateScriptTag provides endpoint to update script tag
+func (c *CenterCntrl) UpdateScriptTag(ce echo.Context) (err error) {
+	var (
+		req service.ScriptTagRequest
+		ctx = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.CenterService.UpdateScriptTag(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully update script tag #%d", req.ID),
+	})
 }
 
 // AddArticle add article
