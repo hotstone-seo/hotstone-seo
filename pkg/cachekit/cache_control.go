@@ -26,12 +26,6 @@ func NewCacheControl(directives ...string) *CacheControl {
 	}
 }
 
-// WithDefaultMaxAge retunr CacheControl with new default max age
-func (c *CacheControl) WithDefaultMaxAge(defaultMaxAge time.Duration) *CacheControl {
-	c.defaultMaxAge = defaultMaxAge
-	return c
-}
-
 // CreateCacheControl to create new instance of CacheControl from request
 func CreateCacheControl(req *http.Request) *CacheControl {
 	var directives []string
@@ -42,6 +36,12 @@ func CreateCacheControl(req *http.Request) *CacheControl {
 		}
 	}
 	return NewCacheControl(directives...)
+}
+
+// WithDefaultMaxAge retunr CacheControl with new default max age
+func (c *CacheControl) WithDefaultMaxAge(defaultMaxAge time.Duration) *CacheControl {
+	c.defaultMaxAge = defaultMaxAge
+	return c
 }
 
 // NoCache return true if no cache is set

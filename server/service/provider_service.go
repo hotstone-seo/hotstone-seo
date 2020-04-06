@@ -27,8 +27,8 @@ var (
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
-	RetrieveData(context.Context, RetrieveDataRequest, bool) (*RetrieveDataResponse, error)
-	Tags(context.Context, ProvideTagsRequest, bool) ([]*InterpolatedTag, error)
+	RetrieveData(context.Context, RetrieveDataRequest, *cachekit.CacheControl) (*RetrieveDataResponse, error)
+	Tags(context.Context, ProvideTagsRequest, *cachekit.CacheControl) ([]*InterpolatedTag, error)
 	DumpRuleTree(context.Context) (string, error)
 }
 
@@ -86,7 +86,7 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 }
 
 // RetrieveData to retrieve the data from data provider
-func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (resp *RetrieveDataResponse, err error) {
+func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, cc *cachekit.CacheControl) (resp *RetrieveDataResponse, err error) {
 	var (
 		ds           *repository.DataSource
 		interpolated *InterpolatedDataSource
@@ -106,7 +106,7 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 	cache := cachekit.New(interpolated.Url, callDatasoure(interpolated))
 
 	resp = new(RetrieveDataResponse)
-	if err = cache.Execute(p.Redis.WithContext(ctx), resp, cachekit.NewCacheControl()); err != nil {
+	if err = cache.Execute(p.Redis.WithContext(ctx), resp, cc); err != nil {
 		return nil, err
 	}
 
@@ -137,7 +137,7 @@ func callDatasoure(ds *InterpolatedDataSource) cachekit.RefreshFn {
 }
 
 // Tags to return interpolated tag
-func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, useCache bool) (interpolatedTags []*InterpolatedTag, err error) {
+func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, cc *cachekit.CacheControl) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
 		tags         []*repository.Tag
 		data         = req.Data
@@ -162,7 +162,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 				RetrieveDataRequest{
 					DataSourceID: *rule.DataSourceID,
 					PathParam:    req.PathParam,
-				}, useCache,
+				}, cc,
 			); err != nil {
 				return
 			}
