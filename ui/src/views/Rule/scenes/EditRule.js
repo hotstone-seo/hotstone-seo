@@ -67,6 +67,13 @@ function EditRule() {
 
   const submitTag = () => {
     setCurrentTag(null);
+    fetchTags({ rule_id: id, locale })
+      .then((newTags) => {
+        setTags(newTags);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
   };
 
   const addTag = () => {
