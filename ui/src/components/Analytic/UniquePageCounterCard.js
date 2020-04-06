@@ -14,7 +14,7 @@ function UniquePageCounterCard({ ruleID }) {
         if (data !== undefined) setCountUniquePage(data.count);
       })
       .catch((error) => {
-        setError(error);
+        // setError(error);
       });
   }, [ruleID, setCountUniquePage, setError]);
 

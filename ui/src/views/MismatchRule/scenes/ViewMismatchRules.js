@@ -70,7 +70,7 @@ function ViewMismatchRules(props) {
           setNextPageToken(nextPageToken);
           setListData(listData);
         } else {
-          previousPage();
+          // previousPage();
         }
       } catch (err) {
         console.log('ERR: ', err);

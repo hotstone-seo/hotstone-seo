@@ -14,7 +14,7 @@ function HitCounterCard({ ruleID }) {
         if (data !== undefined) setCountHit(data.count);
       })
       .catch((error) => {
-        setError(error);
+        // setError(error);
       });
   }, [ruleID, setCountHit, setError]);
 
