@@ -35,7 +35,7 @@ func ExampleCache() {
 	})
 
 	// execute cache to get the data
-	if err = cache.Execute(client, &data, cachekit.NewCacheControl()); err != nil {
+	if err = cache.Execute(client, &data, cachekit.NewPragma()); err != nil {
 		log.Fatal(err.Error())
 	}
 
@@ -59,14 +59,14 @@ func TestCache(t *testing.T) {
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return nil, errors.New("some-refresh-error")
 			})
-			require.EqualError(t, cache.Execute(client, &b, cachekit.NewCacheControl()), "some-refresh-error")
+			require.EqualError(t, cache.Execute(client, &b, cachekit.NewPragma()), "some-refresh-error")
 		})
 		t.Run("WHEN marshal failed", func(t *testing.T) {
 			var b bean
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return make(chan int), nil
 			})
-			require.EqualError(t, cache.Execute(client, &b, cachekit.NewCacheControl()), "json: unsupported type: chan int")
+			require.EqualError(t, cache.Execute(client, &b, cachekit.NewPragma()), "json: unsupported type: chan int")
 		})
 		t.Run("WHEN failed to save to redis", func(t *testing.T) {
 			var b bean
@@ -74,14 +74,14 @@ func TestCache(t *testing.T) {
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.EqualError(t, cache.Execute(badClient, &b, cachekit.NewCacheControl()), "dial tcp: address wrong-addr: missing port in address")
+			require.EqualError(t, cache.Execute(badClient, &b, cachekit.NewPragma()), "dial tcp: address wrong-addr: missing port in address")
 		})
 		t.Run("", func(t *testing.T) {
 			var b bean
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.NoError(t, cache.Execute(client, &b, cachekit.NewCacheControl()))
+			require.NoError(t, cache.Execute(client, &b, cachekit.NewPragma()))
 			require.Equal(t, bean{Name: "new-name"}, b)
 			require.Equal(t, `{"Name":"new-name"}`, client.Get("key").Val())
 			require.Equal(t, 30*time.Second, client.TTL("key").Val())
@@ -94,7 +94,7 @@ func TestCache(t *testing.T) {
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.NoError(t, cache.Execute(client, &b, cachekit.NewCacheControl()))
+			require.NoError(t, cache.Execute(client, &b, cachekit.NewPragma()))
 			require.Equal(t, bean{Name: "cached"}, b)
 		})
 		t.Run("WHEN cache-control: no-cache", func(t *testing.T) {
@@ -103,7 +103,7 @@ func TestCache(t *testing.T) {
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.NoError(t, cache.Execute(client, &b, cachekit.NewCacheControl("no-cache")))
+			require.NoError(t, cache.Execute(client, &b, cachekit.NewPragma("no-cache")))
 			require.Equal(t, bean{Name: "new-name"}, b)
 			require.Equal(t, `{"Name":"new-name"}`, client.Get("key").Val())
 			require.Equal(t, 30*time.Second, client.TTL("key").Val())

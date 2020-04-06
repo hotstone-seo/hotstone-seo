@@ -7,6 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
@@ -35,10 +36,10 @@ func (m *MockCenterService) EXPECT() *MockCenterServiceMockRecorder {
 }
 
 // AddCanonicalTag mocks base method
-func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.AddCanonicalTagRequest) (int64, error) {
+func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.CanonicalTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddCanonicalTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -50,10 +51,10 @@ func (mr *MockCenterServiceMockRecorder) AddCanonicalTag(arg0, arg1 interface{})
 }
 
 // AddMetaTag mocks base method
-func (m *MockCenterService) AddMetaTag(arg0 context.Context, arg1 service.AddMetaTagRequest) (int64, error) {
+func (m *MockCenterService) AddMetaTag(arg0 context.Context, arg1 service.MetaTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddMetaTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -65,10 +66,10 @@ func (mr *MockCenterServiceMockRecorder) AddMetaTag(arg0, arg1 interface{}) *gom
 }
 
 // AddScriptTag mocks base method
-func (m *MockCenterService) AddScriptTag(arg0 context.Context, arg1 service.AddScriptTagRequest) (int64, error) {
+func (m *MockCenterService) AddScriptTag(arg0 context.Context, arg1 service.ScriptTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddScriptTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -80,10 +81,10 @@ func (mr *MockCenterServiceMockRecorder) AddScriptTag(arg0, arg1 interface{}) *g
 }
 
 // AddTitleTag mocks base method
-func (m *MockCenterService) AddTitleTag(arg0 context.Context, arg1 service.AddTitleTagRequest) (int64, error) {
+func (m *MockCenterService) AddTitleTag(arg0 context.Context, arg1 service.TitleTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddTitleTag", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -92,4 +93,60 @@ func (m *MockCenterService) AddTitleTag(arg0 context.Context, arg1 service.AddTi
 func (mr *MockCenterServiceMockRecorder) AddTitleTag(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTitleTag", reflect.TypeOf((*MockCenterService)(nil).AddTitleTag), arg0, arg1)
+}
+
+// UpdateCanonicalTag mocks base method
+func (m *MockCenterService) UpdateCanonicalTag(arg0 context.Context, arg1 service.CanonicalTagRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCanonicalTag", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCanonicalTag indicates an expected call of UpdateCanonicalTag
+func (mr *MockCenterServiceMockRecorder) UpdateCanonicalTag(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).UpdateCanonicalTag), arg0, arg1)
+}
+
+// UpdateMetaTag mocks base method
+func (m *MockCenterService) UpdateMetaTag(arg0 context.Context, arg1 service.MetaTagRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateMetaTag", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateMetaTag indicates an expected call of UpdateMetaTag
+func (mr *MockCenterServiceMockRecorder) UpdateMetaTag(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMetaTag", reflect.TypeOf((*MockCenterService)(nil).UpdateMetaTag), arg0, arg1)
+}
+
+// UpdateScriptTag mocks base method
+func (m *MockCenterService) UpdateScriptTag(arg0 context.Context, arg1 service.ScriptTagRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateScriptTag", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateScriptTag indicates an expected call of UpdateScriptTag
+func (mr *MockCenterServiceMockRecorder) UpdateScriptTag(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateScriptTag", reflect.TypeOf((*MockCenterService)(nil).UpdateScriptTag), arg0, arg1)
+}
+
+// UpdateTitleTag mocks base method
+func (m *MockCenterService) UpdateTitleTag(arg0 context.Context, arg1 service.TitleTagRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTitleTag", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTitleTag indicates an expected call of UpdateTitleTag
+func (mr *MockCenterServiceMockRecorder) UpdateTitleTag(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTitleTag", reflect.TypeOf((*MockCenterService)(nil).UpdateTitleTag), arg0, arg1)
 }

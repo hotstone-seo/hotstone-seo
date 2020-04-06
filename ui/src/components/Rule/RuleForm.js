@@ -15,7 +15,7 @@ function RuleForm(props) {
 
   useEffect(() => {
     form.setFieldsValue(rule);
-  }, [form, rule]);
+  }, []);
 
   return (
     <Form

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -41,7 +41,9 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if resp, err = p.ProviderService.RetrieveData(ctx, req, useCache(c)); err != nil {
+
+	pragma := cachekit.CreatePragma(c.Request())
+	if resp, err = p.ProviderService.RetrieveData(ctx, req, pragma); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.Blob(http.StatusOK, echo.MIMEApplicationJSON, resp.Data)
@@ -57,7 +59,9 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 	if err = c.Bind(&req); err != nil {
 		return
 	}
-	if tags, err = p.ProviderService.Tags(ctx, req, useCache(c)); err != nil {
+
+	pragma := cachekit.CreatePragma(c.Request())
+	if tags, err = p.ProviderService.Tags(ctx, req, pragma); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, tags)
@@ -77,16 +81,4 @@ func (p *ProviderCntrl) DumpRuleTree(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.String(http.StatusOK, strTree)
-}
-
-func useCache(c echo.Context) bool {
-	xCache := c.Request().Header.Get("X-Cache")
-	if xCache == "" {
-		return true
-	} else if xCache == "true" || xCache == "false" {
-		boolVal, _ := strconv.ParseBool(xCache)
-		return boolVal
-	}
-
-	return true
 }

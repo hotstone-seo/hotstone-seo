@@ -3,6 +3,7 @@ module github.com/hotstone-seo/hotstone-seo
 go 1.14
 
 require (
+	bou.ke/monkey v1.0.2
 	github.com/DATA-DOG/go-sqlmock v1.4.1
 	github.com/Masterminds/squirrel v1.2.0
 	github.com/alicebob/miniredis v2.5.0+incompatible

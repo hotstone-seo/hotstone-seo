@@ -7,6 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+
 	"github.com/alicebob/miniredis"
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
@@ -52,7 +54,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, false)
+		}, cachekit.NewPragma())
 		require.NoError(t, err)
 		require.Equal(t, &service.RetrieveDataResponse{
 			Data: []byte("some-data"),
@@ -63,7 +65,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, errors.New("some-error"))
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, false)
+		}, nil)
 		require.EqualError(t, err, "some-error")
 		require.Nil(t, resp)
 	})
@@ -74,7 +76,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, false)
+		}, cachekit.NewPragma())
 		require.EqualError(t, err, "Get \"non-existent\": unsupported protocol scheme \"\"")
 		require.Nil(t, resp)
 	})
@@ -83,7 +85,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, false)
+		}, cachekit.NewPragma())
 		require.EqualError(t, err, "Data-Source#99999 not found")
 		require.Nil(t, resp)
 	})
@@ -108,7 +110,7 @@ func TestProvider_Tags(t *testing.T) {
 	t.Run("WHEN can't find tag by rule and locale", func(t *testing.T) {
 		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).Return(nil, errors.New("some-error"))
 
-		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US"}, false)
+		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US"}, nil)
 		require.EqualError(t, err, "some-error")
 		require.Nil(t, tags)
 	})
@@ -168,7 +170,7 @@ func TestProvider_Tags_Success(t *testing.T) {
 		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).
 			Return([]*repository.Tag{{ID: 1, RuleID: 1, Locale: "en-US", Type: "some-type", Attributes: tt.attribute, Value: tt.value}}, nil)
 
-		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US", Data: tt.data}, false)
+		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US", Data: tt.data}, cachekit.NewPragma())
 		require.NoError(t, err, i)
 		require.EqualValues(t, []*service.InterpolatedTag{
 			{ID: 1, RuleID: 1, Locale: "en-US", Type: "some-type", Attributes: tt.expectedAttribute, Value: tt.expectedValue},

@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"time"
 
 	"github.com/go-redis/redis"
 	"github.com/imantung/mario"
@@ -20,15 +19,11 @@ import (
 	"go.uber.org/dig"
 )
 
-var (
-	DataCacheExpire time.Duration = 60 * time.Second
-)
-
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
-	RetrieveData(context.Context, RetrieveDataRequest, bool) (*RetrieveDataResponse, error)
-	Tags(context.Context, ProvideTagsRequest, bool) ([]*InterpolatedTag, error)
+	RetrieveData(context.Context, RetrieveDataRequest, *cachekit.Pragma) (*RetrieveDataResponse, error)
+	Tags(context.Context, ProvideTagsRequest, *cachekit.Pragma) ([]*InterpolatedTag, error)
 	DumpRuleTree(context.Context) (string, error)
 }
 
@@ -86,7 +81,7 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 }
 
 // RetrieveData to retrieve the data from data provider
-func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, useCache bool) (resp *RetrieveDataResponse, err error) {
+func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, pragma *cachekit.Pragma) (resp *RetrieveDataResponse, err error) {
 	var (
 		ds           *repository.DataSource
 		interpolated *InterpolatedDataSource
@@ -106,7 +101,7 @@ func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveData
 	cache := cachekit.New(interpolated.Url, callDatasoure(interpolated))
 
 	resp = new(RetrieveDataResponse)
-	if err = cache.Execute(p.Redis.WithContext(ctx), resp, cachekit.NewCacheControl()); err != nil {
+	if err = cache.Execute(p.Redis.WithContext(ctx), resp, pragma); err != nil {
 		return nil, err
 	}
 
@@ -137,7 +132,7 @@ func callDatasoure(ds *InterpolatedDataSource) cachekit.RefreshFn {
 }
 
 // Tags to return interpolated tag
-func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, useCache bool) (interpolatedTags []*InterpolatedTag, err error) {
+func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, pragma *cachekit.Pragma) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
 		tags         []*repository.Tag
 		data         = req.Data
@@ -157,12 +152,11 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 			return
 		}
 		if rule.DataSourceID != nil {
-			if dataResp, err = p.RetrieveData(
-				ctx,
+			if dataResp, err = p.RetrieveData(ctx,
 				RetrieveDataRequest{
 					DataSourceID: *rule.DataSourceID,
 					PathParam:    req.PathParam,
-				}, useCache,
+				}, pragma,
 			); err != nil {
 				return
 			}

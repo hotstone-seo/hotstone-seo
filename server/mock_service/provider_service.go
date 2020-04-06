@@ -7,6 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	cachekit "github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
@@ -65,7 +66,7 @@ func (mr *MockProviderServiceMockRecorder) MatchRule(arg0, arg1 interface{}) *go
 }
 
 // RetrieveData mocks base method
-func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 bool) (*service.RetrieveDataResponse, error) {
+func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 *cachekit.Pragma) (*service.RetrieveDataResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RetrieveData", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*service.RetrieveDataResponse)
@@ -80,7 +81,7 @@ func (mr *MockProviderServiceMockRecorder) RetrieveData(arg0, arg1, arg2 interfa
 }
 
 // Tags mocks base method
-func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTagsRequest, arg2 bool) ([]*service.InterpolatedTag, error) {
+func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTagsRequest, arg2 *cachekit.Pragma) ([]*service.InterpolatedTag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Tags", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*service.InterpolatedTag)
