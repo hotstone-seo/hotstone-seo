@@ -61,6 +61,7 @@ function TagForm({ tag, onSubmit }) {
     <>
       <Select
         data-testid="select-type"
+        defaultValue={currentType}
         onChange={(value) => setCurrentType(value)}
         showSearch
         filterOption={(input, option) => (
