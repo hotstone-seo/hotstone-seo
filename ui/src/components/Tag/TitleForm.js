@@ -10,7 +10,7 @@ function TitleForm({ tag, onSubmit }) {
   const { id, rule_id, locale, value } = tag;
 
   const onFinish = (values) => {
-    const formTag = Object.assign(values, { id, rule_id, type: 'title' });
+    const formTag = Object.assign(values, { id, rule_id });
     onSubmit(formTag);
   };
 

@@ -1,6 +1,7 @@
 package cachekit
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -20,35 +21,40 @@ const (
 
 // Pragma handle pragmatic information/directives for caching
 type Pragma struct {
-	cacheControls []string
-	defaultMaxAge time.Duration
-	expires       time.Time
-}
-
-// NewPragma return new instance of CacheControl
-func NewPragma(cacheControls ...string) *Pragma {
-	return &Pragma{
-		cacheControls: cacheControls,
-		defaultMaxAge: DefaultMaxAge,
-	}
+	noCache bool
+	maxAge  time.Duration
+	expires time.Time
 }
 
 // CreatePragma to create new instance of CacheControl from request
 func CreatePragma(req *http.Request) *Pragma {
-	var directives []string
-	raw := req.Header.Get(HeaderCacheControl)
-	if raw != "" {
+	var (
+		noCache bool
+	)
+
+	maxAge := DefaultMaxAge
+
+	if raw := req.Header.Get(HeaderCacheControl); raw != "" {
 		for _, s := range strings.Split(raw, ",") {
-			directives = append(directives, strings.TrimSpace(s))
+			s = strings.ToLower(strings.TrimSpace(s))
+			if s == "no-cache" {
+				noCache = true
+			}
+
+			maxAgeField := "max-age="
+			if strings.HasPrefix(s, maxAgeField) {
+				maxAgeRaw, err := strconv.Atoi(s[len(maxAgeField):])
+				if err != nil {
+					break
+				}
+				maxAge = time.Duration(maxAgeRaw) * time.Second
+			}
 		}
 	}
-	return NewPragma(directives...)
-}
-
-// WithDefaultMaxAge retunr CacheControl with new default max age
-func (c *Pragma) WithDefaultMaxAge(defaultMaxAge time.Duration) *Pragma {
-	c.defaultMaxAge = defaultMaxAge
-	return c
+	return &Pragma{
+		noCache: noCache,
+		maxAge:  maxAge,
+	}
 }
 
 // SetExpiresByTTL to set expires to current time to TTL
@@ -58,29 +64,12 @@ func (c *Pragma) SetExpiresByTTL(ttl time.Duration) {
 
 // NoCache return true if no cache is set
 func (c *Pragma) NoCache() bool {
-	for _, dir := range c.cacheControls {
-		if strings.ToLower(dir) == "no-cache" {
-			return true
-		}
-	}
-	return false
+	return c.noCache
 }
 
 // MaxAge return max-age cache (in seconds)
 func (c *Pragma) MaxAge() time.Duration {
-	for _, dir := range c.cacheControls {
-		dir = strings.ToLower(dir)
-		keyName := "max-age="
-		if strings.HasPrefix(dir, keyName) {
-			maxAge, err := strconv.Atoi(dir[len(keyName):])
-			if err != nil {
-				break
-			}
-			return time.Duration(maxAge) * time.Second
-		}
-	}
-
-	return c.defaultMaxAge
+	return c.maxAge
 }
 
 // ResponseHeaders return map that contain response header
@@ -92,5 +81,18 @@ func (c *Pragma) ResponseHeaders() map[string]string {
 	if !c.expires.IsZero() {
 		m[HeaderExpires] = c.expires.Format(time.RFC1123)
 	}
+
+	if cacheControls := c.respCacheControls(); len(cacheControls) > 0 {
+		m[HeaderCacheControl] = strings.Join(cacheControls, " ")
+	}
 	return m
+}
+
+func (c *Pragma) respCacheControls() (cc []string) {
+	if c.NoCache() {
+		cc = append(cc, "no-cache")
+	} else {
+		cc = append(cc, fmt.Sprintf("max-age=%d", int(c.MaxAge().Seconds())))
+	}
+	return
 }

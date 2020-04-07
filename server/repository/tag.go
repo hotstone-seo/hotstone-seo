@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -21,15 +22,10 @@ type Tag struct {
 	CreatedAt  time.Time   `json:"created_at"`
 }
 
-type TagFilter struct {
-	RuleID int64  `json:"rule_id"`
-	Locale string `json:"locale"`
-}
-
 // TagRepo to handle tags entity [mock]
 type TagRepo interface {
 	FindOne(context.Context, int64) (*Tag, error)
-	Find(context.Context, TagFilter) ([]*Tag, error)
+	Find(context.Context, ...dbkit.FindOption) ([]*Tag, error)
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Tag) error
@@ -40,12 +36,14 @@ func NewTagRepo(impl TagRepoImpl) TagRepo {
 	return &impl
 }
 
+// Validate tag
 func (tag Tag) Validate() error {
 	validate := validator.New()
 	validate.RegisterStructValidation(TagStructLevelValidation, Tag{})
 	return validate.Struct(tag)
 }
 
+// TagStructLevelValidation validate per type
 func TagStructLevelValidation(sl validator.StructLevel) {
 	tag := sl.Current().Interface().(Tag)
 	var validate func(validator.StructLevel, Tag)

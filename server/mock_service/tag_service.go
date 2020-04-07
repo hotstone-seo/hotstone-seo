@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
+	dbkit "github.com/typical-go/typical-rest-server/pkg/dbkit"
 	reflect "reflect"
 )
 
@@ -49,18 +50,23 @@ func (mr *MockTagServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Cal
 }
 
 // Find mocks base method
-func (m *MockTagService) Find(arg0 context.Context, arg1 repository.TagFilter) ([]*repository.Tag, error) {
+func (m *MockTagService) Find(arg0 context.Context, arg1 ...dbkit.FindOption) ([]*repository.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0, arg1)
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Find", varargs...)
 	ret0, _ := ret[0].([]*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find
-func (mr *MockTagServiceMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockTagServiceMockRecorder) Find(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagService)(nil).Find), arg0, arg1)
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagService)(nil).Find), varargs...)
 }
 
 // FindOne mocks base method

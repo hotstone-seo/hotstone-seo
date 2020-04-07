@@ -46,7 +46,16 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	if resp, err = p.ProviderService.RetrieveData(ctx, req, pragma); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	return c.Blob(http.StatusOK, echo.MIMEApplicationJSON, resp.Data)
+
+	header := c.Response().Header()
+	header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	for key, value := range pragma.ResponseHeaders() {
+		header.Set(key, value)
+	}
+
+	c.Response().WriteHeader(http.StatusOK)
+	_, err = c.Response().Write(resp.Data)
+	return
 }
 
 // Tags to get tag
