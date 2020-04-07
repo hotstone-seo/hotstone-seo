@@ -36,7 +36,7 @@ func ExampleCache() {
 	})
 
 	// execute cache to get the data
-	if err = cache.Execute(client, &data, cachekit.NewPragma()); err != nil {
+	if err = cache.Execute(client, &data, pragmaWithCacheControl("")); err != nil {
 		log.Fatal(err.Error())
 	}
 
@@ -61,20 +61,20 @@ func TestCache(t *testing.T) {
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return nil, errors.New("some-refresh-error")
 			})
-			require.EqualError(t, cache.Execute(client, &target, cachekit.NewPragma()), "Cache: RefreshFunc: some-refresh-error")
+			require.EqualError(t, cache.Execute(client, &target, pragmaWithCacheControl("")), "Cache: RefreshFunc: some-refresh-error")
 		})
 		t.Run("WHEN marshal failed", func(t *testing.T) {
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return make(chan int), nil
 			})
-			require.EqualError(t, cache.Execute(client, &target, cachekit.NewPragma()), "Cache: Marshal: json: unsupported type: chan int")
+			require.EqualError(t, cache.Execute(client, &target, pragmaWithCacheControl("")), "Cache: Marshal: json: unsupported type: chan int")
 		})
 		t.Run("WHEN failed to save to redis", func(t *testing.T) {
 			badClient := redis.NewClient(&redis.Options{Addr: "wrong-addr"})
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.EqualError(t, cache.Execute(badClient, &target, cachekit.NewPragma()), "Cache: Set: dial tcp: address wrong-addr: missing port in address")
+			require.EqualError(t, cache.Execute(badClient, &target, pragmaWithCacheControl("")), "Cache: Set: dial tcp: address wrong-addr: missing port in address")
 		})
 		t.Run("", func(t *testing.T) {
 			// monkey patch time.Now
@@ -86,7 +86,7 @@ func TestCache(t *testing.T) {
 				return &bean{Name: "new-name"}, nil
 			})
 
-			pragma := cachekit.NewPragma()
+			pragma := pragmaWithCacheControl("")
 			require.NoError(t, cache.Execute(client, &target, pragma))
 
 			// check target
@@ -116,7 +116,7 @@ func TestCache(t *testing.T) {
 				return &bean{Name: "new-name"}, nil
 			})
 
-			pragma := cachekit.NewPragma()
+			pragma := pragmaWithCacheControl("")
 			require.NoError(t, cache.Execute(client, &target, pragma))
 
 			// Check target
@@ -131,7 +131,7 @@ func TestCache(t *testing.T) {
 				return &bean{Name: "new-name"}, nil
 			})
 
-			require.NoError(t, cache.Execute(client, &target, cachekit.NewPragma("no-cache")))
+			require.NoError(t, cache.Execute(client, &target, pragmaWithCacheControl("no-cache")))
 
 			require.Equal(t, bean{Name: "new-name"}, target)
 

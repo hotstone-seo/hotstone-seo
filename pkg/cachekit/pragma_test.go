@@ -11,78 +11,63 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 )
 
-func TestCreatePragma(t *testing.T) {
-	testcases := []struct {
-		req      *http.Request
-		expected *cachekit.Pragma
-	}{
-		{
-			req:      &http.Request{},
-			expected: cachekit.NewPragma(),
-		},
-		{
-			req: func() *http.Request {
-				req, _ := http.NewRequest("", "", nil)
-				req.Header.Add("Cache-Control", "a, b, c")
-				return req
-			}(),
-			expected: cachekit.NewPragma("a", "b", "c"),
-		},
-	}
-
-	for _, tt := range testcases {
-		require.EqualValues(t, tt.expected, cachekit.CreatePragma(tt.req))
-	}
-}
-
 func TestPragma_NoCache(t *testing.T) {
 	testcases := []struct {
+		desc string
 		*cachekit.Pragma
 		expected bool
 	}{
 		{
-			Pragma: cachekit.NewPragma(),
+			desc:   "cache-control not available",
+			Pragma: pragmaWithCacheControl(""),
 		},
 		{
-			Pragma:   cachekit.NewPragma("no-cache"),
+			desc:     "lower case no-cache",
+			Pragma:   pragmaWithCacheControl("no-cache"),
 			expected: true,
 		},
 		{
-			Pragma:   cachekit.NewPragma("No-Cache"),
+			desc:     "upper case no-cache",
+			Pragma:   pragmaWithCacheControl("NO-CACHE"),
 			expected: true,
 		},
 	}
 
 	for _, tt := range testcases {
-		require.Equal(t, tt.expected, tt.NoCache())
+		require.Equal(t, tt.expected, tt.NoCache(), tt.desc)
 	}
 }
 
 func TestPragma_MaxAge(t *testing.T) {
 	testcases := []struct {
+		desc string
 		*cachekit.Pragma
 		expected time.Duration
 	}{
 		{
-			Pragma:   cachekit.NewPragma(),
+			desc:     "empty cache control",
+			Pragma:   pragmaWithCacheControl(""),
 			expected: cachekit.DefaultMaxAge,
 		},
 		{
-			Pragma:   cachekit.NewPragma().WithDefaultMaxAge(1),
-			expected: 1,
+			desc:     "empty cache control with new default max-age",
+			Pragma:   pragmaWithCacheControl(""),
+			expected: cachekit.DefaultMaxAge,
 		},
 		{
-			Pragma:   cachekit.NewPragma("max-age=100").WithDefaultMaxAge(1),
+			desc:     "max-age in cache control",
+			Pragma:   pragmaWithCacheControl("max-age=100"),
 			expected: 100 * time.Second,
 		},
 		{
-			Pragma:   cachekit.NewPragma("max-age=invalid"),
+			desc:     "max-age is invalid type",
+			Pragma:   pragmaWithCacheControl("max-age=invalid"),
 			expected: cachekit.DefaultMaxAge,
 		},
 	}
 
 	for _, tt := range testcases {
-		require.Equal(t, tt.expected, tt.MaxAge())
+		require.Equal(t, tt.expected, tt.MaxAge(), tt.desc)
 	}
 }
 
@@ -91,8 +76,49 @@ func TestPragma_SetExpiresByTTL(t *testing.T) {
 		return time.Date(2017, time.February, 16, 0, 0, 0, 0, time.UTC)
 	}).Unpatch()
 
-	pragma := cachekit.NewPragma()
+	pragma := pragmaWithCacheControl("")
 	pragma.SetExpiresByTTL(30 * time.Second)
 
 	require.Equal(t, "Thu, 16 Feb 2017 00:00:30 UTC", pragma.ResponseHeaders()[cachekit.HeaderExpires])
+}
+
+func TestPragma_ResponseHeaders(t *testing.T) {
+	testcases := []struct {
+		desc string
+		*cachekit.Pragma
+		expected map[string]string
+	}{
+		{
+			desc:   "empty cache-control",
+			Pragma: pragmaWithCacheControl(""),
+			expected: map[string]string{
+				"Cache-Control": "max-age=30",
+			},
+		},
+		{
+			desc:   "no-cache",
+			Pragma: pragmaWithCacheControl("no-cache"),
+			expected: map[string]string{
+				"Cache-Control": "no-cache",
+			},
+		},
+		{
+			desc:   "initial max-age",
+			Pragma: pragmaWithCacheControl("max-age=3000"),
+			expected: map[string]string{
+				"Cache-Control": "max-age=3000",
+			},
+		},
+	}
+
+	for _, tt := range testcases {
+		require.Equal(t, tt.expected, tt.ResponseHeaders(), tt.desc)
+	}
+
+}
+
+func pragmaWithCacheControl(cacheControl string) *cachekit.Pragma {
+	req, _ := http.NewRequest("GET", "/", nil)
+	req.Header.Set(cachekit.HeaderCacheControl, cacheControl)
+	return cachekit.CreatePragma(req)
 }
