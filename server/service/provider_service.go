@@ -8,10 +8,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/go-redis/redis"
 	"github.com/imantung/mario"
 	log "github.com/sirupsen/logrus"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"github.com/typical-go/typical-rest-server/pkg/dbtype"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
@@ -141,7 +143,11 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 		interpolated *InterpolatedTag
 	)
 
-	if tags, err = p.TagRepo.Find(ctx, repository.TagFilter{RuleID: req.RuleID, Locale: req.Locale}); err != nil {
+	if tags, err = p.TagRepo.Find(ctx,
+		dbkit.Equal("rule_id", strconv.FormatInt(req.RuleID, 10)),
+		dbkit.Equal("locale", req.Locale),
+	); err != nil {
+		err = fmt.Errorf("Provider: Tags: Find: %s", err.Error())
 		return
 	}
 
@@ -149,6 +155,10 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 		// NOTE: We can omit another call to the repository here by including the whole rule object in
 		// ProvideTagsRequest. Will be done later since the change impact is not local.
 		if rule, err = p.RuleRepo.FindOne(ctx, req.RuleID); err != nil {
+			return
+		}
+		if rule == nil {
+			err = fmt.Errorf("Rule#%d not found", req.RuleID)
 			return
 		}
 		if rule.DataSourceID != nil {

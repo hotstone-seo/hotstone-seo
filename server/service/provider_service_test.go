@@ -54,7 +54,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, cachekit.NewPragma())
+		}, &cachekit.Pragma{})
 		require.NoError(t, err)
 		require.Equal(t, &service.RetrieveDataResponse{
 			Data: []byte("some-data"),
@@ -76,8 +76,8 @@ func TestProvider_RetrieveData(t *testing.T) {
 		}, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, cachekit.NewPragma())
-		require.EqualError(t, err, "Get \"non-existent\": unsupported protocol scheme \"\"")
+		}, &cachekit.Pragma{})
+		require.EqualError(t, err, "Cache: RefreshFunc: Get \"non-existent\": unsupported protocol scheme \"\"")
 		require.Nil(t, resp)
 	})
 
@@ -85,7 +85,7 @@ func TestProvider_RetrieveData(t *testing.T) {
 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, nil)
 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
 			DataSourceID: 99999,
-		}, cachekit.NewPragma())
+		}, &cachekit.Pragma{})
 		require.EqualError(t, err, "Data-Source#99999 not found")
 		require.Nil(t, resp)
 	})
@@ -94,24 +94,22 @@ func TestProvider_RetrieveData(t *testing.T) {
 func TestProvider_Tags(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	var (
-		tagRepo        = mock_repository.NewMockTagRepo(ctrl)
-		ruleRepo       = mock_repository.NewMockRuleRepo(ctrl)
-		dataSourceRepo = mock_repository.NewMockDataSourceRepo(ctrl)
 
-		svc = service.ProviderServiceImpl{
-			TagRepo:        tagRepo,
-			RuleRepo:       ruleRepo,
-			DataSourceRepo: dataSourceRepo,
-		}
+	tagRepo := mock_repository.NewMockTagRepo(ctrl)
+	ruleRepo := mock_repository.NewMockRuleRepo(ctrl)
+	dataSourceRepo := mock_repository.NewMockDataSourceRepo(ctrl)
+	svc := service.ProviderServiceImpl{
+		TagRepo:        tagRepo,
+		RuleRepo:       ruleRepo,
+		DataSourceRepo: dataSourceRepo,
+	}
+	ctx := context.Background()
 
-		ctx = context.Background()
-	)
 	t.Run("WHEN can't find tag by rule and locale", func(t *testing.T) {
-		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).Return(nil, errors.New("some-error"))
+		tagRepo.EXPECT().Find(ctx, gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
 
 		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US"}, nil)
-		require.EqualError(t, err, "some-error")
+		require.EqualError(t, err, "Provider: Tags: Find: some-error")
 		require.Nil(t, tags)
 	})
 }
@@ -154,23 +152,23 @@ func TestProvider_Tags_Success(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	var (
-		tagRepo        = mock_repository.NewMockTagRepo(ctrl)
-		ruleRepo       = mock_repository.NewMockRuleRepo(ctrl)
-		dataSourceRepo = mock_repository.NewMockDataSourceRepo(ctrl)
 
-		svc = service.ProviderServiceImpl{
-			TagRepo:        tagRepo,
-			RuleRepo:       ruleRepo,
-			DataSourceRepo: dataSourceRepo,
-		}
-	)
+	tagRepo := mock_repository.NewMockTagRepo(ctrl)
+	ruleRepo := mock_repository.NewMockRuleRepo(ctrl)
+	dataSourceRepo := mock_repository.NewMockDataSourceRepo(ctrl)
+
+	svc := service.ProviderServiceImpl{
+		TagRepo:        tagRepo,
+		RuleRepo:       ruleRepo,
+		DataSourceRepo: dataSourceRepo,
+	}
+
 	for i, tt := range testcases {
 		ctx := context.Background()
-		tagRepo.EXPECT().Find(ctx, repository.TagFilter{RuleID: int64(999), Locale: "en-US"}).
+		tagRepo.EXPECT().Find(ctx, gomock.Any(), gomock.Any()).
 			Return([]*repository.Tag{{ID: 1, RuleID: 1, Locale: "en-US", Type: "some-type", Attributes: tt.attribute, Value: tt.value}}, nil)
 
-		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US", Data: tt.data}, cachekit.NewPragma())
+		tags, err := svc.Tags(ctx, service.ProvideTagsRequest{RuleID: 999, Locale: "en-US", Data: tt.data}, &cachekit.Pragma{})
 		require.NoError(t, err, i)
 		require.EqualValues(t, []*service.InterpolatedTag{
 			{ID: 1, RuleID: 1, Locale: "en-US", Type: "some-type", Attributes: tt.expectedAttribute, Value: tt.expectedValue},

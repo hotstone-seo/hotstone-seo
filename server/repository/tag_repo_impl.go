@@ -40,22 +40,25 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 }
 
 // Find tags
-func (r *TagRepoImpl) Find(ctx context.Context, filter TagFilter) (list []*Tag, err error) {
+func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "rule_id", "locale", "type", "attributes", "value", "updated_at", "created_at").
-		From("tags")
-	if filter.RuleID > -1 {
-		builder = builder.Where(sq.Eq{"rule_id": filter.RuleID})
+		From("tags").
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbkit.TxCtx(ctx, r))
+
+	for _, opt := range opts {
+		if builder, err = opt.CompileQuery(builder); err != nil {
+			return
+		}
 	}
-	if filter.Locale != "" {
-		builder = builder.Where(sq.Eq{"locale": filter.Locale})
-	}
-	builder = builder.PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
 	defer rows.Close()
+
 	list = make([]*Tag, 0)
 	for rows.Next() {
 		var e Tag

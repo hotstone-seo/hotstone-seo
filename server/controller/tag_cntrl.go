@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
@@ -47,24 +49,32 @@ func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 }
 
 // Find all tag
-func (c *TagCntrl) Find(ctx echo.Context) (err error) {
+func (c *TagCntrl) Find(ce echo.Context) (err error) {
 	var (
-		tags   []*repository.Tag
-		filter repository.TagFilter
+		tags []*repository.Tag
+		opts []dbkit.FindOption
+		ctx  = ce.Request().Context()
 	)
-	ctx0 := ctx.Request().Context()
-	if ruleParam := ctx.QueryParam("rule_id"); ruleParam != "" {
-		var ruleID int64
-		if ruleID, err = strconv.ParseInt(ruleParam, 10, 64); err != nil {
+
+	if ruleID := ce.QueryParam("rule_id"); ruleID != "" {
+		if _, err := strconv.Atoi(ruleID); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid Rule ID")
 		}
-		filter.RuleID = ruleID
+		opts = append(opts, dbkit.Equal("rule_id", ruleID))
+	} else {
+		// TODO: return validation error
 	}
-	filter.Locale = ctx.QueryParam("locale")
-	if tags, err = c.TagService.Find(ctx0, filter); err != nil {
+
+	if locale := ce.QueryParam("locale"); locale != "" {
+		opts = append(opts, dbkit.Equal("locale", locale))
+	} else {
+		// TODO: return validation error
+	}
+
+	if tags, err = c.TagService.Find(ctx, opts...); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, tags)
+	return ce.JSON(http.StatusOK, tags)
 }
 
 // FindOne tag
