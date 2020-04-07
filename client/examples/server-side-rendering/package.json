@@ -5,7 +5,7 @@
   "description": "Sample usage of hotstone-client on SSR application",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -w & nodemon server",
+    "start": "npx webpack -w & npx nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -31,8 +31,8 @@
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.6",
     "nodemon": "^2.0.2",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^1.7.2"
   }
