@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"bou.ke/monkey"
 	"github.com/alicebob/miniredis"
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
@@ -47,6 +48,8 @@ func ExampleCache() {
 }
 
 func TestCache(t *testing.T) {
+	var target bean
+
 	testRedis, err := miniredis.Run()
 	require.NoError(t, err)
 	defer testRedis.Close()
@@ -55,56 +58,83 @@ func TestCache(t *testing.T) {
 
 	t.Run("GIVEN cache not available", func(t *testing.T) {
 		t.Run("WHEN refresh failed", func(t *testing.T) {
-			var b bean
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return nil, errors.New("some-refresh-error")
 			})
-			require.EqualError(t, cache.Execute(client, &b, cachekit.NewPragma()), "some-refresh-error")
+			require.EqualError(t, cache.Execute(client, &target, cachekit.NewPragma()), "Cache: RefreshFunc: some-refresh-error")
 		})
 		t.Run("WHEN marshal failed", func(t *testing.T) {
-			var b bean
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return make(chan int), nil
 			})
-			require.EqualError(t, cache.Execute(client, &b, cachekit.NewPragma()), "json: unsupported type: chan int")
+			require.EqualError(t, cache.Execute(client, &target, cachekit.NewPragma()), "Cache: Marshal: json: unsupported type: chan int")
 		})
 		t.Run("WHEN failed to save to redis", func(t *testing.T) {
-			var b bean
 			badClient := redis.NewClient(&redis.Options{Addr: "wrong-addr"})
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.EqualError(t, cache.Execute(badClient, &b, cachekit.NewPragma()), "dial tcp: address wrong-addr: missing port in address")
+			require.EqualError(t, cache.Execute(badClient, &target, cachekit.NewPragma()), "Cache: Set: dial tcp: address wrong-addr: missing port in address")
 		})
 		t.Run("", func(t *testing.T) {
-			var b bean
+			// monkey patch time.Now
+			defer monkey.Patch(time.Now, func() time.Time {
+				return time.Date(2017, time.February, 16, 0, 0, 0, 0, time.UTC)
+			}).Unpatch()
+
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.NoError(t, cache.Execute(client, &b, cachekit.NewPragma()))
-			require.Equal(t, bean{Name: "new-name"}, b)
+
+			pragma := cachekit.NewPragma()
+			require.NoError(t, cache.Execute(client, &target, pragma))
+
+			// check target
+			require.Equal(t, bean{Name: "new-name"}, target)
+
+			// check data in redis
 			require.Equal(t, `{"Name":"new-name"}`, client.Get("key").Val())
 			require.Equal(t, 30*time.Second, client.TTL("key").Val())
+
+			// check pragma
+			require.Equal(t, "Thu, 16 Feb 2017 00:00:30 UTC", pragma.ResponseHeaders()[cachekit.HeaderExpires])
 		})
 	})
+
 	t.Run("GIVEN cache available", func(t *testing.T) {
 		t.Run("", func(t *testing.T) {
+			// monkey patching time.Now
+			defer monkey.Patch(time.Now, func() time.Time {
+				return time.Date(2017, time.February, 16, 0, 0, 0, 0, time.UTC)
+			}).Unpatch()
+
+			// set cache n redis
 			testRedis.Set("key", `{"name":"cached"}`)
-			var b bean
+			testRedis.SetTTL("key", 10*time.Second)
+
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.NoError(t, cache.Execute(client, &b, cachekit.NewPragma()))
-			require.Equal(t, bean{Name: "cached"}, b)
+
+			pragma := cachekit.NewPragma()
+			require.NoError(t, cache.Execute(client, &target, pragma))
+
+			// Check target
+			require.Equal(t, bean{Name: "cached"}, target)
+
+			// check pragma
+			require.Equal(t, "Thu, 16 Feb 2017 00:00:10 UTC", pragma.ResponseHeaders()[cachekit.HeaderExpires])
 		})
 		t.Run("WHEN cache-control: no-cache", func(t *testing.T) {
 			testRedis.Set("key", `{"name":"cached"}`)
-			var b bean
 			cache := cachekit.New("key", func() (interface{}, error) {
 				return &bean{Name: "new-name"}, nil
 			})
-			require.NoError(t, cache.Execute(client, &b, cachekit.NewPragma("no-cache")))
-			require.Equal(t, bean{Name: "new-name"}, b)
+
+			require.NoError(t, cache.Execute(client, &target, cachekit.NewPragma("no-cache")))
+
+			require.Equal(t, bean{Name: "new-name"}, target)
+
 			require.Equal(t, `{"Name":"new-name"}`, client.Get("key").Val())
 			require.Equal(t, 30*time.Second, client.TTL("key").Val())
 		})
