@@ -12,18 +12,22 @@ const (
 	// DefaultMaxAge is default max-age value
 	DefaultMaxAge = 30 * time.Second
 
-	// HeaderCacheControl is http header that holds directives (instructions) for caching in both requests and responses. A
+	// HeaderCacheControl as in https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
 	HeaderCacheControl = "Cache-Control"
 
-	// HeaderExpires is http header that contains the date and time which denotes the period where the object can stay alive.
+	// HeaderExpires as in https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Expires
 	HeaderExpires = "Expires"
+
+	// HeaderLastModified as in https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified
+	HeaderLastModified = "Last-Modified"
 )
 
 // Pragma handle pragmatic information/directives for caching
 type Pragma struct {
-	noCache bool
-	maxAge  time.Duration
-	expires time.Time
+	lastModified time.Time
+	noCache      bool
+	maxAge       time.Duration
+	expires      time.Time
 }
 
 // CreatePragma to create new instance of CacheControl from request
@@ -62,6 +66,11 @@ func (c *Pragma) SetExpiresByTTL(ttl time.Duration) {
 	c.expires = time.Now().Add(ttl)
 }
 
+// SetLastModified to set last-modified
+func (c *Pragma) SetLastModified(lastModified time.Time) {
+	c.lastModified = lastModified
+}
+
 // NoCache return true if no cache is set
 func (c *Pragma) NoCache() bool {
 	return c.noCache
@@ -80,6 +89,10 @@ func (c *Pragma) ResponseHeaders() map[string]string {
 
 	if !c.expires.IsZero() {
 		m[HeaderExpires] = c.expires.Format(time.RFC1123)
+	}
+
+	if !c.lastModified.IsZero() {
+		m[HeaderLastModified] = c.lastModified.Format(time.RFC1123)
 	}
 
 	if cacheControls := c.respCacheControls(); len(cacheControls) > 0 {
