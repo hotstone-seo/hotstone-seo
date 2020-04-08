@@ -122,3 +122,9 @@ func pragmaWithCacheControl(cacheControl string) *cachekit.Pragma {
 	req.Header.Set(cachekit.HeaderCacheControl, cacheControl)
 	return cachekit.CreatePragma(req)
 }
+
+func pragmaWithIfModifiedSince(ifModifiedSince string) *cachekit.Pragma {
+	req, _ := http.NewRequest("GET", "/", nil)
+	req.Header.Set(cachekit.HeaderIfModifiedSince, ifModifiedSince)
+	return cachekit.CreatePragma(req)
+}

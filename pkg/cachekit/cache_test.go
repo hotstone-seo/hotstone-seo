@@ -119,7 +119,7 @@ func TestCache_CacheAvailable(t *testing.T) {
 
 		// set cache n redis
 		testRedis.Set("key", `{"name":"cached"}`)
-		testRedis.Set("key:time", "Thu, 16 Feb 2017 00:00:00 UTC")
+		testRedis.Set("key:time", "Wed, 15 Feb 2017 23:55:00 UTC")
 		testRedis.SetTTL("key", 10*time.Second)
 
 		cache := cachekit.New("key", func() (interface{}, error) {
@@ -134,7 +134,7 @@ func TestCache_CacheAvailable(t *testing.T) {
 
 		// check pragma
 		require.Equal(t, "Thu, 16 Feb 2017 00:00:10 UTC", pragma.ResponseHeaders()[cachekit.HeaderExpires])
-		require.Equal(t, "Thu, 16 Feb 2017 00:00:00 UTC", pragma.ResponseHeaders()[cachekit.HeaderLastModified])
+		require.Equal(t, "Wed, 15 Feb 2017 23:55:00 UTC", pragma.ResponseHeaders()[cachekit.HeaderLastModified])
 	})
 	t.Run("WHEN cache-control: no-cache", func(t *testing.T) {
 		testRedis.Set("key", `{"name":"cached"}`)
@@ -143,12 +143,53 @@ func TestCache_CacheAvailable(t *testing.T) {
 		})
 
 		require.NoError(t, cache.Execute(client, &target, pragmaWithCacheControl("no-cache")))
-
 		require.Equal(t, bean{Name: "new-name"}, target)
 
 		require.Equal(t, `{"Name":"new-name"}`, client.Get("key").Val())
 		require.Equal(t, 30*time.Second, client.TTL("key").Val())
 	})
+}
+
+func TestCache_IfModifiedSince(t *testing.T) {
+
+	testRedis, err := miniredis.Run()
+	require.NoError(t, err)
+	defer testRedis.Close()
+
+	var target bean
+	client := redis.NewClient(&redis.Options{Addr: testRedis.Addr()})
+
+	testcases := []struct {
+		lastModified       string
+		ifModifiedSince    string
+		expectedNoModified bool
+	}{
+		{
+			lastModified:       "Wed, 15 Feb 2017 23:55:00 UTC",
+			ifModifiedSince:    "Wed, 15 Feb 2017 23:58:00 UTC",
+			expectedNoModified: true,
+		},
+		{
+			lastModified:       "Wed, 15 Feb 2017 23:55:00 UTC",
+			ifModifiedSince:    "Wed, 15 Feb 2017 23:50:00 UTC",
+			expectedNoModified: false,
+		},
+	}
+
+	for _, tt := range testcases {
+		// set cache n redis
+		testRedis.Set("key", `{"name":"cached"}`)
+		testRedis.Set("key:time", tt.lastModified)
+		testRedis.SetTTL("key", 10*time.Second)
+
+		cache := cachekit.New("key", func() (interface{}, error) {
+			return &bean{Name: "new-name"}, nil
+		})
+
+		err := cache.Execute(client, &target, pragmaWithIfModifiedSince(tt.ifModifiedSince))
+		require.Equal(t, tt.expectedNoModified, cachekit.NoModifiedError(err))
+	}
+
 }
 
 type bean struct {

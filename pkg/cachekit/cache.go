@@ -2,11 +2,17 @@ package cachekit
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/copier"
+)
+
+var (
+	// ErrNoModified happen when conditional request apply
+	ErrNoModified = errors.New("Cache: not modified")
 )
 
 // Cache data
@@ -31,11 +37,19 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma
 	var (
 		v            interface{}
 		modifiedTime time.Time
+		ttl          time.Duration
 	)
 
-	ttl, err := client.TTL(c.key).Result()
-	if err != nil || ttl < 0 || pragma.NoCache() {
+	if modifiedTime, err = c.getModifiedTime(client); err != nil {
+		return fmt.Errorf("Cache: %w", err)
+	}
 
+	if ifModifiedTime := pragma.IfModifiedSince(); !ifModifiedTime.IsZero() && ifModifiedTime.After(modifiedTime) {
+		err = ErrNoModified
+		return
+	}
+
+	if modifiedTime.IsZero() || pragma.NoCache() {
 		if v, err = c.refreshFn(); err != nil {
 			return fmt.Errorf("Cache: RefreshFunc: %w", err)
 		}
@@ -46,27 +60,23 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma
 			return fmt.Errorf("Cache: %w", err)
 		}
 
-		pragma.SetExpiresByTTL(ttl)
-
 		modifiedTime = time.Now()
 		if err = c.setModifiedTime(client, modifiedTime, ttl); err != nil {
 			return fmt.Errorf("Cache: %w", err)
 		}
+
 		pragma.SetLastModified(modifiedTime)
+		pragma.SetExpiresByTTL(ttl)
 
 		return copier.Copy(target, v)
 	}
 
+	if ttl, err = c.getData(client, target); err != nil {
+		return fmt.Errorf("Cache: %w", err)
+	}
+
 	pragma.SetExpiresByTTL(ttl)
-
-	if modifiedTime, err = c.getModifiedTime(client); err != nil {
-		return fmt.Errorf("Cache: %w", err)
-	}
 	pragma.SetLastModified(modifiedTime)
-
-	if err = c.getData(client, target); err != nil {
-		return fmt.Errorf("Cache: %w", err)
-	}
 
 	return
 }
@@ -83,21 +93,29 @@ func (c *Cache) setData(client *redis.Client, v interface{}, ttl time.Duration) 
 	return
 }
 
-func (c *Cache) getData(client *redis.Client, target interface{}) (err error) {
+func (c *Cache) getData(client *redis.Client, target interface{}) (ttl time.Duration, err error) {
 	var data []byte
+
+	if ttl, err = client.TTL(c.key).Result(); err != nil {
+		err = fmt.Errorf("TTL: %w", err)
+		return
+	}
+
 	if data, err = client.Get(c.key).Bytes(); err != nil {
-		return fmt.Errorf("Get: %w", err)
+		err = fmt.Errorf("Get: %w", err)
+		return
 	}
 
 	if err = json.Unmarshal(data, target); err != nil {
-		return fmt.Errorf("Unmarsal: %w", err)
+		err = fmt.Errorf("Unmarsal: %w", err)
+		return
 	}
 
 	return
 }
 
 func (c *Cache) setModifiedTime(client *redis.Client, t time.Time, ttl time.Duration) (err error) {
-	if err = client.Set(c.key+":time", t.Format(time.RFC1123), ttl).Err(); err != nil {
+	if err = client.Set(c.modifiedTimeKey(), t.Format(time.RFC1123), ttl).Err(); err != nil {
 		return fmt.Errorf("SetModifiedTime: %w", err)
 	}
 	return
@@ -108,8 +126,7 @@ func (c *Cache) getModifiedTime(client *redis.Client) (modified time.Time, err e
 		raw string
 	)
 
-	if raw, err = client.Get(c.key + ":time").Result(); err != nil {
-		err = fmt.Errorf("GetModifiedTime: %w", err)
+	if raw = client.Get(c.modifiedTimeKey()).Val(); raw == "" {
 		return
 	}
 
@@ -119,4 +136,8 @@ func (c *Cache) getModifiedTime(client *redis.Client) (modified time.Time, err e
 	}
 
 	return
+}
+
+func (c *Cache) modifiedTimeKey() string {
+	return c.key + ":time"
 }

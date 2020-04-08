@@ -20,23 +20,31 @@ const (
 
 	// HeaderLastModified as in https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified
 	HeaderLastModified = "Last-Modified"
+
+	// HeaderIfModifiedSince as in https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since
+	HeaderIfModifiedSince = "If-Modified-Since"
 )
 
 // Pragma handle pragmatic information/directives for caching
 type Pragma struct {
-	lastModified time.Time
-	noCache      bool
-	maxAge       time.Duration
-	expires      time.Time
+	ifModifiedSince time.Time
+	lastModified    time.Time
+	noCache         bool
+	maxAge          time.Duration
+	expires         time.Time
 }
 
 // CreatePragma to create new instance of CacheControl from request
 func CreatePragma(req *http.Request) *Pragma {
 	var (
-		noCache bool
+		noCache         bool
+		ifModifiedSince time.Time
 	)
-
 	maxAge := DefaultMaxAge
+
+	if raw := req.Header.Get(HeaderIfModifiedSince); raw != "" {
+		ifModifiedSince, _ = time.Parse(time.RFC1123, raw)
+	}
 
 	if raw := req.Header.Get(HeaderCacheControl); raw != "" {
 		for _, s := range strings.Split(raw, ",") {
@@ -56,8 +64,9 @@ func CreatePragma(req *http.Request) *Pragma {
 		}
 	}
 	return &Pragma{
-		noCache: noCache,
-		maxAge:  maxAge,
+		ifModifiedSince: ifModifiedSince,
+		noCache:         noCache,
+		maxAge:          maxAge,
 	}
 }
 
@@ -79,6 +88,11 @@ func (c *Pragma) NoCache() bool {
 // MaxAge return max-age cache (in seconds)
 func (c *Pragma) MaxAge() time.Duration {
 	return c.maxAge
+}
+
+// IfModifiedSince return if-modified-since value
+func (c *Pragma) IfModifiedSince() time.Time {
+	return c.ifModifiedSince
 }
 
 // ResponseHeaders return map that contain response header
