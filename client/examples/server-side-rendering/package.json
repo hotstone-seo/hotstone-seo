@@ -5,8 +5,9 @@
   "description": "Sample usage of hotstone-client on SSR application",
   "main": "index.js",
   "scripts": {
-    "start": "npx webpack -w & npx nodemon server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx webpack -w & PORT=4000 npx nodemon server",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "json-server": "npx json-server --port 5000 --watch json-server/data.json"
   },
   "keywords": [],
   "author": "Hawari Rahman <hawari.rahman17@gmail.com",
@@ -30,6 +31,7 @@
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.6",
+    "json-server": "^0.16.1",
     "nodemon": "^2.0.2",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
