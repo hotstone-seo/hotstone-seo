@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-function TagMock({ tag }) {
+function TagPreview({ tag }) {
   const { type, attributes, value } = tag;
   return (
     <pre>
@@ -13,7 +13,7 @@ function TagMock({ tag }) {
   );
 }
 
-TagMock.propTypes = {
+TagPreview.propTypes = {
   tag: PropTypes.shape({
     type: PropTypes.string.isRequired,
     attributes: PropTypes.object,
@@ -21,4 +21,4 @@ TagMock.propTypes = {
   }).isRequired,
 };
 
-export default TagMock;
+export default TagPreview;
