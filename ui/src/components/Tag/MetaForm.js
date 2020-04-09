@@ -1,66 +1,85 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Select, Button } from 'antd';
+import {
+  Form, Input, Select, Button,
+} from 'antd';
 import locales from 'locales';
+import TagPreview from './TagPreview';
 
 const { Option } = Select;
 
 function MetaForm({ tag, onSubmit }) {
   const [form] = Form.useForm();
-  const { id, rule_id, locale, attributes = {} } = tag;
-  const { name, content } = attributes;
+  const [tagPreview, setTagPreview] = useState({ ...tag, type: 'meta' });
+  const {
+    id, rule_id, locale, attributes = {},
+  } = tag;
 
   const onFinish = (values) => {
-    const formTag = Object.assign(values, { id, rule_id });
+    const formTag = { ...values, id, rule_id };
     onSubmit(formTag);
   };
 
-  form.setFieldsValue({ locale, name, content });
+  const updateTagPreview = ({ name, content }) => {
+    const { attributes: attrs } = tagPreview;
+    if (name) {
+      attrs.name = name;
+    }
+    if (content) {
+      attrs.content = content;
+    }
+    setTagPreview({ ...tagPreview, attributes: attrs });
+  };
 
   return (
-    <Form
-      form={form}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 14 }}
-      onFinish={onFinish}
-    >
-      <Form.Item
-        label="Locale"
-        name="locale"
-        rules={[{ required: true, message: 'Please set a locale for the tag' }]}
+    <>
+      <Form
+        form={form}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 14 }}
+        initialValues={{ locale, name: attributes.name, content: attributes.content }}
+        onFinish={onFinish}
+        onValuesChange={updateTagPreview}
       >
-        <Select
-          data-testid="select-locale"
-          showSearch
-          filterOption={(input, option) => (
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          )}
+        <Form.Item
+          label="Locale"
+          name="locale"
+          rules={[{ required: true, message: 'Please set a locale for the tag' }]}
         >
-          {locales.map((loc) => (
-            <Option key={loc} value={loc}>{loc}</Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: 'Must provide meta name' }]}
-      >
-        <Input data-testid="input-name" />
-      </Form.Item>
-      <Form.Item
-        label="Content"
-        name="content"
-        rules={[{ required: true, message: 'Must provide meta content' }]}
-      >
-        <Input data-testid="input-content" />
-      </Form.Item>
-      <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
-        <Button data-testid="btn-save" type="primary" htmlType="submit">
-          Save
-        </Button>
-      </Form.Item>
-    </Form>
+          <Select
+            data-testid="select-locale"
+            showSearch
+            filterOption={(input, option) => (
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            )}
+          >
+            {locales.map((loc) => (
+              <Option key={loc} value={loc}>{loc}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: 'Must provide meta name' }]}
+        >
+          <Input data-testid="input-name" />
+        </Form.Item>
+        <Form.Item
+          label="Content"
+          name="content"
+          rules={[{ required: true, message: 'Must provide meta content' }]}
+        >
+          <Input data-testid="input-content" />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
+          <Button data-testid="btn-save" type="primary" htmlType="submit">
+            Save
+          </Button>
+        </Form.Item>
+      </Form>
+      <TagPreview tag={tagPreview} />
+    </>
   );
 }
 
