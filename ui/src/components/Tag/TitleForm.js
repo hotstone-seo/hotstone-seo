@@ -10,13 +10,13 @@ const { Option } = Select;
 
 function TitleForm({ tag, onSubmit }) {
   const [form] = Form.useForm();
-  const [tagPreview, setTagPreview] = useState(Object.assign(tag, { type: 'title' }));
+  const [tagPreview, setTagPreview] = useState({ ...tag, type: 'title' });
   const {
     id, rule_id, locale, value,
   } = tag;
 
   const onFinish = (values) => {
-    const formTag = Object.assign(values, { id, rule_id });
+    const formTag = { ...values, id, rule_id };
     onSubmit(formTag);
   };
 
