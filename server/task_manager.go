@@ -21,6 +21,11 @@ type taskManager struct {
 func startTaskManager(m taskManager) (err error) {
 	c := cron.New()
 
+	if err = m.URLService.Sync(context.Background()); err != nil {
+		log.Fatal(err.Error())
+		return
+	}
+
 	if _, err = c.AddFunc("* * * * *", func() {
 		if err := m.URLService.Sync(context.Background()); err != nil {
 			log.Fatal(err.Error())
