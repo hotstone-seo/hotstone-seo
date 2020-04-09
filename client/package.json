@@ -5,7 +5,7 @@
   "main": "./lib/hotstone-client.js",
   "scripts": {
     "build": "rm -rf lib && npx webpack --mode=production --config webpack.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -29,8 +29,13 @@
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.8.3",
     "babel-loader": "^8.0.6",
+    "jest": "^25.3.0",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2"
+  },
+  "jest": {
+    "verbose": true,
+    "roots": ["tests/"]
   }
 }
