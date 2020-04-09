@@ -8,7 +8,7 @@ function TagPreview({ tag }) {
     return null;
   }
   return (
-    <pre>
+    <pre data-testid="text-preview-tag">
       {renderToStaticMarkup(
         React.createElement(type, attributes, value === '' ? null : value),
       )}
