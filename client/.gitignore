@@ -9,6 +9,9 @@ node_modules/
 # Compiled source files
 lib/
 
+# Final build (npm pack)
+hotstone-client-*.tgz
+
 # Package lock
 # package-lock.json
 
