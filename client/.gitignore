@@ -10,7 +10,7 @@ node_modules/
 lib/
 
 # Package lock
-package-lock.json
+# package-lock.json
 
 # MacOS specific
 .DS_Store
