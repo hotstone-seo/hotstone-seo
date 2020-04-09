@@ -64,6 +64,7 @@ function TagForm({ tag, onSubmit, onCancel }) {
         onBack={onCancel}
         extra={[
           <Select
+            key="selectType"
             defaultValue={currentType}
             placeholder="Select a type"
             onChange={(value) => setCurrentType(value)}
