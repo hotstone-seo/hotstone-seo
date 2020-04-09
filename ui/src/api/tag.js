@@ -117,7 +117,7 @@ const TagAPI = {
   delete: deleteTag,
   addMeta: addMetaTag,
   updateMeta: updateMetaTag,
-  addTitie: addTitleTag,
+  addTitle: addTitleTag,
   updateTitle: updateTitleTag,
   addCanonical: addCanonicalTag,
   updateCanonical: updateCanonicalTag,
