@@ -166,12 +166,12 @@ func TestCache_IfModifiedSince(t *testing.T) {
 	}{
 		{
 			lastModified:       "Wed, 15 Feb 2017 23:55:00 UTC",
-			ifModifiedSince:    "Wed, 15 Feb 2017 23:58:00 UTC",
+			ifModifiedSince:    "Wed, 15 Feb 2017 23:50:00 UTC",
 			expectedNoModified: true,
 		},
 		{
 			lastModified:       "Wed, 15 Feb 2017 23:55:00 UTC",
-			ifModifiedSince:    "Wed, 15 Feb 2017 23:50:00 UTC",
+			ifModifiedSince:    "Wed, 15 Feb 2017 23:58:00 UTC",
 			expectedNoModified: false,
 		},
 	}
@@ -187,7 +187,7 @@ func TestCache_IfModifiedSince(t *testing.T) {
 		})
 
 		err := cache.Execute(client, &target, pragmaWithIfModifiedSince(tt.ifModifiedSince))
-		require.Equal(t, tt.expectedNoModified, cachekit.NoModifiedError(err))
+		require.Equal(t, tt.expectedNoModified, cachekit.NotModifiedError(err))
 	}
 
 }

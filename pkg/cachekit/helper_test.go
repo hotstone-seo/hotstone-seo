@@ -17,12 +17,12 @@ func TestNotModifiedError(t *testing.T) {
 	}{
 		{
 			desc:     "predefined no-modified error",
-			err:      cachekit.ErrNoModified,
+			err:      cachekit.ErrNotModified,
 			expected: true,
 		},
 		{
 			desc:     "predefined no-modified error with prefix",
-			err:      fmt.Errorf("Prefix: %w", cachekit.ErrNoModified),
+			err:      fmt.Errorf("Prefix: %w", cachekit.ErrNotModified),
 			expected: true,
 		},
 		{
@@ -37,6 +37,6 @@ func TestNotModifiedError(t *testing.T) {
 		},
 	}
 	for _, tt := range testcases {
-		require.Equal(t, tt.expected, cachekit.NoModifiedError(tt.err), tt.desc)
+		require.Equal(t, tt.expected, cachekit.NotModifiedError(tt.err), tt.desc)
 	}
 }
