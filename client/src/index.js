@@ -30,7 +30,7 @@ class HotStoneClient {
   async match(path) {
     let rule = {};
     try {
-      const { data } = await this.apiCaller.post("/provider/match-rule", {
+      const { data } = await this.apiCaller.post("/p/match", {
         path
       });
       rule = data;
@@ -44,7 +44,7 @@ class HotStoneClient {
     let tags = [];
     const { rule_id, path_param } = rule;
     try {
-      const { data } = await this.apiCaller.post("/provider/tags", {
+      const { data } = await this.apiCaller.post("/p/tags", {
         rule_id: rule_id,
         locale: locale,
         path_param: path_param,
