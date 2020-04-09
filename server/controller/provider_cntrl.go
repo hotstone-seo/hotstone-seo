@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
@@ -29,6 +30,30 @@ func (p *ProviderCntrl) MatchRule(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, resp)
+}
+
+// FetchTag to fetch the tag
+func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
+	var (
+		id     int64
+		locale string
+	)
+
+	if rawID := c.Param("id"); rawID != "" {
+		if id, err = strconv.ParseInt(rawID, 10, 64); err != nil {
+			return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+		}
+	} else {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Missing url param for `ID`")
+	}
+
+	if locale = c.QueryParam("locale"); locale == "" {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Missing query param for `Locale`")
+	}
+
+	c.Logger().Debug(id, locale)
+
+	return c.NoContent(http.StatusNotImplemented)
 }
 
 // RetrieveData retrieve data

@@ -40,6 +40,41 @@ func TestProviderCntrl_MatchRule(t *testing.T) {
 	})
 }
 
+func TestProviderController_FetchTag(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	svc := mock_service.NewMockProviderService(ctrl)
+	cntrl := controller.ProviderCntrl{
+		ProviderService: svc,
+	}
+
+	t.Run("", func(t *testing.T) {
+		_, err := echotest.DoGET(cntrl.FetchTag, "/?locale=id-id", map[string]string{
+			"id": "1",
+		})
+		require.NoError(t, err)
+	})
+
+	t.Run("GIVEN no url param id", func(t *testing.T) {
+		_, err := echotest.DoGET(cntrl.FetchTag, "/", nil)
+		require.EqualError(t, err, "code=422, message=Missing url param for `ID`")
+	})
+
+	t.Run("GIVEN non-integer url param id", func(t *testing.T) {
+		_, err := echotest.DoGET(cntrl.FetchTag, "/", map[string]string{
+			"id": "not-integer",
+		})
+		require.EqualError(t, err, "code=422, message=strconv.ParseInt: parsing \"not-integer\": invalid syntax")
+	})
+
+	t.Run("GIVEN no locale", func(t *testing.T) {
+		_, err := echotest.DoGET(cntrl.FetchTag, "/", map[string]string{
+			"id": "1",
+		})
+		require.EqualError(t, err, "code=422, message=Missing query param for `Locale`")
+	})
+}
+
 func TestProviderCntrl_RetrieveData(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
