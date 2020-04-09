@@ -19,7 +19,7 @@ jobs:
         working-directory: ${{env.working-directory}}
       - run: npm run test:coverage
         working-directory: ${{env.working-directory}}
-      - run: npm run test-e2e
-        working-directory: ${{env.working-directory}}  
+      # - run: npm run test-e2e
+      #   working-directory: ${{env.working-directory}}  
       - run: CI=false npm run build
         working-directory: ${{env.working-directory}}
