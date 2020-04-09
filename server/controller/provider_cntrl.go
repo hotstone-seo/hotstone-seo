@@ -43,15 +43,23 @@ func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
 	}
 
 	pragma := cachekit.CreatePragma(c.Request())
-	if resp, err = p.ProviderService.RetrieveData(ctx, req, pragma); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
+
+	resp, err = p.ProviderService.RetrieveData(ctx, req, pragma)
 
 	header := c.Response().Header()
-	header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	for key, value := range pragma.ResponseHeaders() {
 		header.Set(key, value)
 	}
+
+	if cachekit.NotModifiedError(err) {
+		return echo.NewHTTPError(http.StatusNotModified, err.Error())
+	}
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
 	c.Response().WriteHeader(http.StatusOK)
 	_, err = c.Response().Write(resp.Data)
@@ -71,7 +79,7 @@ func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
 
 	pragma := cachekit.CreatePragma(c.Request())
 	if tags, err = p.ProviderService.Tags(ctx, req, pragma); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, tags)
 }

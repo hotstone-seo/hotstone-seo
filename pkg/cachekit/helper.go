@@ -4,8 +4,8 @@ import (
 	"strings"
 )
 
-// NoModifiedError return true if error is not modified error
-func NoModifiedError(err error) bool {
+// NotModifiedError return true if error is not modified error
+func NotModifiedError(err error) bool {
 	if err == nil {
 		return false
 	}

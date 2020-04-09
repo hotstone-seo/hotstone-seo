@@ -11,8 +11,8 @@ import (
 )
 
 var (
-	// ErrNoModified happen when conditional request apply
-	ErrNoModified = errors.New("Cache: not modified")
+	// ErrNotModified happen when conditional request apply
+	ErrNotModified = errors.New("Cache: not modified")
 )
 
 // Cache data
@@ -44,8 +44,10 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma
 		return fmt.Errorf("Cache: %w", err)
 	}
 
-	if ifModifiedTime := pragma.IfModifiedSince(); !ifModifiedTime.IsZero() && ifModifiedTime.After(modifiedTime) {
-		err = ErrNoModified
+	pragma.SetLastModified(modifiedTime)
+
+	if ifModifiedTime := pragma.IfModifiedSince(); !ifModifiedTime.IsZero() && ifModifiedTime.Before(modifiedTime) {
+		err = ErrNotModified
 		return
 	}
 
@@ -75,8 +77,8 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma
 		return fmt.Errorf("Cache: %w", err)
 	}
 
-	pragma.SetExpiresByTTL(ttl)
 	pragma.SetLastModified(modifiedTime)
+	pragma.SetExpiresByTTL(ttl)
 
 	return
 }
@@ -115,7 +117,7 @@ func (c *Cache) getData(client *redis.Client, target interface{}) (ttl time.Dura
 }
 
 func (c *Cache) setModifiedTime(client *redis.Client, t time.Time, ttl time.Duration) (err error) {
-	if err = client.Set(c.modifiedTimeKey(), t.Format(time.RFC1123), ttl).Err(); err != nil {
+	if err = client.Set(c.modifiedTimeKey(), t.UTC().Format(time.RFC1123), ttl).Err(); err != nil {
 		return fmt.Errorf("SetModifiedTime: %w", err)
 	}
 	return

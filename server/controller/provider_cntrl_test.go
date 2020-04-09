@@ -4,6 +4,8 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
@@ -47,10 +49,15 @@ func TestProviderCntrl_RetrieveData(t *testing.T) {
 		_, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{invalid`, nil)
 		require.EqualError(t, err, "code=400, message=Syntax error: offset=2, error=invalid character 'i' looking for beginning of object key string")
 	})
+	t.Run("WHEN no modified", func(t *testing.T) {
+		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, cachekit.ErrNotModified)
+		_, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{"rule_id": 99999}`, nil)
+		require.EqualError(t, err, "code=304, message=Cache: not modified")
+	})
 	t.Run("WHEN error match rule", func(t *testing.T) {
 		svc.EXPECT().RetrieveData(gomock.Any(), gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
 		_, err := echotest.DoPOST(cntrl.RetrieveData, "/", `{"rule_id": 99999}`, nil)
-		require.EqualError(t, err, "code=422, message=some-error")
+		require.EqualError(t, err, "code=500, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
 		svc.EXPECT().

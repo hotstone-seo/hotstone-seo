@@ -19,7 +19,8 @@ content-type: application/json
 ### Retrieve Data
 
 POST http://localhost:8089/api/provider/retrieve-data
-content-type: application/json
+Content-Type: application/json
+If-Modified-Since: Thu, 09 Apr 2020 05:32:56 UTC
 
 {
     "data_source_id": 1, 
