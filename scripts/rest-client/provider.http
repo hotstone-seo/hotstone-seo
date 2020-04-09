@@ -5,11 +5,11 @@ http://localhost:8089/application/health
 
 ### Dump Rule Tree
 
-http://localhost:8089/api/provider/rule-tree
+http://localhost:8089/p/dump-rule-tree
 
 ### Match Rule
 
-POST http://localhost:8089/api/provider/match-rule
+POST http://localhost:8089/p/match
 content-type: application/json
 
 {
@@ -18,7 +18,7 @@ content-type: application/json
 
 ### Retrieve Data
 
-POST http://localhost:8089/api/provider/retrieve-data
+POST http://localhost:8089/p/retrieve-data
 Content-Type: application/json
 If-Modified-Since: Thu, 09 Apr 2020 05:32:56 UTC
 

@@ -11,9 +11,10 @@ type provider struct {
 }
 
 func (p *provider) route(s server) {
-	// TODO: remove api prefix
-	s.POST("api/provider/match-rule", p.MatchRule)
-	s.POST("api/provider/retrieve-data", p.RetrieveData)
-	s.POST("api/provider/tags", p.Tags)
-	s.GET("api/provider/rule-tree", p.DumpRuleTree)
+	s.POST("p/match", p.MatchRule)
+	s.POST("p/retrieve-data", p.RetrieveData)
+	s.POST("p/tags", p.Tags)
+
+	// TODO: should hide in production or require some secret
+	s.GET("p/dump-rule-tree", p.DumpRuleTree)
 }
