@@ -22,7 +22,7 @@ function TitleForm({ tag, onSubmit }) {
 
   const updateTagPreview = ({ title }) => {
     if (title) {
-      setTagPreview(Object.assign(tagPreview, { value: title }));
+      setTagPreview({ ...tagPreview, value: title });
     }
   };
 
