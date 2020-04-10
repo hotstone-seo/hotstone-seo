@@ -100,7 +100,7 @@ function HitChartCard({ ruleID }) {
       <div>
         {isAxiosError(error) && (
           <>
-            <Alert type="error" message="Failed to fetch data" />
+            <Alert type="error" message="Failed to fetch data because network error.Failed to connect API" />
             <br />
           </>
         )}

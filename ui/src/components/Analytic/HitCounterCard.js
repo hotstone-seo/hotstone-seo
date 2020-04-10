@@ -11,10 +11,11 @@ function HitCounterCard({ ruleID }) {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
     fetchCountHit({ params: queryParm })
       .then((data) => {
-        setCountHit(data.count);
+        if (data !== undefined) setCountHit(data.count);
       })
       .catch((error) => {
-        setError(error);
+        // handle in client.js
+        // setError(error);
       });
   }, [ruleID]);
 

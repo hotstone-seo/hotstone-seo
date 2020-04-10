@@ -11,10 +11,11 @@ function UniquePageCounterCard({ ruleID }) {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
     fetchCountUniquePage({ params: queryParm })
       .then((data) => {
-        setCountUniquePage(data.count);
+        if (data !== undefined) setCountUniquePage(data.count);
       })
       .catch((error) => {
-        setError(error);
+        // handled in client.js
+        // setError(error);
       });
   }, [ruleID, setCountUniquePage, setError]);
 
