@@ -10,7 +10,13 @@ const { Option } = Select;
 
 function MetaForm({ tag, onSubmit }) {
   const [form] = Form.useForm();
-  const [tagPreview, setTagPreview] = useState({ ...tag, type: 'meta', value: null });
+  const [tagPreview, setTagPreview] = useState({
+    type: 'meta',
+    value: null,
+    attributes: { name: '', content: '' },
+    ...tag,
+  });
+
   const {
     id, rule_id, locale, attributes = {},
   } = tag;
