@@ -10,23 +10,24 @@ const { Option } = Select;
 
 function MetaForm({ tag, onSubmit }) {
   const [form] = Form.useForm();
-  const [tagPreview, setTagPreview] = useState({ ...tag, type: 'meta' });
+  const [tagPreview, setTagPreview] = useState({ ...tag, type: 'meta', value: null });
   const {
     id, rule_id, locale, attributes = {},
   } = tag;
+  const { name, content } = attributes;
 
   const onFinish = (values) => {
     const formTag = { ...values, id, rule_id };
     onSubmit(formTag);
   };
 
-  const updateTagPreview = ({ name, content }) => {
+  const updateTagPreview = (values) => {
     const { attributes: attrs } = tagPreview;
     if (name) {
-      attrs.name = name;
+      attrs.name = values.name;
     }
     if (content) {
-      attrs.content = content;
+      attrs.content = values.content;
     }
     setTagPreview({ ...tagPreview, attributes: attrs });
   };
@@ -37,7 +38,7 @@ function MetaForm({ tag, onSubmit }) {
         form={form}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 14 }}
-        initialValues={{ locale, name: attributes.name, content: attributes.content }}
+        initialValues={{ locale, name, content }}
         onFinish={onFinish}
         onValuesChange={updateTagPreview}
       >
