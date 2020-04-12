@@ -21,13 +21,13 @@ function MetaForm({ tag, onSubmit }) {
     onSubmit(formTag);
   };
 
-  const updateTagPreview = (values) => {
-    const { attributes: attrs } = tagPreview;
-    if (name) {
-      attrs.name = values.name;
+  const updateTagPreview = ({ name: formName, content: formContent }) => {
+    const attrs = { ...tagPreview.attributes };
+    if (formName) {
+      attrs.name = formName;
     }
-    if (content) {
-      attrs.content = values.content;
+    if (formContent) {
+      attrs.content = formContent;
     }
     setTagPreview({ ...tagPreview, attributes: attrs });
   };
