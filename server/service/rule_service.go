@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -23,7 +24,7 @@ type RuleServiceImpl struct {
 	URLSyncRepo repository.URLSyncRepo
 	AuditTrailService
 	HistoryService
-	repository.Transactional
+	dbtxn.Transactional
 }
 
 // NewRuleService return new instance of RuleService [constructor]

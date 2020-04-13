@@ -23,9 +23,10 @@ func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleM
 		Insert("metrics_rule_matching").
 		Columns("is_matched", "url", "rule_id").
 		Values(e.IsMatched, e.URL, e.RuleID).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 	return
@@ -49,9 +50,10 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 		FromSelect(subQuery, "u").
 		PlaceholderFormat(sq.Dollar)
 
-	builder = composePagination(builder, paginationParam).RunWith(dbtxn.TxCtx(ctx, r))
+	builder = composePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r))
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -59,6 +61,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 	for rows.Next() {
 		var e0 MetricsMismatchedCount
 		if err = rows.Scan(&e0.URL, &e0.Count, &e0.FirstSeen, &e0.LastSeen); err != nil {
+			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, &e0)
@@ -72,12 +75,12 @@ func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context, wherePar
 		Column("count(is_matched)").
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 1}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 
-	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"})
 
 	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 
@@ -92,9 +95,10 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context, where
 		Where(sq.Eq{"is_matched": 1})
 
 	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 

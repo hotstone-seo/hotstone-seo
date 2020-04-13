@@ -10,7 +10,7 @@ import (
 )
 
 func TestErrCtx(t *testing.T) {
-	ctx := dbtxn.CtxWithTxo(context.Background())
-	dbtxn.SetErrCtx(ctx, errors.New("some-error"))
-	require.EqualError(t, dbtxn.ErrCtx(ctx), "some-error")
+	ctx := dbtxn.WithContext(context.Background())
+	dbtxn.SetError(ctx, errors.New("some-error"))
+	require.EqualError(t, dbtxn.Error(ctx), "some-error")
 }

@@ -26,10 +26,10 @@ func TestTransactional(t *testing.T) {
 		mock.ExpectRollback()
 		commitFn := trx.CommitMe(&ctx)
 		func(ctx context.Context) {
-			dbtxn.SetErrCtx(ctx, errors.New("unexpected-error"))
+			dbtxn.SetError(ctx, errors.New("unexpected-error"))
 		}(ctx)
 		commitFn()
-		require.EqualError(t, dbtxn.ErrCtx(ctx), "unexpected-error")
+		require.EqualError(t, dbtxn.Error(ctx), "unexpected-error")
 	})
 	t.Run("WHEN panic occurred before commit", func(t *testing.T) {
 		ctx := context.Background()
@@ -37,12 +37,12 @@ func TestTransactional(t *testing.T) {
 		fn := trx.CommitMe(&ctx)
 		func(ctx context.Context) { // service level
 			defer fn()
-			dbtxn.SetErrCtx(ctx, fmt.Errorf("some-logic-error"))
+			dbtxn.SetError(ctx, fmt.Errorf("some-logic-error"))
 			func(ctx context.Context) { // repository level
 				panic("something-dangerous")
 			}(ctx)
 		}(ctx)
-		require.EqualError(t, dbtxn.ErrCtx(ctx), "something-dangerous")
+		require.EqualError(t, dbtxn.Error(ctx), "something-dangerous")
 	})
 	t.Run("WHEN begin error", func(t *testing.T) {
 		ctx := context.Background()
@@ -54,8 +54,8 @@ func TestTransactional(t *testing.T) {
 		mock.ExpectBegin()
 		mock.ExpectCommit().WillReturnError(errors.New("some-commit-error"))
 		require.EqualError(t, trx.CommitMe(&ctx)(), "some-commit-error")
-		require.NoError(t, dbtxn.ErrCtx(ctx))
-		require.NotNil(t, dbtxn.TxCtx(ctx, nil))
+		require.NoError(t, dbtxn.Error(ctx))
+		require.NotNil(t, dbtxn.BaseRunner(ctx, nil))
 	})
 	t.Run("WHEN rolback error", func(t *testing.T) {
 		ctx := context.Background()
@@ -63,9 +63,9 @@ func TestTransactional(t *testing.T) {
 		mock.ExpectRollback().WillReturnError(errors.New("some-rollback-error"))
 		commitFn := trx.CommitMe(&ctx)
 		func(ctx context.Context) {
-			dbtxn.SetErrCtx(ctx, errors.New("unexpected-error"))
+			dbtxn.SetError(ctx, errors.New("unexpected-error"))
 		}(ctx)
 		require.EqualError(t, commitFn(), "some-rollback-error")
-		require.EqualError(t, dbtxn.ErrCtx(ctx), "unexpected-error")
+		require.EqualError(t, dbtxn.Error(ctx), "unexpected-error")
 	})
 }

@@ -23,13 +23,16 @@ func (r *URLSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreS
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		Where(sq.Eq{"version": version}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
 	if rows.Next() {
-		urlStoreSync, err = scanURLSync(rows)
+		if urlStoreSync, err = scanURLSync(rows); err != nil {
+			dbtxn.SetError(ctx, err)
+		}
 	}
 	return
 }
@@ -41,8 +44,9 @@ func (r *URLSyncRepoImpl) Find(ctx context.Context) (list []*URLSync, err error)
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -50,6 +54,7 @@ func (r *URLSyncRepoImpl) Find(ctx context.Context) (list []*URLSync, err error)
 	for rows.Next() {
 		var urlStoreSync *URLSync
 		if urlStoreSync, err = scanURLSync(rows); err != nil {
+			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, urlStoreSync)
@@ -64,8 +69,9 @@ func (r *URLSyncRepoImpl) Insert(ctx context.Context, urlStoreSync URLSync) (las
 		Columns("operation", "rule_id", "latest_url_pattern").
 		Values(urlStoreSync.Operation, urlStoreSync.RuleID, urlStoreSync.LatestURLPattern).
 		Suffix("RETURNING \"version\"").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 	if err = query.QueryRowContext(ctx).Scan(&urlStoreSync.Version); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 	lastInsertID = urlStoreSync.Version
@@ -79,9 +85,10 @@ func (r *URLSyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion i
 		From("url_sync").
 		OrderBy("version DESC").
 		Limit(1).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 	if err = builder.QueryRowContext(ctx).Scan(&latestVersion); err != nil {
 		if err == sql.ErrNoRows {
+			dbtxn.SetError(ctx, err)
 			return 0, nil
 		}
 		return
@@ -97,14 +104,16 @@ func (r *URLSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) 
 		From("url_sync").
 		Where(sq.Gt{"version": offsetVersion}).
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
 	for rows.Next() {
 		var urlStoreSync *URLSync
 		if urlStoreSync, err = scanURLSync(rows); err != nil {
+			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, urlStoreSync)

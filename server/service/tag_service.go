@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -16,7 +17,7 @@ type TagService interface {
 type TagServiceImpl struct {
 	dig.In
 	repository.TagRepo
-	repository.Transactional
+	dbtxn.Transactional
 	AuditTrailService AuditTrailService
 	HistoryService    HistoryService
 }

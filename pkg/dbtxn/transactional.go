@@ -3,8 +3,10 @@ package dbtxn
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 
+	sq "github.com/Masterminds/squirrel"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
@@ -21,22 +23,22 @@ func (t *Transactional) CommitMe(ctx *context.Context) func() error {
 		tx  *sql.Tx
 		err error
 	)
-	*ctx = CtxWithTxo(*ctx)
+	*ctx = WithContext(*ctx)
 	if tx, err = t.DB.BeginTx(*ctx, nil); err != nil {
 		return func() error {
 			if r := recover(); r != nil {
-				SetErrCtx(*ctx, fmt.Errorf("%v", r))
+				SetError(*ctx, fmt.Errorf("%v", r))
 			}
 			return err
 		}
 	}
-	SetTxCtx(*ctx, tx)
+	set(*ctx, tx)
 	return func() error {
 		if r := recover(); r != nil {
-			SetErrCtx(*ctx, fmt.Errorf("%v", r))
+			SetError(*ctx, fmt.Errorf("%v", r))
 			return tx.Rollback()
 		}
-		if err := ErrCtx(*ctx); err != nil {
+		if err := Error(*ctx); err != nil {
 			return tx.Rollback()
 		}
 		return tx.Commit()
@@ -45,5 +47,13 @@ func (t *Transactional) CommitMe(ctx *context.Context) func() error {
 
 // CancelMe is store error to context to trigger the rollback mechanism
 func (t *Transactional) CancelMe(ctx context.Context, err error) error {
-	return SetErrCtx(ctx, err)
+	return SetError(ctx, err)
+}
+
+func set(ctx context.Context, tx sq.BaseRunner) error {
+	if txo := get(ctx); txo != nil {
+		txo.tx = tx
+		return nil
+	}
+	return errors.New("Context have no transaction")
 }

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -15,8 +16,8 @@ type DataSourceService interface {
 // DataSourceServiceImpl is implementation of DataSourceService
 type DataSourceServiceImpl struct {
 	dig.In
+	dbtxn.Transactional
 	repository.DataSourceRepo
-	repository.Transactional
 	AuditTrailService AuditTrailService
 	HistoryService    HistoryService
 }
