@@ -11,10 +11,10 @@ import (
 	"strconv"
 
 	"github.com/go-redis/redis"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"github.com/imantung/mario"
 	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
@@ -27,6 +27,12 @@ type ProviderService interface {
 	RetrieveData(context.Context, RetrieveDataRequest, *cachekit.Pragma) (*RetrieveDataResponse, error)
 	Tags(context.Context, ProvideTagsRequest, *cachekit.Pragma) ([]*InterpolatedTag, error)
 	DumpRuleTree(context.Context) (string, error)
+
+	FetchTags(
+		ctx context.Context,
+		id int64,
+		locale string,
+	) ([]*repository.Tag, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
@@ -182,6 +188,23 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 			return
 		}
 		interpolatedTags = append(interpolatedTags, interpolated)
+	}
+	return
+}
+
+// FetchTag handle logic for fetching tag
+func (p *ProviderServiceImpl) FetchTags(
+	ctx context.Context,
+	ruleID int64,
+	locale string,
+) (tags []*repository.Tag, err error) {
+
+	if tags, err = p.TagRepo.Find(ctx,
+		dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)),
+		dbkit.Equal("locale", locale),
+	); err != nil {
+		err = fmt.Errorf("Provider: FetchTags: Find: %s", err.Error())
+		return
 	}
 	return
 }

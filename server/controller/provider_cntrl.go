@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -37,7 +38,9 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 	var (
 		id     int64
 		locale string
+		tags   []*repository.Tag
 	)
+	ctx := c.Request().Context()
 
 	if rawID := c.Param("id"); rawID != "" {
 		if id, err = strconv.ParseInt(rawID, 10, 64); err != nil {
@@ -51,9 +54,11 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Missing query param for `Locale`")
 	}
 
-	c.Logger().Debug(id, locale)
+	if tags, err = p.ProviderService.FetchTags(ctx, id, locale); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
 
-	return c.NoContent(http.StatusNotImplemented)
+	return c.JSON(http.StatusOK, tags)
 }
 
 // RetrieveData retrieve data

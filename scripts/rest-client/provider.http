@@ -29,13 +29,8 @@ If-Modified-Since: Thu, 09 Apr 2020 05:32:56 UTC
     }
 }
 
-
 ### Tags
 
-POST http://localhost:8089/api/provider/tags
-content-type: application/json
+http://localhost:8089/p/rule/1?locale=en_US
 
-{
-
-}
 
