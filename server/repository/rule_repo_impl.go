@@ -95,13 +95,13 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 	builder := psql.Update("rules").
 		Set("data_source_id", rule.DataSourceID).
 		Set("name", rule.Name).
+		Set("status", rule.Status).
 		Set("url_pattern", rule.UrlPattern).
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": rule.ID}).RunWith(dbtxn.BaseRunner(ctx, r))
 
 	if rule.Status != "" {
-		builder = builder.
-			Set("change_status_at", time.Now())
+		builder = builder.Set("change_status_at", time.Now())
 	}
 
 	if _, err = builder.ExecContext(ctx); err != nil {
