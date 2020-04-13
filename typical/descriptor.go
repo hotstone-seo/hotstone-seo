@@ -5,12 +5,10 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server"
 	"github.com/typical-go/typical-go/pkg/typapp"
 	"github.com/typical-go/typical-go/pkg/typbuildtool"
-	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typdocker"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
-	"github.com/typical-go/typical-rest-server/pkg/typserver"
 )
 
 var _ = func() bool {
@@ -26,10 +24,10 @@ var Descriptor = typcore.Descriptor{
 	Version: "0.0.1",
 
 	App: typapp.EntryPoint(server.Main, "server").
-		WithModules(
+		Imports(
+			server.Configuration(),
 			typredis.Module(),
 			typpostgres.Module(),
-			typserver.Module(),
 			oauth2google.Module(),
 		),
 
@@ -37,7 +35,7 @@ var Descriptor = typcore.Descriptor{
 		BuildSequences(
 			typbuildtool.StandardBuild(),
 		).
-		WithUtilities(
+		Utilities(
 			typpostgres.Utility(),
 			typredis.Utility(),
 			typdocker.Compose(
@@ -47,11 +45,4 @@ var Descriptor = typcore.Descriptor{
 			typbuildtool.NewUtility(uiUtility),
 			typbuildtool.NewUtility(jsonServer),
 		),
-
-	ConfigManager: typcfg.Configures(
-		server.Configuration(),
-		typredis.Configuration(),
-		typpostgres.Configuration(),
-		oauth2google.Configuration(),
-	),
 }

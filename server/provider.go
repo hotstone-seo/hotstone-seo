@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
+	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
 
@@ -10,14 +11,14 @@ type provider struct {
 	controller.ProviderCntrl
 }
 
-func (p *provider) route(s server) {
+func (p *provider) route(e *echo.Echo) {
 
-	s.POST("p/match", p.MatchRule)
-	s.GET("p/rule/:id", p.FetchTag)
+	e.POST("p/match", p.MatchRule)
+	e.GET("p/rule/:id", p.FetchTag)
 
-	s.POST("p/retrieve-data", p.RetrieveData) // TODO: deprecate
-	s.POST("p/tags", p.Tags)                  // TODO: deprecate
+	e.POST("p/retrieve-data", p.RetrieveData) // TODO: deprecate
+	e.POST("p/tags", p.Tags)                  // TODO: deprecate
 
 	// TODO: should hide in production or require some secret
-	s.GET("p/dump-rule-tree", p.DumpRuleTree)
+	e.GET("p/dump-rule-tree", p.DumpRuleTree)
 }

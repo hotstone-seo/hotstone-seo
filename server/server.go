@@ -1,12 +1,15 @@
 package server
 
 import (
+	"context"
+	"time"
+
+	logrusmiddleware "github.com/bakatz/echo-logrusmiddleware"
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
-	"github.com/typical-go/typical-rest-server/pkg/typserver"
 
 	log "github.com/sirupsen/logrus"
 
@@ -15,35 +18,64 @@ import (
 
 type server struct {
 	dig.In
-	*typserver.Server
 	*config.Config
 
-	API      api
-	Provider provider
+	API         api
+	Provider    provider
+	HealthCheck healthcheck
 
 	Postgres *typpostgres.DB
 	Redis    *redis.Client
 }
 
 func startServer(s server) error {
-	s.SetLogger(s.Debug)
+	e := echo.New()
+	defer shutdown(e)
 
-	s.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+	e.HideBanner = true
+	initLogger(e, s.Debug)
+	initErrHandler(e)
+
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
 		Root:  "build",
 		HTML5: true,
 	}))
 
-	// health check
-	s.PutHealthChecker("postgres", s.Postgres.Ping)
-	s.PutHealthChecker("redis", s.Redis.Ping().Err)
+	s.API.route(e)
+	s.Provider.route(e)
+	s.HealthCheck.route(e)
 
-	s.HTTPErrorHandler = func(err error, c echo.Context) {
-		s.DefaultHTTPErrorHandler(err, c)
+	return e.Start(s.Address)
+}
+
+func initErrHandler(e *echo.Echo) {
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		e.DefaultHTTPErrorHandler(err, c)
 		log.Error(err.Error())
 	}
 
-	s.API.route(s)
-	s.Provider.route(s)
+}
 
-	return s.Start(s.Address)
+func initLogger(e *echo.Echo, debug bool) {
+	e.Logger = logrusmiddleware.Logger{Logger: log.StandardLogger()}
+	e.Debug = debug
+	if debug {
+		log.SetLevel(log.DebugLevel)
+		log.SetFormatter(&log.TextFormatter{})
+		e.Use(logrusmiddleware.HookWithConfig(logrusmiddleware.Config{
+			IncludeRequestBodies:  true,
+			IncludeResponseBodies: true,
+		}))
+	} else {
+		log.SetLevel(log.WarnLevel)
+		log.SetFormatter(&log.JSONFormatter{})
+		e.Use(logrusmiddleware.HookWithConfig(logrusmiddleware.Config{}))
+	}
+}
+
+func shutdown(e *echo.Echo) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	e.Shutdown(ctx)
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/typical-go/typical-go/pkg/typapp"
-	"github.com/typical-go/typical-go/pkg/typcore"
+	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
 )
@@ -31,33 +31,33 @@ func init() {
 		typapp.NewConstructor(service.NewRuleService),
 		typapp.NewConstructor(service.NewTagService),
 		typapp.NewConstructor(service.NewURLService),
-		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*config.Config, error) {
-			cfg, err := cfgMngr.RetrieveConfig("APP")
-			if err != nil {
+		typapp.NewConstructor(func() (cfg *config.Config, err error) {
+			cfg = new(config.Config)
+			if err = typcfg.Process("APP", cfg); err != nil {
 				return nil, err
 			}
-			return cfg.(*config.Config), nil
+			return
 		}),
-		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*typredis.Config, error) {
-			cfg, err := cfgMngr.RetrieveConfig("REDIS")
-			if err != nil {
+		typapp.NewConstructor(func() (cfg *typredis.Config, err error) {
+			cfg = new(typredis.Config)
+			if err = typcfg.Process("REDIS", cfg); err != nil {
 				return nil, err
 			}
-			return cfg.(*typredis.Config), nil
+			return
 		}),
-		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*typpostgres.Config, error) {
-			cfg, err := cfgMngr.RetrieveConfig("PG")
-			if err != nil {
+		typapp.NewConstructor(func() (cfg *typpostgres.Config, err error) {
+			cfg = new(typpostgres.Config)
+			if err = typcfg.Process("PG", cfg); err != nil {
 				return nil, err
 			}
-			return cfg.(*typpostgres.Config), nil
+			return
 		}),
-		typapp.NewConstructor(func(cfgMngr typcore.ConfigManager) (*oauth2google.Config, error) {
-			cfg, err := cfgMngr.RetrieveConfig("OAUTH2_GOOGLE")
-			if err != nil {
+		typapp.NewConstructor(func() (cfg *oauth2google.Config, err error) {
+			cfg = new(oauth2google.Config)
+			if err = typcfg.Process("OAUTH2_GOOGLE", cfg); err != nil {
 				return nil, err
 			}
-			return cfg.(*oauth2google.Config), nil
+			return
 		}),
 	)
 }

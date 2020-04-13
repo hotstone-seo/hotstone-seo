@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/typical-go/typical-rest-server/pkg/dbtype"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"go.uber.org/dig"
 )
 

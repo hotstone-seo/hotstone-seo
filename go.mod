@@ -7,6 +7,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.4.1
 	github.com/Masterminds/squirrel v1.2.0
 	github.com/alicebob/miniredis v2.5.0+incompatible
+	github.com/bakatz/echo-logrusmiddleware v1.1.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/golang/mock v1.4.1
@@ -17,8 +18,8 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
 	github.com/thoas/go-funk v0.5.0
-	github.com/typical-go/typical-go v0.9.47
-	github.com/typical-go/typical-rest-server v0.8.25
+	github.com/typical-go/typical-go v0.9.49
+	github.com/typical-go/typical-rest-server v0.8.26
 	github.com/urfave/cli/v2 v2.2.0
 	github.com/xorcare/pointer v1.0.0
 	go.uber.org/dig v1.8.0

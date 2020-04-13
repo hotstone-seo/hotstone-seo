@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
@@ -22,22 +22,22 @@ func (t *Transactional) CommitMe(ctx *context.Context) func() error {
 		tx  *sql.Tx
 		err error
 	)
-	*ctx = dbkit.CtxWithTxo(*ctx)
+	*ctx = dbtxn.CtxWithTxo(*ctx)
 	if tx, err = t.DB.BeginTx(*ctx, nil); err != nil {
 		return func() error {
 			if r := recover(); r != nil {
-				dbkit.SetErrCtx(*ctx, fmt.Errorf("%v", r))
+				dbtxn.SetErrCtx(*ctx, fmt.Errorf("%v", r))
 			}
 			return err
 		}
 	}
-	dbkit.SetTxCtx(*ctx, tx)
+	dbtxn.SetTxCtx(*ctx, tx)
 	return func() error {
 		if r := recover(); r != nil {
-			dbkit.SetErrCtx(*ctx, fmt.Errorf("%v", r))
+			dbtxn.SetErrCtx(*ctx, fmt.Errorf("%v", r))
 			return tx.Rollback()
 		}
-		if err := dbkit.ErrCtx(*ctx); err != nil {
+		if err := dbtxn.ErrCtx(*ctx); err != nil {
 			return tx.Rollback()
 		}
 		return tx.Commit()
@@ -46,5 +46,5 @@ func (t *Transactional) CommitMe(ctx *context.Context) func() error {
 
 // CancelMe is store error to context to trigger the rollback mechanism
 func (t *Transactional) CancelMe(ctx context.Context, err error) error {
-	return dbkit.SetErrCtx(ctx, err)
+	return dbtxn.SetErrCtx(ctx, err)
 }

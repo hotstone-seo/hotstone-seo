@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
+	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"go.uber.org/dig"
 )
@@ -18,11 +19,11 @@ type api struct {
 	controller.AuditTrailCntrl
 }
 
-func (a *api) route(s server) {
-	s.POST("auth/google/login", a.AuthCntrl.Login)
-	s.GET("auth/google/callback", a.AuthCntrl.Callback)
+func (a *api) route(e *echo.Echo) {
+	e.POST("auth/google/login", a.AuthCntrl.Login)
+	e.GET("auth/google/callback", a.AuthCntrl.Callback)
 
-	group := s.Group("/api")
+	group := e.Group("/api")
 	group.Use(a.AuthCntrl.Middleware())
 	group.Use(a.AuthCntrl.SetTokenCtxMiddleware())
 	group.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))

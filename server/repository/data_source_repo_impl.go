@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
@@ -25,7 +25,7 @@ func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSour
 		Select("id", "name", "url", "updated_at", "created_at").
 		From("data_sources").
 		Where(sq.Eq{"id": id}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
@@ -45,7 +45,7 @@ func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err 
 	builder := sq.
 		Select("id", "name", "url", "updated_at", "created_at").
 		From("data_sources").
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
@@ -68,7 +68,7 @@ func (r *DataSourceRepoImpl) Insert(ctx context.Context, e DataSource) (lastInse
 		Columns("name", "url").
 		Values(e.Name, e.Url).
 		Suffix("RETURNING \"id\"").
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		return
 	}
@@ -81,7 +81,7 @@ func (r *DataSourceRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
 		Delete("data_sources").
 		Where(sq.Eq{"id": id}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	_, err = builder.ExecContext(ctx)
 	return
 }
@@ -94,7 +94,7 @@ func (r *DataSourceRepoImpl) Update(ctx context.Context, e DataSource) (err erro
 		Set("url", e.Url).
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	_, err = builder.ExecContext(ctx)
 	return
 }

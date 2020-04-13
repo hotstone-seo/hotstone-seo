@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
@@ -24,7 +24,7 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err e
 	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at", "status", "change_status_at").
 		From("rules").
 		Where(sq.Eq{"id": id})
-	if rows, err = builder.RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
+	if rows, err = builder.RunWith(dbtxn.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	defer rows.Close()
@@ -40,7 +40,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "name", "url_pattern", "data_source_id", "updated_at", "created_at", "status", "change_status_at").
 		From("rules")
-	if rows, err = composePagination(builder, paginationParam).RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
+	if rows, err = composePagination(builder, paginationParam).RunWith(dbtxn.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	defer rows.Close()
@@ -62,7 +62,7 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 		Columns("data_source_id", "name", "url_pattern").
 		Values(rule.DataSourceID, rule.Name, rule.UrlPattern).
 		Suffix("RETURNING \"id\"").
-		RunWith(dbkit.TxCtx(ctx, r)).
+		RunWith(dbtxn.TxCtx(ctx, r)).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&rule.ID); err != nil {
 		return
@@ -75,7 +75,7 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Delete("rules").Where(sq.Eq{"id": id})
-	_, err = builder.RunWith(dbkit.TxCtx(ctx, r)).ExecContext(ctx)
+	_, err = builder.RunWith(dbtxn.TxCtx(ctx, r)).ExecContext(ctx)
 	return
 }
 
@@ -87,7 +87,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 			Set("status", rule.Status).
 			Set("change_status_at", time.Now()).
 			Where(sq.Eq{"id": rule.ID})
-		_, err = builder.RunWith(dbkit.TxCtx(ctx, r)).ExecContext(ctx)
+		_, err = builder.RunWith(dbtxn.TxCtx(ctx, r)).ExecContext(ctx)
 	} else {
 		builder := psql.Update("rules").
 			Set("data_source_id", rule.DataSourceID).
@@ -95,7 +95,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 			Set("url_pattern", rule.UrlPattern).
 			Set("updated_at", time.Now()).
 			Where(sq.Eq{"id": rule.ID})
-		_, err = builder.RunWith(dbkit.TxCtx(ctx, r)).ExecContext(ctx)
+		_, err = builder.RunWith(dbtxn.TxCtx(ctx, r)).ExecContext(ctx)
 	}
 	return
 }

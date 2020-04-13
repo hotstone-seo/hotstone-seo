@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
-	"github.com/typical-go/typical-rest-server/pkg/dbtype"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"gopkg.in/go-playground/validator.v9"
 )
 

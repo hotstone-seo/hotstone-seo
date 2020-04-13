@@ -14,7 +14,7 @@ import (
 	"github.com/imantung/mario"
 	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
-	"github.com/typical-go/typical-rest-server/pkg/dbtype"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"

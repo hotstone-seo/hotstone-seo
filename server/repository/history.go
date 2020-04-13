@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/typical-go/typical-rest-server/pkg/dbtype"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 )
 
 // History Entity

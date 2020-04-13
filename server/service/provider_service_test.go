@@ -13,7 +13,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/typical-go/typical-rest-server/pkg/dbtype"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 
 	"github.com/stretchr/testify/require"
 

@@ -10,15 +10,9 @@ var (
 	DefaultConfigName = "OAUTH2_GOOGLE"
 )
 
-// Configuration the social login module
-func Configuration() *typcfg.Configuration {
-	return typcfg.NewConfiguration(DefaultConfigName, &Config{})
-}
-
 // Module of google oauth
 func Module() *typapp.Module {
 	return typapp.NewModule().
-		WithProviders(
-			typapp.NewConstructor(NewService),
-		)
+		Provide(typapp.NewConstructor(NewService)).
+		Configure(typcfg.NewConfiguration(DefaultConfigName, &Config{}))
 }

@@ -6,7 +6,7 @@ import (
 	"net/url"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
@@ -23,7 +23,7 @@ func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleM
 		Insert("metrics_rule_matching").
 		Columns("is_matched", "url", "rule_id").
 		Values(e.IsMatched, e.URL, e.RuleID).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		return
@@ -49,7 +49,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 		FromSelect(subQuery, "u").
 		PlaceholderFormat(sq.Dollar)
 
-	builder = composePagination(builder, paginationParam).RunWith(dbkit.TxCtx(ctx, r))
+	builder = composePagination(builder, paginationParam).RunWith(dbtxn.TxCtx(ctx, r))
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
@@ -72,10 +72,10 @@ func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context, wherePar
 		Column("count(is_matched)").
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 1}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 
 	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
 		return
@@ -92,7 +92,7 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context, where
 		Where(sq.Eq{"is_matched": 1})
 
 	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
 		return

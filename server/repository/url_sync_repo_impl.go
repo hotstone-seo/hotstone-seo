@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
@@ -23,7 +23,7 @@ func (r *URLSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreS
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		Where(sq.Eq{"version": version}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
@@ -41,7 +41,7 @@ func (r *URLSyncRepoImpl) Find(ctx context.Context) (list []*URLSync, err error)
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}
@@ -64,7 +64,7 @@ func (r *URLSyncRepoImpl) Insert(ctx context.Context, urlStoreSync URLSync) (las
 		Columns("operation", "rule_id", "latest_url_pattern").
 		Values(urlStoreSync.Operation, urlStoreSync.RuleID, urlStoreSync.LatestURLPattern).
 		Suffix("RETURNING \"version\"").
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if err = query.QueryRowContext(ctx).Scan(&urlStoreSync.Version); err != nil {
 		return
 	}
@@ -79,7 +79,7 @@ func (r *URLSyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion i
 		From("url_sync").
 		OrderBy("version DESC").
 		Limit(1).
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if err = builder.QueryRowContext(ctx).Scan(&latestVersion); err != nil {
 		if err == sql.ErrNoRows {
 			return 0, nil
@@ -97,7 +97,7 @@ func (r *URLSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) 
 		From("url_sync").
 		Where(sq.Gt{"version": offsetVersion}).
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbkit.TxCtx(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.TxCtx(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		return
 	}

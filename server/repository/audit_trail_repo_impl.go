@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
@@ -22,7 +22,7 @@ func (r *AuditTrailRepoImpl) Find(ctx context.Context, paginationParam Paginatio
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "time", "entity_name", "entity_id", "operation", "username", "old_data", "new_data").
 		From("audit_trail")
-	if rows, err = composePagination(builder, paginationParam).RunWith(dbkit.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
+	if rows, err = composePagination(builder, paginationParam).RunWith(dbtxn.TxCtx(ctx, r)).QueryContext(ctx); err != nil {
 		return
 	}
 	defer rows.Close()
@@ -43,7 +43,7 @@ func (r *AuditTrailRepoImpl) Insert(ctx context.Context, m AuditTrail) (lastInse
 		Columns("entity_name", "entity_id", "operation", "username", "old_data", "new_data").
 		Values(m.EntityName, m.EntityID, m.Operation, m.Username, m.OldData, m.NewData).
 		Suffix("RETURNING \"id\"").
-		RunWith(dbkit.TxCtx(ctx, r)).
+		RunWith(dbtxn.TxCtx(ctx, r)).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&m.ID); err != nil {
 		return
