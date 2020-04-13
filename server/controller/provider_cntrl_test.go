@@ -43,12 +43,13 @@ func TestProviderCntrl_MatchRule(t *testing.T) {
 func TestProviderController_FetchTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock_service.NewMockProviderService(ctrl)
+	mockService := mock_service.NewMockProviderService(ctrl)
 	cntrl := controller.ProviderCntrl{
-		ProviderService: svc,
+		ProviderService: mockService,
 	}
 
 	t.Run("", func(t *testing.T) {
+		mockService.EXPECT().FetchTags(gomock.Any(), gomock.Any(), gomock.Any())
 		_, err := echotest.DoGET(cntrl.FetchTag, "/?locale=id-id", map[string]string{
 			"id": "1",
 		})

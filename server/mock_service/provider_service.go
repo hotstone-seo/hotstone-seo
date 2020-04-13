@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	cachekit "github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
@@ -48,6 +49,21 @@ func (m *MockProviderService) DumpRuleTree(arg0 context.Context) (string, error)
 func (mr *MockProviderServiceMockRecorder) DumpRuleTree(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DumpRuleTree", reflect.TypeOf((*MockProviderService)(nil).DumpRuleTree), arg0)
+}
+
+// FetchTags mocks base method
+func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 string) ([]*repository.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FetchTags", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]*repository.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FetchTags indicates an expected call of FetchTags
+func (mr *MockProviderServiceMockRecorder) FetchTags(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTags", reflect.TypeOf((*MockProviderService)(nil).FetchTags), arg0, arg1, arg2)
 }
 
 // MatchRule mocks base method
