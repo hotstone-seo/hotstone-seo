@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,8 +23,6 @@ import (
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
-	RetrieveData(context.Context, RetrieveDataRequest, *cachekit.Pragma) (*RetrieveDataResponse, error)
-	Tags(context.Context, ProvideTagsRequest, *cachekit.Pragma) ([]*InterpolatedTag, error)
 	DumpRuleTree(context.Context) (string, error)
 
 	FetchTags(
@@ -50,8 +47,8 @@ type ProviderServiceImpl struct {
 // InterpolatedTag is tag after interpolate with data
 type InterpolatedTag repository.Tag
 
-// InterpolatedDataSource is datasource after interpolate with data
-type InterpolatedDataSource repository.DataSource
+// IDataSource is datasource after interpolate with data
+type IDataSource repository.DataSource
 
 // NewProviderService return new instance of ProviderService [constructor]
 func NewProviderService(impl ProviderServiceImpl) ProviderService {
@@ -88,63 +85,28 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 	}, nil
 }
 
-// RetrieveData to retrieve the data from data provider
-func (p *ProviderServiceImpl) RetrieveData(ctx context.Context, req RetrieveDataRequest, pragma *cachekit.Pragma) (resp *RetrieveDataResponse, err error) {
+func (p *ProviderServiceImpl) findIDataSource(ctx context.Context, dataSourceID int64, pathParam map[string]string) (interpolated *IDataSource, err error) {
 	var (
-		ds           *repository.DataSource
-		interpolated *InterpolatedDataSource
+		ds *repository.DataSource
 	)
 
-	if ds, err = p.DataSourceRepo.FindOne(ctx, req.DataSourceID); err != nil {
-		return nil, err
-	}
-	if ds == nil {
-		return nil, fmt.Errorf("Data-Source#%d not found", req.DataSourceID)
-	}
-
-	if interpolated, err = interpolateDataSource(ds, req.PathParam); err != nil {
+	if ds, err = p.DataSourceRepo.FindOne(ctx, dataSourceID); err != nil {
 		return
 	}
 
-	cache := cachekit.New(interpolated.Url, callDatasoure(interpolated))
-
-	resp = new(RetrieveDataResponse)
-	if err = cache.Execute(p.Redis.WithContext(ctx), resp, pragma); err != nil {
-		return nil, err
+	if interpolated, err = interpolateDataSource(ds, pathParam); err != nil {
+		return
 	}
 
-	return resp, nil
-}
-
-func callDatasoure(ds *InterpolatedDataSource) cachekit.RefreshFn {
-	var (
-		resp *http.Response
-		data []byte
-		err  error
-	)
-
-	return func() (interface{}, error) {
-		if resp, err = http.Get(ds.Url); err != nil {
-			return data, err
-		}
-		defer resp.Body.Close()
-
-		if data, err = ioutil.ReadAll(resp.Body); err != nil {
-			return data, err
-		}
-
-		return &RetrieveDataResponse{
-			Data: data,
-		}, nil
-	}
+	return
 }
 
 // Tags to return interpolated tag
 func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, pragma *cachekit.Pragma) (interpolatedTags []*InterpolatedTag, err error) {
 	var (
-		tags         []*repository.Tag
-		data         = req.Data
-		dataResp     *RetrieveDataResponse
+		tags []*repository.Tag
+		data = req.Data
+		// dataResp     *RetrieveDataResponse
 		rule         *repository.Rule
 		interpolated *InterpolatedTag
 	)
@@ -168,17 +130,18 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 			return
 		}
 		if rule.DataSourceID != nil {
-			if dataResp, err = p.RetrieveData(ctx,
-				RetrieveDataRequest{
-					DataSourceID: *rule.DataSourceID,
-					PathParam:    req.PathParam,
-				}, pragma,
-			); err != nil {
-				return
-			}
-			if err = json.Unmarshal(dataResp.Data, &data); err != nil {
-				return
-			}
+			// TODO:
+			// if dataResp, err = p.RetrieveData(ctx,
+			// 	RetrieveDataRequest{
+			// 		DataSourceID: *rule.DataSourceID,
+			// 		PathParam:    req.PathParam,
+			// 	}, pragma,
+			// ); err != nil {
+			// 	return
+			// }
+			// if err = json.Unmarshal(dataResp.Data, &data); err != nil {
+			// 	return
+			// }
 		}
 	}
 
@@ -199,13 +162,27 @@ func (p *ProviderServiceImpl) FetchTags(
 	locale string,
 ) (tags []*repository.Tag, err error) {
 
-	if tags, err = p.TagRepo.Find(ctx,
-		dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)),
-		dbkit.Equal("locale", locale),
-	); err != nil {
-		err = fmt.Errorf("Provider: FetchTags: Find: %s", err.Error())
+	var (
+		rule *repository.Rule
+	)
+
+	if rule, err = p.RuleRepo.FindOne(ctx, ruleID); err != nil {
 		return
 	}
+
+	return p.fetchTags(ctx, rule, locale)
+}
+
+func (p *ProviderServiceImpl) fetchTags(
+	ctx context.Context,
+	rule *repository.Rule,
+	locale string,
+) (tags []*repository.Tag, err error) {
+
+	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
+		return
+	}
+
 	return
 }
 
@@ -214,7 +191,7 @@ func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, er
 	return p.URLService.DumpTree(), nil
 }
 
-func interpolateDataSource(ds *repository.DataSource, data interface{}) (*InterpolatedDataSource, error) {
+func interpolateDataSource(ds *repository.DataSource, data interface{}) (*IDataSource, error) {
 	var (
 		buf  bytes.Buffer
 		tmpl *mario.Template
@@ -228,7 +205,7 @@ func interpolateDataSource(ds *repository.DataSource, data interface{}) (*Interp
 		return nil, err
 	}
 
-	return &InterpolatedDataSource{
+	return &IDataSource{
 		ID:        ds.ID,
 		Name:      ds.Name,
 		Url:       buf.String(),
@@ -288,4 +265,21 @@ func interpolateValue(ori string, data interface{}) (s string, err error) {
 		return
 	}
 	return buf.String(), nil
+}
+
+func call(ds *IDataSource) (data []byte, err error) {
+	var (
+		resp *http.Response
+	)
+
+	if resp, err = http.Get(ds.Url); err != nil {
+		return data, err
+	}
+	defer resp.Body.Close()
+
+	if data, err = ioutil.ReadAll(resp.Body); err != nil {
+		return data, err
+	}
+
+	return data, nil
 }

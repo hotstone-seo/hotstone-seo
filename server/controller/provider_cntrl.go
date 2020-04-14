@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
@@ -61,58 +60,59 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, tags)
 }
 
+// NOTE: Keep it as example
 // RetrieveData retrieve data
-func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
-	var (
-		req  service.RetrieveDataRequest
-		resp *service.RetrieveDataResponse
-		ctx  = c.Request().Context()
-	)
-	if err = c.Bind(&req); err != nil {
-		return
-	}
+// func (p *ProviderCntrl) RetrieveData(c echo.Context) (err error) {
+// 	var (
+// 		req  service.RetrieveDataRequest
+// 		resp *service.RetrieveDataResponse
+// 		ctx  = c.Request().Context()
+// 	)
+// 	if err = c.Bind(&req); err != nil {
+// 		return
+// 	}
 
-	pragma := cachekit.CreatePragma(c.Request())
+// 	pragma := cachekit.CreatePragma(c.Request())
 
-	resp, err = p.ProviderService.RetrieveData(ctx, req, pragma)
+// 	resp, err = p.ProviderService.RetrieveData(ctx, req, pragma)
 
-	header := c.Response().Header()
-	for key, value := range pragma.ResponseHeaders() {
-		header.Set(key, value)
-	}
+// 	header := c.Response().Header()
+// 	for key, value := range pragma.ResponseHeaders() {
+// 		header.Set(key, value)
+// 	}
 
-	if cachekit.NotModifiedError(err) {
-		return echo.NewHTTPError(http.StatusNotModified, err.Error())
-	}
+// 	if cachekit.NotModifiedError(err) {
+// 		return echo.NewHTTPError(http.StatusNotModified, err.Error())
+// 	}
 
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+// 	}
 
-	header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+// 	header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 
-	c.Response().WriteHeader(http.StatusOK)
-	_, err = c.Response().Write(resp.Data)
-	return
-}
+// 	c.Response().WriteHeader(http.StatusOK)
+// 	_, err = c.Response().Write(resp.Data)
+// 	return
+// }
 
-// Tags to get tag
-func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
-	var (
-		req  service.ProvideTagsRequest
-		tags []*service.InterpolatedTag
-		ctx  = c.Request().Context()
-	)
-	if err = c.Bind(&req); err != nil {
-		return
-	}
+// // Tags to get tag
+// func (p *ProviderCntrl) Tags(c echo.Context) (err error) {
+// 	var (
+// 		req  service.ProvideTagsRequest
+// 		tags []*service.InterpolatedTag
+// 		ctx  = c.Request().Context()
+// 	)
+// 	if err = c.Bind(&req); err != nil {
+// 		return
+// 	}
 
-	pragma := cachekit.CreatePragma(c.Request())
-	if tags, err = p.ProviderService.Tags(ctx, req, pragma); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, tags)
-}
+// 	pragma := cachekit.CreatePragma(c.Request())
+// 	if tags, err = p.ProviderService.Tags(ctx, req, pragma); err != nil {
+// 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+// 	}
+// 	return c.JSON(http.StatusOK, tags)
+// }
 
 // DumpRuleTree to dump rule tree
 func (p *ProviderCntrl) DumpRuleTree(c echo.Context) (err error) {

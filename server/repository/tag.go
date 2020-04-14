@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"strconv"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -34,6 +35,8 @@ type TagRepo interface {
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Tag) error
+
+	FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) ([]*Tag, error)
 }
 
 // TagRepoImpl is implementation tag repository
@@ -133,6 +136,14 @@ func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list 
 		list = append(list, &e)
 	}
 	return
+}
+
+// FindByRuleAndLocale return list of tag baed on ruleID and locale
+func (r *TagRepoImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) (list []*Tag, err error) {
+	return r.Find(ctx,
+		dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)),
+		dbkit.Equal("locale", locale),
+	)
 }
 
 // Insert tag

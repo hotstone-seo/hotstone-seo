@@ -69,6 +69,21 @@ func (mr *MockTagServiceMockRecorder) Find(arg0 interface{}, arg1 ...interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagService)(nil).Find), varargs...)
 }
 
+// FindByRuleAndLocale mocks base method
+func (m *MockTagService) FindByRuleAndLocale(arg0 context.Context, arg1 int64, arg2 string) ([]*repository.Tag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByRuleAndLocale", arg0, arg1, arg2)
+	ret0, _ := ret[0].([]*repository.Tag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByRuleAndLocale indicates an expected call of FindByRuleAndLocale
+func (mr *MockTagServiceMockRecorder) FindByRuleAndLocale(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByRuleAndLocale", reflect.TypeOf((*MockTagService)(nil).FindByRuleAndLocale), arg0, arg1, arg2)
+}
+
 // FindOne mocks base method
 func (m *MockTagService) FindOne(arg0 context.Context, arg1 int64) (*repository.Tag, error) {
 	m.ctrl.T.Helper()

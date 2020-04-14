@@ -7,7 +7,6 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	cachekit "github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
@@ -79,34 +78,4 @@ func (m *MockProviderService) MatchRule(arg0 context.Context, arg1 service.Match
 func (mr *MockProviderServiceMockRecorder) MatchRule(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MatchRule", reflect.TypeOf((*MockProviderService)(nil).MatchRule), arg0, arg1)
-}
-
-// RetrieveData mocks base method
-func (m *MockProviderService) RetrieveData(arg0 context.Context, arg1 service.RetrieveDataRequest, arg2 *cachekit.Pragma) (*service.RetrieveDataResponse, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RetrieveData", arg0, arg1, arg2)
-	ret0, _ := ret[0].(*service.RetrieveDataResponse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// RetrieveData indicates an expected call of RetrieveData
-func (mr *MockProviderServiceMockRecorder) RetrieveData(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RetrieveData", reflect.TypeOf((*MockProviderService)(nil).RetrieveData), arg0, arg1, arg2)
-}
-
-// Tags mocks base method
-func (m *MockProviderService) Tags(arg0 context.Context, arg1 service.ProvideTagsRequest, arg2 *cachekit.Pragma) ([]*service.InterpolatedTag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Tags", arg0, arg1, arg2)
-	ret0, _ := ret[0].([]*service.InterpolatedTag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Tags indicates an expected call of Tags
-func (mr *MockProviderServiceMockRecorder) Tags(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tags", reflect.TypeOf((*MockProviderService)(nil).Tags), arg0, arg1, arg2)
 }

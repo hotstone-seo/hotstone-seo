@@ -3,17 +3,15 @@ package service_test
 import (
 	"context"
 	"errors"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 
 	"github.com/alicebob/miniredis"
 	"github.com/go-redis/redis"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 
 	"github.com/stretchr/testify/require"
 
@@ -32,64 +30,65 @@ func newTestRedisClient() *redis.Client {
 	return client
 }
 
-func TestProvider_RetrieveData(t *testing.T) {
-	ctx := context.Background()
+// NOTE: keep it as example
+// func TestProvider_RetrieveData(t *testing.T) {
+// 	ctx := context.Background()
 
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+// 	ctrl := gomock.NewController(t)
+// 	defer ctrl.Finish()
 
-	dataSourceRepo := mock_repository.NewMockDataSourceRepo(ctrl)
-	svc := service.ProviderServiceImpl{DataSourceRepo: dataSourceRepo, Redis: newTestRedisClient()}
+// 	dataSourceRepo := mock_repository.NewMockDataSourceRepo(ctrl)
+// 	svc := service.ProviderServiceImpl{DataSourceRepo: dataSourceRepo, Redis: newTestRedisClient()}
 
-	t.Run("", func(t *testing.T) {
-		handler := func(w http.ResponseWriter, r *http.Request) {
-			w.WriteHeader(500)
-			w.Write([]byte("some-data"))
-		}
-		server := httptest.NewServer(http.HandlerFunc(handler))
-		defer server.Close()
+// 	t.Run("", func(t *testing.T) {
+// 		handler := func(w http.ResponseWriter, r *http.Request) {
+// 			w.WriteHeader(500)
+// 			w.Write([]byte("some-data"))
+// 		}
+// 		server := httptest.NewServer(http.HandlerFunc(handler))
+// 		defer server.Close()
 
-		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(&repository.DataSource{
-			Url: server.URL,
-		}, nil)
-		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
-			DataSourceID: 99999,
-		}, &cachekit.Pragma{})
-		require.NoError(t, err)
-		require.Equal(t, &service.RetrieveDataResponse{
-			Data: []byte("some-data"),
-		}, resp)
-	})
+// 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(&repository.DataSource{
+// 			Url: server.URL,
+// 		}, nil)
+// 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
+// 			DataSourceID: 99999,
+// 		}, &cachekit.Pragma{})
+// 		require.NoError(t, err)
+// 		require.Equal(t, &service.RetrieveDataResponse{
+// 			Data: []byte("some-data"),
+// 		}, resp)
+// 	})
 
-	t.Run("WHEN FindOne returns Error", func(t *testing.T) {
-		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, errors.New("some-error"))
-		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
-			DataSourceID: 99999,
-		}, nil)
-		require.EqualError(t, err, "some-error")
-		require.Nil(t, resp)
-	})
+// 	t.Run("WHEN FindOne returns Error", func(t *testing.T) {
+// 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, errors.New("some-error"))
+// 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
+// 			DataSourceID: 99999,
+// 		}, nil)
+// 		require.EqualError(t, err, "some-error")
+// 		require.Nil(t, resp)
+// 	})
 
-	t.Run("WHEN server errors", func(t *testing.T) {
-		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(&repository.DataSource{
-			Url: "non-existent",
-		}, nil)
-		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
-			DataSourceID: 99999,
-		}, &cachekit.Pragma{})
-		require.EqualError(t, err, "Cache: RefreshFunc: Get \"non-existent\": unsupported protocol scheme \"\"")
-		require.Nil(t, resp)
-	})
+// 	t.Run("WHEN server errors", func(t *testing.T) {
+// 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(&repository.DataSource{
+// 			Url: "non-existent",
+// 		}, nil)
+// 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
+// 			DataSourceID: 99999,
+// 		}, &cachekit.Pragma{})
+// 		require.EqualError(t, err, "Cache: RefreshFunc: Get \"non-existent\": unsupported protocol scheme \"\"")
+// 		require.Nil(t, resp)
+// 	})
 
-	t.Run("GIVEN no data-source", func(t *testing.T) {
-		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, nil)
-		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
-			DataSourceID: 99999,
-		}, &cachekit.Pragma{})
-		require.EqualError(t, err, "Data-Source#99999 not found")
-		require.Nil(t, resp)
-	})
-}
+// 	t.Run("GIVEN no data-source", func(t *testing.T) {
+// 		dataSourceRepo.EXPECT().FindOne(ctx, int64(99999)).Return(nil, nil)
+// 		resp, err := svc.RetrieveData(ctx, service.RetrieveDataRequest{
+// 			DataSourceID: 99999,
+// 		}, &cachekit.Pragma{})
+// 		require.EqualError(t, err, "Data-Source#99999 not found")
+// 		require.Nil(t, resp)
+// 	})
+// }
 
 func TestProvider_Tags(t *testing.T) {
 	ctrl := gomock.NewController(t)
