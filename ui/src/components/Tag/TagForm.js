@@ -33,13 +33,13 @@ const APISets = {
 };
 
 // TODO: adjust onSubmit to use appropriate API function for each type
-function TagForm({ tag, onSubmit, onCancel }) {
+function TagForm({ tag, afterSubmit, onCancel }) {
   const [currentType, setCurrentType] = useState(tag.type);
   const APISet = tag.id ? APISets.updateAPI : APISets.createAPI;
   const submitTag = useMemo(() => APISet[currentType], [APISet, currentType]);
 
   const handleSubmit = (formTag) => {
-    submitTag(formTag).then(onSubmit);
+    submitTag(formTag).then(afterSubmit);
   };
 
   const renderSelectedForm = (type) => {
@@ -93,7 +93,7 @@ TagForm.propTypes = {
     rule_id: PropTypes.number.isRequired,
     type: PropTypes.string,
   }).isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  afterSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
 
