@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -37,7 +36,7 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 	var (
 		id     int64
 		locale string
-		tags   []*repository.Tag
+		tags   []*service.ITag
 	)
 	ctx := c.Request().Context()
 
