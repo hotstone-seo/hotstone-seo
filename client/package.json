@@ -5,7 +5,7 @@
   "main": "./lib/hotstone-client.js",
   "scripts": {
     "build": "rm -rf lib && npx webpack --mode=production --config webpack.config.js",
-    "test": "jest"
+    "test": "npx jest --coverage"
   },
   "repository": {
     "type": "git",
