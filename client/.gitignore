@@ -17,3 +17,6 @@ hotstone-client-*.tgz
 
 # MacOS specific
 .DS_Store
+
+# Jest coverage report
+coverage/
