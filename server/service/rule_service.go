@@ -52,7 +52,7 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLSync{
 		Operation:        "INSERT",
 		RuleID:           newRuleID,
-		LatestURLPattern: &rule.UrlPattern,
+		LatestURLPattern: &rule.URLPattern,
 	}); err != nil {
 		r.CancelMe(ctx, err)
 		return newRuleID, err
@@ -116,7 +116,7 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLSync{
 		Operation:        "UPDATE",
 		RuleID:           rule.ID,
-		LatestURLPattern: &rule.UrlPattern,
+		LatestURLPattern: &rule.URLPattern,
 	}); err != nil {
 		r.CancelMe(ctx, err)
 		return

@@ -1,6 +1,7 @@
 package controller_test
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 	"testing"
@@ -22,7 +23,7 @@ func TestRuleController_Create(t *testing.T) {
 	}
 	t.Run("WHEN invalid rule request", func(t *testing.T) {
 		_, err := echotest.DoPOST(ruleCntrl.Create, "/", `{ "name": "", "url_pattern": ""}`, nil)
-		require.EqualError(t, err, "code=400, message=Key: 'Rule.Name' Error:Field validation for 'Name' failed on the 'required' tag\nKey: 'Rule.UrlPattern' Error:Field validation for 'UrlPattern' failed on the 'required' tag")
+		require.EqualError(t, err, "code=400, message=Key: 'Rule.Name' Error:Field validation for 'Name' failed on the 'required' tag\nKey: 'Rule.URLPattern' Error:Field validation for 'URLPattern' failed on the 'required' tag")
 	})
 	t.Run("WHEN invalid json format", func(t *testing.T) {
 		_, err := echotest.DoPOST(ruleCntrl.Create, "/", `invalid`, nil)
@@ -60,7 +61,7 @@ func TestRuleController_Find(t *testing.T) {
 				&repository.Rule{
 					ID:         999,
 					Name:       "Airport Rule",
-					UrlPattern: "/airport",
+					URLPattern: "/airport",
 				},
 			},
 			nil,
@@ -81,7 +82,7 @@ func TestRuleController_FindOne(t *testing.T) {
 	}
 	t.Run("WHEN id is not an integer", func(t *testing.T) {
 		_, err := echotest.DoGET(ruleCntrl.FindOne, "/", map[string]string{"id": "invalid"})
-		require.EqualError(t, err, "code=400, message=Invalid ID")
+		require.EqualError(t, err, "code=422, message=Invalid ID")
 	})
 	t.Run("WHEN received error", func(t *testing.T) {
 		ruleSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, errors.New("find error"))
@@ -89,16 +90,16 @@ func TestRuleController_FindOne(t *testing.T) {
 		require.EqualError(t, err, "code=500, message=find error")
 	})
 	t.Run("WHEN rule is not found", func(t *testing.T) {
-		ruleSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, nil)
+		ruleSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, sql.ErrNoRows)
 		_, err := echotest.DoGET(ruleCntrl.FindOne, "/", map[string]string{"id": "999"})
-		require.EqualError(t, err, "code=404, message=Rule #999 not found")
+		require.EqualError(t, err, "code=404, message=Not Found")
 	})
 	t.Run("WHEN successful", func(t *testing.T) {
 		ruleSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(
 			&repository.Rule{
 				ID:         999,
 				Name:       "Airport Rule",
-				UrlPattern: "/airport",
+				URLPattern: "/airport",
 			},
 			nil,
 		)
@@ -151,7 +152,7 @@ func TestRuleController_Update(t *testing.T) {
 	})
 	t.Run("WHEN rule is invalid", func(t *testing.T) {
 		_, err := echotest.DoPUT(ruleCntrl.Update, "/", `{ "id": 999, "name": "Airport Rule" }`, nil)
-		require.EqualError(t, err, "code=400, message=Key: 'Rule.UrlPattern' Error:Field validation for 'UrlPattern' failed on the 'required' tag")
+		require.EqualError(t, err, "code=400, message=Key: 'Rule.URLPattern' Error:Field validation for 'URLPattern' failed on the 'required' tag")
 	})
 	t.Run("WHEN received error after updating", func(t *testing.T) {
 		ruleSvcMock.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update error"))

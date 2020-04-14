@@ -192,7 +192,7 @@ func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, 
 	return
 }
 
-// FetchTag handle logic for fetching tag
+// FetchTags handle logic for fetching tag
 func (p *ProviderServiceImpl) FetchTags(
 	ctx context.Context,
 	ruleID int64,

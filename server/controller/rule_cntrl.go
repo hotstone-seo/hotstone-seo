@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -40,20 +41,25 @@ func (c *RuleCntrl) Find(ctx echo.Context) (err error) {
 }
 
 // FindOne rule
-func (c *RuleCntrl) FindOne(ctx echo.Context) (err error) {
-	var id int64
-	var rule *repository.Rule
-	ctx0 := ctx.Request().Context()
-	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+func (c *RuleCntrl) FindOne(ec echo.Context) (err error) {
+	var (
+		id   int64
+		rule *repository.Rule
+	)
+
+	ctx := ec.Request().Context()
+	if id, err = strconv.ParseInt(ec.Param("id"), 10, 64); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid ID")
 	}
-	if rule, err = c.RuleService.FindOne(ctx0, id); err != nil {
+	rule, err = c.RuleService.FindOne(ctx, id)
+	if err == sql.ErrNoRows {
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	if rule == nil {
-		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Rule #%d not found", id))
-	}
-	return ctx.JSON(http.StatusOK, rule)
+
+	return ec.JSON(http.StatusOK, rule)
 }
 
 // Create rule
