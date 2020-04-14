@@ -7,7 +7,6 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
@@ -51,10 +50,10 @@ func (mr *MockProviderServiceMockRecorder) DumpRuleTree(arg0 interface{}) *gomoc
 }
 
 // FetchTags mocks base method
-func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 string) ([]*repository.Tag, error) {
+func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 string) ([]*service.ITag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchTags", arg0, arg1, arg2)
-	ret0, _ := ret[0].([]*repository.Tag)
+	ret0, _ := ret[0].([]*service.ITag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

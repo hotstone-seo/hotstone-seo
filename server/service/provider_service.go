@@ -3,19 +3,17 @@ package service
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"github.com/imantung/mario"
 	log "github.com/sirupsen/logrus"
-	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -23,13 +21,8 @@ import (
 // ProviderService contain logic for ProviderController [mock]
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
+	FetchTags(ctx context.Context, id int64, locale string) ([]*ITag, error)
 	DumpRuleTree(context.Context) (string, error)
-
-	FetchTags(
-		ctx context.Context,
-		id int64,
-		locale string,
-	) ([]*repository.Tag, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
@@ -44,8 +37,8 @@ type ProviderServiceImpl struct {
 	Redis *redis.Client
 }
 
-// InterpolatedTag is tag after interpolate with data
-type InterpolatedTag repository.Tag
+// ITag is tag after interpolate with data
+type ITag repository.Tag
 
 // IDataSource is datasource after interpolate with data
 type IDataSource repository.DataSource
@@ -85,83 +78,13 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 	}, nil
 }
 
-func (p *ProviderServiceImpl) findIDataSource(ctx context.Context, dataSourceID int64, pathParam map[string]string) (interpolated *IDataSource, err error) {
-	var (
-		ds *repository.DataSource
-	)
-
-	if ds, err = p.DataSourceRepo.FindOne(ctx, dataSourceID); err != nil {
-		return
-	}
-
-	if interpolated, err = interpolateDataSource(ds, pathParam); err != nil {
-		return
-	}
-
-	return
-}
-
-// Tags to return interpolated tag
-func (p *ProviderServiceImpl) Tags(ctx context.Context, req ProvideTagsRequest, pragma *cachekit.Pragma) (interpolatedTags []*InterpolatedTag, err error) {
-	var (
-		tags []*repository.Tag
-		data = req.Data
-		// dataResp     *RetrieveDataResponse
-		rule         *repository.Rule
-		interpolated *InterpolatedTag
-	)
-
-	if tags, err = p.TagRepo.Find(ctx,
-		dbkit.Equal("rule_id", strconv.FormatInt(req.RuleID, 10)),
-		dbkit.Equal("locale", req.Locale),
-	); err != nil {
-		err = fmt.Errorf("Provider: Tags: Find: %s", err.Error())
-		return
-	}
-
-	if data == nil {
-		// NOTE: We can omit another call to the repository here by including the whole rule object in
-		// ProvideTagsRequest. Will be done later since the change impact is not local.
-		if rule, err = p.RuleRepo.FindOne(ctx, req.RuleID); err != nil {
-			return
-		}
-		if rule == nil {
-			err = fmt.Errorf("Rule#%d not found", req.RuleID)
-			return
-		}
-		if rule.DataSourceID != nil {
-			// TODO:
-			// if dataResp, err = p.RetrieveData(ctx,
-			// 	RetrieveDataRequest{
-			// 		DataSourceID: *rule.DataSourceID,
-			// 		PathParam:    req.PathParam,
-			// 	}, pragma,
-			// ); err != nil {
-			// 	return
-			// }
-			// if err = json.Unmarshal(dataResp.Data, &data); err != nil {
-			// 	return
-			// }
-		}
-	}
-
-	interpolatedTags = make([]*InterpolatedTag, 0)
-	for _, tag := range tags {
-		if interpolated, err = interpolateTag(tag, data); err != nil {
-			return
-		}
-		interpolatedTags = append(interpolatedTags, interpolated)
-	}
-	return
+// DumpRuleTree to dump the rule tree
+func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, err error) {
+	return p.URLService.DumpTree(), nil
 }
 
 // FetchTags handle logic for fetching tag
-func (p *ProviderServiceImpl) FetchTags(
-	ctx context.Context,
-	ruleID int64,
-	locale string,
-) (tags []*repository.Tag, err error) {
-
+func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, locale string) (itags []*ITag, err error) {
 	var (
 		rule *repository.Rule
 	)
@@ -177,18 +100,66 @@ func (p *ProviderServiceImpl) fetchTags(
 	ctx context.Context,
 	rule *repository.Rule,
 	locale string,
-) (tags []*repository.Tag, err error) {
+) (itags []*ITag, err error) {
+
+	var (
+		tags  []*repository.Tag
+		ds    *IDataSource
+		b     []byte
+		param map[string]interface{}
+		itag  *ITag
+	)
 
 	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
 		return
 	}
 
+	if rule.DataSourceID != nil {
+		if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, map[string]interface{}{
+			"id": rule.ID,
+		}); err != nil {
+			return nil, err
+		}
+
+		if b, err = call(ds); err != nil {
+			return nil, fmt.Errorf("Call: %w", err)
+		}
+
+		if err = json.Unmarshal(b, &param); err != nil {
+			return nil, fmt.Errorf("JSON: %w", err)
+		}
+
+		for _, tag := range tags {
+			if itag, err = interpolateTag(tag, param); err != nil {
+				return nil, fmt.Errorf("Interpolate-Tag: %w", err)
+			}
+			itags = append(itags, itag)
+		}
+
+	} else {
+		for _, tag := range tags {
+			itag := ITag(*tag)
+			itags = append(itags, &itag)
+		}
+	}
+
 	return
 }
 
-// DumpRuleTree to dump the rule tree
-func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, err error) {
-	return p.URLService.DumpTree(), nil
+func (p *ProviderServiceImpl) findAndInterpolateDataSource(ctx context.Context, dataSourceID int64, param interface{}) (interpolated *IDataSource, err error) {
+	var (
+		ds *repository.DataSource
+	)
+
+	if ds, err = p.DataSourceRepo.FindOne(ctx, dataSourceID); err != nil {
+		return nil, fmt.Errorf("DataSource: %w", err)
+	}
+
+	if interpolated, err = interpolateDataSource(ds, param); err != nil {
+		return nil, fmt.Errorf("Interpolate-DataSource: %w", err)
+	}
+
+	return
 }
 
 func interpolateDataSource(ds *repository.DataSource, data interface{}) (*IDataSource, error) {
@@ -214,7 +185,7 @@ func interpolateDataSource(ds *repository.DataSource, data interface{}) (*IDataS
 	}, nil
 }
 
-func interpolateTag(tag *repository.Tag, data interface{}) (*InterpolatedTag, error) {
+func interpolateTag(tag *repository.Tag, data interface{}) (*ITag, error) {
 	var (
 		attribute dbtype.JSON
 		value     string
@@ -226,7 +197,7 @@ func interpolateTag(tag *repository.Tag, data interface{}) (*InterpolatedTag, er
 	if value, err = interpolateValue(tag.Value, data); err != nil {
 		return nil, err
 	}
-	return &InterpolatedTag{
+	return &ITag{
 		ID:         tag.ID,
 		RuleID:     tag.RuleID,
 		Locale:     tag.Locale,
@@ -239,7 +210,7 @@ func interpolateTag(tag *repository.Tag, data interface{}) (*InterpolatedTag, er
 
 }
 
-func interpolateAttribute(ori dbtype.JSON, data interface{}) (interpolated dbtype.JSON, err error) {
+func interpolateAttribute(ori dbtype.JSON, param interface{}) (interpolated dbtype.JSON, err error) {
 	var (
 		tmpl *mario.Template
 		buf  bytes.Buffer
@@ -247,13 +218,13 @@ func interpolateAttribute(ori dbtype.JSON, data interface{}) (interpolated dbtyp
 	if tmpl, err = mario.New().Parse(string(ori)); err != nil {
 		return
 	}
-	if err = tmpl.Execute(&buf, data); err != nil {
+	if err = tmpl.Execute(&buf, param); err != nil {
 		return
 	}
 	return buf.Bytes(), nil
 }
 
-func interpolateValue(ori string, data interface{}) (s string, err error) {
+func interpolateValue(ori string, param interface{}) (s string, err error) {
 	var (
 		tmpl *mario.Template
 		buf  bytes.Buffer
@@ -261,7 +232,7 @@ func interpolateValue(ori string, data interface{}) (s string, err error) {
 	if tmpl, err = mario.New().Parse(ori); err != nil {
 		return
 	}
-	if err = tmpl.Execute(&buf, data); err != nil {
+	if err = tmpl.Execute(&buf, param); err != nil {
 		return
 	}
 	return buf.String(), nil
