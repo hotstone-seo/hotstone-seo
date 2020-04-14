@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -78,20 +79,26 @@ func (c *TagCntrl) Find(ce echo.Context) (err error) {
 }
 
 // FindOne tag
-func (c *TagCntrl) FindOne(ctx echo.Context) (err error) {
-	var id int64
-	var tag *repository.Tag
-	ctx0 := ctx.Request().Context()
-	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+func (c *TagCntrl) FindOne(ec echo.Context) (err error) {
+	var (
+		id  int64
+		tag *repository.Tag
+	)
+	ctx := ec.Request().Context()
+	if id, err = strconv.ParseInt(ec.Param("id"), 10, 64); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid ID")
 	}
-	if tag, err = c.TagService.FindOne(ctx0, id); err != nil {
+
+	tag, err = c.TagService.FindOne(ctx, id)
+	if err == sql.ErrNoRows {
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+
+	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	if tag == nil {
-		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("Tag#%d not found", id))
-	}
-	return ctx.JSON(http.StatusOK, tag)
+
+	return ec.JSON(http.StatusOK, tag)
 }
 
 // Delete tag

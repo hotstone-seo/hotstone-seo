@@ -1,6 +1,7 @@
 package controller_test
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 	"testing"
@@ -89,7 +90,7 @@ func TestTagController_FindOne(t *testing.T) {
 	}
 	t.Run("WHEN ID param is not an integer", func(t *testing.T) {
 		_, err := echotest.DoGET(tagCntrl.FindOne, "/", map[string]string{"id": "invalid"})
-		require.EqualError(t, err, "code=400, message=Invalid ID")
+		require.EqualError(t, err, "code=422, message=Invalid ID")
 	})
 	t.Run("WHEN received error", func(t *testing.T) {
 		tagSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, errors.New("find error"))
@@ -97,9 +98,9 @@ func TestTagController_FindOne(t *testing.T) {
 		require.EqualError(t, err, "code=500, message=find error")
 	})
 	t.Run("WHEN tag not found", func(t *testing.T) {
-		tagSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, nil)
+		tagSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(nil, sql.ErrNoRows)
 		_, err := echotest.DoGET(tagCntrl.FindOne, "/", map[string]string{"id": "999"})
-		require.EqualError(t, err, "code=404, message=Tag#999 not found")
+		require.EqualError(t, err, "code=404, message=Not Found")
 	})
 	t.Run("WHEN successful", func(t *testing.T) {
 		tagSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(

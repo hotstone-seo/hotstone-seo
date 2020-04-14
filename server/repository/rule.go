@@ -51,7 +51,7 @@ func (rule Rule) Validate() error {
 
 // FindOne rule
 func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (*Rule, error) {
-	builder := sq.StatementBuilder.
+	row := sq.StatementBuilder.
 		Select(
 			"id",
 			"name",
@@ -65,10 +65,11 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (*Rule, error) {
 		From("rules").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.BaseRunner(ctx, r)).
+		QueryRowContext(ctx)
 
 	rule := new(Rule)
-	if err := builder.QueryRowContext(ctx).Scan(
+	if err := row.Scan(
 		&rule.ID,
 		&rule.Name,
 		&rule.URLPattern,
