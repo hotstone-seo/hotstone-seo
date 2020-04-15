@@ -73,10 +73,10 @@ func TestProviderService(t *testing.T) {
 		TagRepo:        tagmock,
 	}
 
-	ctx := context.Background()
-
 	ts := dummyServer(ds666_response)
 	defer ts.Close()
+
+	ctx := context.Background()
 
 	rulemock.EXPECT().FindOne(ctx, int64(999)).
 		Return(rule999, nil)
@@ -96,7 +96,7 @@ func TestProviderService(t *testing.T) {
 
 }
 
-func TestProviderService_FetchTags_Error(t *testing.T) {
+func TestProviderService_FetchTags_When(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -112,11 +112,13 @@ func TestProviderService_FetchTags_Error(t *testing.T) {
 
 	ctx := context.Background()
 
-	t.Run("GIVEN rule not exist", func(t *testing.T) {
+	t.Run("WHEN rule not exist", func(t *testing.T) {
 		rulemock.EXPECT().FindOne(ctx, int64(999)).
 			Return(nil, sql.ErrNoRows)
 
 		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+
+		// THEN return error
 		require.Equal(t, sql.ErrNoRows, err)
 	})
 
@@ -127,6 +129,8 @@ func TestProviderService_FetchTags_Error(t *testing.T) {
 			Return(nil, errors.New("some-error"))
 
 		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+
+		// THEN return error
 		require.EqualError(t, err, "Find-Tags: some-error")
 	})
 
@@ -138,6 +142,8 @@ func TestProviderService_FetchTags_Error(t *testing.T) {
 
 		tags, err := svc.FetchTags(ctx, int64(777), "en_US")
 		require.NoError(t, err)
+
+		// THEN return empty list
 		require.Empty(t, tags)
 	})
 
@@ -166,6 +172,8 @@ func TestProviderService_FetchTags_Error(t *testing.T) {
 			Return(nil, fmt.Errorf("some-error"))
 
 		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+
+		// THEN return error
 		require.EqualError(t, err, "DataSource: some-error")
 	})
 
@@ -178,6 +186,8 @@ func TestProviderService_FetchTags_Error(t *testing.T) {
 			Return(&repository.DataSource{URL: "bad-url"}, nil)
 
 		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+
+		// THEN return error
 		require.EqualError(t, err, "Call: Get \"bad-url\": unsupported protocol scheme \"\"")
 	})
 
@@ -193,6 +203,8 @@ func TestProviderService_FetchTags_Error(t *testing.T) {
 			Return(&repository.DataSource{URL: ts.URL}, nil)
 
 		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+
+		// THEN return error
 		require.EqualError(t, err, "JSON: invalid character 'b' looking for beginning of object key string")
 	})
 
