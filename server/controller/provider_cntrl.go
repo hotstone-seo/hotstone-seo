@@ -18,14 +18,14 @@ type ProviderCntrl struct {
 // MatchRule to match rule
 func (p *ProviderCntrl) MatchRule(c echo.Context) (err error) {
 	var (
-		req  service.MatchRuleRequest
-		resp *service.MatchRuleResponse
+		req  service.MatchRequest
+		resp *service.MatchResponse
 		ctx  = c.Request().Context()
 	)
 	if err = c.Bind(&req); err != nil {
 		return err
 	}
-	if resp, err = p.ProviderService.MatchRule(ctx, req); err != nil {
+	if resp, err = p.ProviderService.Match(ctx, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	return c.JSON(http.StatusOK, resp)

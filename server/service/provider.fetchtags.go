@@ -7,75 +7,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 
-	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
-	"github.com/imantung/mario"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"go.uber.org/dig"
+	"github.com/imantung/mario"
 )
-
-// ProviderService contain logic for ProviderController [mock]
-type ProviderService interface {
-	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
-	FetchTags(ctx context.Context, id int64, locale string) ([]*ITag, error)
-}
-
-// ProviderServiceImpl is implementation of ProviderService
-type ProviderServiceImpl struct {
-	dig.In
-	MetricsRuleMatchingService
-	repository.DataSourceRepo
-	repository.RuleRepo
-	repository.TagRepo
-	URLService
-
-	Redis *redis.Client
-}
-
-// ITag is tag after interpolate with data
-type ITag repository.Tag
-
-// IDataSource is datasource after interpolate with data
-type IDataSource repository.DataSource
-
-// NewProviderService return new instance of ProviderService [constructor]
-func NewProviderService(impl ProviderServiceImpl) ProviderService {
-	return &impl
-}
-
-// MatchRule to match rule
-func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleRequest) (resp *MatchRuleResponse, err error) {
-	mtx := &repository.MetricsRuleMatching{}
-	defer func() {
-		if errInsert := p.MetricsRuleMatchingService.Insert(ctx, *mtx); errInsert != nil {
-			log.Warnf("Failed to record rule matching metric: %+v", errInsert)
-		}
-	}()
-
-	url, err := url.Parse(req.Path)
-	if err != nil {
-		return
-	}
-
-	ruleID, pathParam := p.URLService.Match(url.Path)
-	if ruleID == -1 {
-		// mismatched
-		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
-
-		return nil, fmt.Errorf("No rule match: %s", url.Path)
-	}
-
-	// matched
-	p.MetricsRuleMatchingService.SetMatched(mtx, url.Path, int64(ruleID))
-	return &MatchRuleResponse{
-		RuleID:    int64(ruleID),
-		PathParam: pathParam,
-	}, nil
-}
 
 // FetchTags handle logic for fetching tag
 func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, locale string) (itags []*ITag, err error) {
@@ -90,11 +26,7 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, local
 	return p.fetchTags(ctx, rule, locale)
 }
 
-func (p *ProviderServiceImpl) fetchTags(
-	ctx context.Context,
-	rule *repository.Rule,
-	locale string,
-) (itags []*ITag, err error) {
+func (p *ProviderServiceImpl) fetchTags(ctx context.Context, rule *repository.Rule, locale string) (itags []*ITag, err error) {
 
 	var (
 		tags  []*repository.Tag

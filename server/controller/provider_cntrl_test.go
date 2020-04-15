@@ -25,12 +25,12 @@ func TestProviderCntrl_MatchRule(t *testing.T) {
 		require.EqualError(t, err, "code=400, message=Syntax error: offset=2, error=invalid character 'i' looking for beginning of object key string")
 	})
 	t.Run("WHEN error match rule", func(t *testing.T) {
-		svc.EXPECT().MatchRule(gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
+		svc.EXPECT().Match(gomock.Any(), gomock.Any()).Return(nil, errors.New("some-error"))
 		_, err := echotest.DoPOST(cntrl.MatchRule, "/", `{"path":"some-path"}`, nil)
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().MatchRule(gomock.Any(), gomock.Any()).Return(&service.MatchRuleResponse{RuleID: 12345, PathParam: map[string]string{"param01": "value01"}}, nil)
+		svc.EXPECT().Match(gomock.Any(), gomock.Any()).Return(&service.MatchResponse{RuleID: 12345, PathParam: map[string]string{"param01": "value01"}}, nil)
 		rec, err := echotest.DoPOST(cntrl.MatchRule, "/", `{"path":"some-path"}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, 200, rec.Code)
