@@ -22,7 +22,6 @@ import (
 type ProviderService interface {
 	MatchRule(context.Context, MatchRuleRequest) (*MatchRuleResponse, error)
 	FetchTags(ctx context.Context, id int64, locale string) ([]*ITag, error)
-	DumpRuleTree(context.Context) (string, error)
 }
 
 // ProviderServiceImpl is implementation of ProviderService
@@ -76,11 +75,6 @@ func (p *ProviderServiceImpl) MatchRule(ctx context.Context, req MatchRuleReques
 		RuleID:    int64(ruleID),
 		PathParam: pathParam,
 	}, nil
-}
-
-// DumpRuleTree to dump the rule tree
-func (p *ProviderServiceImpl) DumpRuleTree(ctx context.Context) (dump string, err error) {
-	return p.URLService.DumpTree(), nil
 }
 
 // FetchTags handle logic for fetching tag

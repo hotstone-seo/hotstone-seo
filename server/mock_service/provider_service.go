@@ -34,21 +34,6 @@ func (m *MockProviderService) EXPECT() *MockProviderServiceMockRecorder {
 	return m.recorder
 }
 
-// DumpRuleTree mocks base method
-func (m *MockProviderService) DumpRuleTree(arg0 context.Context) (string, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DumpRuleTree", arg0)
-	ret0, _ := ret[0].(string)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// DumpRuleTree indicates an expected call of DumpRuleTree
-func (mr *MockProviderServiceMockRecorder) DumpRuleTree(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DumpRuleTree", reflect.TypeOf((*MockProviderService)(nil).DumpRuleTree), arg0)
-}
-
 // FetchTags mocks base method
 func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 string) ([]*service.ITag, error) {
 	m.ctrl.T.Helper()

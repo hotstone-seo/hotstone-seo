@@ -4,4 +4,4 @@ http://localhost:8089/application/health
 
 ### Dump Rule Tree
 
-http://localhost:8089/p/dump-rule-tree
+http://localhost:8089/prof/url-tree

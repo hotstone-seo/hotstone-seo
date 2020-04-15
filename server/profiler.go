@@ -1,7 +1,10 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/go-redis/redis"
+	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"github.com/typical-go/typical-rest-server/pkg/serverkit"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
@@ -12,17 +15,23 @@ type profiler struct {
 	dig.In
 	Pg    *typpostgres.DB
 	Redis *redis.Client
+	service.URLService
 }
 
-func (h *profiler) route(e *echo.Echo) {
-	e.Any("application/health", h.healthCheck)
+func (p *profiler) route(e *echo.Echo) {
+	e.Any("application/health", p.healthCheck)
+	e.GET("prof/url-tree", p.dumpURLTree)
 }
 
-func (h *profiler) healthCheck(ec echo.Context) (err error) {
+func (p *profiler) healthCheck(ec echo.Context) (err error) {
 	healthcheck := serverkit.NewHealthCheck()
-	healthcheck.Put("postgres", h.Pg.Ping)
-	healthcheck.Put("redis", h.Redis.Ping().Err)
+	healthcheck.Put("postgres", p.Pg.Ping)
+	healthcheck.Put("redis", p.Redis.Ping().Err)
 
 	status, message := healthcheck.Process()
 	return ec.JSON(status, message)
+}
+
+func (p *profiler) dumpURLTree(c echo.Context) (err error) {
+	return c.String(http.StatusOK, p.URLService.DumpTree())
 }

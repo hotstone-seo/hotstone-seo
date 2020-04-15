@@ -14,7 +14,4 @@ type provider struct {
 func (p *provider) route(e *echo.Echo) {
 	e.POST("p/match", p.MatchRule)
 	e.GET("p/rule/:id", p.FetchTag)
-
-	// TODO: should hide in production or require some secret-key
-	e.GET("p/dump-rule-tree", p.DumpRuleTree)
 }

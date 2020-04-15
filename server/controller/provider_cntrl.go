@@ -112,19 +112,3 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 // 	}
 // 	return c.JSON(http.StatusOK, tags)
 // }
-
-// DumpRuleTree to dump rule tree
-func (p *ProviderCntrl) DumpRuleTree(c echo.Context) (err error) {
-	var (
-		req     service.ProvideTagsRequest
-		strTree string
-		ctx     = c.Request().Context()
-	)
-	if err = c.Bind(&req); err != nil {
-		return
-	}
-	if strTree, err = p.ProviderService.DumpRuleTree(ctx); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-	return c.String(http.StatusOK, strTree)
-}
