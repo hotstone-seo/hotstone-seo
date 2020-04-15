@@ -20,9 +20,9 @@ type server struct {
 	dig.In
 	*config.Config
 
-	API         api
-	Provider    provider
-	HealthCheck healthcheck
+	API      api
+	Provider provider
+	Profiler profiler
 
 	Postgres *typpostgres.DB
 	Redis    *redis.Client
@@ -43,7 +43,7 @@ func startServer(s server) error {
 
 	s.API.route(e)
 	s.Provider.route(e)
-	s.HealthCheck.route(e)
+	s.Profiler.route(e)
 
 	return e.Start(s.Address)
 }
