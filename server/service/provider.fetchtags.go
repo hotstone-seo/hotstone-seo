@@ -16,19 +16,7 @@ import (
 // FetchTags handle logic for fetching tag
 func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, locale string) (itags []*ITag, err error) {
 	var (
-		rule *repository.Rule
-	)
-
-	if rule, err = p.RuleRepo.FindOne(ctx, ruleID); err != nil {
-		return
-	}
-
-	return p.fetchTags(ctx, rule, locale)
-}
-
-func (p *ProviderServiceImpl) fetchTags(ctx context.Context, rule *repository.Rule, locale string) (itags []*ITag, err error) {
-
-	var (
+		rule  *repository.Rule
 		tags  []*repository.Tag
 		ds    *IDataSource
 		b     []byte
@@ -36,37 +24,45 @@ func (p *ProviderServiceImpl) fetchTags(ctx context.Context, rule *repository.Ru
 		itag  *ITag
 	)
 
-	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
+	if rule, err = p.RuleRepo.FindOne(ctx, ruleID); err != nil {
 		return
 	}
 
-	if rule.DataSourceID != nil {
-		if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, map[string]interface{}{
-			"id": rule.ID,
-		}); err != nil {
-			return nil, err
-		}
+	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
+		return nil, fmt.Errorf("Find-Tags: %w", err)
+	}
 
-		if b, err = call(ds); err != nil {
-			return nil, fmt.Errorf("Call: %w", err)
-		}
+	if len(tags) < 1 {
+		return []*ITag{}, nil
+	}
 
-		if err = json.Unmarshal(b, &param); err != nil {
-			return nil, fmt.Errorf("JSON: %w", err)
-		}
-
-		for _, tag := range tags {
-			if itag, err = interpolateTag(tag, param); err != nil {
-				return nil, fmt.Errorf("Interpolate-Tag: %w", err)
-			}
-			itags = append(itags, itag)
-		}
-
-	} else {
+	if rule.DataSourceID == nil {
 		for _, tag := range tags {
 			itag := ITag(*tag)
 			itags = append(itags, &itag)
 		}
+		return
+	}
+
+	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, map[string]interface{}{
+		"id": rule.ID,
+	}); err != nil {
+		return nil, err
+	}
+
+	if b, err = call(ds); err != nil {
+		return nil, fmt.Errorf("Call: %w", err)
+	}
+
+	if err = json.Unmarshal(b, &param); err != nil {
+		return nil, fmt.Errorf("JSON: %w", err)
+	}
+
+	for _, tag := range tags {
+		if itag, err = interpolateTag(tag, param); err != nil {
+			return nil, fmt.Errorf("Interpolate-Tag: %w", err)
+		}
+		itags = append(itags, itag)
 	}
 
 	return
