@@ -1,17 +1,19 @@
 import { HotStoneClient } from './index'
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter'
+import { Server, Response } from "miragejs"
 
 describe('HotStone-Client', () => {
-    let mockApiCaller;
     let subject;
+    let mockServer;
 
     beforeEach(() => {
-        mockApiCaller = new MockAdapter(axios);
         subject = new HotStoneClient('https://foo.com');
+        mockServer = new Server({
+            urlPrefix: 'https://foo.com',
+            trackRequests: true
+        })
     })
     afterEach(() => {
-        mockApiCaller.restore();
+        mockServer.shutdown();
     });
 
     describe('match', () => {
@@ -20,20 +22,27 @@ describe('HotStone-Client', () => {
                 rule_id: 1,
                 path_param: {}
             }
-
-            mockApiCaller.onPost('/p/match', { path: '/bar/fred' }).replyOnce(200, mockResp)
+            mockServer.post("/p/match", (schema, request) => { return mockResp })
 
             const rule = await subject.match('/bar/fred')
             expect(rule).toEqual(mockResp)
 
-            expect(mockApiCaller.history.post.length).toBe(1);
-            expect(mockApiCaller.history.post[0].data).toBe(JSON.stringify({ path: '/bar/fred' }));
+            const requests = mockServer.pretender.handledRequests
+            expect(requests.length).toBe(1)
+            expect(requests[0].requestBody).toBe(JSON.stringify({ path: '/bar/fred' }))
         })
 
         test('bad response', async () => {
-            mockApiCaller.onPost('/p/match', { path: '/bar/fred' }).replyOnce(404)
+            mockServer.post("/p/match", (schema, request) => { 
+                return new Response(400);
+            })
+
             const rule = await subject.match('/bar/fred')
             expect(rule).toEqual({})
+
+            const requests = mockServer.pretender.handledRequests
+            expect(requests.length).toBe(1)
+            expect(requests[0].requestBody).toBe(JSON.stringify({ path: '/bar/fred' }))
         })
     })
 })
