@@ -91,7 +91,7 @@ func interpolateDataSource(ds *repository.DataSource, data interface{}) (*IDataS
 		err  error
 	)
 
-	if tmpl, err = mario.New().Parse(ds.Url); err != nil {
+	if tmpl, err = mario.New().Parse(ds.URL); err != nil {
 		return nil, err
 	}
 	if err := tmpl.Execute(&buf, data); err != nil {
@@ -101,7 +101,7 @@ func interpolateDataSource(ds *repository.DataSource, data interface{}) (*IDataS
 	return &IDataSource{
 		ID:        ds.ID,
 		Name:      ds.Name,
-		Url:       buf.String(),
+		URL:       buf.String(),
 		UpdatedAt: ds.UpdatedAt,
 		CreatedAt: ds.CreatedAt,
 	}, nil
@@ -165,7 +165,7 @@ func call(ds *IDataSource) (data []byte, err error) {
 		resp *http.Response
 	)
 
-	if resp, err = http.Get(ds.Url); err != nil {
+	if resp, err = http.Get(ds.URL); err != nil {
 		return data, err
 	}
 	defer resp.Body.Close()

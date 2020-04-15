@@ -9,7 +9,7 @@ import (
 type DataSource struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
-	Url       string    `json:"url"`
+	URL       string    `json:"url"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
 }

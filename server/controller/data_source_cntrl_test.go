@@ -56,7 +56,7 @@ func TestDataSourceController_Find(t *testing.T) {
 				&repository.DataSource{
 					ID:   100,
 					Name: "Airport Data Source",
-					Url:  "dssource1.com",
+					URL:  "dssource1.com",
 				},
 			},
 			nil,
@@ -94,7 +94,7 @@ func TestDataSourceController_FindOne(t *testing.T) {
 			&repository.DataSource{
 				ID:   100,
 				Name: "Airport Data Source",
-				Url:  "dssource1.com",
+				URL:  "dssource1.com",
 			},
 			nil,
 		)
