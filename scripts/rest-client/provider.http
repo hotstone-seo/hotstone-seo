@@ -7,21 +7,9 @@ content-type: application/json
     "path": "/events/bingbang"
 }
 
-### Retrieve Data
-
-POST http://localhost:8089/p/retrieve-data
-Content-Type: application/json
-If-Modified-Since: Thu, 09 Apr 2020 05:32:56 UTC
-
-{
-    "data_source_id": 1, 
-    "path_param": {
-        "eventName":"bigbang"
-    }
-}
-
 ### Tags
 
 http://localhost:8089/p/rule/1?locale=en_US
+If-Modified-Since: Thu, 16 Apr 2020 06:00:50 UTC
 
 

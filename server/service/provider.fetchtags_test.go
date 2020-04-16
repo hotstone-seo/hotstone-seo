@@ -58,8 +58,7 @@ var (
 	}
 )
 
-func TestProviderService(t *testing.T) {
-
+func TestProviderService_FetchTags(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -93,7 +92,6 @@ func TestProviderService(t *testing.T) {
 	tags, err := svc.FetchTags(ctx, int64(999), "en_US")
 	require.NoError(t, err)
 	require.Equal(t, itags_rule999_en_US, tags)
-
 }
 
 func TestProviderService_FetchTags_When(t *testing.T) {

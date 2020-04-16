@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -52,10 +53,13 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Missing query param for `Locale`")
 	}
 
-	if tags, err = p.ProviderService.FetchTags(ctx, id, locale); err != nil {
+	pragma := cachekit.CreatePragma(c.Request())
+	if tags, err = p.ProviderService.FetchTagsWithCache(ctx, id, locale, pragma); err != nil {
+		cachekit.SetHeader(c.Response(), pragma)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
+	cachekit.SetHeader(c.Response(), pragma)
 	return c.JSON(http.StatusOK, tags)
 }
 

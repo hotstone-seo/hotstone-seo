@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-redis/redis"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -13,6 +14,7 @@ import (
 type ProviderService interface {
 	Match(context.Context, MatchRequest) (*MatchResponse, error)
 	FetchTags(ctx context.Context, id int64, locale string) ([]*ITag, error)
+	FetchTagsWithCache(ctx context.Context, id int64, locale string, pragma *cachekit.Pragma) ([]*ITag, error)
 }
 
 // ProviderServiceImpl is implementation of Provider
