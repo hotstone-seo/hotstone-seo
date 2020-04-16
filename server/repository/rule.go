@@ -120,14 +120,14 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 	for rows.Next() {
 		rule := new(Rule)
 		if err = rows.Scan(
-			rule.ID,
-			rule.Name,
-			rule.URLPattern,
-			rule.DataSourceID,
-			rule.UpdatedAt,
-			rule.CreatedAt,
-			rule.Status,
-			rule.ChangeStatusAt,
+			&rule.ID,
+			&rule.Name,
+			&rule.URLPattern,
+			&rule.DataSourceID,
+			&rule.UpdatedAt,
+			&rule.CreatedAt,
+			&rule.Status,
+			&rule.ChangeStatusAt,
 		); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
