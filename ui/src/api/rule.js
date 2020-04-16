@@ -54,7 +54,7 @@ const RuleAPI = {
   get: getRule,
   create: createRule,
   update: updateRule,
-  delete: deleteRule
+  delete: deleteRule,
 };
 
 export default RuleAPI;

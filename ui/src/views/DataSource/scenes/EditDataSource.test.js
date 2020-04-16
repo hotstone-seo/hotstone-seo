@@ -7,8 +7,8 @@ import {
 import '@testing-library/jest-dom/extend-expect';
 import userEvent from '@testing-library/user-event';
 import mockAxios from 'jest-mock-axios';
+import { createMemoryHistory } from 'history';
 import EditDataSource from './EditDataSource';
-import { createMemoryHistory } from "history";
 
 afterEach(cleanup);
 

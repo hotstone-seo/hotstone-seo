@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { message, Space, Select, Button } from 'antd';
+import {
+  message, Space, Select, Button,
+} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { fetchTags, deleteTag } from 'api/tag';
 import { TagForm, TagList } from 'components/Tag';
