@@ -47,7 +47,7 @@ func TestProviderController_FetchTag(t *testing.T) {
 	}
 
 	t.Run("", func(t *testing.T) {
-		mockService.EXPECT().FetchTags(gomock.Any(), gomock.Any(), gomock.Any())
+		mockService.EXPECT().FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any())
 		_, err := echotest.DoGET(cntrl.FetchTag, "/?locale=id-id", map[string]string{
 			"id": "1",
 		})

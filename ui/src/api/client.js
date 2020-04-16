@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 import { message } from 'antd';
 
 const client = axios.create({
-  baseURL: "/api/",
+  baseURL: '/api/',
 });
 
 client.interceptors.response.use(

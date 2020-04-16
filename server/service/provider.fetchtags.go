@@ -8,13 +8,43 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/imantung/mario"
 )
 
+// FetchTagsWithCache is same with FetchTag but with tag
+func (p *ProviderServiceImpl) FetchTagsWithCache(
+	ctx context.Context,
+	ruleID int64,
+	locale string,
+	pragma *cachekit.Pragma,
+) (itags []*ITag, err error) {
+
+	key := fmt.Sprintf("rule%d_%s", ruleID, locale)
+	cache := cachekit.New(key,
+		func() (interface{}, error) {
+			itags, err := p.FetchTags(ctx, ruleID, locale)
+			return itags, err
+		},
+	)
+
+	itags = []*ITag{}
+	if err = cache.Execute(p.Redis, &itags, pragma); err != nil {
+		return
+	}
+
+	return
+}
+
 // FetchTags handle logic for fetching tag
-func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, locale string) (itags []*ITag, err error) {
+func (p *ProviderServiceImpl) FetchTags(
+	ctx context.Context,
+	ruleID int64,
+	locale string,
+) (itags []*ITag, err error) {
 	var (
 		rule  *repository.Rule
 		tags  []*repository.Tag

@@ -7,6 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	cachekit "github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
@@ -47,6 +48,21 @@ func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 s
 func (mr *MockProviderServiceMockRecorder) FetchTags(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTags", reflect.TypeOf((*MockProviderService)(nil).FetchTags), arg0, arg1, arg2)
+}
+
+// FetchTagsWithCache mocks base method
+func (m *MockProviderService) FetchTagsWithCache(arg0 context.Context, arg1 int64, arg2 string, arg3 *cachekit.Pragma) ([]*service.ITag, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FetchTagsWithCache", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].([]*service.ITag)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FetchTagsWithCache indicates an expected call of FetchTagsWithCache
+func (mr *MockProviderServiceMockRecorder) FetchTagsWithCache(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTagsWithCache", reflect.TypeOf((*MockProviderService)(nil).FetchTagsWithCache), arg0, arg1, arg2, arg3)
 }
 
 // Match mocks base method

@@ -1,26 +1,28 @@
-import React from "react";
-import { MemoryRouter } from "react-router-dom";
-import { cleanup, render, wait, act } from "@testing-library/react";
+import React from 'react';
+import { MemoryRouter } from 'react-router-dom';
+import {
+  cleanup, render, wait, act,
+} from '@testing-library/react';
 
-import "@testing-library/jest-dom/extend-expect";
-import userEvent from "@testing-library/user-event";
-import mockAxios from "jest-mock-axios";
-import EditRule from "./EditRule";
+import '@testing-library/jest-dom/extend-expect';
+import userEvent from '@testing-library/user-event';
+import mockAxios from 'jest-mock-axios';
+import EditRule from './EditRule';
 
 afterEach(cleanup);
 
 const respMock = [
   {
     id: 1,
-    name: "Foo DS",
-    url: "/foo-ds-url",
+    name: 'Foo DS',
+    url: '/foo-ds-url',
     updated_at: new Date(),
-    created_at: new Date()
-  }
+    created_at: new Date(),
+  },
 ];
 
-describe("Edit Rule", () => {
-  test("good case", async () => {
+describe('Edit Rule', () => {
+  test('good case', async () => {
     // FIXME:
     // const ref = React.createRef();
     // const { getByTestId, getByText } = render(<EditRule ref={ref} />, {

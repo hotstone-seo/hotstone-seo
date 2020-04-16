@@ -85,11 +85,7 @@ function EditRule() {
       </PageHeader>
 
       <div style={{ padding: 24 }}>
-        <Row>
-          <Col span={24} style={{ background: '#fff', padding: 24 }}>
-            <ManageTags ruleID={parseInt(id, 10)} />
-          </Col>
-        </Row>
+        <ManageTags ruleID={parseInt(id, 10)} />
       </div>
     </div>
   );

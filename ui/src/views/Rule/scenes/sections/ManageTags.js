@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { message, Select, Button } from 'antd';
+import {
+  message, Space, Select, Button,
+} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { fetchTags, deleteTag } from 'api/tag';
 import { TagForm, TagList } from 'components/Tag';
@@ -45,32 +47,34 @@ function ManageTags({ ruleID }) {
   };
 
   return (
-    focusTag ? (
-      <TagForm tag={focusTag} afterSubmit={refreshTag} onCancel={() => setFocusTag(null)} />
-    ) : (
-      <>
-        <Select
-          defaultValue={locale}
-          onChange={(value) => setLocale(value)}
-          style={{ float: 'right', marginBottom: 16 }}
-        >
-          {locales.map((localeVal) => (
-            <Option key={localeVal} value={localeVal}>
-              {localeVal}
-            </Option>
-          ))}
-        </Select>
-        <Button
-          type="dashed"
-          onClick={() => setFocusTag({ rule_id: ruleID, locale })}
-          style={{ width: '100%', marginBottom: 16 }}
-        >
-          <PlusOutlined />
-          Add Tag
-        </Button>
-        <TagList tags={tags} onEdit={(tag) => setFocusTag(tag)} onDelete={removeTag} />
-      </>
-    )
+    <div style={{ background: '#fff', padding: 24 }}>
+      {focusTag ? (
+        <TagForm tag={focusTag} afterSubmit={refreshTag} onCancel={() => setFocusTag(null)} />
+      ) : (
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Select
+            defaultValue={locale}
+            onChange={(value) => setLocale(value)}
+            style={{ float: 'right' }}
+          >
+            {locales.map((localeVal) => (
+              <Option key={localeVal} value={localeVal}>
+                {localeVal}
+              </Option>
+            ))}
+          </Select>
+          <Button
+            type="dashed"
+            onClick={() => setFocusTag({ rule_id: ruleID, locale })}
+            style={{ width: '100%' }}
+          >
+            <PlusOutlined />
+            Add Tag
+          </Button>
+          <TagList tags={tags} onEdit={(tag) => setFocusTag(tag)} onDelete={removeTag} />
+        </Space>
+      )}
+    </div>
   );
 }
 

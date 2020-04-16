@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table, Button, Divider, Popconfirm, Tooltip
+  Table, Button, Divider, Popconfirm, Tooltip,
 } from 'antd';
 
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
