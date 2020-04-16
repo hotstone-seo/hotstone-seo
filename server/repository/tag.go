@@ -3,13 +3,11 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"strconv"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
@@ -18,14 +16,14 @@ import (
 
 // Tag represented  tag entity
 type Tag struct {
-	ID         int64       `json:"id"`
-	RuleID     int64       `json:"rule_id" validate:"required"`
-	Locale     string      `json:"locale" validate:"required"`
-	Type       string      `json:"type" validate:"required"`
-	Attributes dbtype.JSON `json:"attributes"`
-	Value      string      `json:"value"`
-	UpdatedAt  time.Time   `json:"updated_at"`
-	CreatedAt  time.Time   `json:"created_at"`
+	ID         int64     `json:"id"`
+	RuleID     int64     `json:"rule_id" validate:"required"`
+	Locale     string    `json:"locale" validate:"required"`
+	Type       string    `json:"type" validate:"required"`
+	Attributes Attrs     `json:"attributes"`
+	Value      string    `json:"value"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	CreatedAt  time.Time `json:"created_at"`
 }
 
 // TagRepo to handle tags entity [mock]
@@ -149,7 +147,7 @@ func (r *TagRepoImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, loc
 // Insert tag
 func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, err error) {
 	if e.Attributes == nil {
-		e.Attributes = dbtype.JSON("{}")
+		e.Attributes = map[string]string{}
 	}
 
 	builder := sq.
@@ -191,7 +189,7 @@ func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 // Update tag
 func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
 	if e.Attributes == nil {
-		e.Attributes = dbtype.JSON("{}")
+		e.Attributes = map[string]string{}
 	}
 
 	builder := sq.
@@ -268,12 +266,8 @@ func validateScriptTag(sl validator.StructLevel, tag Tag) {
 }
 
 func validAttributesKey(tag Tag, keys ...string) bool {
-	var attributes map[string]string
-	if err := json.Unmarshal(tag.Attributes, &attributes); err != nil {
-		return false
-	}
 	for _, key := range keys {
-		if attributes[key] == "" {
+		if tag.Attributes[key] == "" {
 			return false
 		}
 	}

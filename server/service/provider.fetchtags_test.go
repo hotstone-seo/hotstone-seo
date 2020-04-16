@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
@@ -32,9 +31,12 @@ var (
 			Value: "Page for {{name}}",
 		},
 		{
-			ID:         92,
-			Type:       "meta",
-			Attributes: dbtype.JSON(`{"name":"description", "content": "This year is {{year}}"}`),
+			ID:   92,
+			Type: "meta",
+			Attributes: map[string]string{
+				"name":    "description",
+				"content": "This year is {{year}}",
+			},
 		},
 	}
 	ds666_response      string = `{"name":"covid19", "year": 2020}`
@@ -45,9 +47,12 @@ var (
 			Value: "Page for covid19",
 		},
 		{
-			ID:         92,
-			Type:       "meta",
-			Attributes: dbtype.JSON(`{"name":"description", "content": "This year is 2020"}`),
+			ID:   92,
+			Type: "meta",
+			Attributes: map[string]string{
+				"name":    "description",
+				"content": "This year is 2020",
+			},
 		},
 	}
 

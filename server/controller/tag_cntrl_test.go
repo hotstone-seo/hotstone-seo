@@ -69,7 +69,7 @@ func TestTagController_Find(t *testing.T) {
 					Locale:     "en_US",
 					Type:       "title",
 					Value:      "Page Title",
-					Attributes: []byte("{}"),
+					Attributes: map[string]string{},
 				},
 			},
 			nil,
@@ -110,7 +110,7 @@ func TestTagController_FindOne(t *testing.T) {
 				Locale:     "en_US",
 				Type:       "title",
 				Value:      "Page Title",
-				Attributes: []byte("{}"),
+				Attributes: map[string]string{},
 			},
 			nil,
 		)
