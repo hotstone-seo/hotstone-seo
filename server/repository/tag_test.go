@@ -38,68 +38,84 @@ func TestTagValidation(t *testing.T) {
 	})
 	t.Run("When valid meta tag", func(t *testing.T) {
 		tag := repository.Tag{
-			RuleID:     999,
-			Locale:     "en_US",
-			Type:       "meta",
-			Attributes: []byte(`{ "name": "description", "content": "Some description" }`),
+			RuleID: 999,
+			Locale: "en_US",
+			Type:   "meta",
+			Attributes: map[string]string{
+				"name":    "description",
+				"content": "Some description",
+			},
 		}
 		require.NoError(t, tag.Validate())
 	})
 	t.Run("When 'name' key is missing from attribute in meta tag", func(t *testing.T) {
 		tag := repository.Tag{
-			RuleID:     999,
-			Locale:     "en_US",
-			Type:       "meta",
-			Attributes: []byte(`{ "content": "Some description" }`),
+			RuleID: 999,
+			Locale: "en_US",
+			Type:   "meta",
+			Attributes: map[string]string{
+				"content": "Some description",
+			},
 		}
 		require.EqualError(t, tag.Validate(),
 			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
 	})
 	t.Run("When 'content' key is missing from attribute in meta tag", func(t *testing.T) {
 		tag := repository.Tag{
-			RuleID:     999,
-			Locale:     "en_US",
-			Type:       "meta",
-			Attributes: []byte(`{ "name": "description" }`),
+			RuleID: 999,
+			Locale: "en_US",
+			Type:   "meta",
+			Attributes: map[string]string{
+				"name": "description",
+			},
 		}
 		require.EqualError(t, tag.Validate(),
 			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
 	})
 	t.Run("When valid canonical tag", func(t *testing.T) {
 		tag := repository.Tag{
-			RuleID:     999,
-			Locale:     "en_US",
-			Type:       "link",
-			Attributes: []byte(`{ "rel": "canonical", "href": "http://original-site.com" }`),
+			RuleID: 999,
+			Locale: "en_US",
+			Type:   "link",
+			Attributes: map[string]string{
+				"rel":  "canonical",
+				"href": "http://original-site.com",
+			},
 		}
 		require.NoError(t, tag.Validate())
 	})
 	t.Run("When 'rel' key is missing from attribute in canonical tag", func(t *testing.T) {
 		tag := repository.Tag{
-			RuleID:     999,
-			Locale:     "en_US",
-			Type:       "link",
-			Attributes: []byte(`{ "href": "http://original-site.com" }`),
+			RuleID: 999,
+			Locale: "en_US",
+			Type:   "link",
+			Attributes: map[string]string{
+				"href": "http://original-site.com",
+			},
 		}
 		require.EqualError(t, tag.Validate(),
 			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
 	})
 	t.Run("When 'href' key is missing from attribute in canonical tag", func(t *testing.T) {
 		tag := repository.Tag{
-			RuleID:     999,
-			Locale:     "en_US",
-			Type:       "link",
-			Attributes: []byte(`{ "rel": "canonical" }`),
+			RuleID: 999,
+			Locale: "en_US",
+			Type:   "link",
+			Attributes: map[string]string{
+				"rel": "canonical",
+			},
 		}
 		require.EqualError(t, tag.Validate(),
 			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
 	})
 	t.Run("When valid script tag", func(t *testing.T) {
 		tag := repository.Tag{
-			RuleID:     999,
-			Locale:     "en_US",
-			Type:       "script",
-			Attributes: []byte(`{ "src": "http://mysite.com/script.js" }`),
+			RuleID: 999,
+			Locale: "en_US",
+			Type:   "script",
+			Attributes: map[string]string{
+				"src": "http://mysite.com/script.js",
+			},
 		}
 		require.NoError(t, tag.Validate())
 	})
@@ -108,7 +124,7 @@ func TestTagValidation(t *testing.T) {
 			RuleID:     999,
 			Locale:     "en_US",
 			Type:       "script",
-			Attributes: []byte(`{}`),
+			Attributes: map[string]string{},
 		}
 		require.EqualError(t, tag.Validate(),
 			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")

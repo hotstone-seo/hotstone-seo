@@ -30,7 +30,7 @@ func TestCenterCntrl_AddMetaTag(t *testing.T) {
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().AddMetaTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: []byte("{}")}, nil)
+		svc.EXPECT().AddMetaTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: map[string]string{}}, nil)
 		rr, err := echotest.DoPOST(cntrl.AddMetaTag, "/", `{"name":"some-name", "content":"some-content"}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, 201, rr.Code)
@@ -55,7 +55,7 @@ func TestCenterCntrl_AddTitleTag(t *testing.T) {
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().AddTitleTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: []byte("{}")}, nil)
+		svc.EXPECT().AddTitleTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: map[string]string{}}, nil)
 		rr, err := echotest.DoPOST(cntrl.AddTitleTag, "/", `{"title":"some-name"}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, 201, rr.Code)
@@ -80,7 +80,7 @@ func TestCenterCntrl_AddCanonicalTag(t *testing.T) {
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().AddCanonicalTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: []byte("{}")}, nil)
+		svc.EXPECT().AddCanonicalTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: map[string]string{}}, nil)
 		rr, err := echotest.DoPOST(cntrl.AddCanonicalTag, "/", `{"canonical":"test","rule_id":1,"href":"http://localhost"}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, 201, rr.Code)
@@ -105,7 +105,7 @@ func TestCenterCntrl_AddScriptTag(t *testing.T) {
 		require.EqualError(t, err, "code=422, message=some-error")
 	})
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().AddScriptTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: []byte("{}")}, nil)
+		svc.EXPECT().AddScriptTag(gomock.Any(), gomock.Any()).Return(&repository.Tag{Attributes: map[string]string{}}, nil)
 		rr, err := echotest.DoPOST(cntrl.AddScriptTag, "/", `{"type":"javascript","rule_ud":1,"datasource_id":1}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, 201, rr.Code)

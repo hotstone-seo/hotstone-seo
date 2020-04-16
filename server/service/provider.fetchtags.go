@@ -10,7 +10,6 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/imantung/mario"
 )
@@ -139,7 +138,7 @@ func interpolateDataSource(ds *repository.DataSource, data interface{}) (*IDataS
 
 func interpolateTag(tag *repository.Tag, data interface{}) (*ITag, error) {
 	var (
-		attribute dbtype.JSON
+		attribute map[string]string
 		value     string
 		err       error
 	)
@@ -162,18 +161,26 @@ func interpolateTag(tag *repository.Tag, data interface{}) (*ITag, error) {
 
 }
 
-func interpolateAttribute(ori dbtype.JSON, param interface{}) (interpolated dbtype.JSON, err error) {
+func interpolateAttribute(ori map[string]string, param interface{}) (interpolated map[string]string, err error) {
 	var (
 		tmpl *mario.Template
 		buf  bytes.Buffer
+		b    []byte
 	)
-	if tmpl, err = mario.New().Parse(string(ori)); err != nil {
+	if b, err = json.Marshal(ori); err != nil {
+		return
+	}
+	if tmpl, err = mario.New().Parse(string(b)); err != nil {
 		return
 	}
 	if err = tmpl.Execute(&buf, param); err != nil {
 		return
 	}
-	return buf.Bytes(), nil
+	interpolated = make(map[string]string)
+	if err = json.Unmarshal(buf.Bytes(), &interpolated); err != nil {
+		return nil, err
+	}
+	return interpolated, nil
 }
 
 func interpolateValue(ori string, param interface{}) (s string, err error) {

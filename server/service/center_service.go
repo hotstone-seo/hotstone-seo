@@ -2,11 +2,9 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"go.uber.org/dig"
 )
 
@@ -37,13 +35,16 @@ func NewCenterService(impl CenterServiceImpl) CenterService {
 // TODO: Use JSON marshal to set attributes, simple string substitution is prone to be exploited
 func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req MetaTagRequest) (tag *repository.Tag, err error) {
 	tag = &repository.Tag{
-		RuleID:     req.RuleID,
-		Locale:     req.Locale,
-		Type:       "meta",
-		Attributes: dbtype.JSON(fmt.Sprintf(`{"name":"%s", "content":"%s"}`, req.Name, req.Content)),
-		Value:      "",
-		UpdatedAt:  time.Now(),
-		CreatedAt:  time.Now(),
+		RuleID: req.RuleID,
+		Locale: req.Locale,
+		Type:   "meta",
+		Attributes: map[string]string{
+			"name":    req.Name,
+			"content": req.Content,
+		},
+		Value:     "",
+		UpdatedAt: time.Now(),
+		CreatedAt: time.Now(),
 	}
 	tag.ID, err = i.TagService.Insert(ctx, *tag)
 	return
@@ -52,13 +53,16 @@ func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req MetaTagRequest) 
 // UpdateMetaTag updates existing meta tag
 func (i *CenterServiceImpl) UpdateMetaTag(ctx context.Context, req MetaTagRequest) error {
 	return i.TagService.Update(ctx, repository.Tag{
-		ID:         req.ID,
-		RuleID:     req.RuleID,
-		Locale:     req.Locale,
-		Type:       "meta",
-		Attributes: dbtype.JSON(fmt.Sprintf(`{"name":"%s", "content":"%s"}`, req.Name, req.Content)),
-		Value:      "",
-		UpdatedAt:  time.Now(),
+		ID:     req.ID,
+		RuleID: req.RuleID,
+		Locale: req.Locale,
+		Type:   "meta",
+		Attributes: map[string]string{
+			"name": req.Name,
+			"req":  req.Content,
+		},
+		Value:     "",
+		UpdatedAt: time.Now(),
 	})
 }
 
@@ -68,7 +72,7 @@ func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req TitleTagRequest
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "title",
-		Attributes: dbtype.JSON(`{}`),
+		Attributes: map[string]string{},
 		Value:      req.Title,
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
@@ -84,7 +88,7 @@ func (i *CenterServiceImpl) UpdateTitleTag(ctx context.Context, req TitleTagRequ
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
 		Type:       "title",
-		Attributes: dbtype.JSON(`{}`),
+		Attributes: map[string]string{},
 		Value:      req.Title,
 		UpdatedAt:  time.Now(),
 	})
@@ -93,13 +97,16 @@ func (i *CenterServiceImpl) UpdateTitleTag(ctx context.Context, req TitleTagRequ
 // AddCanonicalTag adds new canonical tag
 func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req CanonicalTagRequest) (tag *repository.Tag, err error) {
 	tag = &repository.Tag{
-		RuleID:     req.RuleID,
-		Locale:     req.Locale,
-		Type:       "link",
-		Attributes: dbtype.JSON(fmt.Sprintf(`{"href":"%s","rel":"canonical"}`, req.Href)),
-		Value:      "",
-		UpdatedAt:  time.Now(),
-		CreatedAt:  time.Now(),
+		RuleID: req.RuleID,
+		Locale: req.Locale,
+		Type:   "link",
+		Attributes: map[string]string{
+			"href": req.Href,
+			"rel":  "canonical",
+		},
+		Value:     "",
+		UpdatedAt: time.Now(),
+		CreatedAt: time.Now(),
 	}
 	tag.ID, err = i.TagService.Insert(ctx, *tag)
 	return
@@ -108,26 +115,31 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req CanonicalTa
 // UpdateCanonicalTag updates existing canonical tag
 func (i *CenterServiceImpl) UpdateCanonicalTag(ctx context.Context, req CanonicalTagRequest) error {
 	return i.TagService.Update(ctx, repository.Tag{
-		ID:         req.ID,
-		RuleID:     req.RuleID,
-		Locale:     req.Locale,
-		Type:       "link",
-		Attributes: dbtype.JSON(fmt.Sprintf(`{"href":"%s","rel":"canonical"}`, req.Href)),
-		Value:      "",
-		UpdatedAt:  time.Now(),
+		ID:     req.ID,
+		RuleID: req.RuleID,
+		Locale: req.Locale,
+		Type:   "link",
+		Attributes: map[string]string{
+			"href": req.Href,
+			"rel":  "canonical",
+		},
+		Value:     "",
+		UpdatedAt: time.Now(),
 	})
 }
 
 // AddScriptTag adds new script tag
 func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req ScriptTagRequest) (tag *repository.Tag, err error) {
 	tag = &repository.Tag{
-		RuleID:     req.RuleID,
-		Locale:     req.Locale,
-		Type:       "script",
-		Attributes: dbtype.JSON(fmt.Sprintf(`{"source":"%s"}`, req.Source)),
-		Value:      req.Type,
-		UpdatedAt:  time.Now(),
-		CreatedAt:  time.Now(),
+		RuleID: req.RuleID,
+		Locale: req.Locale,
+		Type:   "script",
+		Attributes: map[string]string{
+			"source": req.Source,
+		},
+		Value:     req.Type,
+		UpdatedAt: time.Now(),
+		CreatedAt: time.Now(),
 	}
 	tag.ID, err = i.TagService.Insert(ctx, *tag)
 	return
@@ -136,12 +148,14 @@ func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req ScriptTagReque
 // UpdateScriptTag updates existing script tag
 func (i *CenterServiceImpl) UpdateScriptTag(ctx context.Context, req ScriptTagRequest) error {
 	return i.TagService.Update(ctx, repository.Tag{
-		ID:         req.ID,
-		RuleID:     req.RuleID,
-		Locale:     req.Locale,
-		Type:       "script",
-		Attributes: dbtype.JSON(fmt.Sprintf(`{"source":"%s"}`, req.Source)),
-		Value:      req.Type,
-		UpdatedAt:  time.Now(),
+		ID:     req.ID,
+		RuleID: req.RuleID,
+		Locale: req.Locale,
+		Type:   "script",
+		Attributes: map[string]string{
+			"source": req.Source,
+		},
+		Value:     req.Type,
+		UpdatedAt: time.Now(),
 	})
 }
