@@ -11,7 +11,7 @@ const { Option } = Select;
 function ManageTags({ ruleID }) {
   const [focusTag, setFocusTag] = useState(null);
   const [tags, setTags] = useState([]);
-  const [locale, setLocale] = useState('');
+  const [locale, setLocale] = useState(locales[0]);
 
   useEffect(() => {
     fetchTags({ rule_id: ruleID, locale })
