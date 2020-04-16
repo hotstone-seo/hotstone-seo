@@ -18,7 +18,7 @@ client.interceptors.response.use(
       if (error.response.status === 504) {
         message.error('Network error.Failed to connect API');
         throw error; // return Promise.reject(error || 'Network error.Failed to connect API');
-      } else if (error.response.status === 401) {
+      } else if (error.response.status === 401 || error.response.status === 400) {
         message.error('Session expired. Please login first...');
         window.location.href = '/login';
       }
