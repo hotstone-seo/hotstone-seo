@@ -48,6 +48,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 	builder := sq.
 		Select("url", "count", "first_seen", "last_seen").
 		FromSelect(subQuery, "u").
+		Where("not exists(select url from metrics_rule_matching mrm where mrm.url = u.url and is_matched=1)").
 		PlaceholderFormat(sq.Dollar)
 
 	builder = composePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r))
