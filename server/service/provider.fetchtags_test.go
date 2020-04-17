@@ -3,15 +3,20 @@ package service_test
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
+	"github.com/alicebob/miniredis"
+	"github.com/go-redis/redis"
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
@@ -62,6 +67,27 @@ var (
 		{ID: 72},
 	}
 )
+
+func TestProviderService_FetchTagsWithCache(t *testing.T) {
+	testRedis, err := miniredis.Run()
+	require.NoError(t, err)
+	defer testRedis.Close()
+
+	b, _ := json.Marshal(itags_rule999_en_US)
+
+	testRedis.Set("rule999_en_US", string(b))
+	testRedis.Set("rule999_en_US:time", time.Now().UTC().Add(10*time.Second).Format(time.RFC1123))
+	testRedis.SetTTL("rule999_en_US", 10*time.Second)
+	testRedis.SetTTL("rule999_en_US:time", 10*time.Second)
+
+	svc := service.ProviderServiceImpl{
+		Redis: redis.NewClient(&redis.Options{Addr: testRedis.Addr()}),
+	}
+
+	tags, err := svc.FetchTagsWithCache(context.Background(), int64(999), "en_US", &cachekit.Pragma{})
+	require.NoError(t, err)
+	require.Equal(t, itags_rule999_en_US, tags)
+}
 
 func TestProviderService_FetchTags(t *testing.T) {
 	ctrl := gomock.NewController(t)

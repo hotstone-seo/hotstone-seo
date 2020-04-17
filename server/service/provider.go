@@ -6,6 +6,7 @@ import (
 	"github.com/go-redis/redis"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"go.uber.org/dig"
 )
@@ -20,7 +21,7 @@ type ProviderService interface {
 // ProviderServiceImpl is implementation of Provider
 type ProviderServiceImpl struct {
 	dig.In
-	MetricsRuleMatchingService
+	metric.MetricsRuleMatchingRepo
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo

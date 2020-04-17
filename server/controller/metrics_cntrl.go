@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 
+	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"go.uber.org/dig"
@@ -13,7 +14,7 @@ import (
 // MetricsCntrl is controller to metrics endpoint
 type MetricsCntrl struct {
 	dig.In
-	service.MetricsRuleMatchingService
+	service.MetricService
 }
 
 // Route to define API Route
@@ -25,51 +26,51 @@ func (c *MetricsCntrl) Route(e *echo.Group) {
 }
 
 // ListMismatched of metrics_unmatched
-func (c *MetricsCntrl) ListMismatched(ctx echo.Context) (err error) {
-	var metrics_mismatcheds []*repository.MetricsMismatchedCount
-	ctx0 := ctx.Request().Context()
+func (c *MetricsCntrl) ListMismatched(ec echo.Context) (err error) {
+	var report []*metric.NotMatchedReport
+	ctx := ec.Request().Context()
 
 	validCols := []string{"url", "first_seen", "last_seen", "count"}
-	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
+	paginationParam := repository.BuildPaginationParam(ec.QueryParams(), validCols)
 
-	if metrics_mismatcheds, err = c.MetricsRuleMatchingService.ListMismatchedCount(ctx0, paginationParam); err != nil {
+	if report, err = c.MetricService.NotMatchedReports(ctx, paginationParam); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, metrics_mismatcheds)
+	return ec.JSON(http.StatusOK, report)
 }
 
-func (c *MetricsCntrl) CountHit(ctx echo.Context) (err error) {
+func (c *MetricsCntrl) CountHit(ec echo.Context) (err error) {
 	var count int64
-	ctx0 := ctx.Request().Context()
-	if count, err = c.MetricsRuleMatchingService.CountMatched(ctx0, ctx.QueryParams()); err != nil {
+	ctx := ec.Request().Context()
+	if count, err = c.MetricService.CountMatched(ctx, ec.QueryParams()); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, map[string]int64{"count": count})
+	return ec.JSON(http.StatusOK, map[string]int64{"count": count})
 }
 
-func (c *MetricsCntrl) CountUniquePage(ctx echo.Context) (err error) {
+func (c *MetricsCntrl) CountUniquePage(ec echo.Context) (err error) {
 	var count int64
-	ctx0 := ctx.Request().Context()
-	if count, err = c.MetricsRuleMatchingService.CountUniquePage(ctx0, ctx.QueryParams()); err != nil {
+	ctx := ec.Request().Context()
+	if count, err = c.MetricService.CountUniquePage(ctx, ec.QueryParams()); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, map[string]int64{"count": count})
+	return ec.JSON(http.StatusOK, map[string]int64{"count": count})
 }
 
-func (c *MetricsCntrl) ListCountHitPerDay(ctx echo.Context) (err error) {
-	var counts []*repository.MetricsCountHitPerDay
-	ctx0 := ctx.Request().Context()
+func (c *MetricsCntrl) ListCountHitPerDay(ec echo.Context) (err error) {
+	var counts []*metric.DailyReport
 
-	startDate := ctx.QueryParam("start")
-	endDate := ctx.QueryParam("end")
-	ruleID := ctx.QueryParam("rule_id")
+	ctx := ec.Request().Context()
+	startDate := ec.QueryParam("start")
+	endDate := ec.QueryParam("end")
+	ruleID := ec.QueryParam("rule_id")
 
 	if startDate == "" || endDate == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "'start' and 'end' query params are required")
 	}
 
-	if counts, err = c.MetricsRuleMatchingService.ListCountHitPerDay(ctx0, startDate, endDate, ruleID); err != nil {
+	if counts, err = c.MetricService.DailyReports(ctx, startDate, endDate, ruleID); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, counts)
+	return ec.JSON(http.StatusOK, counts)
 }

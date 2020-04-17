@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"go.uber.org/dig"
 )
 
@@ -37,7 +36,7 @@ func (r *AuditTrailServiceImpl) RecordChanges(ctx context.Context,
 	entityName string, entityID int64, opsType repository.OperationType,
 	oldData interface{}, newData interface{}) (lastInsertID int64, err error) {
 
-	oldDataJSON := dbtype.JSON("{}")
+	oldDataJSON := repository.JSON("{}")
 	if oldData != nil {
 		oldDataJSON, err = json.Marshal(oldData)
 		if err != nil {
@@ -45,7 +44,7 @@ func (r *AuditTrailServiceImpl) RecordChanges(ctx context.Context,
 		}
 	}
 
-	newDataJSON := dbtype.JSON("{}")
+	newDataJSON := repository.JSON("{}")
 	if newData != nil {
 		newDataJSON, err = json.Marshal(newData)
 		if err != nil {

@@ -107,7 +107,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.BaseRunner(ctx, r))
 
-	builder = composePagination(builder, paginationParam)
+	builder = ComposePagination(builder, paginationParam)
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

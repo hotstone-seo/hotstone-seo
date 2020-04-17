@@ -117,10 +117,10 @@ func (mr *MockURLServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Cal
 }
 
 // Match mocks base method
-func (m *MockURLService) Match(arg0 string) (int, map[string]string) {
+func (m *MockURLService) Match(arg0 string) (int64, map[string]string) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Match", arg0)
-	ret0, _ := ret[0].(int)
+	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(map[string]string)
 	return ret0, ret1
 }

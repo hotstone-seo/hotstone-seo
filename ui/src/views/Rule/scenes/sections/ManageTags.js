@@ -47,34 +47,32 @@ function ManageTags({ ruleID }) {
   };
 
   return (
-    <div style={{ background: '#fff', padding: 24 }}>
-      {focusTag ? (
-        <TagForm tag={focusTag} afterSubmit={refreshTag} onCancel={() => setFocusTag(null)} />
-      ) : (
-        <Space direction="vertical" style={{ width: '100%' }}>
-          <Select
-            defaultValue={locale}
-            onChange={(value) => setLocale(value)}
-            style={{ float: 'right' }}
-          >
-            {locales.map((localeVal) => (
-              <Option key={localeVal} value={localeVal}>
-                {localeVal}
-              </Option>
-            ))}
-          </Select>
-          <Button
-            type="dashed"
-            onClick={() => setFocusTag({ rule_id: ruleID, locale })}
-            style={{ width: '100%' }}
-          >
-            <PlusOutlined />
-            Add Tag
-          </Button>
-          <TagList tags={tags} onEdit={(tag) => setFocusTag(tag)} onDelete={removeTag} />
-        </Space>
-      )}
-    </div>
+    focusTag ? (
+      <TagForm tag={focusTag} afterSubmit={refreshTag} onCancel={() => setFocusTag(null)} />
+    ) : (
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <Select
+          defaultValue={locale}
+          onChange={(value) => setLocale(value)}
+          style={{ float: 'right' }}
+        >
+          {locales.map((localeVal) => (
+            <Option key={localeVal} value={localeVal}>
+              {localeVal}
+            </Option>
+          ))}
+        </Select>
+        <Button
+          type="dashed"
+          onClick={() => setFocusTag({ rule_id: ruleID, locale })}
+          style={{ width: '100%' }}
+        >
+          <PlusOutlined />
+          Add Tag
+        </Button>
+        <TagList tags={tags} onEdit={(tag) => setFocusTag(tag)} onDelete={removeTag} />
+      </Space>
+    )
   );
 }
 

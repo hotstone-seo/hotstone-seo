@@ -11,31 +11,31 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
+	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
 )
 
 func TestMetricsController_ListMismatched(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	metricsSvcMock := mock_service.NewMockMetricsRuleMatchingService(ctrl)
+	metricsSvcMock := mock_service.NewMockMetricService(ctrl)
 	metricsCntrl := controller.MetricsCntrl{
-		MetricsRuleMatchingService: metricsSvcMock,
+		MetricService: metricsSvcMock,
 	}
 
 	firstSeen := time.Now()
 	lastSeen := time.Now()
 
 	t.Run("WHEN retrieved error", func(t *testing.T) {
-		metricsSvcMock.EXPECT().ListMismatchedCount(gomock.Any(), gomock.Any()).Return(nil, errors.New("retrieve error"))
+		metricsSvcMock.EXPECT().NotMatchedReports(gomock.Any(), gomock.Any()).Return(nil, errors.New("retrieve error"))
 		_, err := echotest.DoGET(metricsCntrl.ListMismatched, "/", nil)
 		require.EqualError(t, err, "code=500, message=retrieve error")
 	})
 
 	t.Run("WHEN successful", func(t *testing.T) {
-		metricsSvcMock.EXPECT().ListMismatchedCount(gomock.Any(), gomock.Any()).Return(
-			[]*repository.MetricsMismatchedCount{
-				&repository.MetricsMismatchedCount{
+		metricsSvcMock.EXPECT().NotMatchedReports(gomock.Any(), gomock.Any()).Return(
+			[]*metric.NotMatchedReport{
+				&metric.NotMatchedReport{
 					URL:       "test.com/test",
 					FirstSeen: firstSeen,
 					LastSeen:  lastSeen,

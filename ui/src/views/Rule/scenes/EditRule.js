@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  PageHeader, Row, Col, message, Button,
+  PageHeader, message, Button, Tabs,
 } from 'antd';
 import { EditOutlined, BarChartOutlined } from '@ant-design/icons';
 import { RuleForm, RuleDetail } from 'components/Rule';
@@ -9,6 +9,7 @@ import { getRule, updateRule } from 'api/rule';
 import useDataSources from 'hooks/useDataSources';
 import ManageTags from './sections/ManageTags';
 
+const { TabPane } = Tabs;
 
 function EditRule() {
   const { id } = useParams();
@@ -84,9 +85,18 @@ function EditRule() {
         )}
       </PageHeader>
 
-      <div style={{ padding: 24 }}>
-        <ManageTags ruleID={parseInt(id, 10)} />
-      </div>
+      <Tabs
+        defaultActiveKey="tag"
+        tabBarStyle={{ paddingLeft: 16 }}
+        style={{ margin: 24, background: '#fff' }}
+      >
+        <TabPane tab="Manage Tags" key="tag" style={{ padding: '0 16px' }}>
+          <ManageTags ruleID={parseInt(id, 10)} />
+        </TabPane>
+        <TabPane tab="Manage Structured Data" key="struct" style={{ padding: '0 16px' }}>
+          <span>Structured Data</span>
+        </TabPane>
+      </Tabs>
     </div>
   );
 }

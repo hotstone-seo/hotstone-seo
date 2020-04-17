@@ -7,7 +7,7 @@ Cookie: {{secure_token}}
 
 ### Retrieve Rules
 
-http://localhost:8089/api/rules
+GET http://localhost:8089/api/rules
 Cookie: {{secure_token}}
 
 ### Add New Rule

@@ -4,9 +4,13 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	log "github.com/sirupsen/logrus"
+	"github.com/hotstone-seo/hotstone-seo/server/metric"
+)
+
+const (
+	insertMetricTimeout = 30 * time.Second
 )
 
 // MatchRequest is request for match rule
@@ -22,30 +26,47 @@ type MatchResponse struct {
 
 // Match url with its rule
 func (p *ProviderServiceImpl) Match(ctx context.Context, req MatchRequest) (resp *MatchResponse, err error) {
-	mtx := &repository.MetricsRuleMatching{}
-	defer func() {
-		if errInsert := p.MetricsRuleMatchingService.Insert(ctx, *mtx); errInsert != nil {
-			log.Warnf("Failed to record rule matching metric: %+v", errInsert)
-		}
-	}()
+	var (
+		ruleID    int64
+		pathParam map[string]string
+	)
 
-	url, err := url.Parse(req.Path)
-	if err != nil {
-		return
+	if _, err = url.Parse(req.Path); err != nil {
+		return nil, fmt.Errorf("URL: %w", err)
 	}
 
-	ruleID, pathParam := p.URLService.Match(url.Path)
-	if ruleID == -1 {
-		// mismatched
-		p.MetricsRuleMatchingService.SetMismatched(mtx, url.Path)
+	path := req.Path
 
-		return nil, fmt.Errorf("No rule match: %s", url.Path)
+	if ruleID, pathParam = p.URLService.Match(path); ruleID == -1 {
+		p.onNotMatched(path)
+		return nil, fmt.Errorf("No rule match: %s", path)
 	}
 
 	// matched
-	p.MetricsRuleMatchingService.SetMatched(mtx, url.Path, int64(ruleID))
+	p.onMatched(path, ruleID)
 	return &MatchResponse{
-		RuleID:    int64(ruleID),
+		RuleID:    ruleID,
 		PathParam: pathParam,
 	}, nil
+}
+
+func (p *ProviderServiceImpl) onMatched(url string, ruleID int64) {
+	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
+	defer cancel()
+
+	p.MetricsRuleMatchingRepo.Insert(ctx, metric.MetricsRuleMatching{
+		IsMatched: 1,
+		URL:       &url,
+		RuleID:    &ruleID,
+	})
+}
+
+func (p *ProviderServiceImpl) onNotMatched(url string) {
+	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
+	defer cancel()
+
+	p.MetricsRuleMatchingRepo.Insert(ctx, metric.MetricsRuleMatching{
+		IsMatched: 0,
+		URL:       &url,
+	})
 }
