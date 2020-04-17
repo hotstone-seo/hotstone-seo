@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtype"
 	"go.uber.org/dig"
 )
 
@@ -31,7 +30,7 @@ func (r *HistoryServiceImpl) RecordHistory(ctx context.Context,
 	entityFrom string, entityID int64,
 	data interface{}) (lastInsertID int64, err error) {
 
-	dataJSON := dbtype.JSON("{}")
+	dataJSON := repository.JSON("{}")
 	if data != nil {
 		dataJSON, err = json.Marshal(data)
 		if err != nil {

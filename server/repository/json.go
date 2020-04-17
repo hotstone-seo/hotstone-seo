@@ -1,4 +1,4 @@
-package dbtype
+package repository
 
 import (
 	"database/sql/driver"
