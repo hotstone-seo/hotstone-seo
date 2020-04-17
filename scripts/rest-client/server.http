@@ -1,11 +1,12 @@
-
+@secure_token = secure_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZhaHJpLmhpZGF5YXRAdGlrZXQuY29tIiwiZXhwIjoxNTg3Mzc3MDAyLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1FNG5hTlVWMEo4by9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS93Y3ZMcXR6RnlpWS9waG90by5qcGcifQ.NnY_ijqa9kmHMg40tUjnVw_t7G2O_RyT-EP4XyVISZ0
 
 ### Retrieve Mismatched Rule
 http://localhost:8089/api/metrics/mismatched
 
 ### Retrieve Rules
 
-http://localhost:8089/api/rules
+GET http://localhost:8089/api/rules
+Cookie: {{secure_token}}
 
 ### Add New Rule
 POST http://localhost:8089/api/rules
