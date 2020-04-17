@@ -114,28 +114,28 @@ func TestURLStoreImpl_Match(t *testing.T) {
 	t.Run("WHEN static url not exist", func(t *testing.T) {
 		store := buildStore(t)
 		id, varMap := store.Match("/gopher/doc.jpg")
-		require.Equal(t, -1, id)
+		require.Equal(t, int64(-1), id)
 		require.Empty(t, varMap)
 	})
 
 	t.Run("WHEN static url exist", func(t *testing.T) {
 		store := buildStore(t)
 		id, varMap := store.Match("/gopher/doc.png")
-		require.Equal(t, 6, id)
+		require.Equal(t, int64(6), id)
 		require.Empty(t, varMap)
 	})
 
 	t.Run("WHEN param url not exist", func(t *testing.T) {
 		store := buildStore(t)
 		id, varMap := store.Match("/users/def/abc")
-		require.Equal(t, -1, id)
+		require.Equal(t, int64(-1), id)
 		require.Empty(t, varMap)
 	})
 
 	t.Run("WHEN param url exist", func(t *testing.T) {
 		store := buildStore(t)
 		id, varMap := store.Match("/users/def/123")
-		require.Equal(t, 12, id)
+		require.Equal(t, int64(12), id)
 		require.Equal(t, 2, len(varMap))
 		require.Equal(t, "def", varMap["id"])
 		require.Equal(t, "123", varMap["accnt"])
@@ -144,7 +144,7 @@ func TestURLStoreImpl_Match(t *testing.T) {
 	t.Run("WHEN more than 1 param exist in a subpath", func(t *testing.T) {
 		store := buildStore(t)
 		id, varMap := store.Match("/flight/src-abc-dst-def")
-		require.Equal(t, 15, id)
+		require.Equal(t, int64(15), id)
 		require.Equal(t, 2, len(varMap))
 		require.Equal(t, "abc", varMap["src"])
 		require.Equal(t, "def", varMap["dst"])
@@ -158,7 +158,7 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 		url := "/gopher/doc.jpg"
 		store.Insert(20, url)
 		id, varMap := store.Match(url)
-		require.Equal(t, 20, id)
+		require.Equal(t, int64(20), id)
 		require.Empty(t, varMap)
 		require.Equal(t, 11, store.Count())
 	})
@@ -169,11 +169,11 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 		store.Insert(20, "/gopher/new.img")
 
 		id, varMap := store.Match("/gopher/new.img")
-		require.Equal(t, 20, id)
+		require.Equal(t, int64(20), id)
 		require.Empty(t, varMap)
 
 		id, varMap = store.Match("/gopher/old.jpg")
-		require.Equal(t, 20, id)
+		require.Equal(t, int64(20), id)
 		require.Empty(t, varMap)
 		require.Equal(t, 12, store.Count())
 	})
@@ -185,11 +185,11 @@ func TestURLStoreImpl_UpdateURL(t *testing.T) {
 		store.Update(6, "/gopher/updated.bmp")
 
 		id, varMap := store.Match("/gopher/old.png")
-		require.Equal(t, -1, id)
+		require.Equal(t, int64(-1), id)
 		require.Empty(t, varMap)
 
 		id, varMap = store.Match("/gopher/updated.bmp")
-		require.Equal(t, 6, id)
+		require.Equal(t, int64(6), id)
 		require.Equal(t, 0, len(varMap))
 		require.Equal(t, 10, store.Count())
 	})
@@ -201,7 +201,7 @@ func TestURLStoreImpl_DeleteURL(t *testing.T) {
 		require.Equal(t, true, store.Delete(6))
 
 		id, varMap := store.Match("/gopher/doc.png")
-		require.Equal(t, -1, id)
+		require.Equal(t, int64(-1), id)
 		require.Empty(t, varMap)
 		require.Equal(t, false, store.Delete(6))
 		require.Equal(t, 9, store.Count())

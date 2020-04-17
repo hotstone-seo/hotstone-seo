@@ -15,7 +15,7 @@ import (
 type URLService interface {
 	FullSync(context.Context) error
 	Sync(context.Context) error
-	Match(url string) (int, map[string]string)
+	Match(url string) (int64, map[string]string)
 	DumpTree() string
 	Get(path string, pvalues []string) (data interface{}, pnames []string)
 	Delete(id int64) bool
@@ -99,7 +99,7 @@ func (s *URLServiceImpl) Sync(ctx context.Context) error {
 }
 
 // Match return rule id and parameter map
-func (s *URLServiceImpl) Match(url string) (int, map[string]string) {
+func (s *URLServiceImpl) Match(url string) (int64, map[string]string) {
 	maxParams := 256
 	pvalues := make([]string, maxParams)
 	varValue := map[string]string{}
@@ -122,7 +122,7 @@ func (s *URLServiceImpl) Match(url string) (int, map[string]string) {
 		return -1, varValue
 	}
 
-	id, err := strconv.Atoi(idStr)
+	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		log.Warnf("[GetURL] Failed to convert string data to int. idStr=%+v", idStr)
 		return -1, varValue

@@ -21,7 +21,7 @@ type ProviderService interface {
 // ProviderServiceImpl is implementation of Provider
 type ProviderServiceImpl struct {
 	dig.In
-	metric.MetricsRuleMatchingService
+	metric.MetricsRuleMatchingRepo
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo
