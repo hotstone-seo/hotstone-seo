@@ -24,10 +24,12 @@ type MetricsRuleMatching struct {
 // MetricsRuleMatchingRepo to handle metrics_rule_matching entity [mock]
 type MetricsRuleMatchingRepo interface {
 	Insert(context.Context, MetricsRuleMatching) (err error)
-	ListMismatchedCount(ctx context.Context, paginationParam repository.PaginationParam) (list []*MetricsMismatchedCount, err error)
+
+	NotMatchedReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*NotMatchedReport, err error)
+	DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error)
+
 	CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
 	CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
-	ListCountHitPerDay(ctx context.Context, startDate, endDate, ruleID string) (list []*MetricsCountHitPerDay, err error)
 }
 
 // NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [constructor]
@@ -56,8 +58,8 @@ func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleM
 	return
 }
 
-// ListMismatchedCount list mistached count
-func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, paginationParam repository.PaginationParam) (list []*MetricsMismatchedCount, err error) {
+// NotMatchedReports return list of not-matching report
+func (r *MetricsRuleMatchingRepoImpl) NotMatchedReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*NotMatchedReport, err error) {
 	var rows *sql.Rows
 
 	subQuery := sq.
@@ -82,14 +84,19 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 		return
 	}
 	defer rows.Close()
-	list = make([]*MetricsMismatchedCount, 0)
+	list = make([]*NotMatchedReport, 0)
 	for rows.Next() {
-		var e0 MetricsMismatchedCount
-		if err = rows.Scan(&e0.URL, &e0.Count, &e0.FirstSeen, &e0.LastSeen); err != nil {
+		var report NotMatchedReport
+		if err = rows.Scan(
+			&report.URL,
+			&report.Count,
+			&report.FirstSeen,
+			&report.LastSeen,
+		); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}
-		list = append(list, &e0)
+		list = append(list, &report)
 	}
 	return
 }
@@ -130,7 +137,8 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context, where
 	return
 }
 
-func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, startDate, endDate, ruleID string) (list []*MetricsCountHitPerDay, err error) {
+// DailyReports return list of daily report
+func (r *MetricsRuleMatchingRepoImpl) DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error) {
 	var rows *sql.Rows
 
 	query := `
@@ -156,13 +164,13 @@ func (r *MetricsRuleMatchingRepoImpl) ListCountHitPerDay(ctx context.Context, st
 	}
 	defer rows.Close()
 
-	list = make([]*MetricsCountHitPerDay, 0)
+	list = make([]*DailyReport, 0)
 	for rows.Next() {
-		var e0 MetricsCountHitPerDay
-		if err = rows.Scan(&e0.Date, &e0.Count); err != nil {
+		var report DailyReport
+		if err = rows.Scan(&report.Date, &report.HitCount); err != nil {
 			return
 		}
-		list = append(list, &e0)
+		list = append(list, &report)
 	}
 	return
 }

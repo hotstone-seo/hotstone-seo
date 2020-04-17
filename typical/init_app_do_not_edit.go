@@ -17,7 +17,6 @@ import (
 func init() {
 	typapp.AppendConstructor(
 		typapp.NewConstructor(metric.NewMetricsRuleMatchingRepo),
-		typapp.NewConstructor(metric.NewMetricsRuleMatchingService),
 		typapp.NewConstructor(repository.NewAuditTrailRepo),
 		typapp.NewConstructor(repository.NewDataSourceRepo),
 		typapp.NewConstructor(repository.NewHistoryRepo),
@@ -28,6 +27,7 @@ func init() {
 		typapp.NewConstructor(service.NewCenterService),
 		typapp.NewConstructor(service.NewDataSourceService),
 		typapp.NewConstructor(service.NewHistoryService),
+		typapp.NewConstructor(service.NewMetricService),
 		typapp.NewConstructor(service.NewProviderService),
 		typapp.NewConstructor(service.NewRuleService),
 		typapp.NewConstructor(service.NewTagService),

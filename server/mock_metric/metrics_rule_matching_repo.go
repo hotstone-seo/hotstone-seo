@@ -66,6 +66,21 @@ func (mr *MockMetricsRuleMatchingRepoMockRecorder) CountUniquePage(arg0, arg1 in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountUniquePage", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).CountUniquePage), arg0, arg1)
 }
 
+// DailyReports mocks base method
+func (m *MockMetricsRuleMatchingRepo) DailyReports(arg0 context.Context, arg1, arg2, arg3 string) ([]*metric.DailyReport, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DailyReports", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].([]*metric.DailyReport)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DailyReports indicates an expected call of DailyReports
+func (mr *MockMetricsRuleMatchingRepoMockRecorder) DailyReports(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DailyReports", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).DailyReports), arg0, arg1, arg2, arg3)
+}
+
 // Insert mocks base method
 func (m *MockMetricsRuleMatchingRepo) Insert(arg0 context.Context, arg1 metric.MetricsRuleMatching) error {
 	m.ctrl.T.Helper()
@@ -80,32 +95,17 @@ func (mr *MockMetricsRuleMatchingRepoMockRecorder) Insert(arg0, arg1 interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).Insert), arg0, arg1)
 }
 
-// ListCountHitPerDay mocks base method
-func (m *MockMetricsRuleMatchingRepo) ListCountHitPerDay(arg0 context.Context, arg1, arg2, arg3 string) ([]*metric.MetricsCountHitPerDay, error) {
+// NotMatchedReports mocks base method
+func (m *MockMetricsRuleMatchingRepo) NotMatchedReports(arg0 context.Context, arg1 repository.PaginationParam) ([]*metric.NotMatchedReport, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListCountHitPerDay", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].([]*metric.MetricsCountHitPerDay)
+	ret := m.ctrl.Call(m, "NotMatchedReports", arg0, arg1)
+	ret0, _ := ret[0].([]*metric.NotMatchedReport)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// ListCountHitPerDay indicates an expected call of ListCountHitPerDay
-func (mr *MockMetricsRuleMatchingRepoMockRecorder) ListCountHitPerDay(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+// NotMatchedReports indicates an expected call of NotMatchedReports
+func (mr *MockMetricsRuleMatchingRepoMockRecorder) NotMatchedReports(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCountHitPerDay", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).ListCountHitPerDay), arg0, arg1, arg2, arg3)
-}
-
-// ListMismatchedCount mocks base method
-func (m *MockMetricsRuleMatchingRepo) ListMismatchedCount(arg0 context.Context, arg1 repository.PaginationParam) ([]*metric.MetricsMismatchedCount, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListMismatchedCount", arg0, arg1)
-	ret0, _ := ret[0].([]*metric.MetricsMismatchedCount)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListMismatchedCount indicates an expected call of ListMismatchedCount
-func (mr *MockMetricsRuleMatchingRepoMockRecorder) ListMismatchedCount(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMismatchedCount", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).ListMismatchedCount), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotMatchedReports", reflect.TypeOf((*MockMetricsRuleMatchingRepo)(nil).NotMatchedReports), arg0, arg1)
 }
