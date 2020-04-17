@@ -1,25 +1,30 @@
-
+@secure_token = secure_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZhaHJpLmhpZGF5YXRAdGlrZXQuY29tIiwiZXhwIjoxNTg3Mzc3MDAyLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1FNG5hTlVWMEo4by9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS93Y3ZMcXR6RnlpWS9waG90by5qcGcifQ.NnY_ijqa9kmHMg40tUjnVw_t7G2O_RyT-EP4XyVISZ0
 
 ### Retrieve Mismatched Rule
+
 http://localhost:8089/api/metrics/mismatched
+Cookie: {{secure_token}}
 
 ### Retrieve Rules
 
 http://localhost:8089/api/rules
+Cookie: {{secure_token}}
 
 ### Add New Rule
 POST http://localhost:8089/api/rules
+Cookie: {{secure_token}}
 content-type: application/json
 
 {
     "id" : null,
-    "name" :"Airport Rule",
-    "url_pattern" : "/airport",
+    "name" :"Airport Rules",
+    "url_pattern" : "/airports",
     "data_source_id" : 1
 }
 
 ### Update Rule
 PUT http://localhost:8089/api/rules
+Cookie: {{secure_token}}
 content-type: application/json
 
 {
@@ -32,22 +37,22 @@ content-type: application/json
 
 ### Delete Rule
 
-DELETE http://localhost:8089/api/rules/1
-
-
+DELETE http://localhost:8089/api/rules/100
+Cookie: {{secure_token}}
 
 ### Retrieve Data Source
 
 http://localhost:8089/api/data_sources
-
+Cookie: {{secure_token}}
 
 ### Retrieve Data Source By ID
 
-http://localhost:8089/api/data_sources/1
-
+GET http://localhost:8089/api/data_sources/1
+Cookie: {{secure_token}}
 
 ### Add New Data Source
 POST http://localhost:8089/api/data_sources
+Cookie: {{secure_token}}
 content-type: application/json
 
 {
@@ -59,6 +64,7 @@ content-type: application/json
 
 ### Edit Data Source
 PUT http://localhost:8089/api/data_sources
+Cookie: {{secure_token}}
 content-type: application/json
 
 {
@@ -68,40 +74,69 @@ content-type: application/json
 }
 
 
-
 ### Delete Data Source
 
 DELETE http://localhost:8089/api/data_sources/1
+Cookie: {{secure_token}}
 
 ### Retrieve Audit Trail
 
 http://localhost:8089/api/audit-trail
-
+Cookie: {{secure_token}}
 
 ### Retrieve Tag
 
 http://localhost:8089/api/tags
+Cookie: {{secure_token}}
 
 ### Retrieve Tag By Rule ID & Locale
 http://localhost:8089/api/tags
+Cookie: {{secure_token}}
 content-type: application/json
 
 {
-    "param": {"en_US", 1 }
+    "params": {"en_US": 1 }
 }
 
-### Add Tag
+### Add Meta Tag
 
 
-### Edit Tag
+### Edit Meta Tag
 
+
+
+
+### Analytic Number of Hit (based on Rule ID)
+
+http://localhost:8089/api/metrics/hit
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "params": {"rule_id": 1 }
+}
+
+### Analytic Number of Unique Page (based on Rule ID)
+
+http://localhost:8089/api/metrics/unique-page
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "params": {"rule_id": 1 }
+}
+
+### Analytic Number of Hit Count (based on Rule ID & date of range)
+
+http://localhost:8089/api/metrics/hit/range
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "params": {"start": "2020-04-08", "end" : "2020-04-15","rule_id" : 1 }
+}
 
 ### Retrieve Rule By ID
 
-http://localhost:8089/api/rules/1
-content-type: application/text/plain 
-
-_ga: GA1.1.1226546703.1566276058
-gs_u_GSN-126978-E: 0dc61fc900b06ce843a10bc887fadacb:34351:26982:1566287514708
-secure_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZhaHJpLmhpZGF5YXRAdGlrZXQuY29tIiwiZXhwIjoxNTg0MzQ1NjE3LCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1FNG5hTlVWMEo4by9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS93Y3ZMcXR6RnlpWS9waG90by5qcGcifQ.4MLJ0_FSx2mVFSQqFpcBmtVN6TFdTXapaHgfU-PpwYA
-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbmRyaS5jaGlhQHRpa2V0LmNvbSIsImV4cCI6MTU4NzI5ODAxNCwicGljdHVyZSI6Imh0dHBzOi8vbGg1Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tWThnZV9PWk1ycTQvQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvZ2ZwR2lPUVJ6Rk0vcGhvdG8uanBnIn0.-jZGTSMSReFmqes-vqk8Uz3sjs9SdltyZmRuk_56jXc
+GET http://localhost:8089/api/rules/1
+Cookie: {{secure_token}}
