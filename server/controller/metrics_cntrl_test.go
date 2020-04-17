@@ -11,14 +11,14 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/metric"
+	"github.com/hotstone-seo/hotstone-seo/server/mock_metric"
 )
 
 func TestMetricsController_ListMismatched(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	metricsSvcMock := mock_service.NewMockMetricsRuleMatchingService(ctrl)
+	metricsSvcMock := mock_metric.NewMockMetricsRuleMatchingService(ctrl)
 	metricsCntrl := controller.MetricsCntrl{
 		MetricsRuleMatchingService: metricsSvcMock,
 	}
@@ -34,8 +34,8 @@ func TestMetricsController_ListMismatched(t *testing.T) {
 
 	t.Run("WHEN successful", func(t *testing.T) {
 		metricsSvcMock.EXPECT().ListMismatchedCount(gomock.Any(), gomock.Any()).Return(
-			[]*repository.MetricsMismatchedCount{
-				&repository.MetricsMismatchedCount{
+			[]*metric.MetricsMismatchedCount{
+				&metric.MetricsMismatchedCount{
 					URL:       "test.com/test",
 					FirstSeen: firstSeen,
 					LastSeen:  lastSeen,

@@ -22,7 +22,7 @@ func (r *AuditTrailRepoImpl) Find(ctx context.Context, paginationParam Paginatio
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "time", "entity_name", "entity_id", "operation", "username", "old_data", "new_data").
 		From("audit_trail")
-	if rows, err = composePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r)).QueryContext(ctx); err != nil {
+	if rows, err = ComposePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r)).QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
 	}

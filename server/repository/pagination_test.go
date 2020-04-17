@@ -35,7 +35,7 @@ func TestPagination(t *testing.T) {
 	}
 	for _, tt := range tests {
 		paginationParam := BuildPaginationParam(buildQueryParam(t, tt.url), validColumns)
-		sql, sqlArgs, err := composePagination(baseBuilder, paginationParam).ToSql()
+		sql, sqlArgs, err := ComposePagination(baseBuilder, paginationParam).ToSql()
 		// t.Logf("=== %d ===", i)
 		require.NoError(t, err)
 		require.Equal(t, tt.param, paginationParam)

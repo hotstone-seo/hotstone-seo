@@ -1,15 +1,39 @@
-package repository
+package metric
 
 import (
 	"context"
 	"database/sql"
 	"net/url"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
+
+// MetricsRuleMatching represented  metrics_rule_matching entity
+type MetricsRuleMatching struct {
+	Time      time.Time
+	IsMatched int
+	RuleID    *int64
+	URL       *string
+}
+
+// MetricsRuleMatchingRepo to handle metrics_rule_matching entity [mock]
+type MetricsRuleMatchingRepo interface {
+	Insert(context.Context, MetricsRuleMatching) (err error)
+	ListMismatchedCount(ctx context.Context, paginationParam repository.PaginationParam) (list []*MetricsMismatchedCount, err error)
+	CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
+	CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
+	ListCountHitPerDay(ctx context.Context, startDate, endDate, ruleID string) (list []*MetricsCountHitPerDay, err error)
+}
+
+// NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [constructor]
+func NewMetricsRuleMatchingRepo(impl MetricsRuleMatchingRepoImpl) MetricsRuleMatchingRepo {
+	return &impl
+}
 
 // MetricsRuleMatchingRepoImpl is implementation metrics_rule_matching repository
 type MetricsRuleMatchingRepoImpl struct {
@@ -33,7 +57,7 @@ func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleM
 }
 
 // ListMismatchedCount list mistached count
-func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, paginationParam PaginationParam) (list []*MetricsMismatchedCount, err error) {
+func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, paginationParam repository.PaginationParam) (list []*MetricsMismatchedCount, err error) {
 	var rows *sql.Rows
 
 	subQuery := sq.
@@ -51,7 +75,7 @@ func (r *MetricsRuleMatchingRepoImpl) ListMismatchedCount(ctx context.Context, p
 		Where("not exists(select url from metrics_rule_matching mrm where mrm.url = u.url and is_matched=1)").
 		PlaceholderFormat(sq.Dollar)
 
-	builder = composePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r))
+	builder = repository.ComposePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r))
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

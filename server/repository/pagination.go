@@ -44,7 +44,7 @@ const (
 	KeysetPagination
 )
 
-func composePagination(base sq.SelectBuilder, paginationParam PaginationParam) sq.SelectBuilder {
+func ComposePagination(base sq.SelectBuilder, paginationParam PaginationParam) sq.SelectBuilder {
 
 	paginationType := GetPaginationType(paginationParam)
 

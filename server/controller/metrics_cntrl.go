@@ -5,15 +5,15 @@ import (
 
 	"github.com/labstack/echo"
 
+	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"go.uber.org/dig"
 )
 
 // MetricsCntrl is controller to metrics endpoint
 type MetricsCntrl struct {
 	dig.In
-	service.MetricsRuleMatchingService
+	metric.MetricsRuleMatchingService
 }
 
 // Route to define API Route
@@ -26,7 +26,7 @@ func (c *MetricsCntrl) Route(e *echo.Group) {
 
 // ListMismatched of metrics_unmatched
 func (c *MetricsCntrl) ListMismatched(ctx echo.Context) (err error) {
-	var metrics_mismatcheds []*repository.MetricsMismatchedCount
+	var metrics_mismatcheds []*metric.MetricsMismatchedCount
 	ctx0 := ctx.Request().Context()
 
 	validCols := []string{"url", "first_seen", "last_seen", "count"}
@@ -57,7 +57,7 @@ func (c *MetricsCntrl) CountUniquePage(ctx echo.Context) (err error) {
 }
 
 func (c *MetricsCntrl) ListCountHitPerDay(ctx echo.Context) (err error) {
-	var counts []*repository.MetricsCountHitPerDay
+	var counts []*metric.MetricsCountHitPerDay
 	ctx0 := ctx.Request().Context()
 
 	startDate := ctx.QueryParam("start")

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -22,7 +22,7 @@ type MatchResponse struct {
 
 // Match url with its rule
 func (p *ProviderServiceImpl) Match(ctx context.Context, req MatchRequest) (resp *MatchResponse, err error) {
-	mtx := &repository.MetricsRuleMatching{}
+	mtx := &metric.MetricsRuleMatching{}
 	defer func() {
 		if errInsert := p.MetricsRuleMatchingService.Insert(ctx, *mtx); errInsert != nil {
 			log.Warnf("Failed to record rule matching metric: %+v", errInsert)
