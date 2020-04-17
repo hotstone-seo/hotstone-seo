@@ -1,0 +1,107 @@
+
+
+### Retrieve Mismatched Rule
+http://localhost:8089/api/metrics/mismatched
+
+### Retrieve Rules
+
+http://localhost:8089/api/rules
+
+### Add New Rule
+POST http://localhost:8089/api/rules
+content-type: application/json
+
+{
+    "id" : null,
+    "name" :"Airport Rule",
+    "url_pattern" : "/airport",
+    "data_source_id" : 1
+}
+
+### Update Rule
+PUT http://localhost:8089/api/rules
+content-type: application/json
+
+{
+    "id" : 1,
+    "name" :"Airport Rule",
+    "url_pattern" : "/airport",
+    "data_source_id" : 2
+}
+
+
+### Delete Rule
+
+DELETE http://localhost:8089/api/rules/1
+
+
+
+### Retrieve Data Source
+
+http://localhost:8089/api/data_sources
+
+
+### Retrieve Data Source By ID
+
+http://localhost:8089/api/data_sources/1
+
+
+### Add New Data Source
+POST http://localhost:8089/api/data_sources
+content-type: application/json
+
+{
+    "id" : null,
+    "name" :"Airport Data Source",
+    "url" : "www.source.co/airport"
+}
+
+
+### Edit Data Source
+PUT http://localhost:8089/api/data_sources
+content-type: application/json
+
+{
+    "id" : 1,
+    "name" :"Airport Data Source",
+    "url" : "www.source.co/airportds"
+}
+
+
+
+### Delete Data Source
+
+DELETE http://localhost:8089/api/data_sources/1
+
+### Retrieve Audit Trail
+
+http://localhost:8089/api/audit-trail
+
+
+### Retrieve Tag
+
+http://localhost:8089/api/tags
+
+### Retrieve Tag By Rule ID & Locale
+http://localhost:8089/api/tags
+content-type: application/json
+
+{
+    "param": {"en_US", 1 }
+}
+
+### Add Tag
+
+
+### Edit Tag
+
+
+### Retrieve Rule By ID
+
+http://localhost:8089/api/rules/1
+content-type: application/text/plain 
+
+_ga: GA1.1.1226546703.1566276058
+gs_u_GSN-126978-E: 0dc61fc900b06ce843a10bc887fadacb:34351:26982:1566287514708
+secure_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZhaHJpLmhpZGF5YXRAdGlrZXQuY29tIiwiZXhwIjoxNTg0MzQ1NjE3LCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1FNG5hTlVWMEo4by9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS93Y3ZMcXR6RnlpWS9waG90by5qcGcifQ.4MLJ0_FSx2mVFSQqFpcBmtVN6TFdTXapaHgfU-PpwYA
+token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbmRyaS5jaGlhQHRpa2V0LmNvbSIsImV4cCI6MTU4NzI5ODAxNCwicGljdHVyZSI6Imh0dHBzOi8vbGg1Lmdvb2dsZXVzZXJjb250ZW50LmNvbS8tWThnZV9PWk1ycTQvQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvZ2ZwR2lPUVJ6Rk0vcGhvdG8uanBnIn0.-jZGTSMSReFmqes-vqk8Uz3sjs9SdltyZmRuk_56jXc
