@@ -193,6 +193,10 @@ content-type: application/json
     "rule_id": 4
 }
 
+### Delete Tag
+DELETE http://localhost:8089/api/tags/100
+Cookie: {{secure_token}}
+
 ### Analytic Number of Hit (based on Rule ID)
 http://localhost:8089/api/metrics/hit
 Cookie: {{secure_token}}
