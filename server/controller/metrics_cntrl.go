@@ -27,13 +27,13 @@ func (c *MetricsCntrl) Route(e *echo.Group) {
 
 // ListMismatched of metrics_unmatched
 func (c *MetricsCntrl) ListMismatched(ec echo.Context) (err error) {
-	var report []*metric.NotMatchedReport
+	var report []*metric.MismatchReport
 	ctx := ec.Request().Context()
 
 	validCols := []string{"url", "first_seen", "last_seen", "count"}
 	paginationParam := repository.BuildPaginationParam(ec.QueryParams(), validCols)
 
-	if report, err = c.MetricService.NotMatchedReports(ctx, paginationParam); err != nil {
+	if report, err = c.MetricService.MismatchReports(ctx, paginationParam); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ec.JSON(http.StatusOK, report)

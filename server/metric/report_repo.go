@@ -13,53 +13,42 @@ import (
 	"go.uber.org/dig"
 )
 
-// MetricsRuleMatching represented  metrics_rule_matching entity
-type MetricsRuleMatching struct {
-	Time      time.Time
-	IsMatched int
-	RuleID    *int64
-	URL       *string
-}
-
-// MetricsRuleMatchingRepo to handle metrics_rule_matching entity [mock]
-type MetricsRuleMatchingRepo interface {
-	Insert(context.Context, MetricsRuleMatching) (err error)
-
-	NotMatchedReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*NotMatchedReport, err error)
+// ReportRepo responsble to generate report [mock]
+type ReportRepo interface {
+	MismatchReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*MismatchReport, err error)
 	DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error)
 
 	CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
 	CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
 }
 
-// NewMetricsRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [constructor]
-func NewMetricsRuleMatchingRepo(impl MetricsRuleMatchingRepoImpl) MetricsRuleMatchingRepo {
-	return &impl
+// MismatchReport contain sumary of total count of not-matching rule
+type MismatchReport struct {
+	URL       string    `json:"url"`
+	Count     int64     `json:"count"`
+	FirstSeen time.Time `json:"first_seen"`
+	LastSeen  time.Time `json:"last_seen"`
 }
 
-// MetricsRuleMatchingRepoImpl is implementation metrics_rule_matching repository
-type MetricsRuleMatchingRepoImpl struct {
+// DailyReport contain sumary of daily hit
+type DailyReport struct {
+	Date     time.Time `json:"date"`
+	HitCount int64     `json:"count"`
+}
+
+// ReportRepoImpl is implementation of ReportRepo
+type ReportRepoImpl struct {
 	dig.In
 	*typpostgres.DB
 }
 
-// Insert metrics_rule_matching
-func (r *MetricsRuleMatchingRepoImpl) Insert(ctx context.Context, e MetricsRuleMatching) (err error) {
-	builder := sq.
-		Insert("metrics_rule_matching").
-		Columns("is_matched", "url", "rule_id").
-		Values(e.IsMatched, e.URL, e.RuleID).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
-
-	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
-		return
-	}
-	return
+// NewReportRepo return new instance of MetricsRuleMatchingRepo [constructor]
+func NewReportRepo(impl ReportRepoImpl) ReportRepo {
+	return &impl
 }
 
-// NotMatchedReports return list of not-matching report
-func (r *MetricsRuleMatchingRepoImpl) NotMatchedReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*NotMatchedReport, err error) {
+// MismatchReports return list of not-matching report
+func (r *ReportRepoImpl) MismatchReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*MismatchReport, err error) {
 	var rows *sql.Rows
 
 	subQuery := sq.
@@ -84,9 +73,9 @@ func (r *MetricsRuleMatchingRepoImpl) NotMatchedReports(ctx context.Context, pag
 		return
 	}
 	defer rows.Close()
-	list = make([]*NotMatchedReport, 0)
+	list = make([]*MismatchReport, 0)
 	for rows.Next() {
-		var report NotMatchedReport
+		var report MismatchReport
 		if err = rows.Scan(
 			&report.URL,
 			&report.Count,
@@ -101,13 +90,15 @@ func (r *MetricsRuleMatchingRepoImpl) NotMatchedReports(ctx context.Context, pag
 	return
 }
 
-func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error) {
+// CountMatched is count matched
+func (r *ReportRepoImpl) CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error) {
 
 	builder := sq.Select().
 		Column("count(is_matched)").
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 1}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
 
 	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"})
 
@@ -119,7 +110,8 @@ func (r *MetricsRuleMatchingRepoImpl) CountMatched(ctx context.Context, wherePar
 	return
 }
 
-func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error) {
+// CountUniquePage is count unique page
+func (r *ReportRepoImpl) CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error) {
 
 	builder := sq.Select().
 		Column("count(distinct(url))").
@@ -138,7 +130,7 @@ func (r *MetricsRuleMatchingRepoImpl) CountUniquePage(ctx context.Context, where
 }
 
 // DailyReports return list of daily report
-func (r *MetricsRuleMatchingRepoImpl) DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error) {
+func (r *ReportRepoImpl) DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error) {
 	var rows *sql.Rows
 
 	query := `
