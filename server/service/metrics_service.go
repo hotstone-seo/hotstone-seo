@@ -7,13 +7,13 @@ import (
 
 // MetricService contain logic for MetricsUnmatchedController [mock]
 type MetricService interface {
-	metric.MetricsRuleMatchingRepo
+	metric.ReportRepo
 }
 
 // MetricServiceImpl is implementation of MetricsRuleMatchingService
 type MetricServiceImpl struct {
 	dig.In
-	metric.MetricsRuleMatchingRepo
+	metric.ReportRepo
 }
 
 // NewMetricService return new instance of MetricsRuleMatchingService [constructor]

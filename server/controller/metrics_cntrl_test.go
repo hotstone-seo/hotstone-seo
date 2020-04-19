@@ -27,15 +27,15 @@ func TestMetricsController_ListMismatched(t *testing.T) {
 	lastSeen := time.Now()
 
 	t.Run("WHEN retrieved error", func(t *testing.T) {
-		metricsSvcMock.EXPECT().NotMatchedReports(gomock.Any(), gomock.Any()).Return(nil, errors.New("retrieve error"))
+		metricsSvcMock.EXPECT().MismatchReports(gomock.Any(), gomock.Any()).Return(nil, errors.New("retrieve error"))
 		_, err := echotest.DoGET(metricsCntrl.ListMismatched, "/", nil)
 		require.EqualError(t, err, "code=500, message=retrieve error")
 	})
 
 	t.Run("WHEN successful", func(t *testing.T) {
-		metricsSvcMock.EXPECT().NotMatchedReports(gomock.Any(), gomock.Any()).Return(
-			[]*metric.NotMatchedReport{
-				&metric.NotMatchedReport{
+		metricsSvcMock.EXPECT().MismatchReports(gomock.Any(), gomock.Any()).Return(
+			[]*metric.MismatchReport{
+				&metric.MismatchReport{
 					URL:       "test.com/test",
 					FirstSeen: firstSeen,
 					LastSeen:  lastSeen,

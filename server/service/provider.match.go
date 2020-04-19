@@ -54,7 +54,7 @@ func (p *ProviderServiceImpl) onMatched(url string, ruleID int64) {
 	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
 	defer cancel()
 
-	p.MetricsRuleMatchingRepo.Insert(ctx, metric.MetricsRuleMatching{
+	p.RuleMatchingRepo.Insert(ctx, metric.RuleMatching{
 		IsMatched: 1,
 		URL:       &url,
 		RuleID:    &ruleID,
@@ -65,7 +65,7 @@ func (p *ProviderServiceImpl) onNotMatched(url string) {
 	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
 	defer cancel()
 
-	p.MetricsRuleMatchingRepo.Insert(ctx, metric.MetricsRuleMatching{
+	p.RuleMatchingRepo.Insert(ctx, metric.RuleMatching{
 		IsMatched: 0,
 		URL:       &url,
 	})

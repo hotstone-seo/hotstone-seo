@@ -81,31 +81,17 @@ func (mr *MockMetricServiceMockRecorder) DailyReports(arg0, arg1, arg2, arg3 int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DailyReports", reflect.TypeOf((*MockMetricService)(nil).DailyReports), arg0, arg1, arg2, arg3)
 }
 
-// Insert mocks base method
-func (m *MockMetricService) Insert(arg0 context.Context, arg1 metric.MetricsRuleMatching) error {
+// MismatchReports mocks base method
+func (m *MockMetricService) MismatchReports(arg0 context.Context, arg1 repository.PaginationParam) ([]*metric.MismatchReport, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Insert indicates an expected call of Insert
-func (mr *MockMetricServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockMetricService)(nil).Insert), arg0, arg1)
-}
-
-// NotMatchedReports mocks base method
-func (m *MockMetricService) NotMatchedReports(arg0 context.Context, arg1 repository.PaginationParam) ([]*metric.NotMatchedReport, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "NotMatchedReports", arg0, arg1)
-	ret0, _ := ret[0].([]*metric.NotMatchedReport)
+	ret := m.ctrl.Call(m, "MismatchReports", arg0, arg1)
+	ret0, _ := ret[0].([]*metric.MismatchReport)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// NotMatchedReports indicates an expected call of NotMatchedReports
-func (mr *MockMetricServiceMockRecorder) NotMatchedReports(arg0, arg1 interface{}) *gomock.Call {
+// MismatchReports indicates an expected call of MismatchReports
+func (mr *MockMetricServiceMockRecorder) MismatchReports(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NotMatchedReports", reflect.TypeOf((*MockMetricService)(nil).NotMatchedReports), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MismatchReports", reflect.TypeOf((*MockMetricService)(nil).MismatchReports), arg0, arg1)
 }
