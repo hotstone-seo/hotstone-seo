@@ -7,12 +7,13 @@ import { EditOutlined, BarChartOutlined } from '@ant-design/icons';
 import { RuleForm, RuleDetail } from 'components/Rule';
 import { getRule, updateRule } from 'api/rule';
 import useDataSources from 'hooks/useDataSources';
-import ManageTags from './sections/ManageTags';
+import { ManageStructuredData, ManageTags } from './sections';
 
 const { TabPane } = Tabs;
 
 function EditRule() {
   const { id } = useParams();
+  const ruleID = parseInt(id, 10);
   const history = useHistory();
   const [dataSources] = useDataSources();
 
@@ -91,10 +92,10 @@ function EditRule() {
         style={{ margin: 24, background: '#fff' }}
       >
         <TabPane tab="Manage Tags" key="tag" style={{ padding: '0 16px' }}>
-          <ManageTags ruleID={parseInt(id, 10)} />
+          <ManageTags ruleID={ruleID} />
         </TabPane>
         <TabPane tab="Manage Structured Data" key="struct" style={{ padding: '0 16px' }}>
-          <span>Structured Data</span>
+          <ManageStructuredData ruleID={ruleID}/>
         </TabPane>
       </Tabs>
     </div>

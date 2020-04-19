@@ -10,23 +10,11 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function StructuredDataList(props) {
   const {
-    structuredDatas, onClick, onEdit, onDelete,
+    structuredDatas, onEdit, onDelete,
   } = props;
 
   const columns = [
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-      render: (text, record) => {
-        <Button
-          type="link"
-          onClick={() => onClick(record)}
-        >
-          {text}
-        </Button>;
-      },
-    },
+    { title: 'Type', dataIndex: 'type', key: 'type' },
     {
       title: 'Last Updated',
       dataIndex: 'updated_at',
@@ -82,7 +70,6 @@ StructuredDataList.propTypes = {
       updated_at: PropTypes.string,
     }),
   ),
-  onClick: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
