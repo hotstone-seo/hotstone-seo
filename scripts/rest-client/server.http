@@ -47,7 +47,7 @@ Cookie: {{secure_token}}
 
 ### Retrieve Data Source By ID
 
-GET http://localhost:8089/api/data_sources/1
+GET http://localhost:8089/api/data_sources/4
 Cookie: {{secure_token}}
 
 ### Add New Data Source
@@ -85,7 +85,6 @@ http://localhost:8089/api/audit-trail
 Cookie: {{secure_token}}
 
 ### Retrieve Tag
-
 http://localhost:8089/api/tags
 Cookie: {{secure_token}}
 
@@ -99,15 +98,53 @@ content-type: application/json
 }
 
 ### Add Meta Tag
+POST http://localhost:8089/api/center/metaTag
+Cookie: {{secure_token}}
+content-type: application/json
 
+{
+    "locale": "en_US",
+    "name": "meta",
+    "content": "test 2",
+    "rule_id": 9
+}
 
 ### Edit Meta Tag
 
+### Add Title Tag
+POST http://localhost:8089/api/center/titleTag
+Cookie: {{secure_token}}
+content-type: application/json
 
+{
+    "locale": "id_ID",
+    "title": "Event Keren",
+    "rule_id": 4
+}
 
+### Add Script Tag
+POST http://localhost:8089/api/center/scriptTag
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "locale": "en_US",
+    "source": "source.com",
+    "rule_id": 4
+}
+
+### Add Script Tag
+POST http://localhost:8089/api/center/canonicalTag
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "locale": "en_US",
+    "href": "www.sampledata.com/src1.js",
+    "rule_id": 4
+}
 
 ### Analytic Number of Hit (based on Rule ID)
-
 http://localhost:8089/api/metrics/hit
 Cookie: {{secure_token}}
 content-type: application/json
@@ -117,7 +154,6 @@ content-type: application/json
 }
 
 ### Analytic Number of Unique Page (based on Rule ID)
-
 http://localhost:8089/api/metrics/unique-page
 Cookie: {{secure_token}}
 content-type: application/json
@@ -126,17 +162,15 @@ content-type: application/json
     "params": {"rule_id": 1 }
 }
 
-### Analytic Number of Hit Count (based on Rule ID & date of range)
-
-http://localhost:8089/api/metrics/hit/range
+### Analytic Number of Hit Count (based on date of range)
+GET http://localhost:8089/api/metrics/hit/range?start=2020-04-08&end=2020-04-15
 Cookie: {{secure_token}}
-content-type: application/json
 
-{
-    "params": {"start": "2020-04-08", "end" : "2020-04-15","rule_id" : 1 }
-}
+### Analytic Number of Hit Count (based on date of range & Rule ID)
+GET http://localhost:8089/api/metrics/hit/range?start=2020-04-08&end=2020-04-15&rule_id=1
+Cookie: {{secure_token}}
+ 
 
 ### Retrieve Rule By ID
-
 GET http://localhost:8089/api/rules/1
 Cookie: {{secure_token}}
