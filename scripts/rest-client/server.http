@@ -110,6 +110,17 @@ content-type: application/json
 }
 
 ### Edit Meta Tag
+PUT http://localhost:8089/api/center/metaTag
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "locale": "en_US",
+    "name": "description",
+    "content": "Event with Path Params Description page",
+    "id": 4,
+    "rule_id": 4
+}
 
 ### Add Title Tag
 POST http://localhost:8089/api/center/titleTag
@@ -119,6 +130,19 @@ content-type: application/json
 {
     "locale": "id_ID",
     "title": "Event Keren",
+    "rule_id": 4
+}
+
+### Edit Title tag
+
+PUT http://localhost:8089/api/center/titleTag
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "locale": "en_US",
+    "title": "Event with Path Params Title Tag",
+    "id": 3,
     "rule_id": 4
 }
 
@@ -134,6 +158,18 @@ content-type: application/json
 }
 
 ### Add Script Tag
+PUT http://localhost:8089/api/center/scriptTag
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "locale": "en_US",
+    "source": "source.com",
+    "id": 12,
+    "rule_id": 4
+}
+
+### Add Canonical Tag
 POST http://localhost:8089/api/center/canonicalTag
 Cookie: {{secure_token}}
 content-type: application/json
@@ -141,6 +177,19 @@ content-type: application/json
 {
     "locale": "en_US",
     "href": "www.sampledata.com/src1.js",
+    "rule_id": 4
+}
+
+### Edit Canonical Tag
+
+PUT http://localhost:8089/api/center/canonicalTag
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "locale": "en_US",
+    "href": "www.sampledata.com/src1.js",
+    "id": 14,
     "rule_id": 4
 }
 
