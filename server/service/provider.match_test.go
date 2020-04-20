@@ -54,5 +54,6 @@ func TestProvider_Match(t *testing.T) {
 			PathParam: map[string]string{"hello": "world"},
 		}, resp)
 
-		time.Sleep(time.Millisecond) // waiting to submit the metri	})
+		time.Sleep(time.Millisecond) // waiting to submit the metric
+	})
 }
