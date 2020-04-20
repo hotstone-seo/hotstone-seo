@@ -54,7 +54,7 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 	}
 
 	pragma := cachekit.CreatePragma(c.Request())
-	tags, err = p.ProviderService.FetchTagsWithCache(ctx, id, locale, pragma)
+	tags, err = p.ProviderService.FetchTagsWithCache(ctx, id, c.QueryParams(), pragma)
 	cachekit.SetHeader(c.Response(), pragma)
 	if cachekit.NotModifiedError(err) {
 		return echo.NewHTTPError(http.StatusNotModified)

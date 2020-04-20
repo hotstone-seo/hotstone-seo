@@ -31,12 +31,26 @@ function match(path) {
 
 function fetchTags(rule, locale, contentData) {
   const { rule_id, path_param } = rule;
+  path_param["locale"] = locale;
+  let queryParam = serialize(path_param);
   return client
-    .get(`p/rules/${rule.rule_id}/tags?locale=${locale}`)
+    .get(`p/rules/${rule_id}/tags${queryParam}`)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
+}
+
+function serialize(obj) {
+  let str =
+    "?" +
+    Object.keys(obj)
+      .reduce(function (a, k) {
+        a.push(k + "=" + encodeURIComponent(obj[k]));
+        return a;
+      }, [])
+      .join("&");
+  return str;
 }
 
 export { match, fetchTags };

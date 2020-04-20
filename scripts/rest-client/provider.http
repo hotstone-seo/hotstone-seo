@@ -13,3 +13,7 @@ http://localhost:8089/p/rules/1/tags?locale=en_US
 If-Modified-Since: Mon, 20 Apr 2020 08:10:16 UTC
 
 
+### Tags with params
+
+http://localhost:8089/p/rules/4/tags?locale=en_US
+

@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 
@@ -18,14 +20,14 @@ import (
 func (p *ProviderServiceImpl) FetchTagsWithCache(
 	ctx context.Context,
 	ruleID int64,
-	locale string,
+	values url.Values,
 	pragma *cachekit.Pragma,
 ) (itags []*ITag, err error) {
 
-	key := fmt.Sprintf("rule%d_%s", ruleID, locale)
+	key := fmt.Sprintf("rule=%d&%s", ruleID, values.Encode())
 	cache := cachekit.New(key,
 		func() (interface{}, error) {
-			itags, err := p.FetchTags(ctx, ruleID, locale)
+			itags, err := p.FetchTags(ctx, ruleID, values)
 			return itags, err
 		},
 	)
@@ -42,20 +44,22 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(
 func (p *ProviderServiceImpl) FetchTags(
 	ctx context.Context,
 	ruleID int64,
-	locale string,
+	values url.Values,
 ) (itags []*ITag, err error) {
 	var (
-		rule  *repository.Rule
-		tags  []*repository.Tag
-		ds    *IDataSource
-		b     []byte
-		param map[string]interface{}
-		itag  *ITag
+		rule *repository.Rule
+		tags []*repository.Tag
+		ds   *IDataSource
+		b    []byte
+		data interface{}
+		itag *ITag
 	)
 
 	if rule, err = p.RuleRepo.FindOne(ctx, ruleID); err != nil {
 		return
 	}
+
+	locale := values.Get("locale")
 
 	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
 		return nil, fmt.Errorf("Find-Tags: %w", err)
@@ -73,9 +77,7 @@ func (p *ProviderServiceImpl) FetchTags(
 		return
 	}
 
-	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, map[string]interface{}{
-		"id": rule.ID,
-	}); err != nil {
+	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, ConvertToParams(values)); err != nil {
 		return nil, err
 	}
 
@@ -83,18 +85,44 @@ func (p *ProviderServiceImpl) FetchTags(
 		return nil, fmt.Errorf("Call: %w", err)
 	}
 
-	if err = json.Unmarshal(b, &param); err != nil {
-		return nil, fmt.Errorf("JSON: %w", err)
+	if data, err = UnmarshalData(b); err != nil {
+		return
 	}
 
 	for _, tag := range tags {
-		if itag, err = interpolateTag(tag, param); err != nil {
+		if itag, err = interpolateTag(tag, data); err != nil {
 			return nil, fmt.Errorf("Interpolate-Tag: %w", err)
 		}
 		itags = append(itags, itag)
 	}
 
 	return
+}
+
+// UnmarshalData to unmarshal data
+func UnmarshalData(b []byte) (v interface{}, err error) {
+	firstChar := string(b)[0]
+
+	if firstChar == '{' {
+		var param map[string]interface{}
+		if err = json.Unmarshal(b, &param); err != nil {
+			return nil, fmt.Errorf("JSON: %w", err)
+		}
+		return param, nil
+	}
+
+	if firstChar == '[' {
+		var params []map[string]interface{}
+		if err = json.Unmarshal(b, &params); err != nil {
+			return nil, fmt.Errorf("JSON: %w", err)
+		}
+		if len(params) > 0 {
+			return params[0], nil
+		}
+		return map[string]interface{}{}, nil
+	}
+
+	return nil, errors.New("Unmarshal-Data: Invalid data format")
 }
 
 func (p *ProviderServiceImpl) findAndInterpolateDataSource(ctx context.Context, dataSourceID int64, param interface{}) (interpolated *IDataSource, err error) {
@@ -212,4 +240,15 @@ func call(ds *IDataSource) (data []byte, err error) {
 	}
 
 	return data, nil
+}
+
+// ConvertToParams to convert url.Values to params
+func ConvertToParams(vals url.Values) map[string]string {
+	params := make(map[string]string)
+	for key, val := range vals {
+		if len(val) > 0 {
+			params[key] = val[0]
+		}
+	}
+	return params
 }

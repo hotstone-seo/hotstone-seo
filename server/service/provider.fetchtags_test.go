@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -75,16 +76,17 @@ func TestProviderService_FetchTagsWithCache(t *testing.T) {
 
 	b, _ := json.Marshal(itags_rule999_en_US)
 
-	testRedis.Set("rule999_en_US", string(b))
-	testRedis.Set("rule999_en_US:time", time.Now().UTC().Add(10*time.Second).Format(time.RFC1123))
-	testRedis.SetTTL("rule999_en_US", 10*time.Second)
-	testRedis.SetTTL("rule999_en_US:time", 10*time.Second)
+	testRedis.Set("rule=999&locale=en_US", string(b))
+	testRedis.Set("rule=999&locale=en_US:time", time.Now().UTC().Add(10*time.Second).Format(time.RFC1123))
+	testRedis.SetTTL("rule=999&locale=en_US", 10*time.Second)
+	testRedis.SetTTL("rule=999&locale=en_US:time", 10*time.Second)
 
 	svc := service.ProviderServiceImpl{
 		Redis: redis.NewClient(&redis.Options{Addr: testRedis.Addr()}),
 	}
 
-	tags, err := svc.FetchTagsWithCache(context.Background(), int64(999), "en_US", &cachekit.Pragma{})
+	val, _ := url.ParseQuery(`locale=en_US`)
+	tags, err := svc.FetchTagsWithCache(context.Background(), int64(999), val, &cachekit.Pragma{})
 	require.NoError(t, err)
 	require.Equal(t, itags_rule999_en_US, tags)
 }
@@ -120,7 +122,8 @@ func TestProviderService_FetchTags(t *testing.T) {
 			URL: ts.URL,
 		}, nil)
 
-	tags, err := svc.FetchTags(ctx, int64(999), "en_US")
+	val, _ := url.ParseQuery(`locale=en_US`)
+	tags, err := svc.FetchTags(ctx, int64(999), val)
 	require.NoError(t, err)
 	require.Equal(t, itags_rule999_en_US, tags)
 }
@@ -140,12 +143,13 @@ func TestProviderService_FetchTags_When(t *testing.T) {
 	}
 
 	ctx := context.Background()
+	val, _ := url.ParseQuery(`locale=en_US`)
 
 	t.Run("WHEN rule not exist", func(t *testing.T) {
 		rulemock.EXPECT().FindOne(ctx, int64(999)).
 			Return(nil, sql.ErrNoRows)
 
-		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+		_, err := svc.FetchTags(ctx, int64(999), val)
 
 		// THEN return error
 		require.Equal(t, sql.ErrNoRows, err)
@@ -157,7 +161,7 @@ func TestProviderService_FetchTags_When(t *testing.T) {
 		tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").
 			Return(nil, errors.New("some-error"))
 
-		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+		_, err := svc.FetchTags(ctx, int64(999), val)
 
 		// THEN return error
 		require.EqualError(t, err, "Find-Tags: some-error")
@@ -169,7 +173,7 @@ func TestProviderService_FetchTags_When(t *testing.T) {
 		tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(777), "en_US").
 			Return([]*repository.Tag{}, nil)
 
-		tags, err := svc.FetchTags(ctx, int64(777), "en_US")
+		tags, err := svc.FetchTags(ctx, int64(777), val)
 		require.NoError(t, err)
 
 		// THEN return empty list
@@ -182,7 +186,7 @@ func TestProviderService_FetchTags_When(t *testing.T) {
 		tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(777), "en_US").
 			Return(tags_rule777_en_US, nil)
 
-		tags, err := svc.FetchTags(ctx, int64(777), "en_US")
+		tags, err := svc.FetchTags(ctx, int64(777), val)
 		require.NoError(t, err)
 
 		// THEN return tags same with the original without interpolation
@@ -200,7 +204,7 @@ func TestProviderService_FetchTags_When(t *testing.T) {
 		dsmock.EXPECT().FindOne(ctx, ds666_id).
 			Return(nil, fmt.Errorf("some-error"))
 
-		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+		_, err := svc.FetchTags(ctx, int64(999), val)
 
 		// THEN return error
 		require.EqualError(t, err, "DataSource: some-error")
@@ -214,7 +218,7 @@ func TestProviderService_FetchTags_When(t *testing.T) {
 		dsmock.EXPECT().FindOne(ctx, ds666_id).
 			Return(&repository.DataSource{URL: "bad-url"}, nil)
 
-		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+		_, err := svc.FetchTags(ctx, int64(999), val)
 
 		// THEN return error
 		require.EqualError(t, err, "Call: Get \"bad-url\": unsupported protocol scheme \"\"")
@@ -231,12 +235,80 @@ func TestProviderService_FetchTags_When(t *testing.T) {
 		dsmock.EXPECT().FindOne(ctx, ds666_id).
 			Return(&repository.DataSource{URL: ts.URL}, nil)
 
-		_, err := svc.FetchTags(ctx, int64(999), "en_US")
+		_, err := svc.FetchTags(ctx, int64(999), val)
 
 		// THEN return error
 		require.EqualError(t, err, "JSON: invalid character 'b' looking for beginning of object key string")
 	})
+}
 
+func TestConvertToParam(t *testing.T) {
+	testcases := []struct {
+		desc     string
+		query    string
+		expected map[string]string
+	}{
+		{
+			desc:  "normal query string",
+			query: "locale=en_US&some-field=some-value",
+			expected: map[string]string{
+				"locale":     "en_US",
+				"some-field": "some-value",
+			},
+		},
+		{
+			desc:  "some field is empty",
+			query: "locale=en_US&some-field=",
+			expected: map[string]string{
+				"locale":     "en_US",
+				"some-field": "",
+			},
+		},
+	}
+
+	for _, tt := range testcases {
+		vals, _ := url.ParseQuery(tt.query)
+		require.Equal(t, tt.expected, service.ConvertToParams(vals))
+	}
+}
+
+func TestUnmarshalData(t *testing.T) {
+	testcases := []struct {
+		desc        string
+		data        string
+		expected    interface{}
+		expectedErr string
+	}{
+		{
+			desc: "json object",
+			data: `{"hello": "world"}`,
+			expected: map[string]interface{}{
+				"hello": "world",
+			},
+		},
+		{
+			desc: "json array",
+			data: `[{"hello": "world"}]`,
+			expected: map[string]interface{}{
+				"hello": "world",
+			},
+		},
+		{
+			desc:     "empty json array",
+			data:     `[]`,
+			expected: map[string]interface{}{},
+		},
+	}
+
+	for _, tt := range testcases {
+		v, err := service.UnmarshalData([]byte(tt.data))
+		if tt.expectedErr != "" {
+			require.EqualError(t, err, tt.expectedErr)
+		} else {
+			require.NoError(t, err)
+		}
+		require.Equal(t, tt.expected, v)
+	}
 }
 
 func dummyServer(response string) *httptest.Server {

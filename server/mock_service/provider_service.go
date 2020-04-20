@@ -9,6 +9,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	cachekit "github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	service "github.com/hotstone-seo/hotstone-seo/server/service"
+	url "net/url"
 	reflect "reflect"
 )
 
@@ -36,7 +37,7 @@ func (m *MockProviderService) EXPECT() *MockProviderServiceMockRecorder {
 }
 
 // FetchTags mocks base method
-func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 string) ([]*service.ITag, error) {
+func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 url.Values) ([]*service.ITag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchTags", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*service.ITag)
@@ -51,7 +52,7 @@ func (mr *MockProviderServiceMockRecorder) FetchTags(arg0, arg1, arg2 interface{
 }
 
 // FetchTagsWithCache mocks base method
-func (m *MockProviderService) FetchTagsWithCache(arg0 context.Context, arg1 int64, arg2 string, arg3 *cachekit.Pragma) ([]*service.ITag, error) {
+func (m *MockProviderService) FetchTagsWithCache(arg0 context.Context, arg1 int64, arg2 url.Values, arg3 *cachekit.Pragma) ([]*service.ITag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchTagsWithCache", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].([]*service.ITag)
