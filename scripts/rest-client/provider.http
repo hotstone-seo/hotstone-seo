@@ -9,7 +9,7 @@ content-type: application/json
 
 ### Tags
 
-http://localhost:8089/p/rule/1?locale=en_US
-If-Modified-Since: Thu, 16 Apr 2020 06:00:50 UTC
+http://localhost:8089/p/rules/1/tags?locale=en_US
+If-Modified-Since: Mon, 20 Apr 2020 08:10:16 UTC
 
 

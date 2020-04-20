@@ -32,9 +32,9 @@ const APISets = {
   },
 };
 
-// TODO: adjust onSubmit to use appropriate API function for each type
 function TagForm({ tag, afterSubmit, onCancel }) {
-  const [currentType, setCurrentType] = useState(tag.type);
+  const { type: tagType, id: tagID } = tag;
+  const [currentType, setCurrentType] = useState(tagType);
   const APISet = tag.id ? APISets.updateAPI : APISets.createAPI;
   const submitTag = useMemo(() => APISet[currentType], [APISet, currentType]);
 
@@ -60,11 +60,12 @@ function TagForm({ tag, afterSubmit, onCancel }) {
   return (
     <>
       <PageHeader
-        title={tag.id ? 'Edit Tag' : 'Add new Tag'}
+        title={tagID ? 'Edit Tag' : 'Add new Tag'}
         onBack={onCancel}
         extra={[
           <Select
             key="selectType"
+            disabled={tagID}
             defaultValue={currentType}
             placeholder="Select a type"
             onChange={(value) => setCurrentType(value)}
