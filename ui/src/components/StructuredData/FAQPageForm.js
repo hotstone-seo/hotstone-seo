@@ -1,16 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Button } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 
-function FAQPageForm() {
+function FAQPageForm({ faqPage }) {
   const [form] = Form.useForm();
-
-  const faqPage = {
-    faqs: [
-      { question: 'What\'s your name?', answer: 'nobody' },
-      { question: 'How long?', answer: 'in a minute' },
-    ],
-  };
 
   return (
     <Form
@@ -52,5 +46,18 @@ function FAQPageForm() {
     </Form>
   );
 }
+
+FAQPageForm.defaultProps = {
+  faqPage: {},
+};
+
+FAQPageForm.propTypes = {
+  faqPage: PropTypes.shape({
+    faqs: PropTypes.arrayOf(PropTypes.shape({
+      question: PropTypes.string,
+      answer: PropTypes.string,
+    })),
+  }),
+};
 
 export default FAQPageForm;
