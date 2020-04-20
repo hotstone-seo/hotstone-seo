@@ -13,5 +13,5 @@ type provider struct {
 
 func (p *provider) route(e *echo.Echo) {
 	e.POST("p/match", p.MatchRule)
-	e.GET("p/rule/:id", p.FetchTag)
+	e.GET("p/rules/:id/tags", p.FetchTag)
 }
