@@ -46,7 +46,7 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma
 
 	pragma.SetLastModified(modifiedTime)
 
-	if ifModifiedTime := pragma.IfModifiedSince(); !ifModifiedTime.IsZero() && modifiedTime.Before(ifModifiedTime) {
+	if ifModifiedTime := pragma.IfModifiedSince(); !ifModifiedTime.IsZero() && !modifiedTime.IsZero() && modifiedTime.Before(ifModifiedTime) {
 		err = ErrNotModified
 		return
 	}

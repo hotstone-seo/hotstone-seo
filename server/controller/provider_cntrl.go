@@ -54,12 +54,15 @@ func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 	}
 
 	pragma := cachekit.CreatePragma(c.Request())
-	if tags, err = p.ProviderService.FetchTagsWithCache(ctx, id, locale, pragma); err != nil {
-		cachekit.SetHeader(c.Response(), pragma)
+	tags, err = p.ProviderService.FetchTagsWithCache(ctx, id, locale, pragma)
+	cachekit.SetHeader(c.Response(), pragma)
+	if cachekit.NotModifiedError(err) {
+		return echo.NewHTTPError(http.StatusNotModified)
+	}
+	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	cachekit.SetHeader(c.Response(), pragma)
 	return c.JSON(http.StatusOK, tags)
 }
 
