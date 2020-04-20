@@ -1,0 +1,26 @@
+
+### TODO : Login with google
+POST http://localhost:8089/auth/google/login
+Content-Type: application/x-www-form-urlencoded
+
+
+### POST https://accounts.google.com/signin/oauth/oauthchooseaccount?client_id=756922046184-bbfmib4npavar64uobv6jr5kr1rp0tje.apps.googleusercontent.com&as=khRoVOXzCmh8lZSlS8mTfw&destination=http%3A%2F%2Flocalhost%3A8089&approval_state=!ChRHa1dkNGU0dUxwTG9XdEtOVGFjaBIfcy1uSVZlZjhaS1VmOEhuU1JuY2dubXFldk1WZkdSYw%E2%88%99AF-3PDcAAAAAXp5_q-_NCMqgMOwCkF8f0ZMjrpkVxaop&oauthgdpr=1&xsrfsig=ChkAeAh8T7-pzLAulPhvagOEt1l0X2OrNiHQEg5hcHByb3ZhbF9zdGF0ZRILZGVzdGluYXRpb24SBXNvYWN1Eg9vYXV0aHJpc2t5c2NvcGU&flowName=GeneralOAuthFlow
+
+
+### TODO : Callback from google
+### TODO : POST http://localhost:8089/auth/google/callback
+POST https://www.googleapis.com/oauth2/v4/token
+Content-Type: application/x-www-form-urlencoded
+
+{
+    "code": "link-relations",
+    "client_id": "756922046184-bbfmib4npavar64uobv6jr5kr1rp0tje.apps.googleusercontent.com",
+    "client_secret": "9TXNCCkrQ-KdsNuZ627QYO2C",
+    "grant_type": "authorization_code",
+    "redirect_uri": "http://localhost:8089/auth/google/callback"
+}
+
+### TODO : Logout
+POST http://localhost:8089/api/logout
+
+ 
