@@ -107,6 +107,7 @@ function updateScriptTag(scriptTag) {
 export {
   fetchTags, getTag, createTag, updateTag, deleteTag,
   addMetaTag, addTitleTag, addCanonicalTag, addScriptTag,
+  updateMetaTag, updateTitleTag, updateCanonicalTag, updateScriptTag,
 };
 
 const TagAPI = {

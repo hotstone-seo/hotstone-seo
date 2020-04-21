@@ -1,3 +1,4 @@
+import StructuredDataForm from './StructuredDataForm';
 import StructuredDataList from './StructuredDataList';
 
-export { StructuredDataList };
+export { StructuredDataForm, StructuredDataList };

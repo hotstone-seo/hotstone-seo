@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Select, Button,
+  Form, Input, Select, Button, message,
 } from 'antd';
+import { addScriptTag, updateScriptTag } from 'api/tag';
 import locales from 'locales';
 import TagPreview from './TagPreview';
 
 const { Option } = Select;
 
-function ScriptForm({ tag, onSubmit }) {
+function ScriptForm({ tag, afterSubmit }) {
   const [form] = Form.useForm();
   const [tagPreview, setTagPreview] = useState({ ...tag, type: 'script', value: null });
 
@@ -16,10 +17,17 @@ function ScriptForm({ tag, onSubmit }) {
     id, rule_id, locale, attributes = {},
   } = tag;
   const { src } = attributes;
+  const onSubmit = id ? updateScriptTag : addScriptTag;
 
   const onFinish = (values) => {
     const formTag = Object.assign(values, { id, rule_id });
-    onSubmit(formTag);
+    onSubmit(formTag)
+      .then((response) => {
+        afterSubmit(response);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
   };
 
   const updateTagPreview = ({ source }) => {
@@ -35,7 +43,7 @@ function ScriptForm({ tag, onSubmit }) {
       <Form
         form={form}
         labelCol={{ span: 6 }}
-        wrapperCol={{ span: 14 }}
+        wrapperCol={{ span: 12 }}
         initialValues={{ locale, source: src }}
         onFinish={onFinish}
         onValuesChange={updateTagPreview}
@@ -64,13 +72,15 @@ function ScriptForm({ tag, onSubmit }) {
         >
           <Input data-testid="input-src" />
         </Form.Item>
+        <Form.Item label="Preview">
+          <TagPreview tag={tagPreview} />
+        </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
           <Button data-testid="btn-save" type="primary" htmlType="submit">
             Save
           </Button>
         </Form.Item>
       </Form>
-      <TagPreview tag={tagPreview} />
     </>
   );
 }
@@ -80,7 +90,7 @@ ScriptForm.defaultProps = {
 };
 
 ScriptForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  afterSubmit: PropTypes.func.isRequired,
   tag: PropTypes.shape({
     id: PropTypes.number,
     rule_id: PropTypes.number,

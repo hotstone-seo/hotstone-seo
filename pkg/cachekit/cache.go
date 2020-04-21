@@ -53,7 +53,7 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma
 
 	if modifiedTime.IsZero() || pragma.NoCache() {
 		if v, err = c.refreshFn(); err != nil {
-			return fmt.Errorf("Cache: RefreshFunc: %w", err)
+			return err
 		}
 
 		ttl = pragma.MaxAge()
@@ -86,11 +86,11 @@ func (c *Cache) Execute(client *redis.Client, target interface{}, pragma *Pragma
 func (c *Cache) setData(client *redis.Client, v interface{}, ttl time.Duration) (err error) {
 	var data []byte
 	if data, err = json.Marshal(v); err != nil {
-		return fmt.Errorf("Marshal: %w", err)
+		return
 	}
 
 	if err = client.Set(c.key, data, ttl).Err(); err != nil {
-		return fmt.Errorf("Set: %w", err)
+		return
 	}
 	return
 }
@@ -99,17 +99,14 @@ func (c *Cache) getData(client *redis.Client, target interface{}) (ttl time.Dura
 	var data []byte
 
 	if ttl, err = client.TTL(c.key).Result(); err != nil {
-		err = fmt.Errorf("TTL: %w", err)
 		return
 	}
 
 	if data, err = client.Get(c.key).Bytes(); err != nil {
-		err = fmt.Errorf("Get: %w", err)
 		return
 	}
 
 	if err = json.Unmarshal(data, target); err != nil {
-		err = fmt.Errorf("Unmarsal: %w", err)
 		return
 	}
 
@@ -117,7 +114,9 @@ func (c *Cache) getData(client *redis.Client, target interface{}) (ttl time.Dura
 }
 
 func (c *Cache) setModifiedTime(client *redis.Client, t time.Time, ttl time.Duration) (err error) {
-	if err = client.Set(c.modifiedTimeKey(), t.UTC().Format(time.RFC1123), ttl).Err(); err != nil {
+	key := c.modifiedTimeKey()
+	modifiedTime := t.UTC().Format(time.RFC1123)
+	if err = client.Set(key, modifiedTime, ttl).Err(); err != nil {
 		return fmt.Errorf("SetModifiedTime: %w", err)
 	}
 	return

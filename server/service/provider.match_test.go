@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"net/url"
 	"testing"
 	"time"
 
@@ -12,6 +13,14 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 )
+
+type matchTestCase struct {
+	testName    string
+	vals        url.Values
+	pre         func()
+	expected    *service.MatchResponse
+	expectedErr string
+}
 
 func TestProvider_Match(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -27,33 +36,49 @@ func TestProvider_Match(t *testing.T) {
 
 	ctx := context.Background()
 
-	t.Run("WHEN no match", func(t *testing.T) {
-		urlServiceMock.EXPECT().
-			Match("some-path").
-			Return(int64(-1), nil)
-		ruleMatchingMock.EXPECT().
-			Insert(gomock.Any(), gomock.Any())
+	testcases := []matchTestCase{
+		{
+			testName:    "validate path",
+			expectedErr: "Validation: _path can't empty",
+		},
+		{
+			testName: "not match",
+			pre: func() {
+				urlServiceMock.EXPECT().Match("some-path").Return(int64(-1), nil)
+				ruleMatchingMock.EXPECT().Insert(gomock.Any(), gomock.Any())
+			},
+			vals:        parseQuery("_path=some-path"),
+			expectedErr: "No rule match: some-path",
+		},
+		{
+			testName: "match",
+			pre: func() {
+				urlServiceMock.EXPECT().Match("some-path").Return(int64(1), map[string]string{"hello": "world"})
+				ruleMatchingMock.EXPECT().Insert(gomock.Any(), gomock.Any())
+			},
+			vals: parseQuery("_path=some-path"),
+			expected: &service.MatchResponse{
+				RuleID:    1,
+				PathParam: map[string]string{"hello": "world"},
+			},
+		},
+	}
 
-		_, err := svc.Match(ctx, service.MatchRequest{Path: "some-path"})
-		require.EqualError(t, err, "No rule match: some-path")
+	for _, tt := range testcases {
+		t.Run(tt.testName, func(t *testing.T) {
+			if tt.pre != nil {
+				tt.pre()
+			}
+			res, err := svc.Match(ctx, tt.vals)
+			if tt.expectedErr != "" {
+				require.EqualError(t, err, tt.expectedErr)
+			} else {
+				require.NoError(t, err)
+			}
+			require.Equal(t, tt.expected, res)
 
-		time.Sleep(time.Millisecond) // waiting to submit the metric
-	})
+			time.Sleep(time.Millisecond) // waiting to submit the metric
+		})
+	}
 
-	t.Run("WHEN match", func(t *testing.T) {
-		urlServiceMock.EXPECT().
-			Match("some-path").
-			Return(int64(1), map[string]string{"hello": "world"})
-		ruleMatchingMock.EXPECT().
-			Insert(gomock.Any(), gomock.Any())
-
-		resp, err := svc.Match(ctx, service.MatchRequest{Path: "some-path"})
-		require.NoError(t, err)
-		require.Equal(t, &service.MatchResponse{
-			RuleID:    1,
-			PathParam: map[string]string{"hello": "world"},
-		}, resp)
-
-		time.Sleep(time.Millisecond) // waiting to submit the metric
-	})
 }

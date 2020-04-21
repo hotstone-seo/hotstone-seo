@@ -1,19 +1,14 @@
 ### Match Rule
 
-POST http://localhost:8089/p/match
-content-type: application/json
-
-{
-    "path": "/events/bingbang"
-}
+http://localhost:8089/p/match?_path=/events/bingbang
 
 ### Tags
 
-http://localhost:8089/p/rules/1/tags?locale=en_US
+http://localhost:8089/p/fetch-tags?rule=1&locale=en_US
 If-Modified-Since: Mon, 20 Apr 2020 08:10:16 UTC
 
 
 ### Tags with params
 
-http://localhost:8089/p/rules/4/tags?locale=en_US
+http://localhost:8089/p/fetch-tags?rule=4&locale=en_US&eventName=bigbang
 

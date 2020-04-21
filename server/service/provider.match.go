@@ -6,17 +6,14 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
 	"github.com/hotstone-seo/hotstone-seo/server/metric"
 )
 
 const (
 	insertMetricTimeout = 30 * time.Second
+	pathParam           = "_path"
 )
-
-// MatchRequest is request for match rule
-type MatchRequest struct {
-	Path string `json:"path"`
-}
 
 // MatchResponse is response of match rule
 type MatchResponse struct {
@@ -25,17 +22,21 @@ type MatchResponse struct {
 }
 
 // Match url with its rule
-func (p *ProviderServiceImpl) Match(ctx context.Context, req MatchRequest) (resp *MatchResponse, err error) {
+func (p *ProviderServiceImpl) Match(ctx context.Context, vals url.Values) (resp *MatchResponse, err error) {
 	var (
 		ruleID    int64
 		pathParam map[string]string
 	)
 
-	if _, err = url.Parse(req.Path); err != nil {
-		return nil, fmt.Errorf("URL: %w", err)
+	path := vals.Get("_path")
+
+	if path == "" {
+		return nil, errkit.ValidationErr("_path can't empty")
 	}
 
-	path := req.Path
+	if _, err = url.Parse(path); err != nil {
+		return nil, fmt.Errorf("URL: %w", err)
+	}
 
 	if ruleID, pathParam = p.URLService.Match(path); ruleID == -1 {
 		go p.onNotMatched(path)

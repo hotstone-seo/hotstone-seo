@@ -51,17 +51,19 @@ function ManageTags({ ruleID }) {
       <TagForm tag={focusTag} afterSubmit={refreshTag} onCancel={() => setFocusTag(null)} />
     ) : (
       <Space direction="vertical" style={{ width: '100%' }}>
-        <Select
-          defaultValue={locale}
-          onChange={(value) => setLocale(value)}
-          style={{ float: 'right' }}
-        >
-          {locales.map((localeVal) => (
-            <Option key={localeVal} value={localeVal}>
-              {localeVal}
-            </Option>
-          ))}
-        </Select>
+        <div style={{ float: 'right' }}>
+          <span>Locale: </span>
+          <Select
+            defaultValue={locale}
+            onChange={(value) => setLocale(value)}
+          >
+            {locales.map((localeVal) => (
+              <Option key={localeVal} value={localeVal}>
+                {localeVal}
+              </Option>
+            ))}
+          </Select>
+        </div>
         <Button
           type="dashed"
           onClick={() => setFocusTag({ rule_id: ruleID, locale })}
