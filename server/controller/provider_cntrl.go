@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
 
@@ -37,15 +36,13 @@ func (p *ProviderCntrl) MatchRule(c echo.Context) (err error) {
 // FetchTag to fetch the tag
 func (p *ProviderCntrl) FetchTag(c echo.Context) (err error) {
 	var (
-		id   int64
 		tags []*service.ITag
 	)
 
 	ctx := c.Request().Context()
-	id, _ = strconv.ParseInt(c.Param("id"), 10, 64)
 	pragma := cachekit.CreatePragma(c.Request())
 
-	tags, err = p.ProviderService.FetchTagsWithCache(ctx, id, c.QueryParams(), pragma)
+	tags, err = p.ProviderService.FetchTagsWithCache(ctx, c.QueryParams(), pragma)
 
 	if errkit.IsValidationErr(err) {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())

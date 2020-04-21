@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
 
@@ -18,18 +19,17 @@ import (
 	"github.com/imantung/mario"
 )
 
-// FetchTagsWithCache is same with FetchTag but with tag
-func (p *ProviderServiceImpl) FetchTagsWithCache(
-	ctx context.Context,
-	ruleID int64,
-	values url.Values,
-	pragma *cachekit.Pragma,
-) (itags []*ITag, err error) {
+const (
+	ruleParam   = "_rule"
+	localeParam = "_locale"
+)
 
-	key := fmt.Sprintf("rule=%d&%s", ruleID, values.Encode())
+// FetchTagsWithCache is same with FetchTag but with tag
+func (p *ProviderServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.Values, pragma *cachekit.Pragma) (itags []*ITag, err error) {
+	key := vals.Encode()
 	cache := cachekit.New(key,
 		func() (interface{}, error) {
-			itags, err := p.FetchTags(ctx, ruleID, values)
+			itags, err := p.FetchTags(ctx, vals)
 			return itags, err
 		},
 	)
@@ -43,7 +43,7 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(
 }
 
 // FetchTags handle logic for fetching tag
-func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, values url.Values) (itags []*ITag, err error) {
+func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*ITag, err error) {
 	var (
 		rule *repository.Rule
 		tags []*repository.Tag
@@ -53,13 +53,14 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, value
 		itag *ITag
 	)
 
-	locale := values.Get("locale")
+	locale := vals.Get(localeParam)
+	ruleID, _ := strconv.ParseInt(vals.Get(ruleParam), 10, 64)
 
 	if ruleID < 1 {
 		return nil, errkit.ValidationErr("Missing url param for `ID`")
 	}
 
-	if locale = values.Get("locale"); locale == "" {
+	if locale == "" {
 		return nil, errkit.ValidationErr("Missing query param for `Locale`")
 	}
 
@@ -83,7 +84,7 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, value
 		return
 	}
 
-	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, ConvertToParams(values)); err != nil {
+	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, ConvertToParams(vals)); err != nil {
 		return nil, err
 	}
 

@@ -71,7 +71,6 @@ var (
 
 type fetchTestCase struct {
 	testName    string
-	id          int64
 	server      *httptest.Server
 	pre         func(fetchTestCase)
 	vals        url.Values
@@ -86,23 +85,22 @@ func TestProviderService_FetchTagsWithCache(t *testing.T) {
 
 	b, _ := json.Marshal(itags_rule999_en_US)
 
-	testRedis.Set("rule=999&locale=en_US", string(b))
-	testRedis.Set("rule=999&locale=en_US:time", time.Now().UTC().Add(10*time.Second).Format(time.RFC1123))
-	testRedis.SetTTL("rule=999&locale=en_US", 10*time.Second)
-	testRedis.SetTTL("rule=999&locale=en_US:time", 10*time.Second)
+	key := "_locale=en_US&_rule=999"
+	testRedis.Set(key, string(b))
+	testRedis.Set(key+":time", time.Now().UTC().Add(10*time.Second).Format(time.RFC1123))
+	testRedis.SetTTL(key, 10*time.Second)
+	testRedis.SetTTL(key+":time", 10*time.Second)
 
 	svc := service.ProviderServiceImpl{
 		Redis: redis.NewClient(&redis.Options{Addr: testRedis.Addr()}),
 	}
 
-	val, _ := url.ParseQuery(`locale=en_US`)
-	tags, err := svc.FetchTagsWithCache(context.Background(), int64(999), val, &cachekit.Pragma{})
+	tags, err := svc.FetchTagsWithCache(context.Background(), parseQuery(`_rule=999&_locale=en_US`), &cachekit.Pragma{})
 	require.NoError(t, err)
 	require.Equal(t, itags_rule999_en_US, tags)
 }
 
 func TestProviderService2(t *testing.T) {
-
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -120,12 +118,17 @@ func TestProviderService2(t *testing.T) {
 	testCases := []fetchTestCase{
 		{
 			testName:    "WHEN no ID",
-			vals:        parseQuery(`locale=en_US`),
+			vals:        parseQuery(`_locale=en_US`),
+			expectedErr: "Validation: Missing url param for `ID`",
+		},
+		{
+			testName:    "WHEN ID is not number",
+			vals:        parseQuery(`_rule=qwery&_locale=en_US`),
 			expectedErr: "Validation: Missing url param for `ID`",
 		},
 		{
 			testName:    "WHEN no locale",
-			id:          999,
+			vals:        parseQuery(`_rule=999`),
 			expectedErr: "Validation: Missing query param for `Locale`",
 		},
 		{
@@ -133,8 +136,7 @@ func TestProviderService2(t *testing.T) {
 			pre: func(fetchTestCase) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(nil, sql.ErrNoRows)
 			},
-			id:          999,
-			vals:        parseQuery(`locale=en_US`),
+			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: sql.ErrNoRows.Error(),
 		},
 		{
@@ -143,8 +145,7 @@ func TestProviderService2(t *testing.T) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(nil, errors.New("some-error"))
 			},
-			id:          999,
-			vals:        parseQuery(`locale=en_US`),
+			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: "Find-Tags: some-error",
 		},
 		{
@@ -153,8 +154,7 @@ func TestProviderService2(t *testing.T) {
 				rulemock.EXPECT().FindOne(ctx, int64(777)).Return(rule777_noDS, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(777), "en_US").Return([]*repository.Tag{}, nil)
 			},
-			id:       777,
-			vals:     parseQuery(`locale=en_US`),
+			vals:     parseQuery(`_rule=777&_locale=en_US`),
 			expected: []*service.ITag{},
 		},
 		{
@@ -163,8 +163,7 @@ func TestProviderService2(t *testing.T) {
 				rulemock.EXPECT().FindOne(ctx, int64(777)).Return(rule777_noDS, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(777), "en_US").Return(tags_rule777_en_US, nil)
 			},
-			id:   777,
-			vals: parseQuery(`locale=en_US`),
+			vals: parseQuery(`_rule=777&_locale=en_US`),
 			expected: func() (tags []*service.ITag) {
 				for _, tag := range tags_rule777_en_US {
 					itag := service.ITag(*tag)
@@ -180,8 +179,7 @@ func TestProviderService2(t *testing.T) {
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(nil, fmt.Errorf("some-error"))
 			},
-			id:          999,
-			vals:        parseQuery(`locale=en_US`),
+			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: "DataSource: some-error",
 		},
 		{
@@ -191,8 +189,7 @@ func TestProviderService2(t *testing.T) {
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(&repository.DataSource{URL: "bad-url"}, nil)
 			},
-			id:          999,
-			vals:        parseQuery(`locale=en_US`),
+			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: "Call: Get \"bad-url\": unsupported protocol scheme \"\"",
 		},
 		{
@@ -203,8 +200,7 @@ func TestProviderService2(t *testing.T) {
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(&repository.DataSource{URL: tt.server.URL}, nil)
 			},
-			id:          999,
-			vals:        parseQuery(`locale=en_US`),
+			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: "JSON: invalid character 'b' looking for beginning of object key string",
 		},
 		{
@@ -220,8 +216,7 @@ func TestProviderService2(t *testing.T) {
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(ds, nil)
 			},
-			id:       999,
-			vals:     parseQuery(`locale=en_US`),
+			vals:     parseQuery(`_rule=999&_locale=en_US`),
 			expected: itags_rule999_en_US,
 		},
 	}
@@ -238,7 +233,7 @@ func TestProviderService2(t *testing.T) {
 				tt.pre(tt)
 			}
 
-			tags, err := svc.FetchTags(ctx, tt.id, tt.vals)
+			tags, err := svc.FetchTags(ctx, tt.vals)
 			if tt.expectedErr != "" {
 				require.EqualError(t, err, tt.expectedErr)
 			} else {
@@ -251,7 +246,7 @@ func TestProviderService2(t *testing.T) {
 }
 
 func parseQuery(s string) url.Values {
-	vals, _ := url.ParseQuery(`locale=en_US`)
+	vals, _ := url.ParseQuery(s)
 	return vals
 }
 

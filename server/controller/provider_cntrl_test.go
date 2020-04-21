@@ -51,7 +51,7 @@ func TestProviderController_FetchTag(t *testing.T) {
 	}
 
 	t.Run("", func(t *testing.T) {
-		mockService.EXPECT().FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any())
+		mockService.EXPECT().FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any())
 		_, err := echotest.DoGET(cntrl.FetchTag, "/?locale=id_ID", map[string]string{
 			"id": "1",
 		})
@@ -60,7 +60,7 @@ func TestProviderController_FetchTag(t *testing.T) {
 
 	t.Run("GIVEN validation error", func(t *testing.T) {
 		mockService.EXPECT().
-			FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+			FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any()).
 			Return(nil, errkit.ValidationErr("some error"))
 
 		_, err := echotest.DoGET(cntrl.FetchTag, "/", nil)
@@ -69,7 +69,7 @@ func TestProviderController_FetchTag(t *testing.T) {
 
 	t.Run("GIVEN cache is not modified", func(t *testing.T) {
 		mockService.EXPECT().
-			FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+			FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any()).
 			Return(nil, cachekit.ErrNotModified)
 		_, err := echotest.DoGET(cntrl.FetchTag, "/?locale=en_US", map[string]string{
 			"id": "1",

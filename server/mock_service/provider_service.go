@@ -37,33 +37,33 @@ func (m *MockProviderService) EXPECT() *MockProviderServiceMockRecorder {
 }
 
 // FetchTags mocks base method
-func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 int64, arg2 url.Values) ([]*service.ITag, error) {
+func (m *MockProviderService) FetchTags(arg0 context.Context, arg1 url.Values) ([]*service.ITag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FetchTags", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "FetchTags", arg0, arg1)
 	ret0, _ := ret[0].([]*service.ITag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FetchTags indicates an expected call of FetchTags
-func (mr *MockProviderServiceMockRecorder) FetchTags(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockProviderServiceMockRecorder) FetchTags(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTags", reflect.TypeOf((*MockProviderService)(nil).FetchTags), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTags", reflect.TypeOf((*MockProviderService)(nil).FetchTags), arg0, arg1)
 }
 
 // FetchTagsWithCache mocks base method
-func (m *MockProviderService) FetchTagsWithCache(arg0 context.Context, arg1 int64, arg2 url.Values, arg3 *cachekit.Pragma) ([]*service.ITag, error) {
+func (m *MockProviderService) FetchTagsWithCache(arg0 context.Context, arg1 url.Values, arg2 *cachekit.Pragma) ([]*service.ITag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FetchTagsWithCache", arg0, arg1, arg2, arg3)
+	ret := m.ctrl.Call(m, "FetchTagsWithCache", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]*service.ITag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FetchTagsWithCache indicates an expected call of FetchTagsWithCache
-func (mr *MockProviderServiceMockRecorder) FetchTagsWithCache(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+func (mr *MockProviderServiceMockRecorder) FetchTagsWithCache(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTagsWithCache", reflect.TypeOf((*MockProviderService)(nil).FetchTagsWithCache), arg0, arg1, arg2, arg3)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTagsWithCache", reflect.TypeOf((*MockProviderService)(nil).FetchTagsWithCache), arg0, arg1, arg2)
 }
 
 // Match mocks base method

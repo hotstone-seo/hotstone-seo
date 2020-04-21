@@ -31,10 +31,11 @@ function match(path) {
 
 function fetchTags(rule, locale, contentData) {
   const { rule_id, path_param } = rule;
-  path_param["locale"] = locale;
+  path_param["_locale"] = locale;
+  path_param["_rule"] = rule_id;
   let queryParam = serialize(path_param);
   return client
-    .get(`p/rules/${rule_id}/tags${queryParam}`)
+    .get(`p/fetch-tags?${queryParam}`)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -42,14 +43,12 @@ function fetchTags(rule, locale, contentData) {
 }
 
 function serialize(obj) {
-  let str =
-    "?" +
-    Object.keys(obj)
-      .reduce(function (a, k) {
-        a.push(k + "=" + encodeURIComponent(obj[k]));
-        return a;
-      }, [])
-      .join("&");
+  let str = Object.keys(obj)
+    .reduce(function (a, k) {
+      a.push(k + "=" + encodeURIComponent(obj[k]));
+      return a;
+    }, [])
+    .join("&");
   return str;
 }
 
