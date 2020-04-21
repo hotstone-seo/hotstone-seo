@@ -193,7 +193,7 @@ const ruleType = PropTypes.shape({
   name: PropTypes.string.isRequired,
   url_pattern: PropTypes.string.isRequired,
   data_source: PropTypes.string,
-  updated_at: PropTypes.instanceOf(Date).isRequired,
+  updated_at: PropTypes.string,
 });
 
 RuleListV2.propTypes = {
