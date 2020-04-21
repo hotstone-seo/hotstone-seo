@@ -23,22 +23,22 @@ func TestCache_CacheNoAvailable(t *testing.T) {
 
 	t.Run("WHEN refresh failed", func(t *testing.T) {
 		cache := cachekit.New("key", func() (interface{}, error) {
-			return nil, errors.New("some-refresh-error")
+			return nil, errors.New("some-error")
 		})
-		require.EqualError(t, cache.Execute(client, &target, pragmaWithCacheControl("")), "Cache: RefreshFunc: some-refresh-error")
+		require.EqualError(t, cache.Execute(client, &target, pragmaWithCacheControl("")), "some-error")
 	})
 	t.Run("WHEN marshal failed", func(t *testing.T) {
 		cache := cachekit.New("key", func() (interface{}, error) {
 			return make(chan int), nil
 		})
-		require.EqualError(t, cache.Execute(client, &target, pragmaWithCacheControl("")), "Cache: Marshal: json: unsupported type: chan int")
+		require.EqualError(t, cache.Execute(client, &target, pragmaWithCacheControl("")), "Cache: json: unsupported type: chan int")
 	})
 	t.Run("WHEN failed to save to redis", func(t *testing.T) {
 		badClient := redis.NewClient(&redis.Options{Addr: "wrong-addr"})
 		cache := cachekit.New("key", func() (interface{}, error) {
 			return &bean{Name: "new-name"}, nil
 		})
-		require.EqualError(t, cache.Execute(badClient, &target, pragmaWithCacheControl("")), "Cache: Set: dial tcp: address wrong-addr: missing port in address")
+		require.EqualError(t, cache.Execute(badClient, &target, pragmaWithCacheControl("")), "Cache: dial tcp: address wrong-addr: missing port in address")
 	})
 	t.Run("", func(t *testing.T) {
 		// monkey patch time.Now
