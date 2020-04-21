@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Card, Tabs } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 
 import TitleForm from './TitleForm';
 import MetaForm from './MetaForm';
@@ -16,18 +17,35 @@ function TagForm({ tag, afterSubmit, onCancel }) {
     <Card
       title={tagID ? 'Edit Tag' : 'Add new Tag'}
       bordered={false}
+      extra={<CloseOutlined onClick={onCancel} />}
     >
       <Tabs tabPosition="left">
-        <TabPane tab="Title" key="title">
+        <TabPane
+          tab="Title"
+          key="title"
+          disabled={(tagType && tagType !== 'title')}
+        >
           <TitleForm tag={tag} afterSubmit={afterSubmit} />
         </TabPane>
-        <TabPane tab="Meta" key="meta">
+        <TabPane
+          tab="Meta"
+          key="meta"
+          disabled={(tagType && tagType !== 'meta')}
+        >
           <MetaForm tag={tag} afterSubmit={afterSubmit} />
         </TabPane>
-        <TabPane tab="Canonical" key="link">
+        <TabPane
+          tab="Canonical"
+          key="link"
+          disabled={(tagType && tagType !== 'link')}
+        >
           <CanonicalForm tag={tag} afterSubmit={afterSubmit} />
         </TabPane>
-        <TabPane tab="Script" key="script">
+        <TabPane
+          tab="Script"
+          key="script"
+          disabled={(tagType && tagType !== 'script')}
+        >
           <ScriptForm tag={tag} afterSubmit={afterSubmit} />
         </TabPane>
       </Tabs>
