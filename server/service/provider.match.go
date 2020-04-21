@@ -38,12 +38,12 @@ func (p *ProviderServiceImpl) Match(ctx context.Context, req MatchRequest) (resp
 	path := req.Path
 
 	if ruleID, pathParam = p.URLService.Match(path); ruleID == -1 {
-		p.onNotMatched(path)
+		go p.onNotMatched(path)
 		return nil, fmt.Errorf("No rule match: %s", path)
 	}
 
 	// matched
-	p.onMatched(path, ruleID)
+	go p.onMatched(path, ruleID)
 	return &MatchResponse{
 		RuleID:    ruleID,
 		PathParam: pathParam,

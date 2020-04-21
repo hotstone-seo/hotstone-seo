@@ -4,9 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strconv"
+
+	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 
@@ -14,18 +19,17 @@ import (
 	"github.com/imantung/mario"
 )
 
-// FetchTagsWithCache is same with FetchTag but with tag
-func (p *ProviderServiceImpl) FetchTagsWithCache(
-	ctx context.Context,
-	ruleID int64,
-	locale string,
-	pragma *cachekit.Pragma,
-) (itags []*ITag, err error) {
+const (
+	ruleParam   = "_rule"
+	localeParam = "_locale"
+)
 
-	key := fmt.Sprintf("rule%d_%s", ruleID, locale)
+// FetchTagsWithCache is same with FetchTag but with tag
+func (p *ProviderServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.Values, pragma *cachekit.Pragma) (itags []*ITag, err error) {
+	key := vals.Encode()
 	cache := cachekit.New(key,
 		func() (interface{}, error) {
-			itags, err := p.FetchTags(ctx, ruleID, locale)
+			itags, err := p.FetchTags(ctx, vals)
 			return itags, err
 		},
 	)
@@ -39,19 +43,26 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(
 }
 
 // FetchTags handle logic for fetching tag
-func (p *ProviderServiceImpl) FetchTags(
-	ctx context.Context,
-	ruleID int64,
-	locale string,
-) (itags []*ITag, err error) {
+func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*ITag, err error) {
 	var (
-		rule  *repository.Rule
-		tags  []*repository.Tag
-		ds    *IDataSource
-		b     []byte
-		param map[string]interface{}
-		itag  *ITag
+		rule *repository.Rule
+		tags []*repository.Tag
+		ds   *IDataSource
+		b    []byte
+		data interface{}
+		itag *ITag
 	)
+
+	locale := vals.Get(localeParam)
+	ruleID, _ := strconv.ParseInt(vals.Get(ruleParam), 10, 64)
+
+	if ruleID < 1 {
+		return nil, errkit.ValidationErr("Missing url param for `ID`")
+	}
+
+	if locale == "" {
+		return nil, errkit.ValidationErr("Missing query param for `Locale`")
+	}
 
 	if rule, err = p.RuleRepo.FindOne(ctx, ruleID); err != nil {
 		return
@@ -73,9 +84,7 @@ func (p *ProviderServiceImpl) FetchTags(
 		return
 	}
 
-	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, map[string]interface{}{
-		"id": rule.ID,
-	}); err != nil {
+	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, ConvertToParams(vals)); err != nil {
 		return nil, err
 	}
 
@@ -83,18 +92,44 @@ func (p *ProviderServiceImpl) FetchTags(
 		return nil, fmt.Errorf("Call: %w", err)
 	}
 
-	if err = json.Unmarshal(b, &param); err != nil {
-		return nil, fmt.Errorf("JSON: %w", err)
+	if data, err = UnmarshalData(b); err != nil {
+		return
 	}
 
 	for _, tag := range tags {
-		if itag, err = interpolateTag(tag, param); err != nil {
+		if itag, err = interpolateTag(tag, data); err != nil {
 			return nil, fmt.Errorf("Interpolate-Tag: %w", err)
 		}
 		itags = append(itags, itag)
 	}
 
 	return
+}
+
+// UnmarshalData to unmarshal data
+func UnmarshalData(b []byte) (v interface{}, err error) {
+	firstChar := string(b)[0]
+
+	if firstChar == '{' {
+		var param map[string]interface{}
+		if err = json.Unmarshal(b, &param); err != nil {
+			return nil, fmt.Errorf("JSON: %w", err)
+		}
+		return param, nil
+	}
+
+	if firstChar == '[' {
+		var params []map[string]interface{}
+		if err = json.Unmarshal(b, &params); err != nil {
+			return nil, fmt.Errorf("JSON: %w", err)
+		}
+		if len(params) > 0 {
+			return params[0], nil
+		}
+		return map[string]interface{}{}, nil
+	}
+
+	return nil, errors.New("Unmarshal-Data: Invalid data format")
 }
 
 func (p *ProviderServiceImpl) findAndInterpolateDataSource(ctx context.Context, dataSourceID int64, param interface{}) (interpolated *IDataSource, err error) {
@@ -212,4 +247,15 @@ func call(ds *IDataSource) (data []byte, err error) {
 	}
 
 	return data, nil
+}
+
+// ConvertToParams to convert url.Values to params
+func ConvertToParams(vals url.Values) map[string]string {
+	params := make(map[string]string)
+	for key, val := range vals {
+		if len(val) > 0 {
+			params[key] = val[0]
+		}
+	}
+	return params
 }
