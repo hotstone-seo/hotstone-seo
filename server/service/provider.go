@@ -14,7 +14,7 @@ import (
 
 // ProviderService contain logic for provider api [mock]
 type ProviderService interface {
-	Match(context.Context, MatchRequest) (*MatchResponse, error)
+	Match(context.Context, url.Values) (*MatchResponse, error)
 	FetchTags(context.Context, url.Values) ([]*ITag, error)
 	FetchTagsWithCache(context.Context, url.Values, *cachekit.Pragma) ([]*ITag, error)
 }

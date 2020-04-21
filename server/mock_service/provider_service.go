@@ -67,7 +67,7 @@ func (mr *MockProviderServiceMockRecorder) FetchTagsWithCache(arg0, arg1, arg2 i
 }
 
 // Match mocks base method
-func (m *MockProviderService) Match(arg0 context.Context, arg1 service.MatchRequest) (*service.MatchResponse, error) {
+func (m *MockProviderService) Match(arg0 context.Context, arg1 url.Values) (*service.MatchResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Match", arg0, arg1)
 	ret0, _ := ret[0].(*service.MatchResponse)

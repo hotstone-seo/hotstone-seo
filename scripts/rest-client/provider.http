@@ -1,11 +1,6 @@
 ### Match Rule
 
-POST http://localhost:8089/p/match
-content-type: application/json
-
-{
-    "path": "/events/bingbang"
-}
+http://localhost:8089/p/match?_path=/events/bingbang
 
 ### Tags
 

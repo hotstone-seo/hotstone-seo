@@ -22,7 +22,7 @@ client.interceptors.response.use(
 
 function match(path) {
   return client
-    .post("p/match", { path })
+    .get(`p/match?_path=${path}`)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
