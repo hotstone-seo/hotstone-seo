@@ -1,19 +1,20 @@
 
-### TODO : Login with google
+### Redirect to google login form
 POST http://localhost:8089/auth/google/login
-Content-Type: application/x-www-form-urlencoded
 
 
 ### POST https://accounts.google.com/signin/oauth/oauthchooseaccount?client_id=756922046184-bbfmib4npavar64uobv6jr5kr1rp0tje.apps.googleusercontent.com&as=khRoVOXzCmh8lZSlS8mTfw&destination=http%3A%2F%2Flocalhost%3A8089&approval_state=!ChRHa1dkNGU0dUxwTG9XdEtOVGFjaBIfcy1uSVZlZjhaS1VmOEhuU1JuY2dubXFldk1WZkdSYw%E2%88%99AF-3PDcAAAAAXp5_q-_NCMqgMOwCkF8f0ZMjrpkVxaop&oauthgdpr=1&xsrfsig=ChkAeAh8T7-pzLAulPhvagOEt1l0X2OrNiHQEg5hcHByb3ZhbF9zdGF0ZRILZGVzdGluYXRpb24SBXNvYWN1Eg9vYXV0aHJpc2t5c2NvcGU&flowName=GeneralOAuthFlow
 
+### Callback from google
+http://localhost:8089/auth/google/callback?state=jNVDpceC1ZuKpLrKKfbfjlZ1c3JDDN4gVqcpiE6LQwAhvllWDLH9YEdYE8GKToPYtz5QhRMphcvVURbn9x1Axw%3D%3D&code=4/ywG8qFjgfeIK8OIVS3s9COpZF_hPMWf3pZcYGd9PrUu5hriONzKbWWhJtDv8jGNegLjS3drscajyioi2WlgpcVg&scope=email%20https://www.googleapis.com/auth/userinfo.email%20openid&authuser=2&hd=tiket.com&prompt=none
 
-### TODO : Callback from google
-### TODO : POST http://localhost:8089/auth/google/callback
+### TEST
 POST https://www.googleapis.com/oauth2/v4/token
 Content-Type: application/x-www-form-urlencoded
+Cache-Control: no-cache
 
 {
-    "code": "link-relations",
+    "code": "",
     "client_id": "",
     "client_secret": "",
     "grant_type": "authorization_code",
@@ -21,8 +22,15 @@ Content-Type: application/x-www-form-urlencoded
     "access_type": "refresh_token"
 }
 
-### code=4/AACbpkMFarNdMwz1qVPV0mWcnfjSt0zMcNcUogSMgr2lcZU2G7qjf7B-f1lmTkhRpfgXFBwxzd9ad3vRD1Oymgk#&client_id=187637922392-nm8r2q89o9gub1ftmuos32coutiumkt1.apps.googleusercontent.com&client_secret=aspzni4WpLp3pv_Ixszax_pQ&grant_type=authorization_code&redirect_uri=http://localhost
-### TODO : Logout
-POST http://localhost:8089/api/logout
+### https://www.googleapis.com/oauth2/v2/userinfo?access_token=
+
+### Logout
+GET http://localhost:8089/api/logout
+
+### show login page google
+https://accounts.google.com/o/oauth2/auth?client_id=756922046184-bbfmib4npavar64uobv6jr5kr1rp0tje.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A8089%2Fauth%2Fgoogle%2Fcallback&response_type=code&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&state=AKX-4oz8qBeFwsDreiWpLy5e81F1sS7mBsE1YHGbFTmewH5a2kyL0e_oqx15l7Kmmwc33wptfeQBHsfULH3STQ%3D%3D
 
  
+### Get code for permissions request
+
+https://accounts.google.com/o/oauth2/v2/auth?client_id=756922046184-bbfmib4npavar64uobv6jr5kr1rp0tje.apps.googleusercontent.com&response_type=code&scope=https://www.googleapis.com/auth/gmail.send&redirect_uri=http://localhostß&access_type=offline
