@@ -5,7 +5,6 @@ import CounterCard from './CounterCard';
 
 function HitCounterCard({ ruleID }) {
   const [countHit, setCountHit] = useState(0);
-  const [error, setError] = useState();
 
   const fetchData = useCallback(() => {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
@@ -13,7 +12,7 @@ function HitCounterCard({ ruleID }) {
       .then((data) => {
         if (data !== undefined) setCountHit(data.count);
       })
-      .catch((error) => {
+      .catch(() => {
         // handle in client.js
         // setError(error);
       });
