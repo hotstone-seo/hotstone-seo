@@ -5,7 +5,7 @@ import CounterCard from './CounterCard';
 
 function UniquePageCounterCard({ ruleID }) {
   const [countUniquePage, setCountUniquePage] = useState(0);
-  const [setError] = useState();
+  // const [setError] = useState();
 
   const fetchData = useCallback(() => {
     const queryParm = ruleID ? { rule_id: ruleID } : {};
@@ -13,11 +13,11 @@ function UniquePageCounterCard({ ruleID }) {
       .then((data) => {
         if (data !== undefined) setCountUniquePage(data.count);
       })
-      .catch((error) => {
+      .catch(() => {
         // handled in client.js
         // setError(error);
       });
-  }, [ruleID, setCountUniquePage, setError]);
+  }, [ruleID, setCountUniquePage]);
 
   useInterval(() => {
     fetchData();
