@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
@@ -51,29 +52,19 @@ func TestProviderController_FetchTag(t *testing.T) {
 
 	t.Run("", func(t *testing.T) {
 		mockService.EXPECT().FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any())
-		_, err := echotest.DoGET(cntrl.FetchTag, "/?locale=id-id", map[string]string{
+		_, err := echotest.DoGET(cntrl.FetchTag, "/?locale=id_ID", map[string]string{
 			"id": "1",
 		})
 		require.NoError(t, err)
 	})
 
-	t.Run("GIVEN no url param id", func(t *testing.T) {
+	t.Run("GIVEN validation error", func(t *testing.T) {
+		mockService.EXPECT().
+			FetchTagsWithCache(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).
+			Return(nil, errkit.ValidationErr("some error"))
+
 		_, err := echotest.DoGET(cntrl.FetchTag, "/", nil)
-		require.EqualError(t, err, "code=422, message=Missing url param for `ID`")
-	})
-
-	t.Run("GIVEN non-integer url param id", func(t *testing.T) {
-		_, err := echotest.DoGET(cntrl.FetchTag, "/", map[string]string{
-			"id": "not-integer",
-		})
-		require.EqualError(t, err, "code=422, message=strconv.ParseInt: parsing \"not-integer\": invalid syntax")
-	})
-
-	t.Run("GIVEN no locale", func(t *testing.T) {
-		_, err := echotest.DoGET(cntrl.FetchTag, "/", map[string]string{
-			"id": "1",
-		})
-		require.EqualError(t, err, "code=422, message=Missing query param for `Locale`")
+		require.EqualError(t, err, "code=422, message=Validation: some error")
 	})
 
 	t.Run("GIVEN cache is not modified", func(t *testing.T) {

@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
+
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
@@ -41,11 +43,7 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(
 }
 
 // FetchTags handle logic for fetching tag
-func (p *ProviderServiceImpl) FetchTags(
-	ctx context.Context,
-	ruleID int64,
-	values url.Values,
-) (itags []*ITag, err error) {
+func (p *ProviderServiceImpl) FetchTags(ctx context.Context, ruleID int64, values url.Values) (itags []*ITag, err error) {
 	var (
 		rule *repository.Rule
 		tags []*repository.Tag
@@ -55,11 +53,19 @@ func (p *ProviderServiceImpl) FetchTags(
 		itag *ITag
 	)
 
+	locale := values.Get("locale")
+
+	if ruleID < 1 {
+		return nil, errkit.ValidationErr("Missing url param for `ID`")
+	}
+
+	if locale = values.Get("locale"); locale == "" {
+		return nil, errkit.ValidationErr("Missing query param for `Locale`")
+	}
+
 	if rule, err = p.RuleRepo.FindOne(ctx, ruleID); err != nil {
 		return
 	}
-
-	locale := values.Get("locale")
 
 	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
 		return nil, fmt.Errorf("Find-Tags: %w", err)
