@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { message, Space, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { fetchStructuredDatas } from 'api/structuredData';
-import { StructuredDataList } from 'components/StructuredData';
+import { StructuredDataForm, StructuredDataList } from 'components/StructuredData';
 
 // Aliasing for shorter name
 const fetchStructs = fetchStructuredDatas;
@@ -28,16 +28,7 @@ function ManageStructuredData({ ruleID }) {
 
   return (
     focusStruct ? (
-      // TODO: Create Form for structured data
-      <div>
-        <span>Struct Form Placeholder</span>
-        <Button
-          type="link"
-          onClick={() => { setFocusStruct(null); }}
-        >
-          Back
-        </Button>
-      </div>
+      <StructuredDataForm structuredData={focusStruct} />
     ) : (
       <Space direction="vertical" style={{ width: '100%' }}>
         <Button
