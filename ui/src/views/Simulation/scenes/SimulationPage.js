@@ -97,7 +97,7 @@ function SimulationPage() {
   const { matchResp, matchError, pageError } = current.context;
 
   const [form] = Form.useForm();
-  form.setFieldsValue({ locale: current.context.locale });
+  // form.setFieldsValue({ locale: current.context.locale });
   const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
 
@@ -114,6 +114,9 @@ function SimulationPage() {
               name="horizontal_login"
               layout="inline"
               onFinish={onSubmit}
+              initialValues={{
+                locale: current.context.locale,
+              }}
             >
               <Form.Item
                 name="url"
