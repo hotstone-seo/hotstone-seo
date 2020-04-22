@@ -23,8 +23,7 @@ const formatDate = (dateStr) => {
 };
 
 function ViewMismatchRules(props) {
-  const { onClick } = props;
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize] = useState(5);
 
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({
