@@ -48,7 +48,7 @@ function ViewMismatchRules(props) {
 
   useEffect(() => {
     resetPagination();
-  }, [filteredInfo, resetPagination]);
+  }, [filteredInfo]);
 
   useEffect(() => {
     async function fetchData() {
