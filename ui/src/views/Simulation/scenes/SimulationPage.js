@@ -44,7 +44,7 @@ const pageMachine = Machine({
         matchError: null,
       }),
       invoke: {
-        src: (context) => matchThenGetTags(context.locale, context.url),
+        src: (context) => simulateMatch(context.locale, context.url),
         onDone: {
           target: "success",
           actions: assign({
@@ -80,7 +80,7 @@ const pageMachine = Machine({
   },
 });
 
-async function matchThenGetTags(locale, url) {
+async function simulateMatch(locale, url) {
   const rule = await match(url);
   if (_.isEmpty(rule)) {
     throw new Error("Not matched");
@@ -100,7 +100,6 @@ function SimulationPage() {
   // form.setFieldsValue({ locale: current.context.locale });
   const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
-
     send("SUBMIT", { locale, url: urlObj.pathname });
   };
 
@@ -190,28 +189,30 @@ function renderIfSuccess(matchResp) {
             <Descriptions.Item key={3} label="Detail">
               <Link to={`/rules/${rule_id}`}>Rule Detail</Link>
             </Descriptions.Item>
-
-            {!_.isEmpty(path_param) && (
-              <Descriptions.Item key={4} label="Path Params">
-                <table className="ant-table">
-                  <thead>
-                    <tr key="id">
-                      <th>Path Param</th>
-                      <th>Value</th>
-                    </tr>
-                  </thead>
-                  <tbody className="ant-table-tbody">
-                    {Object.entries(path_param).map(([key, value]) => (
-                      <tr key={key}>
-                        <td>{key}</td>
-                        <td>{value}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </Descriptions.Item>
-            )}
           </Descriptions>
+        )}
+
+        <br />
+        <strong>Parameters</strong>
+        <br />
+
+        {!_.isEmpty(path_param) && (
+          <table className="ant-table">
+            <thead className="ant-table-thead">
+              <tr key="id">
+                <th>Key</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody className="ant-table-tbody">
+              {Object.entries(path_param).map(([key, value]) => (
+                <tr key={key}>
+                  <td>{key}</td>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
 
         <br />
