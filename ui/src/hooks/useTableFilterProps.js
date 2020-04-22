@@ -1,5 +1,5 @@
 import React, {
-  useMemo, useRef, useState,
+  useMemo, useRef, useState, useCallback
 } from 'react';
 import { Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
@@ -15,11 +15,16 @@ export default function useTableFilterProps(dataIndex) {
     setSearchText('');
   };
 
-  const handleSearch = (selectedKeys, confirm) => {
+  /* const handleSearch = (selectedKeys, confirm) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
-  };
+  }; */
+  const handleSearch = useCallback((selectedKeys, confirm) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  }, [dataIndex]);
 
   return useMemo(() => ({
     filterDropdown: ({
