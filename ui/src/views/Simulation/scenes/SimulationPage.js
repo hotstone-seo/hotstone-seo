@@ -3,12 +3,15 @@ import {
   Form,
   Input,
   Button,
-  Row,
-  Col,
   Card,
   Alert,
   Select,
   Descriptions,
+  Space,
+  Collapse,
+  Layout,
+  Row,
+  Col,
 } from "antd";
 import { Machine, assign } from "xstate";
 import { useMachine } from "@xstate/react";
@@ -23,6 +26,8 @@ import { RawHtmlPreview } from "components/Simulation";
 import locales from "locales";
 
 const { Option } = Select;
+const { Panel } = Collapse;
+const { Content } = Layout;
 
 const pageMachine = Machine({
   id: "simulation",
@@ -95,9 +100,6 @@ async function simulateMatch(locale, url) {
 function SimulationPage() {
   const [current, send] = useMachine(pageMachine);
   const { matchResp, matchError, pageError } = current.context;
-
-  const [form] = Form.useForm();
-  // form.setFieldsValue({ locale: current.context.locale });
   const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
     send("SUBMIT", { locale, url: urlObj.pathname });
@@ -105,151 +107,154 @@ function SimulationPage() {
 
   return (
     <>
-      <Row>
-        <Col span={24}>
-          <Card>
-            <Form
-              form={form}
-              name="horizontal_login"
-              layout="inline"
-              onFinish={onSubmit}
-              initialValues={{
-                locale: current.context.locale,
-              }}
-            >
-              <Form.Item
-                name="url"
-                rules={[{ required: true, message: "Please input URL" }]}
-                style={{ width: "60%" }}
-              >
-                <Input placeholder="URL" />
-              </Form.Item>
-              <Form.Item
-                name="locale"
-                rules={[{ required: true, message: "Please select locale" }]}
-              >
-                <Select>
-                  {current.context.listLocale.map((locale, index) => (
-                    <Option key={index} value={locale}>
-                      {locale}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item shouldUpdate>
-                {() => (
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    disabled={
-                      // !form.isFieldsTouched(true) ||
-                      isLoading(current) ||
-                      current.matches("pageFailed") ||
-                      form
-                        .getFieldsError()
-                        .filter(({ errors }) => errors.length).length
-                    }
-                  >
-                    Submit
-                  </Button>
-                )}
-              </Form.Item>
-            </Form>
-          </Card>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          {isLoading(current) && <Card>Loading ...</Card>}
-          {renderIfSuccess(matchResp)}
-          {renderIfError(matchError)}
-          {renderIfPageError(pageError)}
-        </Col>
-      </Row>
+      {renderForm(current, onSubmit)}
+      {isLoading(current) && <Card>Loading ...</Card>}
+      {matchResp && renderResp(matchResp)}
+      {matchError && renderMatchError(matchError)}
+      {pageError && renderPageError(pageError)}
     </>
   );
 }
 
-function renderIfSuccess(matchResp) {
-  if (matchResp) {
-    const { rule, tags, ruleDetail } = matchResp;
-    const { rule_id, path_param } = rule;
-    return (
+function renderForm(current, onSubmit) {
+  const [form] = Form.useForm();
+
+  return (
+    <Col span={24}>
+      <Form
+        form={form}
+        onFinish={onSubmit}
+        layout="inline"
+        initialValues={{
+          locale: current.context.locale,
+        }}
+      >
+        <Form.Item
+          name="locale"
+          rules={[{ required: true, message: "Please select locale" }]}
+        >
+          <Select>
+            {current.context.listLocale.map((locale, index) => (
+              <Option key={index} value={locale}>
+                {locale}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="url"
+          rules={[{ required: true, message: "Please input URL path" }]}
+          style={{ width: "60%" }}
+        >
+          <Input placeholder="URL Path" />
+        </Form.Item>
+
+        <Form.Item shouldUpdate>
+          {() => (
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={
+                isLoading(current) ||
+                current.matches("pageFailed") ||
+                form.getFieldsError().filter(({ errors }) => errors.length)
+                  .length
+              }
+            >
+              Submit
+            </Button>
+          )}
+        </Form.Item>
+      </Form>
+    </Col>
+  );
+}
+
+function renderResp(matchResp) {
+  const { rule, tags, ruleDetail } = matchResp;
+  const { rule_id, path_param } = rule;
+  return (
+    <>
+      <br />
       <Card>
         <Alert type="success" message="Matched" />
         <br />
-        {!_.isEmpty(ruleDetail) && (
-          <Descriptions key={0} title="Rule" column={1} bordered>
-            <Descriptions.Item key={1} label="Name">
-              {ruleDetail.name}
-            </Descriptions.Item>
-            <Descriptions.Item key={2} label="URL Pattern">
-              {ruleDetail.url_pattern}
-            </Descriptions.Item>
-            <Descriptions.Item key={3} label="Detail">
-              <Link to={`/rules/${rule_id}`}>Rule Detail</Link>
-            </Descriptions.Item>
-          </Descriptions>
-        )}
+        <Collapse defaultActiveKey={["3"]} expandIconPosition="left">
+          {!_.isEmpty(ruleDetail) && (
+            <Panel header="Rule" key="1">
+              <Descriptions key={0} title="Rule" column={1} bordered>
+                <Descriptions.Item key={1} label="Name">
+                  {ruleDetail.name}
+                </Descriptions.Item>
+                <Descriptions.Item key={2} label="URL Pattern">
+                  {ruleDetail.url_pattern}
+                </Descriptions.Item>
+                <Descriptions.Item key={3} label="Detail">
+                  <Link to={`/rules/${rule_id}`}>Rule Detail</Link>
+                </Descriptions.Item>
+              </Descriptions>
+            </Panel>
+          )}
 
-        <br />
-        <strong>Parameters</strong>
-        <br />
+          {!_.isEmpty(path_param) && (
+            <Panel header="Parameter" key="2">
+              <table className="ant-table">
+                <thead className="ant-table-thead">
+                  <tr key="id">
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody className="ant-table-tbody">
+                  {Object.entries(path_param).map(([key, value]) => (
+                    <tr key={key}>
+                      <td>{key}</td>
+                      <td>{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Panel>
+          )}
 
-        {!_.isEmpty(path_param) && (
-          <table className="ant-table">
-            <thead className="ant-table-thead">
-              <tr key="id">
-                <th>Key</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody className="ant-table-tbody">
-              {Object.entries(path_param).map(([key, value]) => (
-                <tr key={key}>
-                  <td>{key}</td>
-                  <td>{value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-
-        <br />
-        <strong>Raw HTML Tags Preview</strong>
-        <br />
-        <RawHtmlPreview ruleID={rule_id} tags={tags} />
+          <Panel header="Preview" key="3">
+            <RawHtmlPreview ruleID={rule_id} tags={tags} />
+          </Panel>
+        </Collapse>
       </Card>
-    );
-  }
+    </>
+  );
 }
 
-function renderIfError(matchError) {
-  if (matchError) {
-    let msgError = matchError.message;
-    if (matchError.response) {
-      msgError = matchError.response.data.message;
-    }
-    return (
+function renderMatchError(matchError) {
+  let msgError = matchError.message;
+  if (matchError.response) {
+    msgError = matchError.response.data.message;
+  }
+  return (
+    <>
+      <br />
       <Card>
         <Alert type="error" message={msgError} />
       </Card>
-    );
-  }
+    </>
+  );
 }
 
-function renderIfPageError(pageError) {
-  if (pageError) {
-    let msgError = pageError.message;
-    if (pageError.response) {
-      msgError = pageError.response.data.message;
-    }
-    return (
+function renderPageError(pageError) {
+  let msgError = pageError.message;
+  if (pageError.response) {
+    msgError = pageError.response.data.message;
+  }
+  return (
+    <>
+      <br />
       <Card>
         <Alert type="error" message={msgError} />
       </Card>
-    );
-  }
+    </>
+  );
 }
 
 function isLoading(current) {
