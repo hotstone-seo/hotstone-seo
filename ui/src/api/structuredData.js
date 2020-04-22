@@ -6,4 +6,8 @@ async function fetchStructuredDatas() {
   ];
 }
 
-export { fetchStructuredDatas };
+async function deleteStructuredData() {
+  return { message: 'Successfully delete structured data' };
+}
+
+export { fetchStructuredDatas, deleteStructuredData };

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { message, Space, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { fetchStructuredDatas } from 'api/structuredData';
+import { fetchStructuredDatas, deleteStructuredData } from 'api/structuredData';
 import { StructuredDataForm, StructuredDataList } from 'components/StructuredData';
 
 // Aliasing for shorter name
 const fetchStructs = fetchStructuredDatas;
+const deleteStruct = deleteStructuredData;
 
 function ManageStructuredData({ ruleID }) {
   // NOTE: Structs is the shorthand that we use for Structured Data
@@ -23,12 +24,22 @@ function ManageStructuredData({ ruleID }) {
       });
   }, [ruleID]);
 
-  // TODO: Create implementation for deletion
-  const removeStruct = () => null;
+  const removeStruct = ({ id: structID }) => {
+    deleteStruct(structID)
+      .then(() => {
+        setStructs(structs.filter((struct) => struct.id !== structID));
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
 
   return (
     focusStruct ? (
-      <StructuredDataForm structuredData={focusStruct} />
+      <StructuredDataForm
+        structuredData={focusStruct}
+        onCancel={() => setFocusStruct(null)}
+      />
     ) : (
       <Space direction="vertical" style={{ width: '100%' }}>
         <Button
