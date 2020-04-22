@@ -17,22 +17,53 @@ describe('HotStone-Client', () => {
                 rule_id: 1,
                 path_param: {}
             }
-        
+
             mockServer.get('/p/match')
-            .query({_path: '/bar/fred'})
-            .reply(200, mockResp)
-    
+                .query({ _path: '/bar/fred' })
+                .reply(200, mockResp)
+
             const rule = await subject.match('/bar/fred')
             expect(rule).toEqual(mockResp)
         })
-    
+
         test('bad response', async () => {
             mockServer.get('/p/match')
-            .query({_path: '/bar/fred'})
-            .reply(400)
-    
+                .query({ _path: '/bar/fred' })
+                .reply(400)
+
             const rule = await subject.match('/bar/fred')
             expect(rule).toEqual({})
         })
+    })
+
+    describe('tags', () => {
+        test('good response', async () => {
+            const mockResp = [
+                { id: 1, type: "title" },
+                { id: 2, type: "meta" },
+            ]
+            const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
+            const givenLocale = 'en_US'
+
+            mockServer.get('/p/fetch-tags')
+                .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
+                .reply(200, mockResp)
+
+            const tags = await subject.tags(givenRule, givenLocale)
+            expect(tags).toEqual(mockResp)
+        })
+
+        test('bad response', async () => {
+            const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
+            const givenLocale = 'en_US'
+
+            mockServer.get('/p/fetch-tags')
+                .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
+                .reply(400)
+
+            const tags = await subject.tags(givenRule, givenLocale)
+            expect(tags).toEqual([])
+        })
+
     })
 })
