@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Form, Input, InputNumber, Button,
-} from 'antd';
+import { Form, Input, Button } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 
 function BreadcrumbListForm(breadcrumbList) {
@@ -12,29 +10,25 @@ function BreadcrumbListForm(breadcrumbList) {
     <Form
       form={form}
       initialValues={breadcrumbList}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 12 }}
     >
       <Form.List name="listItem">
         {(fields, { add, remove }) => (
           <div>
-            {fields.map((field) => (
+            {fields.map((field, index) => (
               <>
-                <Form.Item
-                  name={[field.name, 'position']}
-                  fieldKey={[field.fieldKey, 'position']}
-                >
-                  <InputNumber />
-                </Form.Item>
                 <Form.Item
                   name={[field.name, 'name']}
                   fieldKey={[field.fieldKey, 'name']}
                 >
-                  <Input />
+                  <Input placeholder={`Page #${index + 1}'s name`} />
                 </Form.Item>
                 <Form.Item
                   name={[field.name, 'item']}
                   fieldKey={[field.fieldKey, 'item']}
                 >
-                  <Input />
+                  <Input placeholder={`URL #${index + 1}`} />
                 </Form.Item>
                 <MinusCircleOutlined
                   onClick={() => { remove(field.name); }}

@@ -10,23 +10,25 @@ function FAQPageForm({ faqPage }) {
     <Form
       form={form}
       initialValues={faqPage}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 12 }}
     >
       <Form.List name="faqs">
         {(fields, { add, remove }) => (
           <div>
-            {fields.map((field) => (
+            {fields.map((field, index) => (
               <>
                 <Form.Item
                   name={[field.name, 'question']}
                   fieldKey={[field.fieldKey, 'question']}
                 >
-                  <Input addonBefore="Q:" />
+                  <Input addonBefore="Q:" placeholder={`Question #${index + 1}`} />
                 </Form.Item>
                 <Form.Item
                   name={[field.name, 'answer']}
                   fieldKey={[field.fieldKey, 'answer']}
                 >
-                  <Input addonBefore="A:" />
+                  <Input addonBefore="A:" placeholder="Answer" />
                 </Form.Item>
                 <MinusCircleOutlined
                   onClick={() => { remove(field.name); }}

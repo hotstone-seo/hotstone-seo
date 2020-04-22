@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Tabs } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
