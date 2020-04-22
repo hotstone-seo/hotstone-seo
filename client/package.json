@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/hotstone-seo/hotstone-seo#readme",
   "dependencies": {
-    "axios": "^0.18.1",
     "make-fetch-happen": "^8.0.4",
     "query-string": "^6.12.1",
     "react": "^16.12.0",
