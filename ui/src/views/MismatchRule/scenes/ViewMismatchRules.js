@@ -80,7 +80,7 @@ function ViewMismatchRules(props) {
     }
 
     fetchData();
-  }, [pageSize, filteredInfo, sortedInfo, pageToken, previousPage, setNextPageToken]);
+  }, [pageSize, filteredInfo, sortedInfo, pageToken]);
 
   const columns = [
     {

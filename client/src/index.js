@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { withRouter } from "react-router-dom";
-import axios from "axios";
+import queryString from "query-string"
+import cachingFetch from "make-fetch-happen"
+
 
 /**
  * Returns a tag object after its string values have been interpolated with data
@@ -23,34 +25,34 @@ function interpolate(tag, data) {
 }
 
 class HotStoneClient {
-  constructor(hostURL) {
-    this.apiCaller = axios.create({ baseURL: hostURL });
+  constructor(hostURL, opts = {}) {
+    this.baseURL = hostURL
+    this.fetch = cachingFetch.defaults(opts)
   }
 
   async match(path) {
     let rule = {};
     try {
-      const { data } = await this.apiCaller.post("/p/match", {
-        path
-      });
-      rule = data;
+      const param = {_path: path}
+      const resp = await this.fetch(`${this.baseURL}/p/match?${queryString.stringify(param)}`);
+      rule = await resp.json();
     } catch (e) {
       console.error("Failed to retrieve rule:", e.message);
     }
     return rule;
   }
 
-  async tags(rule, locale, contentData) {
+  async tags(rule, locale) {
     let tags = [];
     const { rule_id, path_param } = rule;
     try {
-      const { data } = await this.apiCaller.post("/p/tags", {
-        rule_id: rule_id,
-        locale: locale,
-        path_param: path_param,
-        data: contentData
-      });
-      tags = data;
+      const param = {
+        _rule: rule_id,
+        _locale: locale,
+        ...path_param
+      }
+      const resp = await this.fetch(`${this.baseURL}/p/fetch-tags?${queryString.stringify(param)}`);
+      tags = await resp.json();
     } catch (e) {
       console.error("Failed to retrieve tags:", e.message);
     }

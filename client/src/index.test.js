@@ -1,20 +1,15 @@
 import { HotStoneClient } from './index'
-import { Server, Response } from "miragejs"
+import nock from 'nock'
 
 describe('HotStone-Client', () => {
     let subject;
     let mockServer;
 
     beforeEach(() => {
-        subject = new HotStoneClient('https://foo.com');
-        mockServer = new Server({
-            urlPrefix: 'https://foo.com',
-            trackRequests: true
-        })
+        const baseURL = "http://foo.com"
+        subject = new HotStoneClient(baseURL);
+        mockServer = nock(baseURL)
     })
-    afterEach(() => {
-        mockServer.shutdown();
-    });
 
     describe('match', () => {
         test('good response', async () => {
@@ -22,27 +17,53 @@ describe('HotStone-Client', () => {
                 rule_id: 1,
                 path_param: {}
             }
-            mockServer.post("/p/match", (schema, request) => { return mockResp })
+
+            mockServer.get('/p/match')
+                .query({ _path: '/bar/fred' })
+                .reply(200, mockResp)
 
             const rule = await subject.match('/bar/fred')
             expect(rule).toEqual(mockResp)
-
-            const requests = mockServer.pretender.handledRequests
-            expect(requests.length).toBe(1)
-            expect(requests[0].requestBody).toBe(JSON.stringify({ path: '/bar/fred' }))
         })
 
         test('bad response', async () => {
-            mockServer.post("/p/match", (schema, request) => { 
-                return new Response(400);
-            })
+            mockServer.get('/p/match')
+                .query({ _path: '/bar/fred' })
+                .reply(400)
 
             const rule = await subject.match('/bar/fred')
             expect(rule).toEqual({})
-
-            const requests = mockServer.pretender.handledRequests
-            expect(requests.length).toBe(1)
-            expect(requests[0].requestBody).toBe(JSON.stringify({ path: '/bar/fred' }))
         })
+    })
+
+    describe('tags', () => {
+        test('good response', async () => {
+            const mockResp = [
+                { id: 1, type: "title" },
+                { id: 2, type: "meta" },
+            ]
+            const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
+            const givenLocale = 'en_US'
+
+            mockServer.get('/p/fetch-tags')
+                .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
+                .reply(200, mockResp)
+
+            const tags = await subject.tags(givenRule, givenLocale)
+            expect(tags).toEqual(mockResp)
+        })
+
+        test('bad response', async () => {
+            const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
+            const givenLocale = 'en_US'
+
+            mockServer.get('/p/fetch-tags')
+                .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
+                .reply(400)
+
+            const tags = await subject.tags(givenRule, givenLocale)
+            expect(tags).toEqual([])
+        })
+
     })
 })
