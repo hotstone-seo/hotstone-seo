@@ -2,6 +2,9 @@ package server
 
 import (
 	"net/http"
+	"runtime"
+	"runtime/pprof"
+	"strconv"
 
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
@@ -20,7 +23,9 @@ type profiler struct {
 
 func (p *profiler) route(e *echo.Echo) {
 	e.Any("application/health", p.healthCheck)
-	e.GET("prof/url-tree", p.dumpURLTree)
+	e.GET("_prof/url-tree", p.dumpURLTree)
+	e.GET("_prof/goroutine/count", p.countGoroutine)
+	e.GET("_prof/goroutine/trace", p.traceGoroutine)
 }
 
 func (p *profiler) healthCheck(ec echo.Context) (err error) {
@@ -34,4 +39,17 @@ func (p *profiler) healthCheck(ec echo.Context) (err error) {
 
 func (p *profiler) dumpURLTree(c echo.Context) (err error) {
 	return c.String(http.StatusOK, p.URLService.DumpTree())
+}
+
+func (p *profiler) countGoroutine(c echo.Context) (err error) {
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"count": runtime.NumGoroutine(),
+	})
+}
+
+func (p *profiler) traceGoroutine(c echo.Context) (err error) {
+	debug, _ := strconv.Atoi(c.QueryParam("debug"))
+
+	pprof.Lookup("goroutine").WriteTo(c.Response(), debug)
+	return
 }

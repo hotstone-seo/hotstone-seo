@@ -4,4 +4,16 @@ http://localhost:8089/application/health
 
 ### Dump Rule Tree
 
-http://localhost:8089/prof/url-tree
+http://localhost:8089/_prof/url-tree
+
+### Count of goroutine
+
+http://localhost:8089/_prof/goroutine/count
+
+### Goroutine function and line-number
+
+http://localhost:8089/_prof/goroutine/trace?debug=1
+
+### Goroutine stace-trace
+
+http://localhost:8089/_prof/goroutine/trace?debug=2
