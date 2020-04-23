@@ -247,7 +247,9 @@ function renderPreview(ruleID, tags) {
   if (_.isEmpty(tags)) {
     return (
       <div>
-        No tags data. Register tags at&nbps;
+        No tags data. Register tags at
+        {' '}
+        {' '}
         <Link to={`/rules/${ruleID}`}>Rule Detail</Link>
       </div>
     );
