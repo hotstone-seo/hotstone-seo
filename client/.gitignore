@@ -20,3 +20,6 @@ hotstone-client-*.tgz
 
 # Jest coverage report
 coverage/
+
+# local cache on integration test
+test-local-cache/
