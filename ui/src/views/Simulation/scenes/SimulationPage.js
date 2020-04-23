@@ -203,8 +203,13 @@ function renderResp(matchResp) {
 
 function renderMatchError(matchError) {
   let msgError = matchError.message;
-  if (matchError.response) {
+  let ps = 0;
+  if (msgError !== '') ps = msgError.search('500');
+
+  if (ps > 0) {
+    // if (matchError.response) {
     msgError = matchError.response.data.message;
+    // }
   }
   return (
     <>
