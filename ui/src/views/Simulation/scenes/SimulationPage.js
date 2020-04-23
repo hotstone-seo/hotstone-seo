@@ -231,13 +231,14 @@ function renderPageError(pageError) {
   if (pageError.response) {
     msgError = pageError.response.data.message;
   }
+  const subTitle = ''.concat('Sorry, the server is wrong. ', msgError);
   return (
     <>
       <br />
       <Result
         status="500"
         title="Error"
-        subTitle="Sorry, the server is wrong."
+        subTitle={subTitle}
         extra={<Button type="primary">Back Home</Button>}
       />
     </>
