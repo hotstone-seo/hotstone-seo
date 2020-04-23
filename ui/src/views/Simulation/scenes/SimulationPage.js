@@ -7,10 +7,7 @@ import {
   Alert,
   Select,
   Descriptions,
-  Space,
   Collapse,
-  Layout,
-  Row,
   Col,
 } from "antd";
 import { Machine, assign } from "xstate";
@@ -18,16 +15,14 @@ import { useMachine } from "@xstate/react";
 import { Link } from "react-router-dom";
 import _ from "lodash";
 import parse from "url-parse";
-
 import { match, fetchTags } from "api/provider";
 import { getRule } from "api/rule";
-import { RawHtmlPreview } from "components/Simulation";
-
 import locales from "locales";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const { Option } = Select;
 const { Panel } = Collapse;
-const { Content } = Layout;
 
 const pageMachine = Machine({
   id: "simulation",
@@ -209,7 +204,9 @@ function renderResp(matchResp) {
                 <tbody className="ant-table-tbody">
                   {Object.entries(path_param).map(([key, value]) => (
                     <tr key={key}>
-                      <td>{key}</td>
+                      <td>
+                        <code>{key}</code>
+                      </td>
                       <td>{value}</td>
                     </tr>
                   ))}
@@ -219,7 +216,7 @@ function renderResp(matchResp) {
           )}
 
           <Panel header="Preview" key="3">
-            <RawHtmlPreview ruleID={rule_id} tags={tags} />
+            {renderPreview(rule_id, tags)}
           </Panel>
         </Collapse>
       </Card>
@@ -259,6 +256,43 @@ function renderPageError(pageError) {
 
 function isLoading(current) {
   return current.matches("init") || current.matches("submitting");
+}
+
+function renderPreview(ruleID, tags) {
+  if (_.isEmpty(tags)) {
+    return (
+      <div>
+        No tags data. Register tags at&nbps;
+        <Link to={`/rules/${ruleID}`}>Rule Detail</Link>
+      </div>
+    );
+  }
+  const textAreaVal = tags
+    .map(({ type, value, attributes }) => {
+      let attributesStr = "";
+      if (!_.isEmpty(attributes)) {
+        if (_.isPlainObject(attributes)) {
+          Object.entries(attributes).forEach(([key, value]) => {
+            attributesStr += ` ${key}="${value}"`;
+          });
+        } else if (_.isArray(attributes)) {
+          attributes.forEach((attributes) => {
+            Object.entries(attributes).forEach(([key, value]) => {
+              attributesStr += ` ${key}="${value}"`;
+            });
+          });
+        }
+      }
+
+      return `<${type}${attributesStr}>${value}</${type}>`;
+    })
+    .join("\n");
+
+  return (
+    <SyntaxHighlighter language="html" style={docco}>
+      {textAreaVal}
+    </SyntaxHighlighter>
+  );
 }
 
 export default SimulationPage;
