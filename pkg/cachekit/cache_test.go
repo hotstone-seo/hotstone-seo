@@ -61,8 +61,8 @@ func TestCache_CacheNoAvailable(t *testing.T) {
 		require.Equal(t, 30*time.Second, client.TTL("key").Val())
 
 		// check pragma
-		require.Equal(t, "Thu, 16 Feb 2017 00:00:30 UTC", pragma.ResponseHeaders()[cachekit.HeaderExpires])
-		require.Equal(t, "Thu, 16 Feb 2017 00:00:00 UTC", pragma.ResponseHeaders()[cachekit.HeaderLastModified])
+		require.Equal(t, "Thu, 16 Feb 2017 00:00:30 GMT", pragma.ResponseHeaders()[cachekit.HeaderExpires])
+		require.Equal(t, "Thu, 16 Feb 2017 00:00:00 GMT", pragma.ResponseHeaders()[cachekit.HeaderLastModified])
 	})
 }
 
@@ -84,7 +84,7 @@ func TestCache_CacheAvailable(t *testing.T) {
 
 		// set cache n redis
 		testRedis.Set("key", `{"name":"cached"}`)
-		testRedis.Set("key:time", "Wed, 15 Feb 2017 23:55:00 UTC")
+		testRedis.Set("key:time", "Wed, 15 Feb 2017 23:55:00 GMT")
 		testRedis.SetTTL("key", 10*time.Second)
 
 		cache := cachekit.New("key", func() (interface{}, error) {
@@ -98,8 +98,8 @@ func TestCache_CacheAvailable(t *testing.T) {
 		require.Equal(t, bean{Name: "cached"}, target)
 
 		// check pragma
-		require.Equal(t, "Thu, 16 Feb 2017 00:00:10 UTC", pragma.ResponseHeaders()[cachekit.HeaderExpires])
-		require.Equal(t, "Wed, 15 Feb 2017 23:55:00 UTC", pragma.ResponseHeaders()[cachekit.HeaderLastModified])
+		require.Equal(t, "Thu, 16 Feb 2017 00:00:10 GMT", pragma.ResponseHeaders()[cachekit.HeaderExpires])
+		require.Equal(t, "Wed, 15 Feb 2017 23:55:00 GMT", pragma.ResponseHeaders()[cachekit.HeaderLastModified])
 	})
 	t.Run("WHEN cache-control: no-cache", func(t *testing.T) {
 		testRedis.Set("key", `{"name":"cached"}`)
@@ -130,13 +130,13 @@ func TestCache_IfModifiedSince(t *testing.T) {
 		expectedNoModified bool
 	}{
 		{
-			lastModified:       "Wed, 15 Feb 2017 23:55:00 UTC",
-			ifModifiedSince:    "Wed, 15 Feb 2017 23:58:00 UTC",
+			lastModified:       "Wed, 15 Feb 2017 23:55:00 GMT",
+			ifModifiedSince:    "Wed, 15 Feb 2017 23:58:00 GMT",
 			expectedNoModified: true,
 		},
 		{
-			lastModified:       "Wed, 15 Feb 2017 23:55:00 UTC",
-			ifModifiedSince:    "Wed, 15 Feb 2017 23:50:00 UTC",
+			lastModified:       "Wed, 15 Feb 2017 23:55:00 GMT",
+			ifModifiedSince:    "Wed, 15 Feb 2017 23:50:00 GMT",
 			expectedNoModified: false,
 		},
 	}

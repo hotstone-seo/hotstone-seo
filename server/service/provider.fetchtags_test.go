@@ -87,7 +87,7 @@ func TestProviderService_FetchTagsWithCache(t *testing.T) {
 
 	key := "_locale=en_US&_rule=999"
 	testRedis.Set(key, string(b))
-	testRedis.Set(key+":time", time.Now().UTC().Add(10*time.Second).Format(time.RFC1123))
+	testRedis.Set(key+":time", cachekit.GMT(time.Now()).Add(10*time.Second).Format(time.RFC1123))
 	testRedis.SetTTL(key, 10*time.Second)
 	testRedis.SetTTL(key+":time", 10*time.Second)
 

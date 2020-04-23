@@ -2,8 +2,13 @@ package cachekit
 
 import (
 	"strings"
+	"time"
 
 	"github.com/labstack/echo"
+)
+
+var (
+	gmt, _ = time.LoadLocation("GMT")
 )
 
 // NotModifiedError return true if error is not modified error
@@ -20,4 +25,9 @@ func SetHeader(resp *echo.Response, pragma *Pragma) {
 	for key, value := range pragma.ResponseHeaders() {
 		header.Set(key, value)
 	}
+}
+
+// GMT to convert time to GMT
+func GMT(t time.Time) time.Time {
+	return t.In(gmt)
 }

@@ -102,11 +102,11 @@ func (c *Pragma) ResponseHeaders() map[string]string {
 	)
 
 	if !c.expires.IsZero() {
-		m[HeaderExpires] = c.expires.UTC().Format(time.RFC1123)
+		m[HeaderExpires] = GMT(c.expires).Format(time.RFC1123)
 	}
 
 	if !c.lastModified.IsZero() {
-		m[HeaderLastModified] = c.lastModified.UTC().Format(time.RFC1123)
+		m[HeaderLastModified] = GMT(c.lastModified).Format(time.RFC1123)
 	}
 
 	if cacheControls := c.respCacheControls(); len(cacheControls) > 0 {

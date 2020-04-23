@@ -115,7 +115,7 @@ func (c *Cache) getData(client *redis.Client, target interface{}) (ttl time.Dura
 
 func (c *Cache) setModifiedTime(client *redis.Client, t time.Time, ttl time.Duration) (err error) {
 	key := c.modifiedTimeKey()
-	modifiedTime := t.UTC().Format(time.RFC1123)
+	modifiedTime := GMT(t).Format(time.RFC1123)
 	if err = client.Set(key, modifiedTime, ttl).Err(); err != nil {
 		return fmt.Errorf("SetModifiedTime: %w", err)
 	}
