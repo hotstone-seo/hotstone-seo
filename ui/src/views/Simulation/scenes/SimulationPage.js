@@ -9,6 +9,7 @@ import {
   Descriptions,
   Collapse,
   Col,
+  Result,
 } from "antd";
 import { Machine, assign } from "xstate";
 import { useMachine } from "@xstate/react";
@@ -169,52 +170,28 @@ function renderForm(current, onSubmit) {
 function renderResp(matchResp) {
   const { rule, tags, ruleDetail } = matchResp;
   const { rule_id, path_param } = rule;
+
   return (
     <>
       <br />
       <Card>
-        <Alert type="success" message="Matched" />
+        <Alert type="success" message="Matched" closable />
         <br />
         <Collapse defaultActiveKey={["3"]} expandIconPosition="left">
           {!_.isEmpty(ruleDetail) && (
-            <Panel header="Rule" key="1">
-              <Descriptions key={0} title="Rule" column={1} bordered>
-                <Descriptions.Item key={1} label="Name">
-                  {ruleDetail.name}
-                </Descriptions.Item>
-                <Descriptions.Item key={2} label="URL Pattern">
-                  {ruleDetail.url_pattern}
-                </Descriptions.Item>
-                <Descriptions.Item key={3} label="Detail">
-                  <Link to={`/rules/${rule_id}`}>Rule Detail</Link>
-                </Descriptions.Item>
-              </Descriptions>
+            <Panel
+              header="Rule"
+              key="1"
+              extra={<Link to={`/rules/${rule_id}`}>Go To Page</Link>}
+            >
+              {renderRuleDetail(ruleDetail, rule_id)}
             </Panel>
           )}
-
           {!_.isEmpty(path_param) && (
             <Panel header="Parameter" key="2">
-              <table className="ant-table">
-                <thead className="ant-table-thead">
-                  <tr key="id">
-                    <th>Key</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody className="ant-table-tbody">
-                  {Object.entries(path_param).map(([key, value]) => (
-                    <tr key={key}>
-                      <td>
-                        <code>{key}</code>
-                      </td>
-                      <td>{value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {renderParameterTable(path_param)}
             </Panel>
           )}
-
           <Panel header="Preview" key="3">
             {renderPreview(rule_id, tags)}
           </Panel>
@@ -233,7 +210,12 @@ function renderMatchError(matchError) {
     <>
       <br />
       <Card>
-        <Alert type="error" message={msgError} />
+        <Alert type="error" message={msgError} closable />
+        <Result
+          status="404"
+          title="Rule Not Match"
+          subTitle="Sorry, URL path not matching with any rule."
+        />
       </Card>
     </>
   );
@@ -247,9 +229,12 @@ function renderPageError(pageError) {
   return (
     <>
       <br />
-      <Card>
-        <Alert type="error" message={msgError} />
-      </Card>
+      <Result
+        status="500"
+        title="Error"
+        subTitle="Sorry, the server is wrong."
+        extra={<Button type="primary">Back Home</Button>}
+      />
     </>
   );
 }
@@ -292,6 +277,42 @@ function renderPreview(ruleID, tags) {
     <SyntaxHighlighter language="html" style={docco}>
       {textAreaVal}
     </SyntaxHighlighter>
+  );
+}
+
+function renderRuleDetail(ruleDetail, rule_id) {
+  return (
+    <Descriptions key={0} title="Rule" column={1} bordered>
+      <Descriptions.Item key={1} label="Name">
+        {ruleDetail.name}
+      </Descriptions.Item>
+      <Descriptions.Item key={2} label="URL Pattern">
+        {ruleDetail.url_pattern}
+      </Descriptions.Item>
+    </Descriptions>
+  );
+}
+
+function renderParameterTable(path_param) {
+  return (
+    <table className="ant-table">
+      <thead className="ant-table-thead">
+        <tr key="id">
+          <th>Key</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody className="ant-table-tbody">
+        {Object.entries(path_param).map(([key, value]) => (
+          <tr key={key}>
+            <td>
+              <code>{key}</code>
+            </td>
+            <td>{value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
