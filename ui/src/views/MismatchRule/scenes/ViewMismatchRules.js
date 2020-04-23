@@ -48,6 +48,7 @@ function ViewMismatchRules(props) {
 
   useEffect(() => {
     resetPagination();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredInfo]);
 
   useEffect(() => {
@@ -79,6 +80,7 @@ function ViewMismatchRules(props) {
     }
 
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageSize, filteredInfo, sortedInfo, pageToken]);
 
   const columns = [
