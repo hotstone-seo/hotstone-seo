@@ -11,6 +11,10 @@ describe('HotStone-Client', () => {
         mockServer = nock(baseURL)
     })
 
+    afterEach(() => {
+        mockServer.done()
+    })
+
     describe('match', () => {
         test('good response', async () => {
             const mockResp = {
