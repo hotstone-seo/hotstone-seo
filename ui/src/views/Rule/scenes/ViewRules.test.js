@@ -11,7 +11,7 @@ import ViewRules from './ViewRules';
 afterEach(cleanup);
 
 const respMock = [{
-  id: 1, name: 'Airport Rule', url_pattern: '/airport', updated_at: new Date(), created_at: new Date(),
+  id: 1, name: 'Airport Rule', url_pattern: '/airport', updated_at: '2020-04-01', created_at: new Date(),
 }];
 
 describe('View Rules', () => {

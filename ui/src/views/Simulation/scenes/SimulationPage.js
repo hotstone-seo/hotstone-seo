@@ -20,8 +20,7 @@ import { match, fetchTags } from "api/provider";
 import { getRule } from "api/rule";
 import locales from "locales";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-
+import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 const { Option } = Select;
 const { Panel } = Collapse;
 
