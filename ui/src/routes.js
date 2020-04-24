@@ -8,12 +8,12 @@ import {
   AuditOutlined,
 } from '@ant-design/icons';
 
-const Rule = React.lazy(() => import('views/Rule'));
-const MismatchRule = React.lazy(() => import('views/MismatchRule'));
-const DataSource = React.lazy(() => import('views/DataSource'));
-const Analytic = React.lazy(() => import('views/Analytic'));
-const Simulation = React.lazy(() => import('views/Simulation'));
-const AuditTrail = React.lazy(() => import('views/AuditTrail'));
+import Rule from 'views/Rule';
+import MismatchRule from 'views/MismatchRule';
+import DataSource from 'views/DataSource';
+import Analytic from 'views/Analytic';
+import Simulation from 'views/Simulation';
+import AuditTrail from 'views/AuditTrail';
 
 const routes = [
   {
