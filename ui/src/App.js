@@ -4,7 +4,7 @@ import { Spin } from 'antd';
 import { AuthProvider, PrivateRoute } from 'components';
 import './App.css';
 
-const loading = () => <Spin className="loading-spin" size="small" />;
+const loading = () => <div />;
 
 const DashboardLayout = React.lazy(() => import('containers/DashboardLayout'));
 

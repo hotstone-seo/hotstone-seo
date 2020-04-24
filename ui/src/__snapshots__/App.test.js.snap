@@ -4,25 +4,6 @@ exports[`renders correctly 1`] = `
 <div
   className="App"
 >
-  <div
-    className="ant-spin ant-spin-lg ant-spin-spinning loading-spin"
-  >
-    <span
-      className="ant-spin-dot ant-spin-dot-spin"
-    >
-      <i
-        className="ant-spin-dot-item"
-      />
-      <i
-        className="ant-spin-dot-item"
-      />
-      <i
-        className="ant-spin-dot-item"
-      />
-      <i
-        className="ant-spin-dot-item"
-      />
-    </span>
-  </div>
+  <div />
 </div>
 `;
