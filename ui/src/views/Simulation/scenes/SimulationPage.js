@@ -50,7 +50,6 @@ const pageMachine = Machine({
           target: "success",
           actions: assign({
             matchResp: (context, event) => {
-              console.log("RESP: ", event);
               return event.data;
             },
           }),
@@ -59,7 +58,6 @@ const pageMachine = Machine({
           target: "failed",
           actions: assign({
             matchError: (context, event) => {
-              console.log("ERR :", event);
               return event.data;
             },
           }),
