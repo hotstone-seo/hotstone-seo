@@ -23,6 +23,10 @@ describe('HotStone-Client with Caching', () => {
 
     afterEach(() => {
         console.log('pending mocks: %j', mockServer.pendingMocks())
+
+        // CAUTION: If you got failed test with message "Mocks not yet satisfied:" and pointing below line ('mockServer.done()'),
+        // it means there is a failed assertion `expect` inside nock `reply` callback function.
+        // Fix that. Don't ever comment below line to temporarily fix the issue.
         mockServer.done()
     })
 
@@ -35,17 +39,20 @@ describe('HotStone-Client with Caching', () => {
             const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
             const givenLocale = 'en_US'
             
+            const date = new Date()
+            const expires = new Date(date - 1000)
+            const lastModified = new Date(date - 10000000)
+
             mockServer
                 .get('/p/fetch-tags')
                 .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
                 .reply(200, mockResp, {
                     // 'Cache-Control': 'max-age=30',
                     // 'Cache-Control': 'no-cache',
-                    'Expires': new Date(new Date() - 1000).toUTCString(),
-                    'Date': new Date().toUTCString(),
+                    'Expires': expires.toUTCString(),
+                    'Date': date.toUTCString(),
                     // 'ETag': 'deadbeef',
-                    'Last-Modified': new Date(new Date() - 10000000).toUTCString(),
-
+                    'Last-Modified': lastModified.toUTCString(),
                     // 'Cache-Control': 'max-age=30',
                     // 'Expires': 'Thu, 23 Apr 2020 09:33:40 GMT',
                     // 'Last-Modified': 'Thu, 23 Apr 2020 09:33:10 GMT',
@@ -59,8 +66,7 @@ describe('HotStone-Client with Caching', () => {
                 .get('/p/fetch-tags')
                 .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
                 .reply(304, function () {
-                    //TODO: assert If-Modified-Since
-                    console.log('>>> REQ HEADERS: ', this.req.headers)
+                    expect(this.req.headers['if-modified-since'][0]).toEqual(lastModified.toUTCString())    
                 })
 
             const tags2 = await subject.tags(givenRule, givenLocale)
