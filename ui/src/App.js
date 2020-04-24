@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Spin } from 'antd';
 import { AuthProvider, PrivateRoute } from 'components';
 import './App.css';
 
-const loading = () => <div />;
+const loading = () => <Spin className="loading-spin" size="small" />;
 
 const DashboardLayout = React.lazy(() => import('containers/DashboardLayout'));
 
