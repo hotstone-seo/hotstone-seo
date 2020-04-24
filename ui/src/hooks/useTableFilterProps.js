@@ -15,11 +15,6 @@ export default function useTableFilterProps(dataIndex) {
     setSearchText('');
   };
 
-  /* const handleSearch = (selectedKeys, confirm) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  }; */
   const handleSearch = useCallback((selectedKeys, confirm) => {
     confirm();
     setSearchText(selectedKeys[0]);

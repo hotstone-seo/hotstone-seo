@@ -207,9 +207,7 @@ function renderMatchError(matchError) {
   if (msgError !== '') ps = msgError.search('500');
 
   if (ps > 0) {
-    // if (matchError.response) {
     msgError = matchError.response.data.message;
-    // }
   }
   return (
     <>
