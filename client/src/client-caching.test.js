@@ -30,6 +30,7 @@ describe('HotStone-Client with Caching', () => {
         mockServer.done()
     })
 
+    // see test case example: https://github.com/npm/make-fetch-happen/blob/latest/test/cache.js#L895
     describe('tags', () => {
         test('uses Expires header if no Pragma or Cache-Control', async () => {
             const mockResp = [
@@ -68,6 +69,36 @@ describe('HotStone-Client with Caching', () => {
                 .reply(304, function () {
                     expect(this.req.headers['if-modified-since'][0]).toEqual(lastModified.toUTCString())    
                 })
+
+            const tags2 = await subject.tags(givenRule, givenLocale)
+            expect(tags2).toEqual(mockResp)
+        })
+
+        test('GIVEN Cache-Control max-age header THEN use local cache for 2nd resp without contact upstream server', async () => {
+            const mockResp = [
+                { id: 1, type: "title" },
+                { id: 2, type: "meta" },
+            ]
+            const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
+            const givenLocale = 'en_US'
+            
+            const age = 30
+            const date = new Date()
+            const lastModified = new Date(date)
+            const expires = new Date(lastModified + (age * 1000))
+
+            mockServer
+                .get('/p/fetch-tags')
+                .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
+                .reply(200, mockResp, {
+                    'Cache-Control': `max-age=${age}`,
+                    'Expires': expires.toUTCString(),
+                    'Date': date.toUTCString(),
+                    'Last-Modified': lastModified.toUTCString(),
+                })
+
+            const tags1 = await subject.tags(givenRule, givenLocale)
+            expect(tags1).toEqual(mockResp)
 
             const tags2 = await subject.tags(givenRule, givenLocale)
             expect(tags2).toEqual(mockResp)
