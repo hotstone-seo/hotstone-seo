@@ -6,7 +6,6 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
-	log "github.com/sirupsen/logrus"
 
 	"go.uber.org/dig"
 )
@@ -15,7 +14,6 @@ import (
 type URLService interface {
 	FullSync(context.Context) error
 	Sync(context.Context) error
-	Match(url string) (int64, map[string]string)
 	Get(path string) (data interface{}, param *urlstore.Parameter)
 	Delete(id int64) bool
 	Insert(id int64, key string)
@@ -24,10 +22,10 @@ type URLService interface {
 }
 
 // NewURLService return new instance of URLService [constructor]
-func NewURLService(svc repository.URLSyncRepo) URLService {
+func NewURLService(svc repository.URLSyncRepo, store urlstore.Store) URLService {
 	return &URLServiceImpl{
 		URLSyncRepo:   svc,
-		Store:         urlstore.NewStore(),
+		Store:         store,
 		LatestVersion: 0,
 	}
 }
@@ -52,7 +50,7 @@ func (s *URLServiceImpl) FullSync(ctx context.Context) error {
 		return nil
 	}
 
-	s.Store = urlstore.NewStore()
+	s.Reset()
 	s.setStore(list)
 
 	oldestURLSync := list[len(list)-1]
@@ -95,29 +93,6 @@ func (s *URLServiceImpl) Sync(ctx context.Context) error {
 	}
 
 	return nil
-}
-
-// Match return rule id and parameter map
-func (s *URLServiceImpl) Match(url string) (int64, map[string]string) {
-
-	data, param := s.Store.Get(url)
-	if data == nil {
-		return -1, param.Map()
-	}
-
-	idStr, ok := data.(string)
-	if !ok {
-		log.Warnf("[GetURL] Failed to cast data to string. data=%+v", data)
-		return -1, param.Map()
-	}
-
-	id, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		log.Warnf("[GetURL] Failed to convert string data to int. idStr=%+v", idStr)
-		return -1, param.Map()
-	}
-
-	return id, param.Map()
 }
 
 // Insert to store

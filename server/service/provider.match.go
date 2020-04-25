@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
@@ -38,9 +39,19 @@ func (p *ProviderServiceImpl) Match(ctx context.Context, vals url.Values) (resp 
 		return nil, fmt.Errorf("URL: %w", err)
 	}
 
-	if ruleID, pathParam = p.URLService.Match(path); ruleID == -1 {
+	data, param := p.Store.Get(path)
+
+	if data == nil {
 		go p.onNotMatched(path)
-		return nil, fmt.Errorf("No rule match: %s", path)
+		return &MatchResponse{}, nil
+	}
+
+	if ruleID, err = convertToRuleID(data); err != nil {
+		return
+	}
+
+	if param != nil {
+		pathParam = param.Map()
 	}
 
 	// matched
@@ -49,6 +60,24 @@ func (p *ProviderServiceImpl) Match(ctx context.Context, vals url.Values) (resp 
 		RuleID:    ruleID,
 		PathParam: pathParam,
 	}, nil
+}
+
+func convertToRuleID(data interface{}) (ruleID int64, err error) {
+	var (
+		s  string
+		ok bool
+	)
+
+	if s, ok = data.(string); !ok {
+		err = fmt.Errorf("Failed to cast data to string. data=%+v", data)
+		return
+	}
+
+	if ruleID, err = strconv.ParseInt(s, 10, 64); err != nil {
+		err = fmt.Errorf("Failed to convert string data to int. idStr=%+s", s)
+		return
+	}
+	return
 }
 
 func (p *ProviderServiceImpl) onMatched(url string, ruleID int64) {

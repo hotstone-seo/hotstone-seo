@@ -9,6 +9,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"go.uber.org/dig"
 )
 
@@ -26,9 +27,9 @@ type ProviderServiceImpl struct {
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo
-	URLService
 
 	Redis *redis.Client
+	urlstore.Store
 }
 
 // ITag is tag after interpolate with data

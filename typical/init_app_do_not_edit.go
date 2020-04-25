@@ -8,6 +8,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
+	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"github.com/typical-go/typical-go/pkg/typapp"
 	"github.com/typical-go/typical-go/pkg/typcfg"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
@@ -33,6 +34,7 @@ func init() {
 		typapp.NewConstructor(service.NewRuleService),
 		typapp.NewConstructor(service.NewTagService),
 		typapp.NewConstructor(service.NewURLService),
+		typapp.NewConstructor(urlstore.NewStore),
 		typapp.NewConstructor(func() (cfg *config.Config, err error) {
 			cfg = new(config.Config)
 			if err = typcfg.Process("APP", cfg); err != nil {

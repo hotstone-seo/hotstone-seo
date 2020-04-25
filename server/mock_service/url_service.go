@@ -103,21 +103,6 @@ func (mr *MockURLServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockURLService)(nil).Insert), arg0, arg1)
 }
 
-// Match mocks base method
-func (m *MockURLService) Match(arg0 string) (int64, map[string]string) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Match", arg0)
-	ret0, _ := ret[0].(int64)
-	ret1, _ := ret[1].(map[string]string)
-	return ret0, ret1
-}
-
-// Match indicates an expected call of Match
-func (mr *MockURLServiceMockRecorder) Match(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Match", reflect.TypeOf((*MockURLService)(nil).Match), arg0)
-}
-
 // Sync mocks base method
 func (m *MockURLService) Sync(arg0 context.Context) error {
 	m.ctrl.T.Helper()

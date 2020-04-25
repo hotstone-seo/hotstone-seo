@@ -34,3 +34,8 @@ func (p *Parameter) Keys() []string {
 func (p *Parameter) Values() []string {
 	return p.values
 }
+
+// Empty return true if no keys
+func (p *Parameter) Empty() bool {
+	return len(p.keys) < 1
+}
