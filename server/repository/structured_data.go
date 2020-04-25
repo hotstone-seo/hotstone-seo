@@ -42,6 +42,7 @@ func NewStructuredDataRepo(impl StructuredDataRepoImpl) StructuredDataRepo {
 	return &impl
 }
 
+// FindOne select a single Structured Data by its ID
 func (r *StructuredDataRepoImpl) FindOne(ctx context.Context, id int64) (e *StructuredData, err error) {
 	row := sq.
 		Select(
@@ -72,6 +73,7 @@ func (r *StructuredDataRepoImpl) FindOne(ctx context.Context, id int64) (e *Stru
 	return
 }
 
+// Find select a list of Structured data by filtering options
 func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list []*StructuredData, err error) {
 	var rows *sql.Rows
 	builder := sq.
@@ -119,6 +121,7 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOpt
 	return
 }
 
+// Insert creates a new Structured Data in database, returning its ID if success
 func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (lastInsertID int64, err error) {
 	if e.Data == nil {
 		e.Data = map[string]string{}
@@ -143,6 +146,7 @@ func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (
 	return
 }
 
+// Delete removes a Structured Data entry from database
 func (r *StructuredDataRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
 		Delete("structured_datas").
@@ -156,6 +160,7 @@ func (r *StructuredDataRepoImpl) Delete(ctx context.Context, id int64) (err erro
 	return
 }
 
+// Update modifies existing Structured Data fields in the database
 func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (err error) {
 	if e.Data == nil {
 		e.Data = map[string]string{}
