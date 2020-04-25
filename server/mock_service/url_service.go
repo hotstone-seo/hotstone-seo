@@ -62,20 +62,6 @@ func (mr *MockURLServiceMockRecorder) Delete(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockURLService)(nil).Delete), arg0)
 }
 
-// DumpTree mocks base method
-func (m *MockURLService) DumpTree() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DumpTree")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// DumpTree indicates an expected call of DumpTree
-func (mr *MockURLServiceMockRecorder) DumpTree() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DumpTree", reflect.TypeOf((*MockURLService)(nil).DumpTree))
-}
-
 // FullSync mocks base method
 func (m *MockURLService) FullSync(arg0 context.Context) error {
 	m.ctrl.T.Helper()

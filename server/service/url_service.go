@@ -16,7 +16,6 @@ type URLService interface {
 	FullSync(context.Context) error
 	Sync(context.Context) error
 	Match(url string) (int64, map[string]string)
-	DumpTree() string
 	Get(path string) (data interface{}, param *urlstore.Parameter)
 	Delete(id int64) bool
 	Insert(id int64, key string)
@@ -131,11 +130,6 @@ func (s *URLServiceImpl) Insert(id int64, key string) {
 func (s *URLServiceImpl) Update(id int64, key string) {
 	s.Delete(id)
 	s.Insert(id, key)
-}
-
-// DumpTree to debug purpose
-func (s *URLServiceImpl) DumpTree() string {
-	return s.Store.String()
 }
 
 func (s *URLServiceImpl) setStore(listURLSync []*repository.URLSync) {

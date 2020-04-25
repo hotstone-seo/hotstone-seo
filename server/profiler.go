@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-redis/redis"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
+	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"github.com/labstack/echo"
 	"github.com/typical-go/typical-rest-server/pkg/serverkit"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
@@ -18,7 +18,7 @@ type profiler struct {
 	dig.In
 	Pg    *typpostgres.DB
 	Redis *redis.Client
-	service.URLService
+	urlstore.Store
 }
 
 func (p *profiler) route(e *echo.Echo) {
@@ -38,7 +38,7 @@ func (p *profiler) healthCheck(ec echo.Context) (err error) {
 }
 
 func (p *profiler) dumpURLTree(c echo.Context) (err error) {
-	return c.String(http.StatusOK, p.URLService.DumpTree())
+	return c.String(http.StatusOK, p.Store.String())
 }
 
 func (p *profiler) countGoroutine(c echo.Context) (err error) {
