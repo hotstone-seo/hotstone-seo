@@ -7,6 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	urlstore "github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	reflect "reflect"
 )
 
@@ -90,18 +91,18 @@ func (mr *MockURLServiceMockRecorder) FullSync(arg0 interface{}) *gomock.Call {
 }
 
 // Get mocks base method
-func (m *MockURLService) Get(arg0 string, arg1 []string) (interface{}, []string) {
+func (m *MockURLService) Get(arg0 string) (interface{}, *urlstore.Parameter) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+	ret := m.ctrl.Call(m, "Get", arg0)
 	ret0, _ := ret[0].(interface{})
-	ret1, _ := ret[1].([]string)
+	ret1, _ := ret[1].(*urlstore.Parameter)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get
-func (mr *MockURLServiceMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockURLServiceMockRecorder) Get(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockURLService)(nil).Get), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockURLService)(nil).Get), arg0)
 }
 
 // Insert mocks base method

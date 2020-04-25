@@ -17,7 +17,7 @@ type URLService interface {
 	Sync(context.Context) error
 	Match(url string) (int64, map[string]string)
 	DumpTree() string
-	Get(path string, pvalues []string) (data interface{}, pnames []string)
+	Get(path string) (data interface{}, param *urlstore.Parameter)
 	Delete(id int64) bool
 	Insert(id int64, key string)
 	Update(id int64, key string)
@@ -100,35 +100,25 @@ func (s *URLServiceImpl) Sync(ctx context.Context) error {
 
 // Match return rule id and parameter map
 func (s *URLServiceImpl) Match(url string) (int64, map[string]string) {
-	maxParams := 256
-	pvalues := make([]string, maxParams)
-	varValue := map[string]string{}
 
-	data, pnames := s.Store.Get(url, pvalues)
-	// fmt.Printf("[DATA:%s][PNAMES:%+v]", data, pnames)
+	data, param := s.Store.Get(url)
 	if data == nil {
-		return -1, varValue
-	}
-
-	if len(pnames) > 0 {
-		for i, name := range pnames {
-			varValue[name] = pvalues[i]
-		}
+		return -1, param.Map()
 	}
 
 	idStr, ok := data.(string)
 	if !ok {
 		log.Warnf("[GetURL] Failed to cast data to string. data=%+v", data)
-		return -1, varValue
+		return -1, param.Map()
 	}
 
 	id, err := strconv.ParseInt(idStr, 10, 64)
 	if err != nil {
 		log.Warnf("[GetURL] Failed to convert string data to int. idStr=%+v", idStr)
-		return -1, varValue
+		return -1, param.Map()
 	}
 
-	return id, varValue
+	return id, param.Map()
 }
 
 // Insert to store

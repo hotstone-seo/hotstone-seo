@@ -13,13 +13,18 @@ import (
 	"strings"
 )
 
+var (
+	// ParameterSize is size of paramter
+	ParameterSize = 512
+)
+
 // Store is a radix tree that supports storing data with parametric keys and retrieving them back with concrete keys.
 // When retrieving a data item with a concrete key, the matching parameter names and values will be returned as well.
 // A parametric key is a string containing tokens in the format of "<name>", "<name:pattern>", or "<:pattern>".
 // Each token represents a single parameter.
 type Store interface {
 	Add(id int64, key string, data interface{}) int
-	Get(path string, pvalues []string) (data interface{}, pnames []string)
+	Get(path string) (data interface{}, param *Parameter)
 	Delete(id int64) bool
 	String() string
 	Count() int
@@ -59,10 +64,20 @@ func (s *storeImpl) Add(id int64, key string, data interface{}) int {
 // Get returns the data item matching the given concrete key.
 // If the data item was added to the store with a parametric key before, the matching
 // parameter names and values will be returned as well.
-func (s *storeImpl) Get(path string, pvalues []string) (data interface{}, pnames []string) {
-	data, pnames, _ = s.root.get(path, pvalues)
-	return
+func (s *storeImpl) Get(path string) (interface{}, *Parameter) {
+	pvalues := make([]string, ParameterSize)
+	data, pnames, _ := s.root.get(path, pvalues)
+	return data, NewParameter(pnames, pvalues)
 }
+
+// func (s *storeImpl) GetAsMap(path string, size int) (data interface{}, pnames []string, pmap map[string]string) {
+// 	data, pnames, pvalues := s.GetAsSlice(path, size)
+// 	pmap = make(map[string]string)
+// 	for i, name := range pnames {
+// 		pmap[name] = pvalues[i]
+// 	}
+// 	return
+// }
 
 // Delete deletes the data item matching the given ID. It returns existness of deleted item.
 func (s *storeImpl) Delete(id int64) bool {
@@ -224,7 +239,7 @@ func (n *node) add(id int64, key string, data interface{}, order int) int {
 
 // addChild creates static and param nodes to store the given data
 func (n *node) addChild(id int64, key string, data interface{}, order int) int {
-	param := FindFirstParam(key)
+	param := findFirstParam(key)
 	// find the first occurrence of a param token
 
 	if param == nil {
