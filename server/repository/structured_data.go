@@ -182,3 +182,8 @@ func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (
 	}
 	return
 }
+
+// TODO: Create implementation for validating structured data
+func (structData StructuredData) Validate() error {
+	return nil
+}
