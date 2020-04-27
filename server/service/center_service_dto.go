@@ -33,3 +33,25 @@ type ScriptTagRequest struct {
 	Locale string `json:"locale"`
 	Source string `json:"source"`
 }
+
+type FAQPageRequest struct {
+	ID     int64 `json:"id"`
+	RuleID int64 `json:"rule_id"`
+	FAQs   []FAQ `json:"faqs"`
+}
+
+type FAQ struct {
+	Question string `json:"question"`
+	Answer   string `json:"answer"`
+}
+
+type BreadcrumbListRequest struct {
+	ID       int64            `json:"id"`
+	RuleID   int64            `json:"rule_id"`
+	ListItem []BreadcrumbItem `json:"list_item"`
+}
+
+type BreadcrumbItem struct {
+	Name string `json:"name"`
+	Item string `json:"item"`
+}

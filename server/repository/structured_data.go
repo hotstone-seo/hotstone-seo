@@ -14,12 +14,12 @@ import (
 
 // StructuredData represents a single ld+json shaped entity of a schema
 type StructuredData struct {
-	ID        int64     `json:"id"`
-	RuleID    int64     `json:"rule_id" validate:"required"`
-	Type      string    `json:"type"`
-	Data      Attrs     `json:"data"`
-	UpdatedAt time.Time `json:"updated_at"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        int64                  `json:"id"`
+	RuleID    int64                  `json:"rule_id" validate:"required"`
+	Type      string                 `json:"type"`
+	Data      map[string]interface{} `json:"data"`
+	UpdatedAt time.Time              `json:"updated_at"`
+	CreatedAt time.Time              `json:"created_at"`
 }
 
 // StructuredDataRepo handles database interaction for Structured Data
