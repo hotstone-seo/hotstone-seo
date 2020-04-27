@@ -124,7 +124,7 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOpt
 // Insert creates a new Structured Data in database, returning its ID if success
 func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (lastInsertID int64, err error) {
 	if e.Data == nil {
-		e.Data = map[string]string{}
+		e.Data = make(map[string]interface{}, 0)
 	}
 	builder := sq.
 		Insert("structured_datas").
@@ -163,7 +163,7 @@ func (r *StructuredDataRepoImpl) Delete(ctx context.Context, id int64) (err erro
 // Update modifies existing Structured Data fields in the database
 func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (err error) {
 	if e.Data == nil {
-		e.Data = map[string]string{}
+		e.Data = make(map[string]interface{}, 0)
 	}
 
 	builder := sq.
