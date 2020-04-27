@@ -37,7 +37,7 @@ type StructuredDataRepoImpl struct {
 	*typpostgres.DB
 }
 
-// NewStructuredDataRepo returns new instance of StructuredDataRepo
+// NewStructuredDataRepo returns new instance of StructuredDataRepo [constructor]
 func NewStructuredDataRepo(impl StructuredDataRepoImpl) StructuredDataRepo {
 	return &impl
 }

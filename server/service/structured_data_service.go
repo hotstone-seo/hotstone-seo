@@ -17,11 +17,11 @@ type StructuredDataService interface {
 type StructuredDataServiceImpl struct {
 	dig.In
 	repository.StructuredDataRepo
-	auditTrailService AuditTrailService
-	historyService    HistoryService
+	AuditTrailService AuditTrailService
+	HistoryService    HistoryService
 }
 
-// NewStructuredDataService returns nrw instance of StructuredDataService
+// NewStructuredDataService returns nrw instance of StructuredDataService [constructor]
 func NewStructuredDataService(impl StructuredDataServiceImpl) StructuredDataService {
 	return &impl
 }
@@ -31,7 +31,7 @@ func (s *StructuredDataServiceImpl) Insert(ctx context.Context, data repository.
 		return
 	}
 	go func() {
-		if _, auditErr := s.auditTrailService.RecordChanges(
+		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
 			"structured data",
 			data.ID,
@@ -54,7 +54,7 @@ func (s *StructuredDataServiceImpl) Update(ctx context.Context, data repository.
 		return
 	}
 	go func() {
-		if _, auditErr := s.auditTrailService.RecordChanges(
+		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
 			"structured data",
 			data.ID,
@@ -77,7 +77,7 @@ func (s *StructuredDataServiceImpl) Delete(ctx context.Context, id int64) (err e
 		return
 	}
 	go func() {
-		if _, histErr := s.historyService.RecordHistory(
+		if _, histErr := s.HistoryService.RecordHistory(
 			ctx,
 			"structured data",
 			id,
@@ -85,7 +85,7 @@ func (s *StructuredDataServiceImpl) Delete(ctx context.Context, id int64) (err e
 		); histErr != nil {
 			log.Error(histErr)
 		}
-		if _, auditErr := s.auditTrailService.RecordChanges(
+		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
 			"structured data",
 			id,
