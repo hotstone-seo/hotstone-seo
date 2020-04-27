@@ -31,10 +31,12 @@ function match(path) {
 
 function fetchTags(rule, locale, contentData) {
   const { rule_id, path_param } = rule;
-  path_param["_locale"] = locale;
-  path_param["_rule"] = rule_id;
+  if ( rule_id > 0) {
+    path_param['_locale'] = locale;
+    path_param['_rule'] = rule_id;
+  }
 
-  var qs = require("qs");
+  let qs = require('qs');
 
   let queryParam = qs.stringify(path_param);
   return client

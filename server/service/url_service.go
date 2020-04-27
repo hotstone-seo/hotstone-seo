@@ -6,7 +6,6 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
-	log "github.com/sirupsen/logrus"
 
 	"go.uber.org/dig"
 )
@@ -15,9 +14,7 @@ import (
 type URLService interface {
 	FullSync(context.Context) error
 	Sync(context.Context) error
-	Match(url string) (int64, map[string]string)
-	DumpTree() string
-	Get(path string, pvalues []string) (data interface{}, pnames []string)
+	Get(path string) (data interface{}, param *urlstore.Parameter)
 	Delete(id int64) bool
 	Insert(id int64, key string)
 	Update(id int64, key string)
@@ -25,10 +22,10 @@ type URLService interface {
 }
 
 // NewURLService return new instance of URLService [constructor]
-func NewURLService(svc repository.URLSyncRepo) URLService {
+func NewURLService(svc repository.URLSyncRepo, store urlstore.Store) URLService {
 	return &URLServiceImpl{
 		URLSyncRepo:   svc,
-		Store:         urlstore.NewStore(),
+		Store:         store,
 		LatestVersion: 0,
 	}
 }
@@ -53,7 +50,7 @@ func (s *URLServiceImpl) FullSync(ctx context.Context) error {
 		return nil
 	}
 
-	s.Store = urlstore.NewStore()
+	s.Reset()
 	s.setStore(list)
 
 	oldestURLSync := list[len(list)-1]
@@ -98,39 +95,6 @@ func (s *URLServiceImpl) Sync(ctx context.Context) error {
 	return nil
 }
 
-// Match return rule id and parameter map
-func (s *URLServiceImpl) Match(url string) (int64, map[string]string) {
-	maxParams := 256
-	pvalues := make([]string, maxParams)
-	varValue := map[string]string{}
-
-	data, pnames := s.Store.Get(url, pvalues)
-	// fmt.Printf("[DATA:%s][PNAMES:%+v]", data, pnames)
-	if data == nil {
-		return -1, varValue
-	}
-
-	if len(pnames) > 0 {
-		for i, name := range pnames {
-			varValue[name] = pvalues[i]
-		}
-	}
-
-	idStr, ok := data.(string)
-	if !ok {
-		log.Warnf("[GetURL] Failed to cast data to string. data=%+v", data)
-		return -1, varValue
-	}
-
-	id, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		log.Warnf("[GetURL] Failed to convert string data to int. idStr=%+v", idStr)
-		return -1, varValue
-	}
-
-	return id, varValue
-}
-
 // Insert to store
 func (s *URLServiceImpl) Insert(id int64, key string) {
 	data := strconv.FormatInt(id, 10)
@@ -141,11 +105,6 @@ func (s *URLServiceImpl) Insert(id int64, key string) {
 func (s *URLServiceImpl) Update(id int64, key string) {
 	s.Delete(id)
 	s.Insert(id, key)
-}
-
-// DumpTree to debug purpose
-func (s *URLServiceImpl) DumpTree() string {
-	return s.Store.String()
 }
 
 func (s *URLServiceImpl) setStore(listURLSync []*repository.URLSync) {

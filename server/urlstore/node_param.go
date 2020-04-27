@@ -2,8 +2,8 @@ package urlstore
 
 import "strings"
 
-// Param is parameter in string as represented by <PARAM>
-type Param struct {
+// nodeParam is parameter in string as represented by <PARAM>
+type nodeParam struct {
 	Start int
 	End   int
 
@@ -25,8 +25,7 @@ type Param struct {
 	AtLastPos bool
 }
 
-// FindFirstParam to create first occurence param in string
-func FindFirstParam(s string) *Param {
+func findFirstParam(s string) *nodeParam {
 	var (
 		name    string
 		pattern string
@@ -56,7 +55,7 @@ func FindFirstParam(s string) *Param {
 		name = inside
 	}
 
-	return &Param{
+	return &nodeParam{
 		Start:        start,
 		End:          end,
 		Raw:          s[start : end+1],

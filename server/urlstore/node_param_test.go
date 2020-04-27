@@ -1,20 +1,19 @@
-package urlstore_test
+package urlstore
 
 import (
 	"testing"
 
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"github.com/stretchr/testify/require"
 )
 
 func TestFindFirstParam(t *testing.T) {
 	testcases := []struct {
 		s        string
-		expected *urlstore.Param
+		expected *nodeParam
 	}{
 		{
 			s: "/<name1>",
-			expected: &urlstore.Param{
+			expected: &nodeParam{
 				Start:        1,
 				End:          7,
 				StringBefore: "/",
@@ -26,7 +25,7 @@ func TestFindFirstParam(t *testing.T) {
 		},
 		{
 			s: "<name1>",
-			expected: &urlstore.Param{
+			expected: &nodeParam{
 				Start:     0,
 				End:       6,
 				Raw:       "<name1>",
@@ -36,7 +35,7 @@ func TestFindFirstParam(t *testing.T) {
 		},
 		{
 			s: "<name1:pattern1>",
-			expected: &urlstore.Param{
+			expected: &nodeParam{
 				Start:     0,
 				End:       15,
 				Raw:       "<name1:pattern1>",
@@ -47,7 +46,7 @@ func TestFindFirstParam(t *testing.T) {
 		},
 		{
 			s: "/<name1>/some-string",
-			expected: &urlstore.Param{
+			expected: &nodeParam{
 				Start:        1,
 				End:          7,
 				StringBefore: "/",
@@ -58,7 +57,7 @@ func TestFindFirstParam(t *testing.T) {
 		},
 		{
 			s: "<:.*>",
-			expected: &urlstore.Param{
+			expected: &nodeParam{
 				Start:     0,
 				End:       4,
 				Raw:       "<:.*>",
@@ -72,6 +71,6 @@ func TestFindFirstParam(t *testing.T) {
 	}
 
 	for _, tt := range testcases {
-		require.Equal(t, tt.expected, urlstore.FindFirstParam(tt.s))
+		require.Equal(t, tt.expected, findFirstParam(tt.s))
 	}
 }

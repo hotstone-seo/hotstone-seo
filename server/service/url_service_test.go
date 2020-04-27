@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -90,6 +91,8 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
+		fmt.Println(urlStoreServer.Store.String())
+
 		require.Equal(t, 2, urlStoreServer.LatestVersion)
 		require.Equal(t, 1, urlStoreServer.Store.Count())
 	})
@@ -112,105 +115,102 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 func TestURLStoreImpl_Match(t *testing.T) {
 	t.Run("WHEN static url not exist", func(t *testing.T) {
-		store := buildStore(t)
-		id, varMap := store.Match("/gopher/doc.jpg")
-		require.Equal(t, int64(-1), id)
-		require.Empty(t, varMap)
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		id, varMap := svc.Get("/gopher/doc.jpg")
+		require.Nil(t, id)
+		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN static url exist", func(t *testing.T) {
-		store := buildStore(t)
-		id, varMap := store.Match("/gopher/doc.png")
-		require.Equal(t, int64(6), id)
-		require.Empty(t, varMap)
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		id, varMap := svc.Get("/gopher/doc.png")
+		require.Equal(t, "6", id)
+		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN param url not exist", func(t *testing.T) {
-		store := buildStore(t)
-		id, varMap := store.Match("/users/def/abc")
-		require.Equal(t, int64(-1), id)
-		require.Empty(t, varMap)
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		id, varMap := svc.Get("/users/def/abc")
+		require.Nil(t, id)
+		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN param url exist", func(t *testing.T) {
-		store := buildStore(t)
-		id, varMap := store.Match("/users/def/123")
-		require.Equal(t, int64(12), id)
-		require.Equal(t, 2, len(varMap))
-		require.Equal(t, "def", varMap["id"])
-		require.Equal(t, "123", varMap["accnt"])
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		id, varMap := svc.Get("/users/def/123")
+		require.Equal(t, "12", id)
+		require.Equal(t, 2, len(varMap.Keys()))
+		require.Equal(t, "def", varMap.Map()["id"])
+		require.Equal(t, "123", varMap.Map()["accnt"])
 	})
 
 	t.Run("WHEN more than 1 param exist in a subpath", func(t *testing.T) {
-		store := buildStore(t)
-		id, varMap := store.Match("/flight/src-abc-dst-def")
-		require.Equal(t, int64(15), id)
-		require.Equal(t, 2, len(varMap))
-		require.Equal(t, "abc", varMap["src"])
-		require.Equal(t, "def", varMap["dst"])
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		id, varMap := svc.Get("/flight/src-abc-dst-def")
+		require.Equal(t, "15", id)
+		require.Equal(t, 2, len(varMap.Keys()))
+		require.Equal(t, "abc", varMap.Map()["src"])
+		require.Equal(t, "def", varMap.Map()["dst"])
 	})
 }
 
 func TestURLStoreImpl_AddURL(t *testing.T) {
-
 	t.Run("WHEN new static url added AND id not exist before", func(t *testing.T) {
-		store := buildStore(t)
+		svc := &service.URLServiceImpl{Store: buildStore()}
 		url := "/gopher/doc.jpg"
-		store.Insert(20, url)
-		id, varMap := store.Match(url)
-		require.Equal(t, int64(20), id)
-		require.Empty(t, varMap)
-		require.Equal(t, 11, store.Count())
+		svc.Insert(20, url)
+		id, varMap := svc.Get(url)
+		require.Equal(t, "20", id)
+		require.True(t, varMap.Empty())
+		require.Equal(t, 11, svc.Count())
 	})
 
 	t.Run("WHEN new static url added AND id exist before THEN double data added (with same id)", func(t *testing.T) {
-		store := buildStore(t)
-		store.Insert(20, "/gopher/old.jpg")
-		store.Insert(20, "/gopher/new.img")
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc.Insert(20, "/gopher/old.jpg")
+		svc.Insert(20, "/gopher/new.img")
 
-		id, varMap := store.Match("/gopher/new.img")
-		require.Equal(t, int64(20), id)
-		require.Empty(t, varMap)
+		id, varMap := svc.Get("/gopher/new.img")
+		require.Equal(t, "20", id)
+		require.True(t, varMap.Empty())
 
-		id, varMap = store.Match("/gopher/old.jpg")
-		require.Equal(t, int64(20), id)
-		require.Empty(t, varMap)
-		require.Equal(t, 12, store.Count())
+		id, varMap = svc.Get("/gopher/old.jpg")
+		require.Equal(t, "20", id)
+		require.True(t, varMap.Empty())
+		require.Equal(t, 12, svc.Count())
 	})
 }
 
 func TestURLStoreImpl_UpdateURL(t *testing.T) {
 	t.Run("WHEN existing static url updated with different url", func(t *testing.T) {
-		store := buildStore(t)
-		store.Update(6, "/gopher/updated.bmp")
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc.Update(6, "/gopher/updated.bmp")
 
-		id, varMap := store.Match("/gopher/old.png")
-		require.Equal(t, int64(-1), id)
-		require.Empty(t, varMap)
+		id, varMap := svc.Get("/gopher/old.png")
+		require.Nil(t, id)
+		require.True(t, varMap.Empty())
 
-		id, varMap = store.Match("/gopher/updated.bmp")
-		require.Equal(t, int64(6), id)
-		require.Equal(t, 0, len(varMap))
-		require.Equal(t, 10, store.Count())
+		id, varMap = svc.Get("/gopher/updated.bmp")
+		require.Equal(t, "6", id)
+		require.Equal(t, 0, len(varMap.Keys()))
+		require.Equal(t, 10, svc.Count())
 	})
 }
 
 func TestURLStoreImpl_DeleteURL(t *testing.T) {
 	t.Run("WHEN existing static url deleted", func(t *testing.T) {
-		store := buildStore(t)
-		require.Equal(t, true, store.Delete(6))
+		svc := &service.URLServiceImpl{Store: buildStore()}
+		require.Equal(t, true, svc.Delete(6))
 
-		id, varMap := store.Match("/gopher/doc.png")
-		require.Equal(t, int64(-1), id)
-		require.Empty(t, varMap)
-		require.Equal(t, false, store.Delete(6))
-		require.Equal(t, 9, store.Count())
+		id, varMap := svc.Get("/gopher/doc.png")
+		require.Nil(t, id)
+		require.True(t, varMap.Empty())
+		require.Equal(t, false, svc.Delete(6))
+		require.Equal(t, 9, svc.Count())
 	})
 }
 
-func buildStore(t *testing.T) service.URLService {
-	t.Helper()
-
+func buildStore() urlstore.Store {
 	pairs := []struct {
 		id         int64
 		key, value string
@@ -228,12 +228,9 @@ func buildStore(t *testing.T) service.URLService {
 	}
 
 	store := urlstore.NewStore()
-
 	for _, pair := range pairs {
 		store.Add(pair.id, pair.key, pair.value)
 	}
 
-	require.Equal(t, 10, store.Count())
-
-	return &service.URLServiceImpl{Store: store}
+	return store
 }

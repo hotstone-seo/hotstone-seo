@@ -7,6 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
+	urlstore "github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	reflect "reflect"
 )
 
@@ -61,20 +62,6 @@ func (mr *MockURLServiceMockRecorder) Delete(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockURLService)(nil).Delete), arg0)
 }
 
-// DumpTree mocks base method
-func (m *MockURLService) DumpTree() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DumpTree")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// DumpTree indicates an expected call of DumpTree
-func (mr *MockURLServiceMockRecorder) DumpTree() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DumpTree", reflect.TypeOf((*MockURLService)(nil).DumpTree))
-}
-
 // FullSync mocks base method
 func (m *MockURLService) FullSync(arg0 context.Context) error {
 	m.ctrl.T.Helper()
@@ -90,18 +77,18 @@ func (mr *MockURLServiceMockRecorder) FullSync(arg0 interface{}) *gomock.Call {
 }
 
 // Get mocks base method
-func (m *MockURLService) Get(arg0 string, arg1 []string) (interface{}, []string) {
+func (m *MockURLService) Get(arg0 string) (interface{}, *urlstore.Parameter) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", arg0, arg1)
+	ret := m.ctrl.Call(m, "Get", arg0)
 	ret0, _ := ret[0].(interface{})
-	ret1, _ := ret[1].([]string)
+	ret1, _ := ret[1].(*urlstore.Parameter)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get
-func (mr *MockURLServiceMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockURLServiceMockRecorder) Get(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockURLService)(nil).Get), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockURLService)(nil).Get), arg0)
 }
 
 // Insert mocks base method
@@ -114,21 +101,6 @@ func (m *MockURLService) Insert(arg0 int64, arg1 string) {
 func (mr *MockURLServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockURLService)(nil).Insert), arg0, arg1)
-}
-
-// Match mocks base method
-func (m *MockURLService) Match(arg0 string) (int64, map[string]string) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Match", arg0)
-	ret0, _ := ret[0].(int64)
-	ret1, _ := ret[1].(map[string]string)
-	return ret0, ret1
-}
-
-// Match indicates an expected call of Match
-func (mr *MockURLServiceMockRecorder) Match(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Match", reflect.TypeOf((*MockURLService)(nil).Match), arg0)
 }
 
 // Sync mocks base method

@@ -228,16 +228,15 @@ func TestStoreGetAndDelete(t *testing.T) {
 		{"/all/abc", "16", ":abc,"},
 		{"/users/abc/xyz", nil, ""},
 	}
-	pvalues := make([]string, maxParams)
 	for i, test := range tests {
-		data, pnames := h.Get(test.key, pvalues)
+		data, param := h.Get(test.key)
 		assert.Equal(t, test.value, data, "store.Get("+test.key+") =")
 		params := ""
-		if len(pnames) > 0 {
-			for i, name := range pnames {
-				params += fmt.Sprintf("%v:%v,", name, pvalues[i])
-			}
+
+		for _, key := range param.Keys() {
+			params += fmt.Sprintf("%v:%v,", key, param.Map()[key])
 		}
+
 		assert.Equal(t, test.params, params, fmt.Sprintf("%d: store.Get(%s).params =", i, test.key))
 	}
 
@@ -248,7 +247,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 		deleted := h.Delete(7)
 		assert.Equal(t, true, deleted)
 
-		data, _ := h.Get("/gopher/doc", pvalues)
+		data, _ := h.Get("/gopher/doc")
 		assert.Equal(t, nil, data)
 
 		// deleted = h.Delete(3)
@@ -269,13 +268,13 @@ func TestStoreGetAndDelete(t *testing.T) {
 		deleted := h.Delete(13)
 		assert.Equal(t, true, deleted)
 
-		data, _ := h.Get("/users/<id>/test/<name>", pvalues)
+		data, _ := h.Get("/users/<id>/test/<name>")
 		assert.Equal(t, nil, data)
 
 		deleted = h.Delete(9)
 		assert.Equal(t, true, deleted)
 
-		data, _ = h.Get("/users/44/profile", pvalues)
+		data, _ = h.Get("/users/44/profile")
 		assert.Equal(t, nil, data)
 
 		// deleted = h.Delete(12)
@@ -289,7 +288,7 @@ func TestStoreGetAndDelete(t *testing.T) {
 		assert.Equal(t, true, deleted)
 		// === END WEIRD BUG
 
-		data, _ = h.Get("/users/23/35", pvalues)
+		data, _ = h.Get("/users/23/35")
 		t.Logf("### DATA: %+v\n", data)
 		assert.NotEqual(t, nil, data)
 
