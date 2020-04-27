@@ -27,6 +27,7 @@ function DashboardLayout() {
     <Layout className={styles.base}>
       <Sider
         breakpoint="lg"
+        collapsedWidth="0"
         className={styles.sider}
         trigger={null}
         collapsible
