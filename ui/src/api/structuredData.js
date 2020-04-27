@@ -1,13 +1,41 @@
-async function fetchStructuredDatas() {
-  return [
-    { id: 1, type: 'FAQPage', updated_at: '2020-04-19 13:55:15.000000+00' },
-    { id: 2, type: 'BreadcrumbList', updated_at: '2020-04-19 13:56:15.000000+00' },
-    { id: 3, type: 'LocalBusiness', updated_at: '2020-04-19 13:57:15.000000+00' },
-  ];
+import client from './client';
+
+export function fetchStructuredDatas(cfg = {}) {
+  return client.get('/structured-data', cfg)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
 }
 
-async function deleteStructuredData() {
-  return { message: 'Successfully delete structured data' };
+export function getStructuredData(id) {
+  return client.get(`/structured-data/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
 }
 
-export { fetchStructuredDatas, deleteStructuredData };
+export function createStructuredData(values) {
+  return client.post('/structured-data', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function updateStructuredData(values) {
+  return client.put(`/structured-data/${values.id}`, values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function deleteStructuredData(id) {
+  return client.delete(`/structured-data/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
