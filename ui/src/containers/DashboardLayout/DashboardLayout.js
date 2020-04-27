@@ -3,7 +3,7 @@ import {
   Link, Route, Switch, useLocation,
 } from 'react-router-dom';
 import { Layout, Menu, message } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+// import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import routes from 'routes';
 import logo from 'assets/hotstone-logo.png';
 import miniLogo from 'assets/hotstone-logo-mini.png';
@@ -24,14 +24,14 @@ function DashboardLayout() {
   }, [location.state]);
 
   return (
-    <Layout className={styles.base}>
+    <Layout>
       <Sider
         breakpoint="lg"
         collapsedWidth="0"
-        className={styles.sider}
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
+        onBreakpoint={(broken) => {
+          console.log(broken);
+        }}
+        onCollapse={collapsed}
       >
         <div
           className={styles.logo}
@@ -52,10 +52,10 @@ function DashboardLayout() {
       </Sider>
       <Layout>
         <Header className={styles.header} style={{ padding: 0 }}>
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+          { /* React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
             className: styles.trigger,
             onClick: () => { setCollapsed(!collapsed); },
-          })}
+          }) */ }
           <div className={styles.headerRight}>
             <HeaderMenu />
           </div>
