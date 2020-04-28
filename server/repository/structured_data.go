@@ -59,7 +59,7 @@ func (r *StructuredDataRepoImpl) FindOne(ctx context.Context, id int64) (e *Stru
 		RunWith(dbtxn.BaseRunner(ctx, r)).
 		QueryRowContext(ctx)
 
-	e = &StructuredData{}
+	e = new(StructuredData)
 	if err = row.Scan(
 		&e.ID,
 		&e.RuleID,

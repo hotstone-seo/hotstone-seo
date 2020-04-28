@@ -67,6 +67,7 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 		RunWith(dbtxn.BaseRunner(ctx, r)).
 		QueryRowContext(ctx)
 
+	e = new(Tag)
 	if err = row.Scan(
 		&e.ID,
 		&e.RuleID,
