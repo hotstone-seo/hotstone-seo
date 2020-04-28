@@ -24,6 +24,17 @@ function ManageStructuredData({ ruleID }) {
       });
   }, [ruleID]);
 
+  const refreshStruct = () => {
+    fetchStructs({ rule_id: ruleID })
+      .then((newStructs) => {
+        setStructs(newStructs);
+        setFocusStruct(null);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+
   const removeStruct = ({ id: structID }) => {
     deleteStruct(structID)
       .then(() => {
@@ -38,6 +49,7 @@ function ManageStructuredData({ ruleID }) {
     focusStruct ? (
       <StructuredDataForm
         structuredData={focusStruct}
+        afterSubmit={refreshStruct}
         onCancel={() => setFocusStruct(null)}
       />
     ) : (

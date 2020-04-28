@@ -39,3 +39,35 @@ export function deleteStructuredData(id) {
       throw error;
     });
 }
+
+export function addFAQPage(values) {
+  return client.post('/center/faqPage', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function updateFAQPage(values) {
+  return client.put('/center/faqPage', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function addBreadcrumbList(values) {
+  return client.post('/center/breadcrumbList', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function updateBreadcrumbList(values) {
+  return client.put('/center/breadcrumbList', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
