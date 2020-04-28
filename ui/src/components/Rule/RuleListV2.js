@@ -85,9 +85,7 @@ function RuleListV2(props) {
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
       ...useTableFilterProps('name'),
       render: (text, record) => (
-        <Button data-testid="btn-detail" type="link" onClick={() => onClick(record)}>
-          {text}
-        </Button>
+        <Link to={`/rules/${record.id}`}>{text}</Link>
       ),
     },
     {
