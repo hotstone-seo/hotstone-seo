@@ -11,6 +11,11 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
 
   const { id, rule_id, data } = structuredData;
 
+  const listItem = data && data.itemListElement
+    ? data.itemListElement.map(({ name, item }) => (
+      { name, item }
+    )) : [];
+
   const onFinish = (values) => {
     const formStruct = { ...values, id, rule_id };
     const submit = id ? updateBreadcrumbList : addBreadcrumbList;
@@ -26,7 +31,7 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
   return (
     <Form
       form={form}
-      initialValues={{ list_item: data.itemListElement }}
+      initialValues={{ list_item: listItem }}
       onFinish={onFinish}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 12 }}

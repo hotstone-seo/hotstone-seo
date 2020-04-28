@@ -10,7 +10,7 @@ function FAQPageForm({ structuredData, afterSubmit }) {
   const [form] = Form.useForm();
 
   const { id, rule_id, data } = structuredData;
-  const faqs = data.mainEntity
+  const faqs = data && data.mainEntity
     ? data.mainEntity.map((item) => (
       { question: item.name, answer: item.acceptedAnswer.text }
     )) : [];
