@@ -68,6 +68,11 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
           </div>
         )}
       </Form.List>
+      <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
+        <Button data-testid="btn-save" type="primary" htmlType="submit">
+          Save
+        </Button>
+      </Form.Item>
     </Form>
   );
 }
