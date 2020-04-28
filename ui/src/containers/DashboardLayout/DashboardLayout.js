@@ -3,7 +3,6 @@ import {
   Link, Route, Switch, useLocation,
 } from 'react-router-dom';
 import { Layout, Menu, message } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import routes from 'routes';
 import logo from 'assets/hotstone-logo.png';
 import miniLogo from 'assets/hotstone-logo-mini.png';
@@ -14,7 +13,7 @@ const { Header, Content, Sider } = Layout;
 
 function DashboardLayout() {
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed] = useState(false);
   const [broken, setBroken] = useState(false);
 
   useEffect(() => {
