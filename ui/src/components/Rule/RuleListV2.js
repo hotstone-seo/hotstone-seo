@@ -79,8 +79,8 @@ function RuleListV2(props) {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      className: 'col-name',
       width: '20%',
+      className: 'col-name',
       sorter: true,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
       ...useTableFilterProps('name'),
@@ -183,6 +183,7 @@ function RuleListV2(props) {
           setSortedInfo,
         )}
         loading={loading}
+        scroll={{ x: true }}
       />
     </div>
   );
