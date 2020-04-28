@@ -1,7 +1,7 @@
 import client from './client';
 
-export function fetchStructuredDatas(cfg = {}) {
-  return client.get('/structured-data', cfg)
+export function fetchStructuredDatas({ rule_id }) {
+  return client.get('/structured-data', { params: { rule_id } })
     .then((response) => response.data)
     .catch((error) => {
       throw error;
