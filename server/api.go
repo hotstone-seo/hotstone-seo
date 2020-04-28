@@ -17,6 +17,7 @@ type api struct {
 	controller.CenterCntrl
 	controller.MetricsCntrl
 	controller.AuditTrailCntrl
+	controller.StructuredDataCntrl
 }
 
 func (a *api) route(e *echo.Echo) {
@@ -36,5 +37,5 @@ func (a *api) route(e *echo.Echo) {
 	a.CenterCntrl.Route(group)
 	a.MetricsCntrl.Route(group)
 	a.AuditTrailCntrl.Route(group)
-
+	a.StructuredDataCntrl.Route(group)
 }
