@@ -20,15 +20,15 @@ function StructuredDataForm({ structuredData, afterSubmit, onCancel }) {
       <Tabs tabPosition="left">
         <TabPane
           tab="FAQ Page"
-          key="faq"
-          disabled={(structType && structType !== 'faq')}
+          key="FAQPage"
+          disabled={(structType && structType !== 'FAQPage')}
         >
           <FAQPageForm structuredData={structuredData} afterSubmit={afterSubmit} />
         </TabPane>
         <TabPane
           tab="Breadcrumb List"
-          key="breadcrumb"
-          disabled={(structType && structType !== 'breadcrumb')}
+          key="BreadcrumbList"
+          disabled={(structType && structType !== 'BreadcrumbList')}
         >
           <BreadcrumbListForm structuredData={structuredData} afterSubmit={afterSubmit} />
         </TabPane>
