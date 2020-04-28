@@ -8,6 +8,9 @@ bluebird.promisifyAll(redis.RedisClient.prototype)
 export default class RedisCache {
     constructor(opts) {
         this.redis = redis.createClient(opts)
+        this.redis.on("error", function(err) {
+            console.error("redis-cache error: ", err)
+        });
     }
     async match(req) {
         const res = await this.redis.getAsync(req.url)
