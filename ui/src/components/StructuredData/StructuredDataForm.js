@@ -8,7 +8,7 @@ import BreadcrumbListForm from './BreadcrumbListForm';
 
 const { TabPane } = Tabs;
 
-function StructuredDataForm({ structuredData, onCancel }) {
+function StructuredDataForm({ structuredData, afterSubmit, onCancel }) {
   const { type: structType, id: structID } = structuredData;
 
   return (
@@ -20,17 +20,17 @@ function StructuredDataForm({ structuredData, onCancel }) {
       <Tabs tabPosition="left">
         <TabPane
           tab="FAQ Page"
-          key="faq"
-          disabled={(structType && structType !== 'faq')}
+          key="FAQPage"
+          disabled={(structType && structType !== 'FAQPage')}
         >
-          <FAQPageForm />
+          <FAQPageForm structuredData={structuredData} afterSubmit={afterSubmit} />
         </TabPane>
         <TabPane
           tab="Breadcrumb List"
-          key="breadcrumb"
-          disabled={(structType && structType !== 'breadcrumb')}
+          key="BreadcrumbList"
+          disabled={(structType && structType !== 'BreadcrumbList')}
         >
-          <BreadcrumbListForm />
+          <BreadcrumbListForm structuredData={structuredData} afterSubmit={afterSubmit} />
         </TabPane>
       </Tabs>
     </Card>
@@ -43,6 +43,7 @@ StructuredDataForm.propTypes = {
     rule_id: PropTypes.number.isRequired,
     type: PropTypes.string,
   }).isRequired,
+  afterSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
 };
 

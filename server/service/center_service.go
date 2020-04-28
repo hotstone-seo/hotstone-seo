@@ -18,12 +18,17 @@ type CenterService interface {
 	UpdateCanonicalTag(ctx context.Context, req CanonicalTagRequest) error
 	AddScriptTag(ctx context.Context, req ScriptTagRequest) (*repository.Tag, error)
 	UpdateScriptTag(ctx context.Context, req ScriptTagRequest) error
+	AddFAQPage(ctx context.Context, req FAQPageRequest) (*repository.StructuredData, error)
+	UpdateFAQPage(ctx context.Context, req FAQPageRequest) error
+	AddBreadcrumbList(ctx context.Context, req BreadcrumbListRequest) (*repository.StructuredData, error)
+	UpdateBreadcrumbList(ctx context.Context, req BreadcrumbListRequest) error
 }
 
 // CenterServiceImpl implementation of CenterService
 type CenterServiceImpl struct {
 	dig.In
 	TagService
+	StructuredDataService
 }
 
 // NewCenterService return new instance of CenterService [constructor]
@@ -158,4 +163,92 @@ func (i *CenterServiceImpl) UpdateScriptTag(ctx context.Context, req ScriptTagRe
 		Value:     req.Type,
 		UpdatedAt: time.Now(),
 	})
+}
+
+func (i *CenterServiceImpl) AddFAQPage(ctx context.Context, req FAQPageRequest) (structData *repository.StructuredData, err error) {
+	structData = &repository.StructuredData{
+		RuleID: req.RuleID,
+		Type:   "FAQPage",
+		Data: map[string]interface{}{
+			"@context":   "https://schema.org",
+			"@type":      "FAQPage",
+			"mainEntity": mapFAQs(req.FAQs),
+		},
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	structData.ID, err = i.StructuredDataService.Insert(ctx, *structData)
+	return
+}
+
+func (i *CenterServiceImpl) UpdateFAQPage(ctx context.Context, req FAQPageRequest) (err error) {
+	return i.StructuredDataService.Update(ctx, repository.StructuredData{
+		ID:     req.ID,
+		RuleID: req.RuleID,
+		Type:   "FAQPage",
+		Data: map[string]interface{}{
+			"@context":   "https://schema.org",
+			"@type":      "FAQPage",
+			"mainEntity": mapFAQs(req.FAQs),
+		},
+		UpdatedAt: time.Now(),
+	})
+}
+
+func mapFAQs(faqs []FAQ) []map[string]interface{} {
+	faqsMap := make([]map[string]interface{}, len(faqs))
+	for index, faq := range faqs {
+		faqsMap[index] = map[string]interface{}{
+			"@type": "Question",
+			"name":  faq.Question,
+			"acceptedAnswer": map[string]string{
+				"@type": "Answer",
+				"text":  faq.Answer,
+			},
+		}
+	}
+	return faqsMap
+}
+
+func (i *CenterServiceImpl) AddBreadcrumbList(ctx context.Context, req BreadcrumbListRequest) (structData *repository.StructuredData, err error) {
+	structData = &repository.StructuredData{
+		RuleID: req.RuleID,
+		Type:   "BreadcrumbList",
+		Data: map[string]interface{}{
+			"@context":        "https://schema.org",
+			"@type":           "BreadcrumbList",
+			"itemListElement": mapBreadcrumbItems(req.ListItem),
+		},
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	structData.ID, err = i.StructuredDataService.Insert(ctx, *structData)
+	return
+}
+
+func (i *CenterServiceImpl) UpdateBreadcrumbList(ctx context.Context, req BreadcrumbListRequest) (err error) {
+	return i.StructuredDataService.Update(ctx, repository.StructuredData{
+		ID:     req.ID,
+		RuleID: req.RuleID,
+		Type:   "BreadcrumbList",
+		Data: map[string]interface{}{
+			"@context":        "https://schema.org",
+			"@type":           "BreadcrumbList",
+			"itemListElement": mapBreadcrumbItems(req.ListItem),
+		},
+		UpdatedAt: time.Now(),
+	})
+}
+
+func mapBreadcrumbItems(breadcrumbItems []BreadcrumbItem) []map[string]interface{} {
+	itemsMap := make([]map[string]interface{}, len(breadcrumbItems))
+	for index, breadcrumbItem := range breadcrumbItems {
+		itemsMap[index] = map[string]interface{}{
+			"@type":    "ListItem",
+			"position": index,
+			"name":     breadcrumbItem.Name,
+			"item":     breadcrumbItem.Item,
+		}
+	}
+	return itemsMap
 }

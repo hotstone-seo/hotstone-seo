@@ -1,12 +1,13 @@
 import { HotStoneClient } from './index'
 import nock from 'nock'
 import crypto from 'crypto'
+import RedisCache from './redis-cache'
 
 function random(len) {
     return crypto
-    .randomBytes(Math.ceil(len / 2))
-    .toString('hex') // convert to hexadecimal format
-    .slice(0, len)
+        .randomBytes(Math.ceil(len / 2))
+        .toString('hex') // convert to hexadecimal format
+        .slice(0, len)
 }
 
 describe('HotStone-Client with Caching', () => {
@@ -17,6 +18,7 @@ describe('HotStone-Client with Caching', () => {
         const baseURL = "http://foo.com"
         subject = new HotStoneClient(baseURL, {
             cacheManager: `./test-local-cache/${random(7)}`,
+            // cacheManager: new RedisCache({ prefix: `test-${random(7)}:`, host: 'localhost', port: 6379, password: 'redispass' })
         });
         mockServer = nock(baseURL)
     })
@@ -39,7 +41,7 @@ describe('HotStone-Client with Caching', () => {
             ]
             const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
             const givenLocale = 'en_US'
-            
+
             const date = new Date()
             const expires = new Date(date - 1000)
             const lastModified = new Date(date - 10000000)
@@ -67,7 +69,7 @@ describe('HotStone-Client with Caching', () => {
                 .get('/p/fetch-tags')
                 .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
                 .reply(304, function () {
-                    expect(this.req.headers['if-modified-since'][0]).toEqual(lastModified.toUTCString())    
+                    expect(this.req.headers['if-modified-since'][0]).toEqual(lastModified.toUTCString())
                 })
 
             const tags2 = await subject.tags(givenRule, givenLocale)
@@ -81,7 +83,7 @@ describe('HotStone-Client with Caching', () => {
             ]
             const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
             const givenLocale = 'en_US'
-            
+
             const age = 30
             const date = new Date()
             const lastModified = new Date(date)

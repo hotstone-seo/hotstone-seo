@@ -1,15 +1,37 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button } from 'antd';
+import {
+  Form, Input, Button, message,
+} from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { addFAQPage, updateFAQPage } from 'api/structuredData';
 
-function FAQPageForm({ faqPage }) {
+function FAQPageForm({ structuredData, afterSubmit }) {
   const [form] = Form.useForm();
+
+  const { id, rule_id, data } = structuredData;
+  const faqs = data && data.mainEntity
+    ? data.mainEntity.map((item) => (
+      { question: item.name, answer: item.acceptedAnswer.text }
+    )) : [];
+
+  const onFinish = (values) => {
+    const formStruct = { ...values, id, rule_id };
+    const submit = id ? updateFAQPage : addFAQPage;
+    submit(formStruct)
+      .then((response) => {
+        afterSubmit(response);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
 
   return (
     <Form
       form={form}
-      initialValues={faqPage}
+      initialValues={{ faqs }}
+      onFinish={onFinish}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 12 }}
     >
@@ -45,21 +67,35 @@ function FAQPageForm({ faqPage }) {
           </div>
         )}
       </Form.List>
+      <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
+        <Button data-testid="btn-save" type="primary" htmlType="submit">
+          Save
+        </Button>
+      </Form.Item>
     </Form>
   );
 }
 
 FAQPageForm.defaultProps = {
-  faqPage: {},
+  structuredData: {},
 };
 
 FAQPageForm.propTypes = {
-  faqPage: PropTypes.shape({
-    faqs: PropTypes.arrayOf(PropTypes.shape({
-      question: PropTypes.string,
-      answer: PropTypes.string,
-    })),
+  structuredData: PropTypes.shape({
+    id: PropTypes.number,
+    rule_id: PropTypes.number.isRequired,
+    data: PropTypes.shape({
+      mainEntity: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string,
+          acceptedAnswer: PropTypes.shape({
+            text: PropTypes.string,
+          }),
+        }),
+      ),
+    }),
   }),
+  afterSubmit: PropTypes.func.isRequired,
 };
 
 export default FAQPageForm;

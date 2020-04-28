@@ -35,6 +35,21 @@ func (m *MockCenterService) EXPECT() *MockCenterServiceMockRecorder {
 	return m.recorder
 }
 
+// AddBreadcrumbList mocks base method
+func (m *MockCenterService) AddBreadcrumbList(arg0 context.Context, arg1 service.BreadcrumbListRequest) (*repository.StructuredData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddBreadcrumbList", arg0, arg1)
+	ret0, _ := ret[0].(*repository.StructuredData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddBreadcrumbList indicates an expected call of AddBreadcrumbList
+func (mr *MockCenterServiceMockRecorder) AddBreadcrumbList(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddBreadcrumbList", reflect.TypeOf((*MockCenterService)(nil).AddBreadcrumbList), arg0, arg1)
+}
+
 // AddCanonicalTag mocks base method
 func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.CanonicalTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
@@ -48,6 +63,21 @@ func (m *MockCenterService) AddCanonicalTag(arg0 context.Context, arg1 service.C
 func (mr *MockCenterServiceMockRecorder) AddCanonicalTag(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).AddCanonicalTag), arg0, arg1)
+}
+
+// AddFAQPage mocks base method
+func (m *MockCenterService) AddFAQPage(arg0 context.Context, arg1 service.FAQPageRequest) (*repository.StructuredData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddFAQPage", arg0, arg1)
+	ret0, _ := ret[0].(*repository.StructuredData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddFAQPage indicates an expected call of AddFAQPage
+func (mr *MockCenterServiceMockRecorder) AddFAQPage(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFAQPage", reflect.TypeOf((*MockCenterService)(nil).AddFAQPage), arg0, arg1)
 }
 
 // AddMetaTag mocks base method
@@ -95,6 +125,20 @@ func (mr *MockCenterServiceMockRecorder) AddTitleTag(arg0, arg1 interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTitleTag", reflect.TypeOf((*MockCenterService)(nil).AddTitleTag), arg0, arg1)
 }
 
+// UpdateBreadcrumbList mocks base method
+func (m *MockCenterService) UpdateBreadcrumbList(arg0 context.Context, arg1 service.BreadcrumbListRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateBreadcrumbList", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateBreadcrumbList indicates an expected call of UpdateBreadcrumbList
+func (mr *MockCenterServiceMockRecorder) UpdateBreadcrumbList(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBreadcrumbList", reflect.TypeOf((*MockCenterService)(nil).UpdateBreadcrumbList), arg0, arg1)
+}
+
 // UpdateCanonicalTag mocks base method
 func (m *MockCenterService) UpdateCanonicalTag(arg0 context.Context, arg1 service.CanonicalTagRequest) error {
 	m.ctrl.T.Helper()
@@ -107,6 +151,20 @@ func (m *MockCenterService) UpdateCanonicalTag(arg0 context.Context, arg1 servic
 func (mr *MockCenterServiceMockRecorder) UpdateCanonicalTag(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).UpdateCanonicalTag), arg0, arg1)
+}
+
+// UpdateFAQPage mocks base method
+func (m *MockCenterService) UpdateFAQPage(arg0 context.Context, arg1 service.FAQPageRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateFAQPage", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateFAQPage indicates an expected call of UpdateFAQPage
+func (mr *MockCenterServiceMockRecorder) UpdateFAQPage(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFAQPage", reflect.TypeOf((*MockCenterService)(nil).UpdateFAQPage), arg0, arg1)
 }
 
 // UpdateMetaTag mocks base method

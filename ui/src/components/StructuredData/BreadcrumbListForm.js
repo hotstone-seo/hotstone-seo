@@ -1,19 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, Button } from 'antd';
+import {
+  Form, Input, Button, message,
+} from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { addBreadcrumbList, updateBreadcrumbList } from 'api/structuredData';
 
-function BreadcrumbListForm(breadcrumbList) {
+function BreadcrumbListForm({ structuredData, afterSubmit }) {
   const [form] = Form.useForm();
+
+  const { id, rule_id, data } = structuredData;
+
+  const listItem = data && data.itemListElement
+    ? data.itemListElement.map(({ name, item }) => (
+      { name, item }
+    )) : [];
+
+  const onFinish = (values) => {
+    const formStruct = { ...values, id, rule_id };
+    const submit = id ? updateBreadcrumbList : addBreadcrumbList;
+    submit(formStruct)
+      .then((response) => {
+        afterSubmit(response);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
 
   return (
     <Form
       form={form}
-      initialValues={breadcrumbList}
+      initialValues={{ list_item: listItem }}
+      onFinish={onFinish}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 12 }}
     >
-      <Form.List name="listItem">
+      <Form.List name="list_item">
         {(fields, { add, remove }) => (
           <div>
             {fields.map((field, index) => (
@@ -45,22 +68,34 @@ function BreadcrumbListForm(breadcrumbList) {
           </div>
         )}
       </Form.List>
+      <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
+        <Button data-testid="btn-save" type="primary" htmlType="submit">
+          Save
+        </Button>
+      </Form.Item>
     </Form>
   );
 }
 
 BreadcrumbListForm.defaultProps = {
-  breadcrumbList: {},
+  structuredData: {},
 };
 
 BreadcrumbListForm.propTypes = {
-  breadcrumbList: PropTypes.shape({
-    listItem: PropTypes.arrayOf(PropTypes.shape({
-      position: PropTypes.number,
-      name: PropTypes.string,
-      item: PropTypes.string,
-    })),
+  structuredData: PropTypes.shape({
+    id: PropTypes.number,
+    rule_id: PropTypes.number.isRequired,
+    data: PropTypes.shape({
+      itemListElement: PropTypes.arrayOf(
+        PropTypes.shape({
+          position: PropTypes.number,
+          name: PropTypes.string,
+          item: PropTypes.string,
+        }),
+      ),
+    }),
   }),
+  afterSubmit: PropTypes.func.isRequired,
 };
 
 export default BreadcrumbListForm;

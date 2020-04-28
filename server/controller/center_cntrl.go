@@ -20,12 +20,22 @@ type CenterCntrl struct {
 func (c *CenterCntrl) Route(e *echo.Group) {
 	e.POST("/center/metaTag", c.AddMetaTag)
 	e.PUT("/center/metaTag", c.UpdateMetaTag)
+
 	e.POST("/center/titleTag", c.AddTitleTag)
 	e.PUT("/center/titleTag", c.UpdateTitleTag)
+
 	e.POST("/center/canonicalTag", c.AddCanonicalTag)
 	e.PUT("/center/canonicalTag", c.UpdateCanonicalTag)
+
 	e.POST("/center/scriptTag", c.AddScriptTag)
 	e.PUT("/center/scriptTag", c.UpdateScriptTag)
+
+	e.POST("/center/faqPage", c.AddFAQPage)
+	e.PUT("/center/faqPage", c.UpdateFAQPage)
+
+	e.POST("/center/breadcrumbList", c.AddBreadcrumbList)
+	e.PUT("/center/breadcrumbList", c.UpdateBreadcrumbList)
+
 	e.POST("/center/addArticle", c.AddArticle)
 }
 
@@ -170,6 +180,78 @@ func (c *CenterCntrl) UpdateScriptTag(ce echo.Context) (err error) {
 	}
 	return ce.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Successfully update script tag #%d", req.ID),
+	})
+}
+
+// AddFAQPage provides endpoint to add FAQPage structured data
+func (c *CenterCntrl) AddFAQPage(ce echo.Context) (err error) {
+	var (
+		req        service.FAQPageRequest
+		structData *repository.StructuredData
+		ctx        = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if structData, err = c.CenterService.AddFAQPage(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusCreated, structData)
+}
+
+// UpdateFAQPage provides endpoint to update FAQPage structured data
+func (c *CenterCntrl) UpdateFAQPage(ce echo.Context) (err error) {
+	var (
+		req service.FAQPageRequest
+		ctx = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.CenterService.UpdateFAQPage(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully update FAQPage structured data #%d", req.ID),
+	})
+}
+
+// AddBreadcrumbList provides endpoint to add BreadcrumbList structured data
+func (c *CenterCntrl) AddBreadcrumbList(ce echo.Context) (err error) {
+	var (
+		req        service.BreadcrumbListRequest
+		structData *repository.StructuredData
+		ctx        = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if structData, err = c.CenterService.AddBreadcrumbList(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusCreated, structData)
+}
+
+// UpdateBreadcrumbList provides endpoint to update BreadcrumbList structured data
+func (c *CenterCntrl) UpdateBreadcrumbList(ce echo.Context) (err error) {
+	var (
+		req service.BreadcrumbListRequest
+		ctx = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.CenterService.UpdateBreadcrumbList(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully update BreadcrumbList structured data #%d", req.ID),
 	})
 }
 
