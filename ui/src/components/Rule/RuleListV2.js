@@ -23,7 +23,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
   const {
-    listRule, setListRule, onClick, onEdit, onDelete, onChangeToggleButton,
+    listRule, setListRule, onEdit, onDelete, onChangeToggleButton,
   } = props;
 
   const [loading, setLoading] = useState(false);
