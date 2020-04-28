@@ -1,6 +1,7 @@
 import { HotStoneClient } from './index'
 import nock from 'nock'
 import crypto from 'crypto'
+import RedisCache from './redis-cache'
 
 function random(len) {
     return crypto
@@ -17,6 +18,7 @@ describe('HotStone-Client with Caching', () => {
         const baseURL = "http://foo.com"
         subject = new HotStoneClient(baseURL, {
             cacheManager: `./test-local-cache/${random(7)}`,
+            // cacheManager: new RedisCache({prefix: `test-${random(7)}:`, host: 'localhost', port: 6379, password: 'redispass'})
         });
         mockServer = nock(baseURL)
     })
