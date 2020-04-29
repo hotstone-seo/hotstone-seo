@@ -67,6 +67,7 @@ function DataSourceList(props) {
       columns={columns}
       dataSource={dataSources}
       rowKey="id"
+      scroll={{ x: true }}
     />
   );
 }
