@@ -3,7 +3,6 @@ import {
   Link, Route, Switch, useLocation,
 } from 'react-router-dom';
 import { Layout, Menu, message } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import routes from 'routes';
 import logo from 'assets/hotstone-logo.png';
 import miniLogo from 'assets/hotstone-logo-mini.png';
@@ -14,7 +13,8 @@ const { Header, Content, Sider } = Layout;
 
 function DashboardLayout() {
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed] = useState(false);
+  const [broken, setBroken] = useState(false);
 
   useEffect(() => {
     if (location.state && location.state.message) {
@@ -24,18 +24,19 @@ function DashboardLayout() {
   }, [location.state]);
 
   return (
-    <Layout className={styles.base}>
+    <Layout style={{ height: '100vh' }}>
       <Sider
-        className={styles.sider}
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
+        breakpoint="lg"
+        onBreakpoint={(brokenNewVal) => {
+          setBroken(brokenNewVal);
+        }}
+        onCollapse={collapsed}
       >
         <div
           className={styles.logo}
           style={{
-            backgroundImage: (collapsed ? `url(${miniLogo})` : `url(${logo})`),
-            backgroundSize: (collapsed ? '50px 32px' : '100px 32px'),
+            backgroundImage: (broken ? `url(${miniLogo})` : `url(${logo})`),
+            backgroundSize: (broken ? '50px 32px' : '100px 32px'),
           }}
         />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
@@ -50,10 +51,6 @@ function DashboardLayout() {
       </Sider>
       <Layout>
         <Header className={styles.header} style={{ padding: 0 }}>
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: styles.trigger,
-            onClick: () => { setCollapsed(!collapsed); },
-          })}
           <div className={styles.headerRight}>
             <HeaderMenu />
           </div>

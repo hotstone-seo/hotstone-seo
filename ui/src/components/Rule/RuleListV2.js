@@ -23,7 +23,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function RuleListV2(props) {
   const {
-    listRule, setListRule, onClick, onEdit, onDelete, onChangeToggleButton,
+    listRule, setListRule, onEdit, onDelete, onChangeToggleButton,
   } = props;
 
   const [loading, setLoading] = useState(false);
@@ -79,15 +79,13 @@ function RuleListV2(props) {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      className: 'col-name',
       width: '20%',
+      className: 'col-name',
       sorter: true,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
       ...useTableFilterProps('name'),
       render: (text, record) => (
-        <Button data-testid="btn-detail" type="link" onClick={() => onClick(record)}>
-          {text}
-        </Button>
+        <Link to={`/rules/${record.id}`}>{text}</Link>
       ),
     },
     {
@@ -183,6 +181,7 @@ function RuleListV2(props) {
           setSortedInfo,
         )}
         loading={loading}
+        scroll={{ x: true }}
       />
     </div>
   );

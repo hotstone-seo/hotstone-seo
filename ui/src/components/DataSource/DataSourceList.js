@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Table, Button, Divider, Popconfirm, Tooltip,
@@ -22,6 +23,7 @@ function DataSourceList(props) {
         <Button
           type="link"
           onClick={() => onClick(record)}
+          style={{ padding: 0 }}
         >
           {text}
         </Button>
@@ -67,6 +69,7 @@ function DataSourceList(props) {
       columns={columns}
       dataSource={dataSources}
       rowKey="id"
+      scroll={{ x: true }}
     />
   );
 }

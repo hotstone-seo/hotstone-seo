@@ -117,6 +117,7 @@ function AuditTrailList(props) {
         )}
         loading={loading}
         size="small"
+        scroll={{ x: true }}
         expandable={{
           expandedRowRender: (record) => {
             console.log(record);
