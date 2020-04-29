@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Table, Button, Divider, Popconfirm, Tooltip,
@@ -10,7 +11,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function DataSourceList(props) {
   const {
-    dataSources, onClick, onEdit, onDelete,
+    dataSources, onEdit, onDelete,
   } = props;
 
   const columns = [
@@ -19,12 +20,7 @@ function DataSourceList(props) {
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => (
-        <Button
-          type="link"
-          onClick={() => onClick(record)}
-        >
-          {text}
-        </Button>
+        <Link to={`/datasources/${record.id}`}>{text}</Link>
       ),
     },
     { title: 'URL', dataIndex: 'url', key: 'url' },
