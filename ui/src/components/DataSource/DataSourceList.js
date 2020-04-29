@@ -11,7 +11,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function DataSourceList(props) {
   const {
-    dataSources, onEdit, onDelete,
+    dataSources, onClick, onEdit, onDelete,
   } = props;
 
   const columns = [
@@ -20,7 +20,13 @@ function DataSourceList(props) {
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => (
-        <Link to={`/datasources/${record.id}`}>{text}</Link>
+        <Button
+          type="link"
+          onClick={() => onClick(record)}
+          style={{ padding: 0 }}
+        >
+          {text}
+        </Button>
       ),
     },
     { title: 'URL', dataIndex: 'url', key: 'url' },
