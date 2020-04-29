@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Alert, Result, } from 'antd';
+import { Card, Result } from 'antd';
 
 function GenericNotFound() {
   return (
