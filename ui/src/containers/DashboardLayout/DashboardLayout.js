@@ -24,7 +24,7 @@ function DashboardLayout() {
   }, [location.state]);
 
   return (
-    <Layout>
+    <Layout style={{ height: '100vh' }}>
       <Sider
         breakpoint="lg"
         onBreakpoint={(brokenNewVal) => {
