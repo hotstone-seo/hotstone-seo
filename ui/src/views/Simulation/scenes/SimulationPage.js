@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Form,
   Input,
@@ -10,19 +10,33 @@ import {
   Collapse,
   Col,
   Result,
-} from "antd";
-import { Machine, assign } from "xstate";
-import { useMachine } from "@xstate/react";
-import { Link } from "react-router-dom";
-import _ from "lodash";
-import parse from "url-parse";
-import { match, fetchTags } from "api/provider";
-import { getRule } from "api/rule";
-import locales from "locales";
-import SyntaxHighlighter from "react-syntax-highlighter";
+} from 'antd';
+import { Machine, assign } from 'xstate';
+import { useMachine } from '@xstate/react';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import parse from 'url-parse';
+import { match, fetchTags } from 'api/provider';
+import { getRule } from 'api/rule';
+import locales from 'locales';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+
 const { Option } = Select;
 const { Panel } = Collapse;
+
+function millisToMinutesAndSeconds(duration) {
+  const milliseconds = parseInt((duration % 1000), 10);
+  // let seconds = parseInt((duration / 1000) % 60, 10);
+  // let minutes = parseInt((duration / (1000 * 60)) % 60, 10);
+  // let hours = parseInt((duration / (1000 * 60 * 60)) % 24, 10);
+
+  // hours = (hours < 10) ? '0' + hours : hours;
+  // minutes = (minutes < 10) ? '0' + minutes : minutes;
+  // seconds = (seconds < 10) ? '0' + seconds : seconds;
+  // return seconds === '00' ? milliseconds + ' milliseconds' : seconds + ' seconds ' + milliseconds + ' milliseconds';
+  return ''.concat(milliseconds, ' milliseconds');
+}
 
 const pageMachine = Machine({
   id: "simulation",
@@ -81,9 +95,8 @@ const pageMachine = Machine({
 async function simulateMatch(locale, url) {
   const rule = await match(url);
   if (_.isEmpty(rule)) {
-    throw new Error("Not matched");
+    throw new Error('Not matched');
   }
-  // TODO: double check if rule return ID#0
   const tags = await fetchTags(rule, locale);
   const ruleDetail = await getRule(rule.rule_id);
   const data = { rule, tags, ruleDetail };
@@ -93,17 +106,22 @@ async function simulateMatch(locale, url) {
 function SimulationPage() {
   const [current, send] = useMachine(pageMachine);
   const { matchResp, matchError, pageError } = current.context;
+  let { execTime } = current.context;
   const onSubmit = ({ locale, url }) => {
+    const startTime = new Date().getTime();
     const urlObj = parse(url);
-    send("SUBMIT", { locale, url: urlObj.pathname });
+    send('SUBMIT', { locale, url: urlObj.pathname });
+    execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
+    console.log(execTime, 'execTimekuu');
   };
 
   return (
     <>
+      {`selesai ${execTime}`}
       {renderForm(current, onSubmit)}
       {isLoading(current) && <Card>Loading ...</Card>}
-      {matchResp && renderResp(matchResp)}
-      {matchError && renderMatchError(matchError)}
+      {matchResp && renderResp(matchResp, execTime)}
+      {matchError && renderMatchError(matchError, execTime)}
       {pageError && renderPageError(pageError)}
     </>
   );
@@ -164,7 +182,7 @@ function renderForm(current, onSubmit) {
   );
 }
 
-function renderResp(matchResp) {
+function renderResp(matchResp, execTime) {
   const { rule, tags, ruleDetail } = matchResp;
   const { rule_id, path_param } = rule;
 
@@ -172,7 +190,7 @@ function renderResp(matchResp) {
     <>
       <br />
       <Card>
-        <Alert type="success" message="Matched" closable />
+        <Alert type="success" message={`Matched. Execution time : ${execTime}`} closable />
         <br />
         <Collapse defaultActiveKey={["3"]} expandIconPosition="left">
           {!_.isEmpty(ruleDetail) && (
@@ -198,7 +216,7 @@ function renderResp(matchResp) {
   );
 }
 
-function renderMatchError(matchError) {
+function renderMatchError(matchError, execTime) {
   let msgError = matchError.message;
   let ps = 0;
   if (msgError !== '') ps = msgError.search('500');
@@ -206,6 +224,7 @@ function renderMatchError(matchError) {
   if (ps > 0) {
     msgError = matchError.response.data.message;
   }
+  msgError = msgError.concat(' Execution Time :', execTime)
   return (
     <>
       <br />
