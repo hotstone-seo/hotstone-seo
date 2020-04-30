@@ -25,6 +25,8 @@ import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 const { Option } = Select;
 const { Panel } = Collapse;
 
+let execTime = '';
+
 function millisToMinutesAndSeconds(duration) {
   const milliseconds = parseInt((duration % 1000), 10);
   // let seconds = parseInt((duration / 1000) % 60, 10);
@@ -93,6 +95,7 @@ const pageMachine = Machine({
 });
 
 async function simulateMatch(locale, url) {
+  const startTime = new Date().getTime();
   const rule = await match(url);
   if (_.isEmpty(rule)) {
     throw new Error('Not matched');
@@ -100,28 +103,24 @@ async function simulateMatch(locale, url) {
   const tags = await fetchTags(rule, locale);
   const ruleDetail = await getRule(rule.rule_id);
   const data = { rule, tags, ruleDetail };
+  execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
   return data;
 }
 
 function SimulationPage() {
   const [current, send] = useMachine(pageMachine);
   const { matchResp, matchError, pageError } = current.context;
-  let { execTime } = current.context;
   const onSubmit = ({ locale, url }) => {
-    const startTime = new Date().getTime();
     const urlObj = parse(url);
     send('SUBMIT', { locale, url: urlObj.pathname });
-    execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
-    console.log(execTime, 'execTimekuu');
   };
 
   return (
     <>
-      {`selesai ${execTime}`}
       {renderForm(current, onSubmit)}
       {isLoading(current) && <Card>Loading ...</Card>}
-      {matchResp && renderResp(matchResp, execTime)}
-      {matchError && renderMatchError(matchError, execTime)}
+      {matchResp && renderResp(matchResp)}
+      {matchError && renderMatchError(matchError)}
       {pageError && renderPageError(pageError)}
     </>
   );
@@ -182,7 +181,7 @@ function renderForm(current, onSubmit) {
   );
 }
 
-function renderResp(matchResp, execTime) {
+function renderResp(matchResp) {
   const { rule, tags, ruleDetail } = matchResp;
   const { rule_id, path_param } = rule;
 
@@ -216,7 +215,7 @@ function renderResp(matchResp, execTime) {
   );
 }
 
-function renderMatchError(matchError, execTime) {
+function renderMatchError(matchError) {
   let msgError = matchError.message;
   let ps = 0;
   if (msgError !== '') ps = msgError.search('500');
