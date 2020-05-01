@@ -21,6 +21,8 @@ client.interceptors.response.use(
       } else if (error.response.status === 401 || error.response.status === 400) {
         message.error('Session expired. Please login first...');
         window.location.href = '/login';
+      } else if (error.response.status === 404) {
+        window.location.href = '/page-404';
       }
     }
     // return Promise.reject(error);

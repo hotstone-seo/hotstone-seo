@@ -13,6 +13,7 @@ import DataSource from 'views/DataSource';
 import Analytic from 'views/Analytic';
 import Simulation from 'views/Simulation';
 import AuditTrail from 'views/AuditTrail';
+import GenericNotFound from 'views/GenericNotFound';
 
 const routes = [
   {
@@ -50,6 +51,10 @@ const routes = [
     name: 'Audit Trail',
     component: AuditTrail,
     icon: AuditOutlined,
+  },
+  {
+    path: '*',
+    component: GenericNotFound,
   },
 ];
 
