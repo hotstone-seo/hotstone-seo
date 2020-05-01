@@ -26,6 +26,7 @@ func init() {
 		typapp.NewConstructor(repository.NewStructuredDataRepo),
 		typapp.NewConstructor(repository.NewTagRepo),
 		typapp.NewConstructor(repository.NewURLSyncRepo),
+		typapp.NewConstructor(repository.NewUserRepo),
 		typapp.NewConstructor(service.NewAuditTrailService),
 		typapp.NewConstructor(service.NewCenterService),
 		typapp.NewConstructor(service.NewDataSourceService),
@@ -36,6 +37,7 @@ func init() {
 		typapp.NewConstructor(service.NewStructuredDataService),
 		typapp.NewConstructor(service.NewTagService),
 		typapp.NewConstructor(service.NewURLService),
+		typapp.NewConstructor(service.NewUserService),
 		typapp.NewConstructor(urlstore.NewStore),
 		typapp.NewConstructor(func() (cfg *config.Config, err error) {
 			cfg = new(config.Config)
