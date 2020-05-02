@@ -1,4 +1,4 @@
-CREATE TABLE role_module (
+CREATE TABLE role_access (
     id serial PRIMARY KEY,
     role_type_id INTEGER DEFAULT '0',
     module_id INTEGER DEFAULT '0',
