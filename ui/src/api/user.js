@@ -1,5 +1,14 @@
 import client from './client';
 
+function fetchUsers(cfg = {}) {
+  return client
+    .get('/users', cfg)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
 function getUser(id) {
   return client
     .get(`/users/${id}`)
@@ -37,10 +46,11 @@ function deleteUser(id) {
 }
 
 export {
-  getUser, createUser, updateUser, deleteUser,
+  fetchUsers, getUser, createUser, updateUser, deleteUser,
 };
 
 const UserAPI = {
+  fetch: fetchUsers,
   get: getUser,
   create: createUser,
   update: updateUser,
