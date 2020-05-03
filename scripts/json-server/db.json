@@ -2,7 +2,9 @@
     "events": [
         {
             "id": 1,
-            "name": "bigbang"
+            "name": "bigbang",
+            "desc": "Big Bang Festival",
+            "location": "Jakarta"
         }
     ]
 }
