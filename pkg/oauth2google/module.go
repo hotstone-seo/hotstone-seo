@@ -13,6 +13,9 @@ var (
 // Module of google oauth
 func Module() *typapp.Module {
 	return typapp.NewModule().
-		Provide(typapp.NewConstructor(NewService)).
-		Configure(typcfg.NewConfiguration(DefaultConfigName, &Config{}))
+		Provide(typapp.NewConstructor("", NewService)).
+		Configure(&typcfg.Configuration{
+			Name: DefaultConfigName,
+			Spec: &Config{},
+		})
 }

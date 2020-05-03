@@ -8,7 +8,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/stretchr/testify/require"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 )
 
 func TestTagValidation(t *testing.T) {
@@ -136,7 +135,7 @@ func TestTag_FindByRuleAndLocale(t *testing.T) {
 	require.NoError(t, err)
 	defer db.Close()
 
-	repo := repository.TagRepoImpl{DB: typpostgres.NewDB(db)}
+	repo := repository.TagRepoImpl{DB: db}
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT id, rule_id, locale, type, attributes, value, updated_at, created_at FROM tags WHERE rule_id = $1 AND locale = $2")).
 		WithArgs("123", "en_US").

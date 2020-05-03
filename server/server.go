@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	logrusmiddleware "github.com/bakatz/echo-logrusmiddleware"
@@ -9,7 +10,6 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/config"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 
 	log "github.com/sirupsen/logrus"
 
@@ -24,7 +24,7 @@ type server struct {
 	Provider provider
 	Profiler profiler
 
-	Postgres *typpostgres.DB
+	Postgres *sql.DB
 	Redis    *redis.Client
 }
 

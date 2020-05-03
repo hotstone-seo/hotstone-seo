@@ -10,7 +10,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// URLService contain logic of url [mock]
+// URLService contain logic of url
+// @mock
 type URLService interface {
 	FullSync(context.Context) error
 	Sync(context.Context) error
@@ -21,7 +22,8 @@ type URLService interface {
 	Count() int
 }
 
-// NewURLService return new instance of URLService [constructor]
+// NewURLService return new instance of URLService
+// @constructor
 func NewURLService(svc repository.URLSyncRepo, store urlstore.Store) URLService {
 	return &URLServiceImpl{
 		URLSyncRepo:   svc,

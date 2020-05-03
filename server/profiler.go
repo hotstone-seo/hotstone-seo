@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"runtime"
 	"runtime/pprof"
@@ -10,13 +11,12 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"github.com/labstack/echo"
 	"github.com/typical-go/typical-rest-server/pkg/serverkit"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
 type profiler struct {
 	dig.In
-	Pg    *typpostgres.DB
+	Pg    *sql.DB
 	Redis *redis.Client
 	urlstore.Store
 }

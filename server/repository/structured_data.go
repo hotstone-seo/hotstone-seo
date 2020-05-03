@@ -8,7 +8,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
@@ -34,10 +33,11 @@ type StructuredDataRepo interface {
 // StructuredDataRepoImpl is an implementation of StructuredDataRepo
 type StructuredDataRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
-// NewStructuredDataRepo returns new instance of StructuredDataRepo [constructor]
+// NewStructuredDataRepo returns new instance of StructuredDataRepo
+// @constructor
 func NewStructuredDataRepo(impl StructuredDataRepoImpl) StructuredDataRepo {
 	return &impl
 }

@@ -8,7 +8,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// AuditTrailService contain logic for AuditTrail Controller [mock]
+// AuditTrailService contain logic for AuditTrail Controller
+// @mock
 type AuditTrailService interface {
 	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error)
 	RecordChanges(ctx context.Context, entityName string, entityID int64, opsType repository.OperationType,
@@ -21,7 +22,8 @@ type AuditTrailServiceImpl struct {
 	AuditTrailRepo repository.AuditTrailRepo
 }
 
-// NewAuditTrailService return new instance of AuditTrailService [constructor]
+// NewAuditTrailService return new instance of AuditTrailService
+// @constructor
 func NewAuditTrailService(impl AuditTrailServiceImpl) AuditTrailService {
 	return &impl
 }

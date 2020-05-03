@@ -8,7 +8,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// HistoryService contain logic for History Controller [mock]
+// HistoryService contain logic for History Controller
+// @mock
 type HistoryService interface {
 	RecordHistory(ctx context.Context, entityFrom string, entityID int64,
 		data interface{}) (lastInsertID int64, err error)
@@ -20,7 +21,8 @@ type HistoryServiceImpl struct {
 	HistoryRepo repository.HistoryRepo
 }
 
-// NewHistoryService return new instance of HistoryService [constructor]
+// NewHistoryService return new instance of HistoryService
+// @constructor
 func NewHistoryService(impl HistoryServiceImpl) HistoryService {
 	return &impl
 }

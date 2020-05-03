@@ -6,14 +6,13 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
 // URLSyncRepoImpl is implementation urlStoreSync repository
 type URLSyncRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
 // FindOne urlStoreSync

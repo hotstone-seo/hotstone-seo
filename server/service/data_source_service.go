@@ -9,7 +9,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// DataSourceService contain logic for DataSourceController [mock]
+// DataSourceService contain logic for DataSourceController
+// @mock
 type DataSourceService interface {
 	repository.DataSourceRepo
 }
@@ -23,7 +24,8 @@ type DataSourceServiceImpl struct {
 	HistoryService    HistoryService
 }
 
-// NewDataSourceService return new instance of DataSourceService [constructor]
+// NewDataSourceService return new instance of DataSourceService
+// @constructor
 func NewDataSourceService(impl DataSourceServiceImpl) DataSourceService {
 	return &impl
 }

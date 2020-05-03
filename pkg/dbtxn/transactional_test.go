@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/require"
@@ -18,7 +17,7 @@ func TestTransactional(t *testing.T) {
 	require.NoError(t, err)
 	defer db.Close()
 	trx := dbtxn.Transactional{
-		DB: typpostgres.NewDB(db),
+		DB: db,
 	}
 	t.Run("WHEN error occurred before commit", func(t *testing.T) {
 		ctx := context.Background()

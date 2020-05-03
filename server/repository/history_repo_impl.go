@@ -2,17 +2,17 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
 // HistoryRepoImpl is implementation history repository
 type HistoryRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
 // Insert hsitory

@@ -14,7 +14,8 @@ type DataSource struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// DataSourceRepo to handle data_sources entity [mock]
+// DataSourceRepo to handle data_sources entity
+// @mock
 type DataSourceRepo interface {
 	FindOne(context.Context, int64) (*DataSource, error)
 	Find(context.Context) ([]*DataSource, error)
@@ -23,7 +24,8 @@ type DataSourceRepo interface {
 	Update(context.Context, DataSource) error
 }
 
-// NewDataSourceRepo return new instance of DataSourceRepo [constructor]
+// NewDataSourceRepo return new instance of DataSourceRepo
+// @constructor
 func NewDataSourceRepo(impl DataSourceRepoImpl) DataSourceRepo {
 	return &impl
 }

@@ -19,7 +19,8 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-// AuthService is center related logic [mock]
+// AuthService is center related logic
+// @mock
 type AuthService interface {
 	VerifyCallback(ce echo.Context, jwtSecret string) (string, error)
 	GetAuthCodeURL(ce echo.Context, cookieSecure bool) string

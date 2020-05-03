@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 
 	sq "github.com/Masterminds/squirrel"
 	"go.uber.org/dig"
@@ -15,7 +14,7 @@ import (
 // DataSourceRepoImpl is implementation data_source repository
 type DataSourceRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
 // FindOne data_source

@@ -9,7 +9,6 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -26,7 +25,8 @@ type Tag struct {
 	CreatedAt  time.Time `json:"created_at"`
 }
 
-// TagRepo to handle tags entity [mock]
+// TagRepo to handle tags entity
+// @mock
 type TagRepo interface {
 	FindOne(context.Context, int64) (*Tag, error)
 	Find(context.Context, ...dbkit.FindOption) ([]*Tag, error)
@@ -40,10 +40,11 @@ type TagRepo interface {
 // TagRepoImpl is implementation tag repository
 type TagRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
-// NewTagRepo return new instance of TagRepo [constructor]
+// NewTagRepo return new instance of TagRepo
+// @constructor
 func NewTagRepo(impl TagRepoImpl) TagRepo {
 	return &impl
 }
