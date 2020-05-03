@@ -35,8 +35,16 @@ class HotStoneClient {
     try {
       const param = {_path: path}
       const resp = await this.fetch(`${this.baseURL}/p/match?${queryString.stringify(param)}`);
+      if (!resp.ok) {
+        throw new Error("HTTP status code: " + resp.status + " Resp: " + await resp.text())
+      }
+
       rule = await resp.json();
+      if (rule.rule_id == 0) {
+        throw new Error("No matched rule")
+      }
     } catch (e) {
+      rule = {}
       console.error("Failed to retrieve rule:", e.message);
     }
     return rule;
@@ -52,8 +60,13 @@ class HotStoneClient {
         ...path_param
       }
       const resp = await this.fetch(`${this.baseURL}/p/fetch-tags?${queryString.stringify(param)}`);
+      if (!resp.ok) {
+        throw new Error("HTTP status code: " + resp.status + " Resp: " + await resp.text())
+      }
+
       tags = await resp.json();
     } catch (e) {
+      tags = [];
       console.error("Failed to retrieve tags:", e.message);
     }
     return tags;
