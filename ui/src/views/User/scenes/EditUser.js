@@ -9,7 +9,7 @@ import { getUser, updateUser } from 'api/user';
 // TO DO : import useRoleTypes from 'hooks/useRoleTypes';
 
 
-function EditRule() {
+function EditUser() {
   const { id } = useParams();
   const userID = parseInt(id, 10);
   const history = useHistory();
@@ -60,4 +60,4 @@ function EditRule() {
   );
 }
 
-export default EditRule;
+export default EditUser;
