@@ -39,7 +39,10 @@ var serverConfig = {
     new webpack.DefinePlugin({
       __isBrowser__: 'false'
     })
-  ]
+  ],
+  node: {
+    __dirname: false,
+  },
 }
 
 module.exports = [browserConfig, serverConfig]
