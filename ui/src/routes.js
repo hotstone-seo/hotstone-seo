@@ -56,7 +56,7 @@ const routes = [
   },
   {
     path: '/users',
-    name: 'List of User',
+    name: 'User',
     component: User,
     icon: UserOutlined,
   },
