@@ -7,7 +7,6 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -21,7 +20,8 @@ type User struct {
 	CreatedAt  time.Time `json:"created_at"`
 }
 
-// UserRepo is user repository [mock]
+// UserRepo is user repository
+// @mock
 type UserRepo interface {
 	FindOne(ctx context.Context, id int64) (*User, error)
 	Find(ctx context.Context, paginationParam PaginationParam) ([]*User, error)
@@ -33,10 +33,11 @@ type UserRepo interface {
 // UserRepoImpl is implementation user repository
 type UserRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
-// NewUserRepo return new instance of UserRepo [constructor]
+// NewUserRepo return new instance of UserRepo
+// @constructor
 func NewUserRepo(impl UserRepoImpl) UserRepo {
 	return &impl
 }
