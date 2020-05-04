@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, Button, message, Row, Col,
 } from 'antd';
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { addBreadcrumbList, updateBreadcrumbList } from 'api/structuredData';
 
 function BreadcrumbListForm({ structuredData, afterSubmit }) {
@@ -39,7 +39,7 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
           <div>
             {fields.map((field, index) => (
               <Row key={field.key} gutter={8}>
-                <Col>
+                <Col span={8}>
                   <Form.Item
                     name={[field.name, 'name']}
                     fieldKey={[field.fieldKey, 'name']}
@@ -47,7 +47,7 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
                     <Input placeholder={`Page #${index + 1}'s name`} />
                   </Form.Item>
                 </Col>
-                <Col>
+                <Col span={12}>
                   <Form.Item
                     name={[field.name, 'item']}
                     fieldKey={[field.fieldKey, 'item']}
@@ -55,9 +55,13 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
                     <Input placeholder={`URL #${index + 1}`} />
                   </Form.Item>
                 </Col>
-                <Col>
-                  <MinusCircleOutlined
+                <Col span={4}>
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
                     onClick={() => { remove(field.name); }}
+                    style={{ position: 'relative', margin: '0 8px' }}
                   />
                 </Col>
               </Row>
