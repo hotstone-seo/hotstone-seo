@@ -8,7 +8,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// UserService contain logic for User Controller [mock]
+// UserService contain logic for User Controller
+// @mock
 type UserService interface {
 	FindOne(ctx context.Context, id int64) (*repository.User, error)
 	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.User, error)
@@ -26,7 +27,8 @@ type UserServiceImpl struct {
 	dbtxn.Transactional
 }
 
-// NewUserService return new instance of UserService [constructor]
+// NewUserService return new instance of UserService
+// @constructor
 func NewUserService(impl UserServiceImpl) UserService {
 	return &impl
 }
