@@ -22,12 +22,14 @@ const (
 	InsertHistory OperationType = "INSERT"
 )
 
-// HistoryRepo is rule repository [mock]
+// HistoryRepo is rule repository
+// @mock
 type HistoryRepo interface {
 	Insert(ctx context.Context, history History) (lastInsertID int64, err error)
 }
 
-// NewHistoryRepo return new instance of HistoryRepo [constructor]
+// NewHistoryRepo return new instance of HistoryRepo
+// @constructor
 func NewHistoryRepo(impl HistoryRepoImpl) HistoryRepo {
 	return &impl
 }

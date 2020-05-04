@@ -9,11 +9,11 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
-// ReportRepo responsble to generate report [mock]
+// ReportRepo responsble to generate report
+// @mock
 type ReportRepo interface {
 	MismatchReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*MismatchReport, err error)
 	DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error)
@@ -39,10 +39,11 @@ type DailyReport struct {
 // ReportRepoImpl is implementation of ReportRepo
 type ReportRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
-// NewReportRepo return new instance of MetricsRuleMatchingRepo [constructor]
+// NewReportRepo return new instance of MetricsRuleMatchingRepo
+// @constructor
 func NewReportRepo(impl ReportRepoImpl) ReportRepo {
 	return &impl
 }

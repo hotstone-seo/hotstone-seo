@@ -2,11 +2,11 @@ package metric
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
@@ -18,12 +18,14 @@ type RuleMatching struct {
 	URL       *string
 }
 
-// RuleMatchingRepo to handle metrics_rule_matching entity [mock]
+// RuleMatchingRepo to handle metrics_rule_matching entity
+// @mock
 type RuleMatchingRepo interface {
 	Insert(context.Context, RuleMatching) (err error)
 }
 
-// NewRuleMatchingRepo return new instance of MetricsRuleMatchingRepo [constructor]
+// NewRuleMatchingRepo return new instance of MetricsRuleMatchingRepo
+// @constructor
 func NewRuleMatchingRepo(impl RuleMatchingRepoImpl) RuleMatchingRepo {
 	return &impl
 }
@@ -31,7 +33,7 @@ func NewRuleMatchingRepo(impl RuleMatchingRepoImpl) RuleMatchingRepo {
 // RuleMatchingRepoImpl is implementation metrics_rule_matching repository
 type RuleMatchingRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
 // Insert metrics_rule_matching

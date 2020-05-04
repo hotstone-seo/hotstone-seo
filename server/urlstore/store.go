@@ -14,7 +14,8 @@ var (
 // Store is a radix tree that supports storing data with parametric keys and retrieving them back with concrete keys.
 // When retrieving a data item with a concrete key, the matching parameter names and values will be returned as well.
 // A parametric key is a string containing tokens in the format of "<name>", "<name:pattern>", or "<:pattern>".
-// Each token represents a single parameter. [mock]
+// Each token represents a single parameter.
+// @mock
 type Store interface {
 	Add(id int64, key string, data interface{}) int
 	Get(path string) (data interface{}, param *Parameter)
@@ -29,7 +30,8 @@ type storeImpl struct {
 	count int   // the number of data nodes in the tree
 }
 
-// NewStore return new instance of Store [constructor]
+// NewStore return new instance of Store
+// @constructor
 func NewStore() Store {
 	return &storeImpl{
 		root: &node{

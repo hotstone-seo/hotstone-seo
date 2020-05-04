@@ -11,7 +11,10 @@ var (
 
 // Configuration of server
 func Configuration() *typcfg.Configuration {
-	return typcfg.NewConfiguration(configName, &config.Config{})
+	return &typcfg.Configuration{
+		Name: configName,
+		Spec: &config.Config{},
+	}
 }
 
 // Main function to run server

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Form,
   Input,
@@ -10,19 +10,27 @@ import {
   Collapse,
   Col,
   Result,
-} from "antd";
-import { Machine, assign } from "xstate";
-import { useMachine } from "@xstate/react";
-import { Link } from "react-router-dom";
-import _ from "lodash";
-import parse from "url-parse";
-import { match, fetchTags } from "api/provider";
-import { getRule } from "api/rule";
-import locales from "locales";
-import SyntaxHighlighter from "react-syntax-highlighter";
+} from 'antd';
+import { Machine, assign } from 'xstate';
+import { useMachine } from '@xstate/react';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import parse from 'url-parse';
+import { match, fetchTags } from 'api/provider';
+import { getRule } from 'api/rule';
+import locales from 'locales';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+
 const { Option } = Select;
 const { Panel } = Collapse;
+
+let execTime = '';
+
+function millisToMinutesAndSeconds(duration) {
+  const milliseconds = parseInt((duration % 1000), 10);
+  return ''.concat(milliseconds, ' milliseconds');
+}
 
 const pageMachine = Machine({
   id: "simulation",
@@ -79,14 +87,15 @@ const pageMachine = Machine({
 });
 
 async function simulateMatch(locale, url) {
+  const startTime = new Date().getTime();
   const rule = await match(url);
   if (_.isEmpty(rule)) {
-    throw new Error("Not matched");
+    throw new Error('Not matched');
   }
-  // TODO: double check if rule return ID#0
   const tags = await fetchTags(rule, locale);
   const ruleDetail = await getRule(rule.rule_id);
   const data = { rule, tags, ruleDetail };
+  execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
   return data;
 }
 
@@ -95,7 +104,7 @@ function SimulationPage() {
   const { matchResp, matchError, pageError } = current.context;
   const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
-    send("SUBMIT", { locale, url: urlObj.pathname });
+    send('SUBMIT', { locale, url: urlObj.pathname });
   };
 
   return (
@@ -172,7 +181,7 @@ function renderResp(matchResp) {
     <>
       <br />
       <Card>
-        <Alert type="success" message="Matched" closable />
+        <Alert type="success" message={`Matched. Execution time : ${execTime}`} closable />
         <br />
         <Collapse defaultActiveKey={["3"]} expandIconPosition="left">
           {!_.isEmpty(ruleDetail) && (
@@ -206,6 +215,7 @@ function renderMatchError(matchError) {
   if (ps > 0) {
     msgError = matchError.response.data.message;
   }
+  msgError = msgError.concat(' Execution Time :', execTime)
   return (
     <>
       <br />

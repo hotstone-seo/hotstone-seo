@@ -7,7 +7,6 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -24,7 +23,8 @@ type Rule struct {
 	ChangeStatusAt time.Time `json:"change_status_at"`
 }
 
-// RuleRepo is rule repository [mock]
+// RuleRepo is rule repository
+// @mock
 type RuleRepo interface {
 	FindOne(ctx context.Context, id int64) (*Rule, error)
 	Find(ctx context.Context, paginationParam PaginationParam) ([]*Rule, error)
@@ -36,10 +36,11 @@ type RuleRepo interface {
 // RuleRepoImpl is implementation rule repository
 type RuleRepoImpl struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
-// NewRuleRepo return new instance of RuleRepo [constructor]
+// NewRuleRepo return new instance of RuleRepo
+// @constructor
 func NewRuleRepo(impl RuleRepoImpl) RuleRepo {
 	return &impl
 }

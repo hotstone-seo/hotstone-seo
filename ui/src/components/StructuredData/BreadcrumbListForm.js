@@ -45,7 +45,14 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
                   name={[field.name, 'name']}
                   fieldKey={[field.fieldKey, 'name']}
                 >
-                  <Input placeholder={`Page #${index + 1}'s name`} />
+                  <Input
+                    placeholder={`Page #${index + 1}'s name`}
+                    suffix={(
+                      <MinusCircleOutlined
+                        onClick={() => { remove(field.name); }}
+                      />
+                    )}
+                  />
                 </Form.Item>
                 <Form.Item
                   name={[field.name, 'item']}
@@ -53,9 +60,6 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
                 >
                   <Input placeholder={`URL #${index + 1}`} />
                 </Form.Item>
-                <MinusCircleOutlined
-                  onClick={() => { remove(field.name); }}
-                />
               </>
             ))}
             <Button

@@ -44,7 +44,15 @@ function FAQPageForm({ structuredData, afterSubmit }) {
                   name={[field.name, 'question']}
                   fieldKey={[field.fieldKey, 'question']}
                 >
-                  <Input addonBefore="Q:" placeholder={`Question #${index + 1}`} />
+                  <Input
+                    addonBefore="Q:"
+                    placeholder={`Question #${index + 1}`}
+                    suffix={(
+                      <MinusCircleOutlined
+                        onClick={() => { remove(field.name); }}
+                      />
+                    )}
+                  />
                 </Form.Item>
                 <Form.Item
                   name={[field.name, 'answer']}
@@ -52,9 +60,6 @@ function FAQPageForm({ structuredData, afterSubmit }) {
                 >
                   <Input addonBefore="A:" placeholder="Answer" />
                 </Form.Item>
-                <MinusCircleOutlined
-                  onClick={() => { remove(field.name); }}
-                />
               </>
             ))}
             <Button

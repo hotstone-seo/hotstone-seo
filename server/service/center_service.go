@@ -8,7 +8,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// CenterService is center related logic [mock]
+// CenterService is center related logic
+// @mock
 type CenterService interface {
 	AddMetaTag(ctx context.Context, req MetaTagRequest) (*repository.Tag, error)
 	UpdateMetaTag(ctx context.Context, req MetaTagRequest) error
@@ -31,7 +32,8 @@ type CenterServiceImpl struct {
 	StructuredDataService
 }
 
-// NewCenterService return new instance of CenterService [constructor]
+// NewCenterService return new instance of CenterService
+// @constructor
 func NewCenterService(impl CenterServiceImpl) CenterService {
 	return &impl
 }

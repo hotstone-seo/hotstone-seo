@@ -7,14 +7,13 @@ import (
 	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"go.uber.org/dig"
 )
 
 // Transactional database
 type Transactional struct {
 	dig.In
-	*typpostgres.DB
+	*sql.DB
 }
 
 // CommitMe to create begin transaction and return commit function to be deffered

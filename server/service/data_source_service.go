@@ -5,10 +5,12 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
-// DataSourceService contain logic for DataSourceController [mock]
+// DataSourceService contain logic for DataSourceController
+// @mock
 type DataSourceService interface {
 	repository.DataSourceRepo
 }
@@ -22,73 +24,84 @@ type DataSourceServiceImpl struct {
 	HistoryService    HistoryService
 }
 
-// NewDataSourceService return new instance of DataSourceService [constructor]
+// NewDataSourceService return new instance of DataSourceService
+// @constructor
 func NewDataSourceService(impl DataSourceServiceImpl) DataSourceService {
 	return &impl
 }
 
 // Insert data source
-func (s *DataSourceServiceImpl) Insert(ctx context.Context, ds repository.DataSource) (newDsID int64, err error) {
-	defer s.CommitMe(&ctx)()
-	if newDsID, err = s.DataSourceRepo.Insert(ctx, ds); err != nil {
-		s.CancelMe(ctx, err)
+func (s *DataSourceServiceImpl) Insert(ctx context.Context, data repository.DataSource) (newID int64, err error) {
+	if data.ID, err = s.DataSourceRepo.Insert(ctx, data); err != nil {
 		return
 	}
-	newDS, err := s.DataSourceRepo.FindOne(ctx, newDsID)
-	if err != nil {
-		s.CancelMe(ctx, err)
-		return
-	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", newDsID, repository.Insert, nil, newDS); err != nil {
-		s.CancelMe(ctx, err)
-		return
-	}
-	return newDsID, nil
+	go func() {
+		if _, auditErr := s.AuditTrailService.RecordChanges(
+			ctx,
+			"data_sources",
+			data.ID,
+			repository.Insert,
+			nil,
+			data,
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
+	return data.ID, nil
 }
 
 // Update data source
-func (s *DataSourceServiceImpl) Update(ctx context.Context, ds repository.DataSource) (err error) {
-	defer s.CommitMe(&ctx)()
-	oldDS, err := s.DataSourceRepo.FindOne(ctx, ds.ID)
-	if err != nil {
-		s.CancelMe(ctx, err)
+func (s *DataSourceServiceImpl) Update(ctx context.Context, data repository.DataSource) (err error) {
+	var oldData *repository.DataSource
+	if oldData, err = s.DataSourceRepo.FindOne(ctx, data.ID); err != nil {
 		return
 	}
-	if err = s.DataSourceRepo.Update(ctx, ds); err != nil {
-		s.CancelMe(ctx, err)
+	if err = s.DataSourceRepo.Update(ctx, data); err != nil {
 		return
 	}
-	newDS, err := s.DataSourceRepo.FindOne(ctx, ds.ID)
-	if err != nil {
-		s.CancelMe(ctx, err)
-		return
-	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", ds.ID, repository.Update, oldDS, newDS); err != nil {
-		s.CancelMe(ctx, err)
-		return
-	}
+	go func() {
+		if _, auditErr := s.AuditTrailService.RecordChanges(
+			ctx,
+			"data_sources",
+			data.ID,
+			repository.Update,
+			oldData,
+			data,
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
 	return nil
 }
 
 // Delete data source
 func (s *DataSourceServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	defer s.CommitMe(&ctx)()
-	oldDs, err := s.DataSourceRepo.FindOne(ctx, id)
-	if err != nil {
-		s.CancelMe(ctx, err)
-		return
-	}
-	if _, err = s.HistoryService.RecordHistory(ctx, "data_source", id, oldDs); err != nil {
-		s.CancelMe(ctx, err)
+	var oldData *repository.DataSource
+	if oldData, err = s.DataSourceRepo.FindOne(ctx, id); err != nil {
 		return
 	}
 	if err = s.DataSourceRepo.Delete(ctx, id); err != nil {
-		s.CancelMe(ctx, err)
 		return
 	}
-	if _, err = s.AuditTrailService.RecordChanges(ctx, "data_sources", id, repository.Delete, oldDs, nil); err != nil {
-		s.CancelMe(ctx, err)
-		return
-	}
+	go func() {
+		if _, histErr := s.HistoryService.RecordHistory(
+			ctx,
+			"data_source",
+			id,
+			oldData,
+		); histErr != nil {
+			log.Error(histErr)
+		}
+		if _, auditErr := s.AuditTrailService.RecordChanges(
+			ctx,
+			"data_sources",
+			id,
+			repository.Delete,
+			oldData,
+			nil,
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
 	return nil
 }

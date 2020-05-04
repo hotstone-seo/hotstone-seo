@@ -13,7 +13,8 @@ import (
 	"go.uber.org/dig"
 )
 
-// ProviderService contain logic for provider api [mock]
+// ProviderService contain logic for provider api
+// @mock
 type ProviderService interface {
 	Match(context.Context, url.Values) (*MatchResponse, error)
 	FetchTags(context.Context, url.Values) ([]*ITag, error)
@@ -38,7 +39,8 @@ type ITag repository.Tag
 // IDataSource is datasource after interpolate with data
 type IDataSource repository.DataSource
 
-// NewProviderService return new instance of ProviderService [constructor]
+// NewProviderService return new instance of ProviderService
+// @constructor
 func NewProviderService(impl ProviderServiceImpl) ProviderService {
 	return &impl
 }

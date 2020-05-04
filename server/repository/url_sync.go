@@ -14,7 +14,8 @@ type URLSync struct {
 	CreatedAt        time.Time `json:"-"`
 }
 
-// URLSyncRepo is repository of URLSync entity [mock]
+// URLSyncRepo is repository of URLSync entity
+// @mock
 type URLSyncRepo interface {
 	FindOne(ctx context.Context, id int64) (*URLSync, error)
 	Find(ctx context.Context) ([]*URLSync, error)
@@ -23,7 +24,8 @@ type URLSyncRepo interface {
 	GetListDiff(ctx context.Context, offsetVersion int64) ([]*URLSync, error)
 }
 
-// NewURLSyncRepo return new instance of URLSyncRepo [constructor]
+// NewURLSyncRepo return new instance of URLSyncRepo
+// @constructor
 func NewURLSyncRepo(impl URLSyncRepoImpl) URLSyncRepo {
 	return &impl
 }

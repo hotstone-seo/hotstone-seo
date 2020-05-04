@@ -7,6 +7,7 @@ import (
 	"github.com/typical-go/typical-go/pkg/typbuildtool"
 	"github.com/typical-go/typical-go/pkg/typcore"
 	"github.com/typical-go/typical-go/pkg/typdocker"
+	"github.com/typical-go/typical-go/pkg/typmock"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
 )
@@ -42,6 +43,8 @@ var Descriptor = typcore.Descriptor{
 				typredis.DockerRecipeV3(),
 				typpostgres.DockerRecipeV3(),
 			),
+			typmock.Utility(),
+
 			typbuildtool.NewUtility(uiUtility),
 			typbuildtool.NewUtility(jsonServer),
 		),

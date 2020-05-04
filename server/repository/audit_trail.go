@@ -26,13 +26,15 @@ const (
 	Delete               = "DELETE"
 )
 
-// AuditTrailRepo is rule repository [mock]
+// AuditTrailRepo is rule repository
+// @mock
 type AuditTrailRepo interface {
 	Find(ctx context.Context, paginationParam PaginationParam) ([]*AuditTrail, error)
 	Insert(ctx context.Context, auditTrail AuditTrail) (lastInsertID int64, err error)
 }
 
-// NewAuditTrailRepo return new instance of AuditTrailRepo [constructor]
+// NewAuditTrailRepo return new instance of AuditTrailRepo
+// @constructor
 func NewAuditTrailRepo(impl AuditTrailRepoImpl) AuditTrailRepo {
 	return &impl
 }
