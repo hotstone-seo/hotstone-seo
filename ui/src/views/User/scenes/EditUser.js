@@ -46,7 +46,7 @@ function EditUser() {
     <div>
       <PageHeader
         onBack={() => history.push('/users')}
-        title={`Edit ${user.email}`}
+        title={`Edit Role ${user.email}`}
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>

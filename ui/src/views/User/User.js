@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-import { AddUser, ViewUsers } from './scenes';
+import { AddUser, EditUser, ViewUsers } from './scenes';
 
 function User({ match }) {
   return (
@@ -16,12 +16,10 @@ function User({ match }) {
         path={`${match.url}/new`}
         render={() => <AddUser />}
       />
-      {
-      /* <Route
+      <Route
         path={`${match.url}/:id`}
         render={() => <EditUser />}
-      /> */
-      }
+      />
     </Switch>
   );
 }
