@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import favicon from 'serve-favicon'
+import path from 'path'
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
@@ -39,6 +41,7 @@ const template = ({ body, head }, data) => {
 const port = process.env.PORT || 3000
 
 server.use('/public', express.static('public'));
+server.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 server.get('*', (req, res, next) => {
  (async function() {
