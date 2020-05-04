@@ -24,7 +24,8 @@
     "react-element-to-jsx-string": "^14.3.1",
     "react-helmet": "^5.2.1",
     "react-router-dom": "^5.1.2",
-    "serialize-javascript": "^2.1.2"
+    "serialize-javascript": "^2.1.2",
+    "serve-favicon": "^2.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",
