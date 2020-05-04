@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, Button, message, Divider,
 } from 'antd';
-import { PlusOutlined, DeleteTwoTone } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { addFAQPage, updateFAQPage } from 'api/structuredData';
 
 function FAQPageForm({ structuredData, afterSubmit }) {
@@ -46,19 +46,21 @@ function FAQPageForm({ structuredData, afterSubmit }) {
                     fieldKey={[field.fieldKey, 'question']}
                     noStyle
                   >
-                    <Input placeholder="Question" style={{ width: '95%' }} />
+                    <Input placeholder="Question" style={{ width: '90%' }} />
                   </Form.Item>
-                  <DeleteTwoTone
-                    twoToneColor="red"
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
                     onClick={() => { remove(field.name); }}
-                    style={{ float: 'right', height: '100%' }}
+                    style={{ position: 'relative', margin: '0 8px' }}
                   />
                 </Form.Item>
                 <Form.Item
                   name={[field.name, 'answer']}
                   fieldKey={[field.fieldKey, 'answer']}
                 >
-                  <Input.TextArea placeholder="Answer" style={{ width: '95%' }} />
+                  <Input.TextArea placeholder="Answer" style={{ width: '90%' }} />
                 </Form.Item>
               </>
             ))}
