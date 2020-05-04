@@ -74,7 +74,7 @@ function FAQPageForm({ structuredData, afterSubmit }) {
           </div>
         )}
       </Form.List>
-      <Form.Item wrapperCol={{ span: 16 }}>
+      <Form.Item style={{ width: '90%' }}>
         <Button data-testid="btn-save" type="primary" htmlType="submit" style={{ float: 'right' }}>
           Save
         </Button>
