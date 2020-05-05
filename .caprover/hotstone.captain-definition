@@ -1,4 +1,4 @@
 {
   "schemaVersion": 2,
-  "dockerfilePath" :"./hotstone.Dockerfile"
+  "dockerfilePath" :"../hotstone.Dockerfile"
 }
