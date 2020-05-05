@@ -4,6 +4,7 @@ RUN apk add --update --no-cache git bash
 WORKDIR /usr/src/client
 COPY . .
 
+RUN npm install
 RUN npm run build
 RUN npm pack
 RUN ls -hal ./
