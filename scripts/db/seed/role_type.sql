@@ -1,4 +1,4 @@
-INSERT INTO role_type (id, "type")
+INSERT INTO role_type (id, "name")
 VALUES 
     (1, 'SUPER ADMIN'),
     (2, 'ADMIN');
