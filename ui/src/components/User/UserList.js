@@ -11,7 +11,6 @@ import { buildQueryParam, onTableChange } from 'utils/pagination';
 import useTablePaginationTotal from 'hooks/useTablePaginationTotal';
 import useTablePaginationNormalizedListData from 'hooks/useTablePaginationNormalizedListData';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import _ from 'lodash';
 
 const defaultPagination = {
   current: 1,
