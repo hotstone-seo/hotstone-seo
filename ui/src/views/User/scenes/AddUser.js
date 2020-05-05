@@ -14,7 +14,7 @@ function AddUser() {
   const handleCreate = (user) => {
     createUser(user)
       .then((newUser) => {
-        history.push(`/users/${newUser.id}`, {
+        history.push('/users', {
           message: {
             level: 'success',
             content: `${newUser.email} is successfully created`,
