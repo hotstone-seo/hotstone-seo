@@ -19,6 +19,7 @@ COPY --from=client-builder /usr/src/client/*.tgz /app/demo/vendor/
 
 WORKDIR /app/demo
 RUN ls -hal ./
+RUN ls -hal ./vendor
 
 RUN npm install
 
