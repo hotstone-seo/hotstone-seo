@@ -34,5 +34,5 @@ PORT=4000 npm run start
 ## Run While Editing `hotstone-client`
 
 ```
-cd ../../ && npm run build && npm pack && cd - && npm i && npm run start
+cd ../../ && npm run build && npm pack && cd - && cp ../../*.tgz vendor/ && npm i && npm run start
 ```
