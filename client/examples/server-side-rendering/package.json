@@ -5,7 +5,7 @@
   "description": "Sample usage of hotstone-client on SSR application",
   "main": "index.js",
   "scripts": {
-    "preinstall": "npm install ../../hotstone-client-0.4.1.tgz",
+    "preinstall": "npm install ./vendor/*.tgz",
     "start": "npx webpack -w & PORT=4000 npx nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1",
     "json-server": "npx json-server --port 5000 --watch json-server/data.json"
@@ -18,7 +18,7 @@
     "@babel/runtime": "^7.7.7",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "hotstone-client": "file:../../hotstone-client-0.4.1.tgz",
+    "hotstone-client": "file:vendor/hotstone-client-0.4.1.tgz",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-element-to-jsx-string": "^14.3.1",
