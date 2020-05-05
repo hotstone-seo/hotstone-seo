@@ -10,7 +10,7 @@ import (
 	"go.uber.org/dig"
 )
 
-// RoleTypeRepoImpl is implementation data_source repository
+// RoleTypeRepoImpl is implementation role_type repository
 type RoleTypeRepoImpl struct {
 	dig.In
 	*sql.DB
