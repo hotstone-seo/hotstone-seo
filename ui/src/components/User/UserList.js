@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import { fetchUsers } from 'api/user';
-// TO DO : import { getRoleType } from 'api/roletype';
+import { getRoleType } from 'api/roleType';
 import useTableFilterProps from 'hooks/useTableFilterProps';
 import { buildQueryParam, onTableChange } from 'utils/pagination';
 import useTablePaginationTotal from 'hooks/useTablePaginationTotal';
@@ -46,19 +46,16 @@ function UserList(props) {
           sortedInfo,
         );
         const users = await fetchUsers({ params: queryParam });
-        console.log(users, 'user');
         const updatedListUser = await Promise.all(
           users.map(async (user) => {
             const modifiedUser = user;
-            if (!_.isEmpty(user.role_type_id)) {
-              // TO DO : get role type from API
-              const roleType = 'super admin';
-              modifiedUser.role_type = roleType;
+            if (user.role_type_id !== null) {
+              const roleType = await getRoleType(user.role_type_id);
+              modifiedUser.roleType = roleType;
             }
             return modifiedUser;
           }),
         );
-        console.log(updatedListUser, 'updatedListUser');
         setListUser(updatedListUser);
       } catch (error) {
         message.error(error.message);
@@ -96,9 +93,12 @@ function UserList(props) {
       key: 'role_type',
       sorter: false,
       sortOrder: sortedInfo.columnKey === 'role_type' && sortedInfo.order,
-      render: () => (
-        <div />
-      ),
+      render: (roleType) => {
+        if (roleType) {
+          return <div>{roleType.name}</div>;
+        }
+        return null;
+      },
     },
     {
       title: 'Last Updated',
