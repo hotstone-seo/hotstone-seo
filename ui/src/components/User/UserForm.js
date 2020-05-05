@@ -4,8 +4,6 @@ import {
   Form, Input, Select, Button,
 } from 'antd';
 
-const { Option } = Select;
-
 function UserForm(props) {
   const {
     user, roleTypes, onSubmit, formLayout,
@@ -16,7 +14,6 @@ function UserForm(props) {
     form.setFieldsValue(user);
   }, [user, form]);
 
-  // console.log(roleTypes, 'roleTypes');
   return (
     <Form
       form={form}
@@ -36,28 +33,21 @@ function UserForm(props) {
       <Form.Item
         name="email"
         label="Email"
-        rules={[{ required: true, message: 'Please input the name of your Rule' }]}
+        rules={[{ required: true, message: 'Please input the email' }]}
       >
-        <Input data-testid="input-name" placeholder="Email" maxLength="200" />
+        <Input data-testid="input-email" placeholder="Email" maxLength="200" />
       </Form.Item>
 
       <Form.Item
         name="role_type_id"
         label="Role User"
       >
-        <Select
-          data-testid="select-role-type-id"
-          showSearch
-          allowClear
-          placeholder="Select Role User"
-          style={{ width: 150 }}
-          filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-        />
-        {roleTypes.map(({ id, name }) => (
-          <Option value={id} key={id}>{name}</Option>
-        ))}
+        <Select>
+          {roleTypes.map(({ id, name }) => (
+            <Select.Option value={id} key={id}>{name}</Select.Option>
+          ))}
+        </Select>
       </Form.Item>
-
       <Form.Item
         wrapperCol={
           formLayout === 'horizontal' ? { offset: 6, span: 14 } : null
