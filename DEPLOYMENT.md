@@ -11,4 +11,4 @@ How to set `captain-definition Relative Path`:
 
 ### Hotstone
 
-- `captain-definition Relative Path`: `.caprover/hotstone.captain-definition`
+- `captain-definition Relative Path`: `./hotstone.captain-definition`
