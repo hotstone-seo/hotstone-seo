@@ -1,7 +1,7 @@
 # === build backend ===
 FROM golang:alpine AS backend-builder
 
-RUN apk update && apk add --no-cache git bash
+RUN apk add --update --no-cache git bash npm
 WORKDIR /usr/src/backend
 COPY ${ROOT_REPO}/ .
 
