@@ -1,8 +1,0 @@
-CREATE TABLE role_access (
-    id serial PRIMARY KEY,
-    role_type_id INTEGER DEFAULT '0',
-    module_id INTEGER DEFAULT '0',
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP DEFAULT NULL
-)
