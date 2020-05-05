@@ -3,10 +3,13 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"strconv"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/prometheus/common/log"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
@@ -28,6 +31,8 @@ type StructuredDataRepo interface {
 	Insert(context.Context, StructuredData) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, StructuredData) error
+
+	FindByRule(ctx context.Context, ruleID int64) ([]*StructuredData, error)
 }
 
 // StructuredDataRepoImpl is an implementation of StructuredDataRepo
@@ -184,7 +189,32 @@ func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (
 	return
 }
 
+// FindByRule returns list of structured data based on rule ID
+func (r *StructuredDataRepoImpl) FindByRule(ctx context.Context, ruleID int64) ([]*StructuredData, error) {
+	return r.Find(ctx, dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)))
+}
+
 // TODO: Create implementation for validating structured data
-func (structData StructuredData) Validate() error {
+func (s StructuredData) Validate() error {
 	return nil
+}
+
+// ToTag returns Tag representation of a Structured Data
+func (s StructuredData) ToTag() (tag Tag) {
+	tag = Tag{
+		RuleID: s.RuleID,
+		Type:   "script",
+		Attributes: Attrs{
+			"type": "application/ld+json",
+		},
+		UpdatedAt: s.UpdatedAt,
+		CreatedAt: s.CreatedAt,
+	}
+	rawData, err := json.Marshal(s.Data)
+	if err != nil {
+		log.Error(err)
+		return
+	}
+	tag.Value = string(rawData)
+	return
 }
