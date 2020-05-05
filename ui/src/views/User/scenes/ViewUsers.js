@@ -33,7 +33,7 @@ function ViewUsers({ match }) {
     <div>
       <PageHeader
         title="Users"
-        subTitle="List of Hotstone User with Role"
+        subTitle="List of User with Role"
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
