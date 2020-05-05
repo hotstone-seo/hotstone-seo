@@ -7,4 +7,4 @@ COPY ${ROOT_REPO}/ .
 
 RUN go get -u -v golang.org/x/tools/cmd/goimports
 
-CMD ["./typicalw json-server"]
+CMD ["/usr/src/backend/typicalw json-server"]
