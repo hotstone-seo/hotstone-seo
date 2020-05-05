@@ -4,9 +4,11 @@ import {
   Form, Input, Select, Button,
 } from 'antd';
 
+const { Option } = Select;
+
 function UserForm(props) {
   const {
-    user, onSubmit, formLayout,
+    user, roleTypes, onSubmit, formLayout,
   } = props;
   const [form] = Form.useForm();
 
@@ -14,6 +16,7 @@ function UserForm(props) {
     form.setFieldsValue(user);
   }, [user, form]);
 
+  // console.log(roleTypes, 'roleTypes');
   return (
     <Form
       form={form}
@@ -50,6 +53,9 @@ function UserForm(props) {
           style={{ width: 150 }}
           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         />
+        {roleTypes.map(({ id, name }) => (
+          <Option value={id} key={id}>{name}</Option>
+        ))}
       </Form.Item>
 
       <Form.Item
@@ -67,7 +73,7 @@ function UserForm(props) {
 
 UserForm.defaultProps = {
   user: {},
-  // TO DO : roleTypes: [],
+  roleTypes: [],
   formLayout: 'horizontal',
 };
 
@@ -78,14 +84,13 @@ UserForm.propTypes = {
     role_type_id: PropTypes.number,
   }),
 
-  /* TO DO : role type user
   roleTypes: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string,
     }),
   ),
-  */
+
   formLayout: PropTypes.string,
 
   onSubmit: PropTypes.func.isRequired,
