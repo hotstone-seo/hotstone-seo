@@ -36,7 +36,7 @@ function AddUser() {
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
-            <UserForm onSubmit={handleCreate} roleTypes={roleTypes} />
+            <UserForm handleSubmit={handleCreate} roleTypes={roleTypes} />
           </Col>
         </Row>
       </div>

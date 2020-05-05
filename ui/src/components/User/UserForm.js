@@ -4,10 +4,7 @@ import {
   Form, Input, Select, Button,
 } from 'antd';
 
-function UserForm(props) {
-  const {
-    user, roleTypes, onSubmit, formLayout,
-  } = props;
+function UserForm({ user, handleSubmit, roleTypes }) {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -17,14 +14,9 @@ function UserForm(props) {
   return (
     <Form
       form={form}
-      onFinish={onSubmit}
-      layout={formLayout}
-      labelCol={
-        formLayout === 'horizontal' ? { span: 6 } : null
-      }
-      wrapperCol={
-        formLayout === 'horizontal' ? { span: 14 } : null
-      }
+      onFinish={handleSubmit}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 14 }}
     >
       <Form.Item name="id" noStyle>
         <Input type="hidden" />
@@ -49,9 +41,7 @@ function UserForm(props) {
         </Select>
       </Form.Item>
       <Form.Item
-        wrapperCol={
-          formLayout === 'horizontal' ? { offset: 6, span: 14 } : null
-        }
+        wrapperCol={{ offset: 6, span: 14 }}
       >
         <Button data-testid="btn-save" type="primary" htmlType="submit">
           Save
@@ -64,7 +54,6 @@ function UserForm(props) {
 UserForm.defaultProps = {
   user: {},
   roleTypes: [],
-  formLayout: 'horizontal',
 };
 
 UserForm.propTypes = {
@@ -81,9 +70,7 @@ UserForm.propTypes = {
     }),
   ),
 
-  formLayout: PropTypes.string,
-
-  onSubmit: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 export default UserForm;

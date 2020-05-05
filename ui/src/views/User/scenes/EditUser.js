@@ -6,14 +6,14 @@ import {
 // import { EditOutlined, BarChartOutlined } from '@ant-design/icons';
 import { UserForm } from 'components/User';
 import { getUser, updateUser } from 'api/user';
-// TO DO : import useRoleTypes from 'hooks/useRoleTypes';
+import useRoleTypes from 'hooks/useRoleTypes';
 
 
 function EditUser() {
   const { id } = useParams();
   const userID = parseInt(id, 10);
   const history = useHistory();
-  // TO DO : const [roleTypes] = useRoleTypes();
+  const [roleTypes] = useRoleTypes();
 
   const [user, setUser] = useState({});
 
@@ -35,7 +35,12 @@ function EditUser() {
   const handleEdit = (newUser) => {
     updateUser(newUser)
       .then(() => {
-        history.push('/users');
+        history.push('/users', {
+          message: {
+            level: 'success',
+            content: `Role user ${newUser.email} is successfully edit`,
+          },
+        });
       })
       .catch((error) => {
         message.error(error.message);
@@ -52,7 +57,7 @@ function EditUser() {
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
-            <UserForm handleSubmit={handleEdit} user={user} />
+            <UserForm handleSubmit={handleEdit} user={user} roleTypes={roleTypes} />
           </Col>
         </Row>
       </div>
