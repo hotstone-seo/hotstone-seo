@@ -79,6 +79,8 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
 
+	// TO DO : check into table role_user based on userInfoResp["email"]
+
 	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret)
 	if err != nil {
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)

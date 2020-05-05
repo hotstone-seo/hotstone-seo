@@ -19,6 +19,7 @@ type api struct {
 	controller.AuditTrailCntrl
 	controller.StructuredDataCntrl
 	controller.UserCntrl
+	controller.RoleTypeCntrl
 }
 
 func (a *api) route(e *echo.Echo) {
@@ -40,4 +41,5 @@ func (a *api) route(e *echo.Echo) {
 	a.AuditTrailCntrl.Route(group)
 	a.StructuredDataCntrl.Route(group)
 	a.UserCntrl.Route(group)
+	a.RoleTypeCntrl.Route(group)
 }
