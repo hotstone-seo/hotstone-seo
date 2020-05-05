@@ -28,6 +28,7 @@ type ProviderServiceImpl struct {
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo
+	repository.StructuredDataRepo
 
 	Redis *redis.Client
 	urlstore.Store

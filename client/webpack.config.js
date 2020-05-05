@@ -19,6 +19,9 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
+            plugins: [
+              ["@babel/plugin-transform-runtime",{"regenerator": true}]
+            ],
             presets: ['@babel/preset-env', '@babel/preset-react']
           }
         }

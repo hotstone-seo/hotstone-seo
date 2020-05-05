@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, message,
+  Form, Input, Button, message, Row, Col,
 } from 'antd';
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { addBreadcrumbList, updateBreadcrumbList } from 'api/structuredData';
 
 function BreadcrumbListForm({ structuredData, afterSubmit }) {
@@ -33,34 +33,38 @@ function BreadcrumbListForm({ structuredData, afterSubmit }) {
       form={form}
       initialValues={{ list_item: listItem }}
       onFinish={onFinish}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 12 }}
     >
       <Form.List name="list_item">
         {(fields, { add, remove }) => (
           <div>
             {fields.map((field, index) => (
-              <>
-                <Form.Item
-                  name={[field.name, 'name']}
-                  fieldKey={[field.fieldKey, 'name']}
-                >
-                  <Input
-                    placeholder={`Page #${index + 1}'s name`}
-                    suffix={(
-                      <MinusCircleOutlined
-                        onClick={() => { remove(field.name); }}
-                      />
-                    )}
+              <Row key={field.key} gutter={8}>
+                <Col span={8}>
+                  <Form.Item
+                    name={[field.name, 'name']}
+                    fieldKey={[field.fieldKey, 'name']}
+                  >
+                    <Input placeholder={`Page #${index + 1}'s name`} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name={[field.name, 'item']}
+                    fieldKey={[field.fieldKey, 'item']}
+                  >
+                    <Input placeholder={`URL #${index + 1}`} />
+                  </Form.Item>
+                </Col>
+                <Col span={4}>
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => { remove(field.name); }}
+                    style={{ position: 'relative', margin: '0 8px' }}
                   />
-                </Form.Item>
-                <Form.Item
-                  name={[field.name, 'item']}
-                  fieldKey={[field.fieldKey, 'item']}
-                >
-                  <Input placeholder={`URL #${index + 1}`} />
-                </Form.Item>
-              </>
+                </Col>
+              </Row>
             ))}
             <Button
               type="dashed"

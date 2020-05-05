@@ -10,7 +10,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function DataSourceList(props) {
   const {
-    dataSources, onClick, onEdit, onDelete,
+    dataSources, loading, onClick, onEdit, onDelete,
   } = props;
 
   const columns = [
@@ -68,6 +68,7 @@ function DataSourceList(props) {
       columns={columns}
       dataSource={dataSources}
       rowKey="id"
+      loading={loading}
       scroll={{ x: true }}
     />
   );
@@ -75,6 +76,7 @@ function DataSourceList(props) {
 
 DataSourceList.defaultProps = {
   dataSources: [],
+  loading: false,
 };
 
 DataSourceList.propTypes = {
@@ -86,11 +88,9 @@ DataSourceList.propTypes = {
       updated_at: PropTypes.string,
     }),
   ),
-
+  loading: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
-
   onEdit: PropTypes.func.isRequired,
-
   onDelete: PropTypes.func.isRequired,
 };
 

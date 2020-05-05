@@ -45,12 +45,13 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.V
 // FetchTags handle logic for fetching tag
 func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*ITag, err error) {
 	var (
-		rule *repository.Rule
-		tags []*repository.Tag
-		ds   *IDataSource
-		b    []byte
-		data interface{}
-		itag *ITag
+		rule            *repository.Rule
+		tags            []*repository.Tag
+		structuredDatas []*repository.StructuredData
+		ds              *IDataSource
+		b               []byte
+		data            interface{}
+		itag            *ITag
 	)
 
 	locale := vals.Get(localeParam)
@@ -70,6 +71,15 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (i
 
 	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
 		return nil, fmt.Errorf("Find-Tags: %w", err)
+	}
+
+	if structuredDatas, err = p.StructuredDataRepo.FindByRule(ctx, rule.ID); err != nil {
+		return nil, fmt.Errorf("Find-StructuredDatas: %w", err)
+	}
+
+	for _, strData := range structuredDatas {
+		strDataTag := strData.ToTag()
+		tags = append(tags, &strDataTag)
 	}
 
 	if len(tags) < 1 {

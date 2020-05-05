@@ -11,7 +11,11 @@ import (
 
 const (
 	jsonServerSrc  = "scripts/json-server/db.json"
-	jsonServerPort = "3021"
+)
+
+var (
+	jsonServerHost = getEnv("JSON_SERVER_HOST", "localhost")
+	jsonServerPort = getEnv("JSON_SERVER_PORT", "3021")
 )
 
 func jsonServer(c *typbuildtool.Context) []*cli.Command {
@@ -35,9 +39,16 @@ func startJSONServer(c *typbuildtool.CliContext) (err error) {
 	}
 
 	c.Infof("Run %s", jsonServer)
-	cmd := exec.CommandContext(c, jsonServer, "--port", jsonServerPort, jsonServerSrc)
+	cmd := exec.CommandContext(c, jsonServer, "--host", jsonServerHost, "--port", jsonServerPort, jsonServerSrc)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 	return
+}
+
+func getEnv(key, defaultVal string) string {
+	if value, ok := os.LookupEnv(key); ok {
+        return value
+    }
+    return defaultVal
 }

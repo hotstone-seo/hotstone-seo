@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, message,
+  Form, Input, Button, message, Divider,
 } from 'antd';
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { addFAQPage, updateFAQPage } from 'api/structuredData';
 
 function FAQPageForm({ structuredData, afterSubmit }) {
@@ -32,33 +32,35 @@ function FAQPageForm({ structuredData, afterSubmit }) {
       form={form}
       initialValues={{ faqs }}
       onFinish={onFinish}
-      labelCol={{ span: 6 }}
-      wrapperCol={{ span: 12 }}
+      wrapperCol={{ span: 16 }}
     >
       <Form.List name="faqs">
         {(fields, { add, remove }) => (
           <div>
             {fields.map((field, index) => (
               <>
-                <Form.Item
-                  name={[field.name, 'question']}
-                  fieldKey={[field.fieldKey, 'question']}
-                >
-                  <Input
-                    addonBefore="Q:"
-                    placeholder={`Question #${index + 1}`}
-                    suffix={(
-                      <MinusCircleOutlined
-                        onClick={() => { remove(field.name); }}
-                      />
-                    )}
+                <Divider orientation="left">{`Question #${index + 1}`}</Divider>
+                <Form.Item>
+                  <Form.Item
+                    name={[field.name, 'question']}
+                    fieldKey={[field.fieldKey, 'question']}
+                    noStyle
+                  >
+                    <Input placeholder="Question" style={{ width: '90%' }} />
+                  </Form.Item>
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => { remove(field.name); }}
+                    style={{ position: 'relative', margin: '0 8px' }}
                   />
                 </Form.Item>
                 <Form.Item
                   name={[field.name, 'answer']}
                   fieldKey={[field.fieldKey, 'answer']}
                 >
-                  <Input addonBefore="A:" placeholder="Answer" />
+                  <Input.TextArea placeholder="Answer" style={{ width: '90%' }} />
                 </Form.Item>
               </>
             ))}
@@ -72,8 +74,8 @@ function FAQPageForm({ structuredData, afterSubmit }) {
           </div>
         )}
       </Form.List>
-      <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
-        <Button data-testid="btn-save" type="primary" htmlType="submit">
+      <Form.Item style={{ width: '90%' }}>
+        <Button data-testid="btn-save" type="primary" htmlType="submit" style={{ float: 'right' }}>
           Save
         </Button>
       </Form.Item>

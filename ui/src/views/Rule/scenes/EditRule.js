@@ -91,10 +91,10 @@ function EditRule() {
         tabBarStyle={{ paddingLeft: 16 }}
         style={{ margin: 24, background: '#fff' }}
       >
-        <TabPane tab="Manage Tags" key="tag" style={{ padding: '0 16px' }}>
+        <TabPane tab="Tags" key="tag" style={{ padding: '0 16px' }}>
           <ManageTags ruleID={ruleID} />
         </TabPane>
-        <TabPane tab="Manage Structured Data" key="struct" style={{ padding: '0 16px' }}>
+        <TabPane tab="Structured Data" key="struct" style={{ padding: '0 16px' }}>
           <ManageStructuredData ruleID={ruleID}/>
         </TabPane>
       </Tabs>

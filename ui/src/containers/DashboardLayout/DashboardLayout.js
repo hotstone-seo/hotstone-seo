@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Link, Route, Switch, useLocation,
+  Link, Route, Switch, useLocation, Redirect
 } from 'react-router-dom';
 import { Layout, Menu, message } from 'antd';
 import routes from 'routes';
@@ -57,6 +57,7 @@ function DashboardLayout() {
         </Header>
         <Content className={styles.content}>
           <Switch>
+            <Redirect exact from="/" to="/rules" />
             {routes.map((route) => (route.component ? (
               <Route
                 key={route.path}

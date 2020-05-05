@@ -1,9 +1,10 @@
 # === build frontend ===
 FROM node:12 AS frontend-builder
+ENV ROOT_REPO .
 RUN mkdir /usr/src/frontend
 WORKDIR /usr/src/frontend
 ENV PATH /usr/src/frontend/node_modules/.bin:$PATH
-COPY ./ui /usr/src/frontend
+COPY ${ROOT_REPO}/ui /usr/src/frontend
 RUN npm install
 RUN npm run build
 
@@ -12,11 +13,11 @@ FROM golang:alpine AS backend-builder
 
 RUN apk update && apk add --no-cache git bash
 WORKDIR /usr/src/backend
-COPY . .
+COPY ${ROOT_REPO}/ .
 
 RUN go get -u -v golang.org/x/tools/cmd/goimports
 
-RUN ./typicalw build
+RUN go build -o bin/hotstone-seo  cmd/hotstone-seo/main.go
 
 # === BUILD FINAL ===
 FROM golang:alpine

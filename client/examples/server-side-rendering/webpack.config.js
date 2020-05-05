@@ -2,17 +2,27 @@ var path = require('path');
 var webpack = require('webpack');
 var nodeExternals = require('webpack-node-externals');
 
+const js = {
+  test: /\.js$/,
+  exclude: /node_modules/,
+  use: {
+    loader: "babel-loader",
+    options: {
+      presets: ["@babel/preset-env", "@babel/preset-react"],
+    },
+  },
+};
+
 var browserConfig = {
   entry: './src/browser/index.js',
+  target: 'web',
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: 'bundle.js',
     publicPath: '/'
   },
   module: {
-    rules: [
-      { test: /\.js$/, exclude: /node_modules/, use: 'babel-loader' },
-    ]
+    rules: [js],
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -31,15 +41,16 @@ var serverConfig = {
     publicPath: '/'
   },
   module: {
-    rules: [
-      { test: /\.js$/, exclude: /node_modules/, use: 'babel-loader' }
-    ]
+    rules: [js],
   },
   plugins: [
     new webpack.DefinePlugin({
       __isBrowser__: 'false'
     })
-  ]
+  ],
+  node: {
+    __dirname: false,
+  },
 }
 
 module.exports = [browserConfig, serverConfig]
