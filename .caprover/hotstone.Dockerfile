@@ -1,6 +1,6 @@
 # === build frontend ===
 FROM node:12 AS frontend-builder
-ENV ROOT_REPO .
+ENV ROOT_REPO ..
 RUN mkdir /usr/src/frontend
 WORKDIR /usr/src/frontend
 ENV PATH /usr/src/frontend/node_modules/.bin:$PATH
