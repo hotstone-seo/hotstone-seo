@@ -22,5 +22,6 @@ RUN ls -hal ./
 RUN ls -hal ./vendor
 
 RUN npm install --no-package-lock
+RUN npx webpack
 
 CMD ["npm", "run", "start:server"]
