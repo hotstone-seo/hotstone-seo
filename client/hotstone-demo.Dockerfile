@@ -23,4 +23,4 @@ RUN ls -hal ./vendor
 
 RUN npm install --no-package-lock
 
-CMD ["npx", "nodemon", "server"]
+CMD ["npm", "run", "start:server"]
