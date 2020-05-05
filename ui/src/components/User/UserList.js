@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table, Divider, Button, Popconfirm, Tooltip, message, Switch,
+  Table, Divider, Button, Popconfirm, Tooltip, message,
 } from 'antd';
 import moment from 'moment';
 import { fetchUsers } from 'api/user';

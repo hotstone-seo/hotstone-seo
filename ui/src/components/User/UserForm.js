@@ -38,7 +38,7 @@ function UserForm(props) {
         label="Email"
         rules={[{ required: true, message: 'Please input the name of your Rule' }]}
       >
-        <Input data-testid="input-name" placeholder="My Rule" maxLength="200" />
+        <Input data-testid="input-name" placeholder="Email" maxLength="200" />
       </Form.Item>
 
       <Form.Item
