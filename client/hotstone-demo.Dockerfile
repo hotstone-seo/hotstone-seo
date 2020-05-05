@@ -8,9 +8,11 @@ RUN npm install
 RUN npm run build
 RUN npm pack
 RUN ls -hal ./
+RUN mkdir -p /usr/src/client/examples/server-side-rendering/vendor/
 RUN cp *.tgz /usr/src/client/examples/server-side-rendering/vendor/
 
 WORKDIR /usr/src/client/examples/server-side-rendering
+RUN ls -hal ./
 RUN ls -hal ../../
 RUN npm install
 
