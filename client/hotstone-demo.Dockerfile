@@ -21,6 +21,6 @@ WORKDIR /app/demo
 RUN ls -hal ./
 RUN ls -hal ./vendor
 
-RUN npm install
+RUN npm install --no-package-lock
 
 CMD ["npx", "nodemon", "server"]
