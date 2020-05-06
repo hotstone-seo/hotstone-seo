@@ -6,7 +6,11 @@ import {
 
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-function TagList({ tags, onEdit, onDelete }) {
+function TagList(props) {
+  const {
+    tags, loading, onEdit, onDelete,
+  } = props;
+
   const columns = [
     { title: 'Type', dataIndex: 'type', key: 'type' },
     {
@@ -15,10 +19,7 @@ function TagList({ tags, onEdit, onDelete }) {
       key: 'attributes',
       render: (text, record) => {
         const { attributes } = record;
-        const attrs = [];
-        for (const key in attributes) {
-          attrs.push(`${key}="${attributes[key]}"`);
-        }
+        const attrs = Object.keys(attributes).map((key) => `${key}="${attributes[key]}"`);
         if (attrs.length === 0) {
           return null;
         }
@@ -66,6 +67,7 @@ function TagList({ tags, onEdit, onDelete }) {
     <Table
       columns={columns}
       dataSource={tags}
+      loading={loading}
       rowKey="id"
     />
   );
@@ -73,6 +75,7 @@ function TagList({ tags, onEdit, onDelete }) {
 
 TagList.defaultProps = {
   tags: [],
+  loading: false,
 };
 
 TagList.propTypes = {
@@ -83,9 +86,8 @@ TagList.propTypes = {
       value: PropTypes.string,
     }),
   ),
-
+  loading: PropTypes.bool,
   onEdit: PropTypes.func.isRequired,
-
   onDelete: PropTypes.func.isRequired,
 };
 
