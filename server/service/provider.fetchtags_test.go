@@ -45,6 +45,24 @@ var (
 			},
 		},
 	}
+	strdata_rule999 = []*repository.StructuredData{
+		{
+			ID:   93,
+			Type: "FAQPage",
+			Data: map[string]interface{}{
+				"@context": "https://schema.org",
+				"@type":    "FAQPage",
+				"mainEntity": map[string]interface{}{
+					"@type": "Question",
+					"name":  "What is the year?",
+					"acceptedAnswer": map[string]interface{}{
+						"@type": "Answer",
+						"text":  "It's {{year}}",
+					},
+				},
+			},
+		},
+	}
 	ds666_response      string = `{"name":"covid19", "year": 2020}`
 	itags_rule999_en_US        = []*service.ITag{
 		{
@@ -59,6 +77,14 @@ var (
 				"name":    "description",
 				"content": "This year is 2020",
 			},
+		},
+		{
+			ID:   0,
+			Type: "script",
+			Attributes: map[string]string{
+				"type": "application/ld+json",
+			},
+			Value: "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":{\"@type\":\"Question\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"It's 2020\"},\"name\":\"What is the year?\"}}",
 		},
 	}
 
@@ -107,12 +133,14 @@ func TestProviderService2(t *testing.T) {
 	dsmock := mock_repository.NewMockDataSourceRepo(ctrl)
 	rulemock := mock_repository.NewMockRuleRepo(ctrl)
 	tagmock := mock_repository.NewMockTagRepo(ctrl)
+	strdatamock := mock_repository.NewMockStructuredDataRepo(ctrl)
 	ctx := context.Background()
 
 	svc := service.ProviderServiceImpl{
-		DataSourceRepo: dsmock,
-		RuleRepo:       rulemock,
-		TagRepo:        tagmock,
+		DataSourceRepo:     dsmock,
+		RuleRepo:           rulemock,
+		TagRepo:            tagmock,
+		StructuredDataRepo: strdatamock,
 	}
 
 	testCases := []fetchTestCase{
@@ -153,6 +181,7 @@ func TestProviderService2(t *testing.T) {
 			pre: func(fetchTestCase) {
 				rulemock.EXPECT().FindOne(ctx, int64(777)).Return(rule777_noDS, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(777), "en_US").Return([]*repository.Tag{}, nil)
+				strdatamock.EXPECT().FindByRule(ctx, int64(777)).Return([]*repository.StructuredData{}, nil)
 			},
 			vals:     parseQuery(`_rule=777&_locale=en_US`),
 			expected: []*service.ITag{},
@@ -162,6 +191,7 @@ func TestProviderService2(t *testing.T) {
 			pre: func(fetchTestCase) {
 				rulemock.EXPECT().FindOne(ctx, int64(777)).Return(rule777_noDS, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(777), "en_US").Return(tags_rule777_en_US, nil)
+				strdatamock.EXPECT().FindByRule(ctx, int64(777)).Return([]*repository.StructuredData{}, nil)
 			},
 			vals: parseQuery(`_rule=777&_locale=en_US`),
 			expected: func() (tags []*service.ITag) {
@@ -177,6 +207,7 @@ func TestProviderService2(t *testing.T) {
 			pre: func(fetchTestCase) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
+				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return([]*repository.StructuredData{}, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(nil, fmt.Errorf("some-error"))
 			},
 			vals:        parseQuery(`_rule=999&_locale=en_US`),
@@ -187,6 +218,7 @@ func TestProviderService2(t *testing.T) {
 			pre: func(fetchTestCase) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
+				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return([]*repository.StructuredData{}, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(&repository.DataSource{URL: "bad-url"}, nil)
 			},
 			vals:        parseQuery(`_rule=999&_locale=en_US`),
@@ -198,6 +230,7 @@ func TestProviderService2(t *testing.T) {
 			pre: func(tt fetchTestCase) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
+				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return([]*repository.StructuredData{}, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(&repository.DataSource{URL: tt.server.URL}, nil)
 			},
 			vals:        parseQuery(`_rule=999&_locale=en_US`),
@@ -214,6 +247,7 @@ func TestProviderService2(t *testing.T) {
 
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
+				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return(strdata_rule999, nil)
 				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(ds, nil)
 			},
 			vals:     parseQuery(`_rule=999&_locale=en_US`),

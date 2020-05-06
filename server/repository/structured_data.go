@@ -9,7 +9,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/prometheus/common/log"
+	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
@@ -25,6 +25,7 @@ type StructuredData struct {
 }
 
 // StructuredDataRepo handles database interaction for Structured Data
+// @mock
 type StructuredDataRepo interface {
 	FindOne(context.Context, int64) (*StructuredData, error)
 	Find(context.Context, ...dbkit.FindOption) ([]*StructuredData, error)

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   message, Space, Select, Button,
 } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { fetchTags, deleteTag } from 'api/tag';
+import useAsync from 'hooks/useAsync';
 import { TagForm, TagList } from 'components/Tag';
 import locales from 'locales';
 
@@ -12,28 +13,21 @@ const { Option } = Select;
 
 function ManageTags({ ruleID }) {
   const [focusTag, setFocusTag] = useState(null);
-  const [tags, setTags] = useState([]);
   const [locale, setLocale] = useState(locales[0]);
+  const partialFetch = useCallback(
+    () => fetchTags({ rule_id: ruleID, locale }),
+    [ruleID, locale],
+  );
+  const {
+    value: tags, setValue: setTags, pending, error, execute,
+  } = useAsync(partialFetch);
 
-  useEffect(() => {
-    fetchTags({ rule_id: ruleID, locale })
-      .then((newTags) => {
-        setTags(newTags);
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
-  }, [ruleID, locale]);
+  if (error) {
+    message.error(error.message);
+  }
 
   const refreshTag = () => {
-    fetchTags({ rule_id: ruleID, locale })
-      .then((newTags) => {
-        setTags(newTags);
-        setFocusTag(null);
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
+    execute().then(() => setFocusTag(null));
   };
 
   const removeTag = ({ id: tagID }) => {
@@ -41,8 +35,8 @@ function ManageTags({ ruleID }) {
       .then(() => {
         setTags(tags.filter((tag) => tag.id !== tagID));
       })
-      .catch((error) => {
-        message.error(error.message);
+      .catch((err) => {
+        message.error(err.message);
       });
   };
 
@@ -72,7 +66,12 @@ function ManageTags({ ruleID }) {
           <PlusOutlined />
           Add Tag
         </Button>
-        <TagList tags={tags} onEdit={(tag) => setFocusTag(tag)} onDelete={removeTag} />
+        <TagList
+          tags={tags}
+          loading={pending}
+          onEdit={(tag) => setFocusTag(tag)}
+          onDelete={removeTag}
+        />
       </Space>
     )
   );

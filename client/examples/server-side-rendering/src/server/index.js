@@ -15,13 +15,18 @@ const server = express();
 server.use(cors());
  
 // Instantiate the client by providing the URL of HotStone provider
-const client = new HotStoneClient('http://localhost:8089', {cacheManager: `./test-local-cache`});
+const hotstoneURL = process.env.HOTSTONE_URL || 'http://localhost:8089'
+const client = new HotStoneClient(hotstoneURL, {cacheManager: `./test-local-cache`});
 
 const template = ({ body, head }, data) => {
   return `
     <!DOCTYPE html>
     <html ${head.htmlAttributes.toString()}>
       <head>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous" />
+
         ${head.title.toString()}
         ${head.meta.toString()}
         ${head.link.toString()}
@@ -29,11 +34,8 @@ const template = ({ body, head }, data) => {
       <body ${head.bodyAttributes.toString()}>
         <div id="root">${body}</div>
         <script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
+        <script src="/public/bundle.js"></script>
       </body>
-      <script src="/public/bundle.js"></script>
-      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-        crossorigin="anonymous" />
     </html>
   `
 }
@@ -60,15 +62,19 @@ server.get('*', (req, res, next) => {
      //   { type: "meta", attributes: { name: "description", content: "Page Description" } }
      // ]
      const tags = await client.tags(rule, "en_US");
-     const data = { rule, tags }
+     const dataWithoutRawHTML = { rule, tags }
 
      // Rendering element...
-     const appString = renderToString(
-       <StaticRouter location={req.url} context={{}} >
-         <App data={data} />
-       </StaticRouter>
-     );
      const helmet = Helmet.renderStatic();
+     const rawHTML = template({ body: "", head: helmet }, dataWithoutRawHTML)
+
+     const data = {rule, tags, rawHTML}
+     const appString = renderToString(
+      <StaticRouter location={req.url} context={{}} >
+        <App data={data} />
+      </StaticRouter>
+    );
+
      res.send(template({ body: appString, head: helmet }, data));
    } catch(error) {
      next(error);
