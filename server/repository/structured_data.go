@@ -25,6 +25,7 @@ type StructuredData struct {
 }
 
 // StructuredDataRepo handles database interaction for Structured Data
+// @mock
 type StructuredDataRepo interface {
 	FindOne(context.Context, int64) (*StructuredData, error)
 	Find(context.Context, ...dbkit.FindOption) ([]*StructuredData, error)
