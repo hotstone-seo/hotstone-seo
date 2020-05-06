@@ -33,8 +33,13 @@ export default function Layout(props) {
         <Dropdown size="sm" style={{ padding: "0.1em" }}>
           <Dropdown.Toggle>{label}</Dropdown.Toggle>
           <Dropdown.Menu>
-            {children.map(({label, to}) => (
-              <Dropdown.Item href={to}>{label}</Dropdown.Item>
+            {children.map(({label, desc, to}) => (
+              <Dropdown.Item href={to}>
+                <div>
+                  Rule:<code>{label}</code>{" "}
+                  URL:<strong>{desc}</strong> 
+                </div>
+              </Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>
