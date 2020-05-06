@@ -62,15 +62,19 @@ server.get('*', (req, res, next) => {
      //   { type: "meta", attributes: { name: "description", content: "Page Description" } }
      // ]
      const tags = await client.tags(rule, "en_US");
-     const data = { rule, tags }
+     const dataWithoutRawHTML = { rule, tags }
 
      // Rendering element...
-     const appString = renderToString(
-       <StaticRouter location={req.url} context={{}} >
-         <App data={data} />
-       </StaticRouter>
-     );
      const helmet = Helmet.renderStatic();
+     const rawHTML = template({ body: "", head: helmet }, dataWithoutRawHTML)
+
+     const data = {rule, tags, rawHTML}
+     const appString = renderToString(
+      <StaticRouter location={req.url} context={{}} >
+        <App data={data} />
+      </StaticRouter>
+    );
+
      res.send(template({ body: appString, head: helmet }, data));
    } catch(error) {
      next(error);

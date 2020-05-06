@@ -34,7 +34,7 @@ export default function Layout(props) {
           <Dropdown.Toggle>{label}</Dropdown.Toggle>
           <Dropdown.Menu>
             {children.map(({label, desc, to}) => (
-              <Dropdown.Item href={to}>
+              <Dropdown.Item key={to} href={to}>
                 <div>
                   Rule:<code>{label}</code>{" "}
                   URL:<strong>{desc}</strong> 
@@ -65,7 +65,7 @@ export default function Layout(props) {
       </ul>
       <div className="card">
         <div className="card-header">
-          Tag Response
+          HTML Response
         </div>
         <div className="card-body">
           {content}
