@@ -65,7 +65,7 @@ export default function Layout(props) {
       </ul>
       <div className="card">
         <div className="card-header">
-          Tag Response
+          HTML Response
         </div>
         <div className="card-body">
           {content}
