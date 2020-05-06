@@ -17,14 +17,17 @@
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
     "@babel/runtime": "^7.7.7",
+    "bootstrap": "^4.4.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "hotstone-client": "file:vendor/hotstone-client-0.4.1.tgz",
     "react": "^16.12.0",
+    "react-bootstrap": "^1.0.1",
     "react-dom": "^16.12.0",
     "react-element-to-jsx-string": "^14.3.1",
     "react-helmet": "^5.2.1",
     "react-router-dom": "^5.1.2",
+    "react-syntax-highlighter": "^12.2.1",
     "serialize-javascript": "^2.1.2",
     "serve-favicon": "^2.5.0"
   },

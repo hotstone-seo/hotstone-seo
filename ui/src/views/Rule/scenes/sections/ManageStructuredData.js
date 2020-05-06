@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { message, Space, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { fetchStructuredDatas, deleteStructuredData } from 'api/structuredData';
+import useAsync from 'hooks/useAsync';
 import { StructuredDataForm, StructuredDataList } from 'components/StructuredData';
 
 // Aliasing for shorter name
@@ -12,27 +13,16 @@ const deleteStruct = deleteStructuredData;
 function ManageStructuredData({ ruleID }) {
   // NOTE: Structs is the shorthand that we use for Structured Data
   const [focusStruct, setFocusStruct] = useState(null);
-  const [structs, setStructs] = useState([]);
-
-  useEffect(() => {
-    fetchStructs({ rule_id: ruleID })
-      .then((newStructs) => {
-        setStructs(newStructs);
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
-  }, [ruleID]);
+  const partialFetch = useCallback(
+    () => fetchStructs({ rule_id: ruleID }),
+    [ruleID],
+  );
+  const {
+    value: structs, setValue: setStructs, pending, error, execute,
+  } = useAsync(partialFetch);
 
   const refreshStruct = () => {
-    fetchStructs({ rule_id: ruleID })
-      .then((newStructs) => {
-        setStructs(newStructs);
-        setFocusStruct(null);
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
+    execute().then(() => setFocusStruct(null));
   };
 
   const removeStruct = ({ id: structID }) => {
@@ -40,10 +30,14 @@ function ManageStructuredData({ ruleID }) {
       .then(() => {
         setStructs(structs.filter((struct) => struct.id !== structID));
       })
-      .catch((error) => {
-        message.error(error.message);
+      .catch((err) => {
+        message.error(err.message);
       });
   };
+
+  if (error) {
+    message.error(error.message);
+  }
 
   return (
     focusStruct ? (
@@ -66,6 +60,7 @@ function ManageStructuredData({ ruleID }) {
           structuredDatas={structs}
           onEdit={(struct) => setFocusStruct(struct)}
           onDelete={removeStruct}
+          loading={pending}
         />
       </Space>
     )

@@ -10,7 +10,7 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function StructuredDataList(props) {
   const {
-    structuredDatas, onEdit, onDelete,
+    structuredDatas, loading, onEdit, onDelete,
   } = props;
 
   const columns = [
@@ -53,6 +53,7 @@ function StructuredDataList(props) {
     <Table
       columns={columns}
       dataSource={structuredDatas}
+      loading={loading}
       rowKey="id"
     />
   );
@@ -60,6 +61,7 @@ function StructuredDataList(props) {
 
 StructuredDataList.defaultProps = {
   structuredDatas: [],
+  loading: false,
 };
 
 StructuredDataList.propTypes = {
@@ -70,6 +72,7 @@ StructuredDataList.propTypes = {
       updated_at: PropTypes.string,
     }),
   ),
+  loading: PropTypes.bool,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
