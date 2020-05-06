@@ -84,7 +84,7 @@ var (
 			Attributes: map[string]string{
 				"type": "application/ld+json",
 			},
-			Value: "",
+			Value: "{\"@context\":\"https://schema.org\",\"@type\":\"FAQPage\",\"mainEntity\":{\"@type\":\"Question\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"It's 2020\"},\"name\":\"What is the year?\"}}",
 		},
 	}
 
