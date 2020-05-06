@@ -9,7 +9,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/prometheus/common/log"
+	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
