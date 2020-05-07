@@ -30,6 +30,7 @@ const template = ({ body, head }, data) => {
         ${head.title.toString()}
         ${head.meta.toString()}
         ${head.link.toString()}
+        ${head.script.toString()}
       </head>
       <body ${head.bodyAttributes.toString()}>
         <div id="root">${body}</div>
