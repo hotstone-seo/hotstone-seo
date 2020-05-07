@@ -8,9 +8,7 @@ export default function HtmlPreview({ url }) {
     const [rawHtml, setRawHtml] = useState('')
 
     useEffect(() => {
-        console.log("URL: ", url)
         if (__isBrowser__ && url != '') {
-            console.log("after if URL: ", url)
             fetch(url).then((resp) => {
                 return resp.text()
             }).then((text) => {
