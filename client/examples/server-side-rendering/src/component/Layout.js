@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavItem, NavLink } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown'
 import Iframe from 'react-iframe'
-
+import HtmlPreview from './HtmlPreview'
 
 export default function Layout(props) {
 
@@ -72,13 +72,14 @@ export default function Layout(props) {
           {content}
         </div>
       </div>
-      <Iframe url={`https://search.google.com/structured-data/testing-tool/u/0/#url=${currentURLEnc}`}
+      {/* <Iframe url={`https://search.google.com/structured-data/testing-tool/u/0/#url=${currentURLEnc}`}
             width="100%"
             height="100%"
             id="myId"
             className="myClassname"
             display="initial"
-            position="relative"/>
+            position="relative"/> */}
+      <HtmlPreview url={currentURL} /> 
     </div>
   );
 }
