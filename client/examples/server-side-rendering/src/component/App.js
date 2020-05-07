@@ -11,12 +11,12 @@ export default function App(props) {
   return (
     <HotStone tags={tags} >
       <Layout links={links}>
-        {/* <HotStoneContext.Consumer>
+        <HotStoneContext.Consumer>
           {(value) => <TagInfo tags={value} />} 
-        </HotStoneContext.Consumer> */}
-        <SyntaxHighlighter language="html" style={docco}>
+        </HotStoneContext.Consumer>
+        {/* <SyntaxHighlighter language="html" style={docco}>
           {rawHTML}
-        </SyntaxHighlighter>
+        </SyntaxHighlighter> */}
       </Layout>
     </HotStone>
   );
