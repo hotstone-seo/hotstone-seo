@@ -120,6 +120,27 @@ func (r *URLSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) 
 	return
 }
 
+func (r *URLSyncRepoImpl) FindRule(ctx context.Context, ruleID int64) (urlStoreSync *URLSync, err error) {
+	var rows *sql.Rows
+	builder := sq.
+		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
+		From("url_sync").
+		Where(sq.Eq{"rule_id": ruleID}).
+		OrderBy("version DESC").
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+	if rows, err = builder.QueryContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
+	}
+	defer rows.Close()
+	if rows.Next() {
+		if urlStoreSync, err = scanURLSync(rows); err != nil {
+			dbtxn.SetError(ctx, err)
+		}
+	}
+	return
+}
+
 func scanURLSync(rows *sql.Rows) (*URLSync, error) {
 	var urlStoreSync URLSync
 	var err error

@@ -22,6 +22,8 @@ type URLSyncRepo interface {
 	Insert(ctx context.Context, URLSync URLSync) (lastInsertID int64, err error)
 	GetLatestVersion(ctx context.Context) (latestVersion int64, err error)
 	GetListDiff(ctx context.Context, offsetVersion int64) ([]*URLSync, error)
+
+	FindRule(ctx context.Context, ruleID int64) (*URLSync, error)
 }
 
 // NewURLSyncRepo return new instance of URLSyncRepo
