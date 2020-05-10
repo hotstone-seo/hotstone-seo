@@ -5,6 +5,7 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
@@ -46,29 +47,22 @@ func (r *RuleServiceImpl) Find(ctx context.Context, paginationParam repository.P
 
 // Insert rule
 func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (newRuleID int64, err error) {
-	defer r.CommitMe(&ctx)()
-	if newRuleID, err = r.RuleRepo.Insert(ctx, rule); err != nil {
-		r.CancelMe(ctx, err)
+	if rule.ID, err = r.RuleRepo.Insert(ctx, rule); err != nil {
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLSync{
-		Operation:        "INSERT",
-		RuleID:           newRuleID,
-		LatestURLPattern: &rule.URLPattern,
-	}); err != nil {
-		r.CancelMe(ctx, err)
-		return newRuleID, err
-	}
-	newRule, err := r.RuleRepo.FindOne(ctx, newRuleID)
-	if err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "rules", newRuleID, repository.Insert, nil, newRule); err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
-	return newRuleID, nil
+	go func() {
+		if _, auditErr := r.AuditTrailService.RecordChanges(
+			ctx,
+			"rules",
+			rule.ID,
+			repository.Insert,
+			nil,
+			rule,
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
+	return rule.ID, nil
 }
 
 // Delete rule
@@ -76,10 +70,6 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 	defer r.CommitMe(&ctx)()
 	oldRule, err := r.RuleRepo.FindOne(ctx, id)
 	if err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
-	if _, err = r.HistoryService.RecordHistory(ctx, "rules", id, oldRule); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
@@ -95,17 +85,35 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
-	// TODO: why oldRule still exists though it's already deleted ?
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "rules", id, repository.Delete, oldRule, nil); err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
+	go func() {
+		if _, histErr := r.HistoryService.RecordHistory(
+			ctx,
+			"rules",
+			id,
+			oldRule,
+		); histErr != nil {
+			log.Error(histErr)
+		}
+		if _, auditErr := r.AuditTrailService.RecordChanges(
+			ctx,
+			"rules",
+			id,
+			repository.Delete,
+			oldRule,
+			nil,
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
 	return nil
 }
 
 // Update rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
 	defer r.CommitMe(&ctx)()
+	var (
+		urlSync *repository.URLSync
+	)
 	oldRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
 	if err != nil {
 		r.CancelMe(ctx, err)
@@ -115,22 +123,44 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLSync{
-		Operation:        "UPDATE",
-		RuleID:           rule.ID,
-		LatestURLPattern: &rule.URLPattern,
-	}); err != nil {
+	if urlSync, err = r.URLSyncRepo.FindRule(ctx, rule.ID); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	newRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
-	if err != nil {
-		r.CancelMe(ctx, err)
-		return
+	if syncOP := syncOperation(rule, urlSync); syncOP != "" {
+		if _, err = r.URLSyncRepo.Insert(ctx, repository.URLSync{
+			Operation:        syncOP,
+			RuleID:           rule.ID,
+			LatestURLPattern: &rule.URLPattern,
+		}); err != nil {
+			r.CancelMe(ctx, err)
+			return
+		}
 	}
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "rules", rule.ID, repository.Update, oldRule, newRule); err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
+	go func() {
+		if _, auditErr := r.AuditTrailService.RecordChanges(
+			ctx,
+			"rules",
+			rule.ID,
+			repository.Update,
+			oldRule,
+			rule,
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
 	return nil
+}
+
+func syncOperation(rule repository.Rule, lastURLSync *repository.URLSync) string {
+	if lastURLSync == nil || lastURLSync.Operation == "DELETE" {
+		if rule.Status == "start" {
+			return "INSERT"
+		}
+		return ""
+	}
+	if rule.Status == "stop" {
+		return "DELETE"
+	}
+	return "UPDATE"
 }

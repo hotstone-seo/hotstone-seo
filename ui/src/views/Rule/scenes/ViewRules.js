@@ -31,7 +31,9 @@ function ViewRules({ match }) {
     updateRule(rule)
       .then(() => {
         message.success(`Successfully switch ${rule.name} to be ${onOFF}`);
-        window.location.reload();
+        // FIXME: We want to refresh the data of the updated rule, the
+        // laziest way to do this is to reload the ViewRules.
+        history.push(`${match.url}`);
       })
       .catch((error) => {
         message.error(error.message);

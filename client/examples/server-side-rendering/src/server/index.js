@@ -26,10 +26,12 @@ const template = ({ body, head }, data) => {
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.53.2/codemirror.min.css" rel="stylesheet" />
 
         ${head.title.toString()}
         ${head.meta.toString()}
         ${head.link.toString()}
+        ${head.script.toString()}
       </head>
       <body ${head.bodyAttributes.toString()}>
         <div id="root">${body}</div>
@@ -62,18 +64,21 @@ server.get('*', (req, res, next) => {
      //   { type: "meta", attributes: { name: "description", content: "Page Description" } }
      // ]
      const tags = await client.tags(rule, "en_US");
-     const dataWithoutRawHTML = { rule, tags }
+    //  const dataWithoutRawHTML = { rule, tags }
 
      // Rendering element...
-     const helmet = Helmet.renderStatic();
-     const rawHTML = template({ body: "", head: helmet }, dataWithoutRawHTML)
+    //  const helmet = Helmet.renderStatic();
+    //  const rawHTML = template({ body: "", head: helmet }, dataWithoutRawHTML)
 
-     const data = {rule, tags, rawHTML}
+    //  const data = {rule, tags, rawHTML}
+    
+     const data = {rule, tags}
      const appString = renderToString(
       <StaticRouter location={req.url} context={{}} >
         <App data={data} />
       </StaticRouter>
     );
+    const helmet = Helmet.renderStatic();
 
      res.send(template({ body: appString, head: helmet }, data));
    } catch(error) {

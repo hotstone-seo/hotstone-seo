@@ -89,8 +89,9 @@ const pageMachine = Machine({
 async function simulateMatch(locale, url) {
   const startTime = new Date().getTime();
   const rule = await match(url);
-  if (_.isEmpty(rule)) {
-    throw new Error('Not matched');
+  if (_.isEmpty(rule) || rule.rule_id === 0) {
+    execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
+    throw new Error('Not matched Rule.');
   }
   const tags = await fetchTags(rule, locale);
   const ruleDetail = await getRule(rule.rule_id);

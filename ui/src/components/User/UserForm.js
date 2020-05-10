@@ -27,7 +27,14 @@ function UserForm({ user, handleSubmit, roleTypes }) {
         label="Email"
         rules={[{ required: true, message: 'Please input the email' }]}
       >
-        <Input data-testid="input-email" placeholder="Email" maxLength="200" />
+        {user.email === undefined ? (
+          <Input data-testid="input-email" placeholder="Email" maxLength="200" />
+        ) : (
+          <>
+            {user.email}
+            <Input type="hidden" />
+          </>
+        )}
       </Form.Item>
 
       <Form.Item
