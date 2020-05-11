@@ -26,6 +26,8 @@ type RoleTypeRepo interface {
 	FindOne(context.Context, int64) (*RoleType, error)
 	Find(ctx context.Context, paginationParam PaginationParam) ([]*RoleType, error)
 	Insert(ctx context.Context, roleType RoleType) (lastInsertID int64, err error)
+	Update(ctx context.Context, roleType RoleType) error
+	Delete(ctx context.Context, id int64) error
 }
 
 // RoleTypeRepoImpl is implementation role_type repository
@@ -114,5 +116,41 @@ func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID
 		return
 	}
 	lastInsertID = e.ID
+	return
+}
+
+// Update role_type
+func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
+	if e.Modules == nil {
+		e.Modules = map[string]string{}
+	}
+
+	builder := sq.
+		Update("role_type").
+		Set("name", e.Name).
+		Set("modules", e.Modules).
+		Set("updated_at", time.Now()).
+		Where(sq.Eq{"id": e.ID}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
+	}
+	return
+}
+
+// Delete role_type
+func (r *RoleTypeRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+	builder := sq.
+		Delete("role_type").
+		Where(sq.Eq{"id": id}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+	}
 	return
 }
