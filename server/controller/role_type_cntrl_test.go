@@ -22,10 +22,6 @@ func TestRoleTypeController_Create(t *testing.T) {
 		RoleTypeService: roleTypeSvcMock,
 	}
 
-	t.Run("WHEN invalid role type request", func(t *testing.T) {
-		_, err := echotest.DoPOST(roleTypeCntrl.Create, "/", `{ "name": ""}`, nil)
-		require.EqualError(t, err, "code=400, message=Key: 'RoleType.Name' Error:Field validation for 'Name' failed on the 'required' tag")
-	})
 	t.Run("WHEN invalid json format", func(t *testing.T) {
 		_, err := echotest.DoPOST(roleTypeCntrl.Create, "/", `invalid`, nil)
 		require.EqualError(t, err, "code=400, message=Syntax error: offset=1, error=invalid character 'i' looking for beginning of value")
