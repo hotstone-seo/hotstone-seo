@@ -34,6 +34,20 @@ func (m *MockRoleTypeService) EXPECT() *MockRoleTypeServiceMockRecorder {
 	return m.recorder
 }
 
+// Delete mocks base method
+func (m *MockRoleTypeService) Delete(arg0 context.Context, arg1 int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete
+func (mr *MockRoleTypeServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockRoleTypeService)(nil).Delete), arg0, arg1)
+}
+
 // Find mocks base method
 func (m *MockRoleTypeService) Find(arg0 context.Context, arg1 repository.PaginationParam) ([]*repository.RoleType, error) {
 	m.ctrl.T.Helper()
@@ -62,4 +76,33 @@ func (m *MockRoleTypeService) FindOne(arg0 context.Context, arg1 int64) (*reposi
 func (mr *MockRoleTypeServiceMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockRoleTypeService)(nil).FindOne), arg0, arg1)
+}
+
+// Insert mocks base method
+func (m *MockRoleTypeService) Insert(arg0 context.Context, arg1 repository.RoleType) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Insert indicates an expected call of Insert
+func (mr *MockRoleTypeServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockRoleTypeService)(nil).Insert), arg0, arg1)
+}
+
+// Update mocks base method
+func (m *MockRoleTypeService) Update(arg0 context.Context, arg1 repository.RoleType) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update
+func (mr *MockRoleTypeServiceMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRoleTypeService)(nil).Update), arg0, arg1)
 }

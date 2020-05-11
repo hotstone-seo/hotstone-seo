@@ -8,12 +8,14 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"go.uber.org/dig"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 // RoleType represented role_type entity
 type RoleType struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
+	Modules   Attrs     `json:"modules"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -23,6 +25,9 @@ type RoleType struct {
 type RoleTypeRepo interface {
 	FindOne(context.Context, int64) (*RoleType, error)
 	Find(ctx context.Context, paginationParam PaginationParam) ([]*RoleType, error)
+	Insert(ctx context.Context, roleType RoleType) (lastInsertID int64, err error)
+	Delete(ctx context.Context, id int64) error
+	Update(ctx context.Context, roleType RoleType) error
 }
 
 // RoleTypeRepoImpl is implementation role_type repository
@@ -35,6 +40,11 @@ type RoleTypeRepoImpl struct {
 // @constructor
 func NewRoleTypeRepo(impl RoleTypeRepoImpl) RoleTypeRepo {
 	return &impl
+}
+
+// Validate role_type
+func (roleType RoleType) Validate() error {
+	return validator.New().Struct(roleType)
 }
 
 // FindOne role_type
@@ -80,6 +90,67 @@ func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationP
 			return
 		}
 		list = append(list, &e0)
+	}
+	return
+}
+
+// Insert role_type
+func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID int64, err error) {
+	if e.Modules == nil {
+		e.Modules = map[string]string{}
+	}
+
+	builder := sq.
+		Insert("role_type").
+		Columns(
+			"name",
+			"modules",
+		).
+		Values(e.Name, e.Modules).
+		Suffix("RETURNING \"id\"").
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
+	}
+	lastInsertID = e.ID
+	return
+}
+
+// Delete role_type
+func (r *RoleTypeRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+	builder := sq.
+		Delete("role_type").
+		Where(sq.Eq{"id": id}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+	}
+	return
+}
+
+// Update role_type
+func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
+	if e.Modules == nil {
+		e.Modules = map[string]string{}
+	}
+
+	builder := sq.
+		Update("role_type").
+		Set("name", e.Name).
+		Set("modules", e.Modules).
+		Set("updated_at", time.Now()).
+		Where(sq.Eq{"id": e.ID}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
 	}
 	return
 }
