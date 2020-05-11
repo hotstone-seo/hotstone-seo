@@ -32,8 +32,8 @@ function ViewRoleTypes({ match }) {
   return (
     <div>
       <PageHeader
-        title="Role Type"
-        subTitle="List of RoleType with Role"
+        title="Role User"
+        subTitle="List of Role User"
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
@@ -44,7 +44,7 @@ function ViewRoleTypes({ match }) {
           icon={<PlusOutlined />}
           onClick={() => addDataRoleType()}
         >
-          Add New RoleType
+          Add New Role
         </Button>
         <RoleTypeList
           onClick={showEditForm}

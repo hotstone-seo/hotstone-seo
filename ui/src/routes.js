@@ -6,6 +6,7 @@ import {
   PlayCircleOutlined,
   AuditOutlined,
   UserOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 
 import Rule from 'views/Rule';
@@ -16,6 +17,7 @@ import Simulation from 'views/Simulation';
 import AuditTrail from 'views/AuditTrail';
 import GenericNotFound from 'views/GenericNotFound';
 import User from './views/User';
+import RoleType from './views/RoleType';
 
 const routes = [
   {
@@ -59,6 +61,12 @@ const routes = [
     name: 'User',
     component: User,
     icon: UserOutlined,
+  },
+  {
+    path: '/roletypes',
+    name: 'Role User',
+    component: RoleType,
+    icon: TeamOutlined,
   },
   {
     path: '*',
