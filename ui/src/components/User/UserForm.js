@@ -25,7 +25,7 @@ function UserForm({ user, handleSubmit, roleTypes }) {
       <Form.Item
         name="email"
         label="Email"
-        rules={[{ required: true, message: 'Please input the email' }]}
+        rules={[{ required: true, message: 'Please input the email' }, { type: 'email', message: 'Please input the valid email' }]}
       >
         {user.email === undefined ? (
           <Input data-testid="input-email" placeholder="Email" maxLength="200" />
