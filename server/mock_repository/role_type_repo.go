@@ -63,3 +63,18 @@ func (mr *MockRoleTypeRepoMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockRoleTypeRepo)(nil).FindOne), arg0, arg1)
 }
+
+// Insert mocks base method
+func (m *MockRoleTypeRepo) Insert(arg0 context.Context, arg1 repository.RoleType) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Insert indicates an expected call of Insert
+func (mr *MockRoleTypeRepoMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockRoleTypeRepo)(nil).Insert), arg0, arg1)
+}

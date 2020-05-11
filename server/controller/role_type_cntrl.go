@@ -2,6 +2,7 @@ package controller
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -21,6 +22,7 @@ type RoleTypeCntrl struct {
 func (c *RoleTypeCntrl) Route(e *echo.Group) {
 	e.GET("/role_types", c.Find)
 	e.GET("/role_types/:id", c.FindOne)
+	e.POST("/role_types", c.Create)
 }
 
 // Find all role_type
@@ -56,4 +58,23 @@ func (c *RoleTypeCntrl) FindOne(ec echo.Context) (err error) {
 	}
 
 	return ec.JSON(http.StatusOK, roleType)
+}
+
+// Create role_type
+func (c *RoleTypeCntrl) Create(ctx echo.Context) (err error) {
+	var roleType repository.RoleType
+	var lastInsertID int64
+	ctx0 := ctx.Request().Context()
+	fmt.Print(ctx0)
+	if err = ctx.Bind(&roleType); err != nil {
+		return err
+	}
+	if err = roleType.Validate(); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	if lastInsertID, err = c.RoleTypeService.Insert(ctx0, roleType); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	roleType.ID = lastInsertID
+	return ctx.JSON(http.StatusCreated, roleType)
 }
