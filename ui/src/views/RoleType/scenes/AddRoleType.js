@@ -9,13 +9,14 @@ import { createRoleType } from 'api/roleType';
 function AddRoleType() {
   const history = useHistory();
 
-  const handleCreate = (rule) => {
-    createRoleType(rule)
-      .then((newRule) => {
-        history.push(`/roletypes/${newRule.id}`, {
+  const handleCreate = (role) => {
+    // TO DO : re-check . Still not get value module access
+    createRoleType(role)
+      .then((newRole) => {
+        history.push(`/roletypes/${newRole.id}`, {
           message: {
             level: 'success',
-            content: `${newRule.name} is successfully created`,
+            content: `${newRole.name} is successfully created`,
           },
         });
       })
@@ -34,7 +35,7 @@ function AddRoleType() {
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
-            <RoleTypeForm onSubmit={handleCreate} />
+            <RoleTypeForm handleSubmit={handleCreate} />
           </Col>
         </Row>
       </div>

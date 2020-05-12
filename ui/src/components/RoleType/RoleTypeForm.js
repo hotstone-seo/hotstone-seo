@@ -14,6 +14,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
     checkedList: defaultCheckedList,
     indeterminate: true,
     checkAll: false,
+    checkboxArray: [],
   });
 
   useEffect(() => {
@@ -61,6 +62,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
       <Form.Item
         name="modules"
         label="Module Access"
+        rules={[{ required: true, message: 'Please check module access' }]}
       >
         <div>
           <div className="site-checkbox-all-wrapper">
@@ -77,6 +79,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
             options={plainOptions}
             value={checkedList.checkedList}
             onChange={handleonChange}
+            name="modules"
           />
         </div>
       </Form.Item>
