@@ -80,6 +80,21 @@ func (mr *MockCenterServiceMockRecorder) AddFAQPage(arg0, arg1 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddFAQPage", reflect.TypeOf((*MockCenterService)(nil).AddFAQPage), arg0, arg1)
 }
 
+// AddLocalBusiness mocks base method
+func (m *MockCenterService) AddLocalBusiness(arg0 context.Context, arg1 service.LocalBusinessRequest) (*repository.StructuredData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddLocalBusiness", arg0, arg1)
+	ret0, _ := ret[0].(*repository.StructuredData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddLocalBusiness indicates an expected call of AddLocalBusiness
+func (mr *MockCenterServiceMockRecorder) AddLocalBusiness(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddLocalBusiness", reflect.TypeOf((*MockCenterService)(nil).AddLocalBusiness), arg0, arg1)
+}
+
 // AddMetaTag mocks base method
 func (m *MockCenterService) AddMetaTag(arg0 context.Context, arg1 service.MetaTagRequest) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
@@ -165,6 +180,20 @@ func (m *MockCenterService) UpdateFAQPage(arg0 context.Context, arg1 service.FAQ
 func (mr *MockCenterServiceMockRecorder) UpdateFAQPage(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFAQPage", reflect.TypeOf((*MockCenterService)(nil).UpdateFAQPage), arg0, arg1)
+}
+
+// UpdateLocalBusiness mocks base method
+func (m *MockCenterService) UpdateLocalBusiness(arg0 context.Context, arg1 service.LocalBusinessRequest) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateLocalBusiness", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateLocalBusiness indicates an expected call of UpdateLocalBusiness
+func (mr *MockCenterServiceMockRecorder) UpdateLocalBusiness(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLocalBusiness", reflect.TypeOf((*MockCenterService)(nil).UpdateLocalBusiness), arg0, arg1)
 }
 
 // UpdateMetaTag mocks base method

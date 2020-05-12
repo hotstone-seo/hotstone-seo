@@ -13,16 +13,24 @@ import (
 type CenterService interface {
 	AddMetaTag(ctx context.Context, req MetaTagRequest) (*repository.Tag, error)
 	UpdateMetaTag(ctx context.Context, req MetaTagRequest) error
+
 	AddTitleTag(ctx context.Context, req TitleTagRequest) (*repository.Tag, error)
 	UpdateTitleTag(ctx context.Context, req TitleTagRequest) error
+
 	AddCanonicalTag(ctx context.Context, req CanonicalTagRequest) (*repository.Tag, error)
 	UpdateCanonicalTag(ctx context.Context, req CanonicalTagRequest) error
+
 	AddScriptTag(ctx context.Context, req ScriptTagRequest) (*repository.Tag, error)
 	UpdateScriptTag(ctx context.Context, req ScriptTagRequest) error
+
 	AddFAQPage(ctx context.Context, req FAQPageRequest) (*repository.StructuredData, error)
 	UpdateFAQPage(ctx context.Context, req FAQPageRequest) error
+
 	AddBreadcrumbList(ctx context.Context, req BreadcrumbListRequest) (*repository.StructuredData, error)
 	UpdateBreadcrumbList(ctx context.Context, req BreadcrumbListRequest) error
+
+	AddLocalBusiness(ctx context.Context, req LocalBusinessRequest) (*repository.StructuredData, error)
+	UpdateLocalBusiness(ctx context.Context, req LocalBusinessRequest) error
 }
 
 // CenterServiceImpl implementation of CenterService
@@ -253,4 +261,26 @@ func mapBreadcrumbItems(breadcrumbItems []BreadcrumbItem) []map[string]interface
 		}
 	}
 	return itemsMap
+}
+
+func (i *CenterServiceImpl) AddLocalBusiness(ctx context.Context, req LocalBusinessRequest) (structData *repository.StructuredData, err error) {
+	structData = &repository.StructuredData{
+		RuleID:    req.RuleID,
+		Type:      "LocalBusiness",
+		Data:      req.ToSchema(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	structData.ID, err = i.StructuredDataService.Insert(ctx, *structData)
+	return
+}
+
+func (i *CenterServiceImpl) UpdateLocalBusiness(ctx context.Context, req LocalBusinessRequest) error {
+	return i.StructuredDataService.Update(ctx, repository.StructuredData{
+		ID:        req.ID,
+		RuleID:    req.RuleID,
+		Type:      "LocalBusiness",
+		Data:      req.ToSchema(),
+		UpdatedAt: time.Now(),
+	})
 }

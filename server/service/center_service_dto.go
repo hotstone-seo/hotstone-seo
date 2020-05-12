@@ -82,3 +82,30 @@ type AggregateRating struct {
 	WorstRating string  `json:"worstRating"`
 	ReviewCount int64   `json:"reviewCount"`
 }
+
+func (s LocalBusinessRequest) ToSchema() map[string]interface{} {
+	return map[string]interface{}{
+		"@context":   "https://schema.org",
+		"@type":      "LocalBusiness",
+		"name":       s.Name,
+		"image":      s.Image,
+		"url":        s.URL,
+		"telephone":  s.Phone,
+		"priceRange": s.PriceRange,
+		"address": map[string]interface{}{
+			"@type":           "PostalAddress",
+			"addressCountry":  s.Address.Country,
+			"addressRegion":   s.Address.Region,
+			"addressLocality": s.Address.City,
+			"streetAddress":   s.Address.Street,
+			"postalCode":      s.Address.PostalCode,
+		},
+		"aggregateRating": map[string]interface{}{
+			"@type":       "AggregateRating",
+			"ratingValue": s.AggregateRating.RatingValue,
+			"bestRating":  s.AggregateRating.BestRating,
+			"worstRating": s.AggregateRating.WorstRating,
+			"reviewCount": s.AggregateRating.ReviewCount,
+		},
+	}
+}
