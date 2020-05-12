@@ -36,6 +36,9 @@ func (c *CenterCntrl) Route(e *echo.Group) {
 	e.POST("/center/breadcrumb-list", c.AddBreadcrumbList)
 	e.PUT("/center/breadcrumb-list", c.UpdateBreadcrumbList)
 
+	e.POST("/center/local-business", c.AddLocalBusiness)
+	e.PUT("/center/local-business", c.UpdateLocalBusiness)
+
 	e.POST("/center/addArticle", c.AddArticle)
 }
 
@@ -252,6 +255,42 @@ func (c *CenterCntrl) UpdateBreadcrumbList(ce echo.Context) (err error) {
 	}
 	return ce.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Successfully update BreadcrumbList structured data #%d", req.ID),
+	})
+}
+
+// AddLocalBusiness provides endpoint to add LocalBusiness structured data
+func (c *CenterCntrl) AddLocalBusiness(ce echo.Context) (err error) {
+	var (
+		req        service.LocalBusinessRequest
+		structData *repository.StructuredData
+		ctx        = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if structData, err = c.CenterService.AddLocalBusiness(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusCreated, structData)
+}
+
+// UpdateLocalBusiness provides endpoint to update LocalBusiness structured data
+func (c *CenterCntrl) UpdateLocalBusiness(ce echo.Context) (err error) {
+	var (
+		req service.LocalBusinessRequest
+		ctx = ce.Request().Context()
+	)
+	if err = ce.Bind(&req); err != nil {
+		return
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.CenterService.UpdateLocalBusiness(ctx, req); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	}
+	return ce.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully update LocalBusiness structured data #%d", req.ID),
 	})
 }
 
