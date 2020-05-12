@@ -30,11 +30,11 @@ func (c *CenterCntrl) Route(e *echo.Group) {
 	e.POST("/center/scriptTag", c.AddScriptTag)
 	e.PUT("/center/scriptTag", c.UpdateScriptTag)
 
-	e.POST("/center/faqPage", c.AddFAQPage)
-	e.PUT("/center/faqPage", c.UpdateFAQPage)
+	e.POST("/center/faq-page", c.AddFAQPage)
+	e.PUT("/center/faq-page", c.UpdateFAQPage)
 
-	e.POST("/center/breadcrumbList", c.AddBreadcrumbList)
-	e.PUT("/center/breadcrumbList", c.UpdateBreadcrumbList)
+	e.POST("/center/breadcrumb-list", c.AddBreadcrumbList)
+	e.PUT("/center/breadcrumb-list", c.UpdateBreadcrumbList)
 
 	e.POST("/center/addArticle", c.AddArticle)
 }
