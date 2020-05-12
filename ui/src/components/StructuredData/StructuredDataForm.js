@@ -5,6 +5,7 @@ import { CloseOutlined } from '@ant-design/icons';
 
 import FAQPageForm from './FAQPageForm';
 import BreadcrumbListForm from './BreadcrumbListForm';
+import LocalBusinessForm from './LocalBusinessForm':
 
 const { TabPane } = Tabs;
 
@@ -31,6 +32,13 @@ function StructuredDataForm({ structuredData, afterSubmit, onCancel }) {
           disabled={(structType && structType !== 'BreadcrumbList')}
         >
           <BreadcrumbListForm structuredData={structuredData} afterSubmit={afterSubmit} />
+        </TabPane>
+        <TabPane
+          tab="Local Business"
+          key="LocalBusiness"
+          disabled={(structType && structType !== 'LocalBusiness')}
+        >
+          <LocalBusinessForm structuredData={structuredData} afterSubmit={afterSubmit} />
         </TabPane>
       </Tabs>
     </Card>
