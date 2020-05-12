@@ -41,7 +41,7 @@ export function deleteStructuredData(id) {
 }
 
 export function addFAQPage(values) {
-  return client.post('/center/faqPage', values)
+  return client.post('/center/faq-page', values)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -49,7 +49,7 @@ export function addFAQPage(values) {
 }
 
 export function updateFAQPage(values) {
-  return client.put('/center/faqPage', values)
+  return client.put('/center/faq-page', values)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -57,7 +57,7 @@ export function updateFAQPage(values) {
 }
 
 export function addBreadcrumbList(values) {
-  return client.post('/center/breadcrumbList', values)
+  return client.post('/center/breadcrumb-list', values)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -65,7 +65,23 @@ export function addBreadcrumbList(values) {
 }
 
 export function updateBreadcrumbList(values) {
-  return client.put('/center/breadcrumbList', values)
+  return client.put('/center/breadcrumb-list', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function addLocalBusiness(values) {
+  return client.post('/center/local-business', values)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function updateLocalBusiness(values) {
+  return client.put('/center/local-business', values)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
