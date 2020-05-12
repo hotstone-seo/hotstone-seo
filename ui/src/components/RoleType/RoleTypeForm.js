@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, Button, Checkbox,
 } from 'antd';
+import { createRoleType } from 'api/roleType';
 
 const CheckboxGroup = Checkbox.Group;
 const plainOptions = ['Rules', 'Data Sources', 'Mismatched Rule', 'Analytic', 'Simulation', 'Audit Trail', 'User', 'Role User'];
@@ -10,6 +11,7 @@ const defaultCheckedList = ['Mismatched Rule', 'Analytic', 'Simulation'];
 
 function RoleTypeForm({ roleType, handleSubmit }) {
   const [form] = Form.useForm();
+  const [arrayCheck, setArrayCheck] = useState([]);
   const [checkedList, setCheckedList] = useState({
     checkedList: defaultCheckedList,
     indeterminate: true,
@@ -22,6 +24,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
   }, [roleType, form]);
 
   const handleonChange = (checkedListNew) => {
+    setArrayCheck({ ...arrayCheck, checkedListNew });
     if (checkedListNew) {
       setCheckedList({
         ...checkedList,
@@ -39,11 +42,27 @@ function RoleTypeForm({ roleType, handleSubmit }) {
       checkAll: e.target.checked,
     });
   };
+  const onSubmit = createRoleType;
+
+  const onFinish = (values) => {
+    // TODO : re-check still on progress
+    const arrayInsert = {
+      pattern: checkedList.checkedList
+    };
+    values.modules = JSON.stringify(arrayInsert);
+
+    onSubmit(values)
+      .then((response) => {
+        handleSubmit(response);
+      })
+      .catch(() => {
+      });
+  };
 
   return (
     <Form
       form={form}
-      onFinish={handleSubmit}
+      onFinish={onFinish}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
     >
@@ -62,7 +81,6 @@ function RoleTypeForm({ roleType, handleSubmit }) {
       <Form.Item
         name="modules"
         label="Module Access"
-        rules={[{ required: true, message: 'Please check module access' }]}
       >
         <div>
           <div className="site-checkbox-all-wrapper">
