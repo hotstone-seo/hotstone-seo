@@ -5,7 +5,7 @@ import { useAuth } from '../../components/AuthProvider';
 
 function HeaderMenu() {
   const auth = useAuth();
-  const { email } = auth.currentUser;
+  const { email, role } = auth.currentUser;
 
   const logoutForm = useRef();
 
@@ -25,9 +25,11 @@ function HeaderMenu() {
 
   return (
     <>
+      Login as : &nbsp;
+      {role}
       <Dropdown overlay={accountMenu}>
         <Button type="link" icon={<UserOutlined />}>
-          {email}
+          {email} 
         </Button>
       </Dropdown>
       <form ref={logoutForm} action="/api/logout" method="post" />

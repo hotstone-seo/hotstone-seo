@@ -3,6 +3,7 @@ package oauth2google
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -30,11 +31,13 @@ type AuthService interface {
 type AuthServiceImpl struct {
 	dig.In
 	*oauth2.Config
-	cfg *Config
+	cfg          *Config
+	UserRepo     repository.UserRepo
+	RoleTypeRepo repository.RoleTypeRepo
 }
 
 // NewService return new instance of AuthGoogleService
-func NewService(cfg *Config) AuthService {
+func NewService(cfg *Config, userRepo repository.UserRepo, roleTypeRepo repository.RoleTypeRepo) AuthService {
 	return &AuthServiceImpl{
 		cfg: cfg,
 		Config: &oauth2.Config{
@@ -44,6 +47,8 @@ func NewService(cfg *Config) AuthService {
 			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"}, // TODO: put to module
 			Endpoint:     google.Endpoint,
 		},
+		UserRepo:     userRepo,
+		RoleTypeRepo: roleTypeRepo,
 	}
 }
 
@@ -79,9 +84,20 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
 
-	// TO DO : check into table role_user based on userInfoResp["email"]
-
-	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret)
+	email := userInfoResp["email"].(string)
+	user, err := c.UserRepo.FindUserByEmail(ce.Request().Context(), email)
+	if user == nil || err == sql.ErrNoRows {
+		return "", fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
+	}
+	var roleAccess string
+	if user != nil {
+		roleType, err := c.RoleTypeRepo.FindOne(ce.Request().Context(), user.RoleTypeID)
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("AuthVerifyCallback get role: %w", err)
+		}
+		roleAccess = roleType.Name
+	}
+	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess)
 	if err != nil {
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
@@ -134,7 +150,7 @@ func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp repository.GoogleOau
 	return nil
 }
 
-func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string) (string, error) {
+func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string, userID int64, roleAccess string) (string, error) {
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -144,6 +160,9 @@ func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2U
 	claims["email"] = userInfoResp["email"]
 	claims["picture"] = userInfoResp["picture"]
 	claims["exp"] = time.Now().Add(TokenEpiration).Unix()
+	claims["user_id"] = userID
+	claims["user_role"] = roleAccess
+	claims["modules"] = "" // TODO : get list menu access role user login
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))

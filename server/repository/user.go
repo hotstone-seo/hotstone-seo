@@ -15,7 +15,7 @@ import (
 type User struct {
 	ID         int64     `json:"id"`
 	Email      string    `json:"email" validate:"required"`
-	RoleTypeID *int64    `json:"role_type_id"`
+	RoleTypeID int64     `json:"role_type_id"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	CreatedAt  time.Time `json:"created_at"`
 }
@@ -28,6 +28,7 @@ type UserRepo interface {
 	Insert(ctx context.Context, user User) (lastInsertID int64, err error)
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, user User) error
+	FindUserByEmail(ctx context.Context, email string) (*User, error)
 }
 
 // UserRepoImpl is implementation user repository
@@ -179,4 +180,28 @@ func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 		dbtxn.SetError(ctx, err)
 	}
 	return
+}
+
+// FindUserByEmail address
+func (r *UserRepoImpl) FindUserByEmail(ctx context.Context, email string) (*User, error) {
+	row := sq.StatementBuilder.
+		Select(
+			"id",
+			"role_type_id",
+		).
+		From("role_user").
+		Where(sq.Eq{"email": email}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r)).
+		QueryRowContext(ctx)
+
+	user := new(User)
+	if err := row.Scan(
+		&user.ID,
+		&user.RoleTypeID,
+	); err != nil {
+		dbtxn.SetError(ctx, err)
+		return nil, err
+	}
+	return user, nil
 }

@@ -68,7 +68,7 @@ func TestUserController_Find(t *testing.T) {
 		rr, err := echotest.DoGET(userCntrl.Find, "/", nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "[{\"id\":100,\"email\":\"test@tiket.com\",\"role_type_id\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
+		require.Equal(t, "[{\"id\":100,\"email\":\"test@tiket.com\",\"role_type_id\":0,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
 	})
 }
 
@@ -104,7 +104,7 @@ func TestUserController_FindOne(t *testing.T) {
 		rr, err := echotest.DoGET(userCntrl.FindOne, "/", map[string]string{"id": "100"})
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":100,\"email\":\"test@tiket.com\",\"role_type_id\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"email\":\"test@tiket.com\",\"role_type_id\":0,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 

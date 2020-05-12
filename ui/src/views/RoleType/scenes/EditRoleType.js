@@ -29,6 +29,7 @@ function EditRoleType() {
   }, [roleTypeID, history]);
 
   const handleEdit = (newRoleType) => {
+    // TO DO : re-check . Still not get value module access
     updateRoleType(newRoleType)
       .then(() => {
         history.push('/roletypes', {
@@ -53,7 +54,7 @@ function EditRoleType() {
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
-            <RoleTypeForm onSubmit={handleEdit} roleType={roleType} />
+            <RoleTypeForm handleSubmit={handleEdit} roleType={roleType} />
           </Col>
         </Row>
       </div>

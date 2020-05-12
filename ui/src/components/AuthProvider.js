@@ -17,6 +17,8 @@ const loadUserFromCookie = () => {
   const user = {
     email: tokenDecoded.email,
     picture: tokenDecoded.picture,
+    role: tokenDecoded.user_role,
+    user_id: tokenDecoded.user_id,
   };
 
   return user;
