@@ -5,7 +5,7 @@ import { CloseOutlined } from '@ant-design/icons';
 
 import FAQPageForm from './FAQPageForm';
 import BreadcrumbListForm from './BreadcrumbListForm';
-import LocalBusinessForm from './LocalBusinessForm':
+import LocalBusinessForm from './LocalBusinessForm';
 
 const { TabPane } = Tabs;
 
