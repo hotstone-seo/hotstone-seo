@@ -19,8 +19,8 @@ const loadUserFromCookie = () => {
     picture: tokenDecoded.picture,
     role: tokenDecoded.user_role,
     user_id: tokenDecoded.user_id,
+    modules: tokenDecoded.modules,
   };
-
   return user;
 };
 
