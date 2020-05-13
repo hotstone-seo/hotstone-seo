@@ -16,7 +16,8 @@ import (
 type ClientKey struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name" validate:"required"`
-	Key       string    `json:"key" validate:"required"`
+	Prefix    string    `json:"prefix"`
+	Key       string    `json:"key"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -48,6 +49,7 @@ func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *ClientKey
 		Select(
 			"id",
 			"name",
+			"prefix",
 			"key",
 			"created_at",
 			"updated_at",
@@ -62,6 +64,7 @@ func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *ClientKey
 	if err = row.Scan(
 		&e.ID,
 		&e.Name,
+		&e.Prefix,
 		&e.Key,
 		&e.CreatedAt,
 		&e.UpdatedAt,
@@ -80,6 +83,7 @@ func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) 
 		Select(
 			"id",
 			"name",
+			"prefix",
 			"key",
 			"created_at",
 			"updated_at",
@@ -107,6 +111,7 @@ func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) 
 		if err = rows.Scan(
 			&e.ID,
 			&e.Name,
+			&e.Prefix,
 			&e.Key,
 			&e.CreatedAt,
 			&e.UpdatedAt,
@@ -126,9 +131,10 @@ func (r *ClientKeyRepoImpl) Insert(ctx context.Context, e ClientKey) (lastInsert
 		Insert("client_keys").
 		Columns(
 			"name",
+			"prefix",
 			"key",
 		).
-		Values(e.Name, e.Key).
+		Values(e.Name, e.Prefix, e.Key).
 		Suffix("RETURNING *").
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.BaseRunner(ctx, r))
