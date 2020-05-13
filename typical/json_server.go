@@ -43,7 +43,6 @@ func startJSONServer(c *typbuildtool.CliContext) (err error) {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
-	return
 }
 
 func getEnv(key, defaultVal string) string {
