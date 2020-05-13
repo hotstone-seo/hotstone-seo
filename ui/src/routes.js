@@ -9,6 +9,9 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 
+import Cookies from 'js-cookie';
+import jwt from 'jsonwebtoken';
+
 import Rule from 'views/Rule';
 import MismatchRule from 'views/MismatchRule';
 import DataSource from 'views/DataSource';
@@ -19,6 +22,82 @@ import GenericNotFound from 'views/GenericNotFound';
 import User from './views/User';
 import RoleType from './views/RoleType';
 
+const COMPONENT_MAP = {
+  rules: Rule,
+  datasources: DataSource,
+  mismatchrule: MismatchRule,
+  analytic: Analytic,
+  simulation: Simulation,
+  audittrail: AuditTrail,
+  user: User,
+  roleType: RoleType,
+  notfound: GenericNotFound,
+};
+
+const ICON_MAP = {
+  rules: FormOutlined,
+  datasources: DatabaseOutlined,
+  mismatchrule: TagsOutlined,
+  analytic: AreaChartOutlined,
+  simulation: PlayCircleOutlined,
+  audittrail: AuditOutlined,
+  user: UserOutlined,
+  roleType: TeamOutlined,
+};
+
+// TODO : save path Menu & label Menu into database
+const PATH_MAP = {
+  rules: '/rules',
+  datasources: '/datasources',
+  mismatchrule: '/mismatch-rule',
+  analytic: '/analytic',
+  simulation: '/simulation',
+  audittrail: '/audit-trail',
+  user: '/users',
+  roleType: '/roletypes',
+};
+
+const LABEL_MAP = {
+  rules: 'Rules',
+  datasources: 'Data Sources',
+  mismatchrule: 'Mismatch Rule',
+  analytic: 'Analytic',
+  simulation: 'Simulation',
+  audittrail: 'Audit Trail',
+  user: 'Users',
+  roleType: 'Role User',
+};
+// END TODO
+
+const token = Cookies.get('token');
+const tokenDecoded = token !== undefined ? jwt.decode(token) : undefined;
+const jsonModules = tokenDecoded !== undefined ? tokenDecoded.modules : [];
+let routes=[];
+
+let mn;
+if (tokenDecoded !== undefined) {
+  Object.keys(jsonModules).forEach((key) => {
+    mn = jsonModules[key];
+  });
+
+  let arrMenu = [];
+  mn.forEach((item, index) => {
+    const tempMenu = [];
+    tempMenu.path = PATH_MAP[item];
+    tempMenu.name = LABEL_MAP[item];
+    tempMenu.component = COMPONENT_MAP[item];
+    tempMenu.icon = ICON_MAP[item];
+    arrMenu.push(tempMenu);
+  });
+
+  const menu404 = [];
+  menu404.path = '*';
+  menu404.component = COMPONENT_MAP['notfound'];
+  arrMenu.push(menu404);
+
+  routes = arrMenu;
+}
+/*
 const routes = [
   {
     path: '/rules',
@@ -73,5 +152,6 @@ const routes = [
     component: GenericNotFound,
   },
 ];
+*/
 
 export default routes;

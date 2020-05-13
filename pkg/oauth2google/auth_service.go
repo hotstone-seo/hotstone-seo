@@ -90,14 +90,22 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 		return "", fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
 	}
 	var roleAccess string
+	var roleModule string
 	if user != nil {
 		roleType, err := c.RoleTypeRepo.FindOne(ce.Request().Context(), user.RoleTypeID)
 		if err == sql.ErrNoRows {
 			return "", fmt.Errorf("AuthVerifyCallback get role: %w", err)
 		}
 		roleAccess = roleType.Name
+		//TODO : still error. will re-check when get value
+		// roleModule = roleType.Modules
+		// res1D := &response1{roleModule}
+		// res1B, _ := json.Marshal(res1D)
+		//slcB, _ := json.Marshal(roleModule)
+		//fmt.Print(slcB)
+		roleModule = `{"modules": ["rules","datasources","mismatchrule","analytic","simulation","audittrail","user","roleType"]}`
 	}
-	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess)
+	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess, roleModule)
 	if err != nil {
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
@@ -150,7 +158,7 @@ func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp repository.GoogleOau
 	return nil
 }
 
-func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string, userID int64, roleAccess string) (string, error) {
+func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string, userID int64, roleAccess string, roleModule string) (string, error) {
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -162,8 +170,13 @@ func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2U
 	claims["exp"] = time.Now().Add(TokenEpiration).Unix()
 	claims["user_id"] = userID
 	claims["user_role"] = roleAccess
-	claims["modules"] = "" // TODO : get list menu access role user login
 
+	// fmt.Println(roleModule)
+	// str := `{"modules": ["rules","datasources","mismatchrule","analytic","simulation","audittrail","user","roleType"]}`
+	res := responseModule{}
+	json.Unmarshal([]byte(roleModule), &res)
+	claims["modules"] = res
+	fmt.Println(res)
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
@@ -178,4 +191,8 @@ func generateRandomBase64(keyLength int) string {
 	rand.Read(b)
 
 	return base64.URLEncoding.EncodeToString(b)
+}
+
+type responseModule struct {
+	Modules []string `json:"modules"`
 }
