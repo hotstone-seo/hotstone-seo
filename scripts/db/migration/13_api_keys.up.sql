@@ -1,4 +1,4 @@
-CREATE TABLE api_key (
+CREATE TABLE api_keys (
     id serial PRIMARY KEY,
     name VARCHAR NOT NULL,
     key VARCHAR NOT NULL UNIQUE,
