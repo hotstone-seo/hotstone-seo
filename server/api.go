@@ -20,6 +20,7 @@ type api struct {
 	controller.StructuredDataCntrl
 	controller.UserCntrl
 	controller.RoleTypeCntrl
+	controller.APIKeyCntrl
 }
 
 func (a *api) route(e *echo.Echo) {
@@ -42,4 +43,5 @@ func (a *api) route(e *echo.Echo) {
 	a.StructuredDataCntrl.Route(group)
 	a.UserCntrl.Route(group)
 	a.RoleTypeCntrl.Route(group)
+	a.APIKeyCntrl.Route(group)
 }
