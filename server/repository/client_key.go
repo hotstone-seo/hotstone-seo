@@ -164,6 +164,5 @@ func (r *ClientKeyRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 // Validate clientKey
 func (clientKey ClientKey) Validate() error {
 	validate := validator.New()
-	validate.RegisterStructValidation(TagStructLevelValidation, ClientKey{})
 	return validate.Struct(clientKey)
 }
