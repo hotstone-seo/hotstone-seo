@@ -17,6 +17,7 @@ type RoleTypeService interface {
 	Insert(ctx context.Context, roleType repository.RoleType) (lastInsertID int64, err error)
 	Update(ctx context.Context, roleType repository.RoleType) error
 	Delete(ctx context.Context, id int64) error
+	FindOneByName(ctx context.Context, name string) (*repository.RoleType, error)
 }
 
 // RoleTypeServiceImpl is implementation of RoleTypeService
@@ -119,4 +120,9 @@ func (r *RoleTypeServiceImpl) Delete(ctx context.Context, id int64) (err error) 
 		}
 	}()
 	return nil
+}
+
+// FindOneByName RoleType
+func (r *RoleTypeServiceImpl) FindOneByName(ctx context.Context, name string) (roleType *repository.RoleType, err error) {
+	return r.RoleTypeRepo.FindOneByName(ctx, name)
 }
