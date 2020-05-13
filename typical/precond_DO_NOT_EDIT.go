@@ -29,6 +29,7 @@ func init() {
 		typapp.NewConstructor("", repository.NewTagRepo),
 		typapp.NewConstructor("", repository.NewURLSyncRepo),
 		typapp.NewConstructor("", repository.NewUserRepo),
+		typapp.NewConstructor("", service.NewAPIKeyService),
 		typapp.NewConstructor("", service.NewAuditTrailService),
 		typapp.NewConstructor("", service.NewCenterService),
 		typapp.NewConstructor("", service.NewDataSourceService),
