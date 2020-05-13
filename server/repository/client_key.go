@@ -12,8 +12,8 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-// APIKey represented  an api_keys entity
-type APIKey struct {
+// ClientKey represented  an client_keys entity
+type ClientKey struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name" validate:"required"`
 	Key       string    `json:"key" validate:"required"`
@@ -21,29 +21,29 @@ type APIKey struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// APIKeyRepo to handle api_keys entity
+// ClientKeyRepo to handle client_keys entity
 // @mock
-type APIKeyRepo interface {
-	FindOne(context.Context, int64) (*APIKey, error)
-	Find(context.Context, ...dbkit.FindOption) ([]*APIKey, error)
-	Insert(context.Context, APIKey) (lastInsertID int64, err error)
+type ClientKeyRepo interface {
+	FindOne(context.Context, int64) (*ClientKey, error)
+	Find(context.Context, ...dbkit.FindOption) ([]*ClientKey, error)
+	Insert(context.Context, ClientKey) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 }
 
-// APIKeyRepoImpl is implementation API key repository
-type APIKeyRepoImpl struct {
+// ClientKeyRepoImpl is implementation client key repository
+type ClientKeyRepoImpl struct {
 	dig.In
 	*sql.DB
 }
 
-// NewAPIKeyRepo return new instance of APIKeyRepo
+// NewClientKeyRepo return new instance of ClientKeyRepo
 // @constructor
-func NewAPIKeyRepo(impl APIKeyRepoImpl) APIKeyRepo {
+func NewClientKeyRepo(impl ClientKeyRepoImpl) ClientKeyRepo {
 	return &impl
 }
 
-// FindOne apiKey
-func (r *APIKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *APIKey, err error) {
+// FindOne clientKey
+func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *ClientKey, err error) {
 	row := sq.
 		Select(
 			"id",
@@ -52,13 +52,13 @@ func (r *APIKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *APIKey, err 
 			"created_at",
 			"updated_at",
 		).
-		From("api_keys").
+		From("client_keys").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.BaseRunner(ctx, r)).
 		QueryRowContext(ctx)
 
-	e = new(APIKey)
+	e = new(ClientKey)
 	if err = row.Scan(
 		&e.ID,
 		&e.Name,
@@ -73,8 +73,8 @@ func (r *APIKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *APIKey, err 
 	return
 }
 
-// Find api_keys
-func (r *APIKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list []*APIKey, err error) {
+// Find client_keys
+func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list []*ClientKey, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select(
@@ -84,7 +84,7 @@ func (r *APIKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (li
 			"created_at",
 			"updated_at",
 		).
-		From("api_keys").
+		From("client_keys").
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.BaseRunner(ctx, r))
 
@@ -101,9 +101,9 @@ func (r *APIKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (li
 	}
 	defer rows.Close()
 
-	list = make([]*APIKey, 0)
+	list = make([]*ClientKey, 0)
 	for rows.Next() {
-		var e APIKey
+		var e ClientKey
 		if err = rows.Scan(
 			&e.ID,
 			&e.Name,
@@ -119,11 +119,11 @@ func (r *APIKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (li
 	return
 }
 
-// Insert apiKey
-func (r *APIKeyRepoImpl) Insert(ctx context.Context, e APIKey) (lastInsertID int64, err error) {
+// Insert clientKey
+func (r *ClientKeyRepoImpl) Insert(ctx context.Context, e ClientKey) (lastInsertID int64, err error) {
 
 	builder := sq.
-		Insert("api_keys").
+		Insert("client_keys").
 		Columns(
 			"name",
 			"key",
@@ -141,10 +141,10 @@ func (r *APIKeyRepoImpl) Insert(ctx context.Context, e APIKey) (lastInsertID int
 	return
 }
 
-// Delete apiKey
-func (r *APIKeyRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+// Delete clientKey
+func (r *ClientKeyRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
-		Delete("api_keys").
+		Delete("client_keys").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.BaseRunner(ctx, r))
@@ -155,9 +155,9 @@ func (r *APIKeyRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	return
 }
 
-// Validate apiKey
-func (apiKey APIKey) Validate() error {
+// Validate clientKey
+func (clientKey ClientKey) Validate() error {
 	validate := validator.New()
-	validate.RegisterStructValidation(TagStructLevelValidation, APIKey{})
-	return validate.Struct(apiKey)
+	validate.RegisterStructValidation(TagStructLevelValidation, ClientKey{})
+	return validate.Struct(clientKey)
 }

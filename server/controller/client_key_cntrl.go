@@ -13,73 +13,73 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-// APIKeyCntrl is controller to data_source entity
-type APIKeyCntrl struct {
+// ClientKeyCntrl is controller to data_source entity
+type ClientKeyCntrl struct {
 	dig.In
-	service.APIKeyService
+	service.ClientKeyService
 }
 
 // Route to define API Route
-func (c *APIKeyCntrl) Route(e *echo.Group) {
-	e.GET("/api_keys", c.Find)
-	e.POST("/api_keys", c.Create)
-	e.GET("/api_keys/:id", c.FindOne)
-	e.DELETE("/api_keys/:id", c.Delete)
+func (c *ClientKeyCntrl) Route(e *echo.Group) {
+	e.GET("/client-keys", c.Find)
+	e.POST("/client-keys", c.Create)
+	e.GET("/client-keys/:id", c.FindOne)
+	e.DELETE("/client-keys/:id", c.Delete)
 }
 
 // Create data_source
-func (c *APIKeyCntrl) Create(ctx echo.Context) (err error) {
-	var apiKey repository.APIKey
+func (c *ClientKeyCntrl) Create(ctx echo.Context) (err error) {
+	var clientKey repository.ClientKey
 	var lastInsertID int64
 	ctx0 := ctx.Request().Context()
-	if err = ctx.Bind(&apiKey); err != nil {
+	if err = ctx.Bind(&clientKey); err != nil {
 		return err
 	}
-	if err = validator.New().Struct(apiKey); err != nil {
+	if err = validator.New().Struct(clientKey); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if lastInsertID, err = c.APIKeyService.Insert(ctx0, apiKey); err != nil {
+	if lastInsertID, err = c.ClientKeyService.Insert(ctx0, clientKey); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	apiKey.ID = lastInsertID
-	return ctx.JSON(http.StatusCreated, apiKey)
+	clientKey.ID = lastInsertID
+	return ctx.JSON(http.StatusCreated, clientKey)
 }
 
 // Find of data_source
-func (c *APIKeyCntrl) Find(ctx echo.Context) (err error) {
-	var apiKey []*repository.APIKey
+func (c *ClientKeyCntrl) Find(ctx echo.Context) (err error) {
+	var clientKey []*repository.ClientKey
 	ctx0 := ctx.Request().Context()
-	if apiKey, err = c.APIKeyService.Find(ctx0); err != nil {
+	if clientKey, err = c.ClientKeyService.Find(ctx0); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, apiKey)
+	return ctx.JSON(http.StatusOK, clientKey)
 }
 
 // FindOne data_source
-func (c *APIKeyCntrl) FindOne(ctx echo.Context) (err error) {
+func (c *ClientKeyCntrl) FindOne(ctx echo.Context) (err error) {
 	var id int64
-	var apiKey *repository.APIKey
+	var clientKey *repository.ClientKey
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if apiKey, err = c.APIKeyService.FindOne(ctx0, id); err != nil {
+	if clientKey, err = c.ClientKeyService.FindOne(ctx0, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	if apiKey == nil {
-		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("APIKey#%d not found", id))
+	if clientKey == nil {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("ClientKey#%d not found", id))
 	}
-	return ctx.JSON(http.StatusOK, apiKey)
+	return ctx.JSON(http.StatusOK, clientKey)
 }
 
 // Delete data_source
-func (c *APIKeyCntrl) Delete(ctx echo.Context) (err error) {
+func (c *ClientKeyCntrl) Delete(ctx echo.Context) (err error) {
 	var id int64
 	ctx0 := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if err = c.APIKeyService.Delete(ctx0, id); err != nil {
+	if err = c.ClientKeyService.Delete(ctx0, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{

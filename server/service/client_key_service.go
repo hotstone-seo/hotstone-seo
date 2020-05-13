@@ -9,30 +9,30 @@ import (
 	"go.uber.org/dig"
 )
 
-// APIKeyService contain logic for APIKeyController
+// ClientKeyService contain logic for ClientKeyController
 // @mock
-type APIKeyService interface {
-	repository.APIKeyRepo
+type ClientKeyService interface {
+	repository.ClientKeyRepo
 }
 
-// APIKeyServiceImpl is implementation of APIKeyService
-type APIKeyServiceImpl struct {
+// ClientKeyServiceImpl is implementation of ClientKeyService
+type ClientKeyServiceImpl struct {
 	dig.In
-	repository.APIKeyRepo
+	repository.ClientKeyRepo
 	dbtxn.Transactional
 	AuditTrailService AuditTrailService
 	HistoryService    HistoryService
 }
 
-// NewAPIKeyService return new instance of APIKeyService
+// NewClientKeyService return new instance of ClientKeyService
 // @constructor
-func NewAPIKeyService(impl APIKeyServiceImpl) APIKeyService {
+func NewClientKeyService(impl ClientKeyServiceImpl) ClientKeyService {
 	return &impl
 }
 
 // Insert tag
-func (s *APIKeyServiceImpl) Insert(ctx context.Context, data repository.APIKey) (newID int64, err error) {
-	if data.ID, err = s.APIKeyRepo.Insert(ctx, data); err != nil {
+func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.ClientKey) (newID int64, err error) {
+	if data.ID, err = s.ClientKeyRepo.Insert(ctx, data); err != nil {
 		return
 	}
 	go func() {
@@ -51,12 +51,12 @@ func (s *APIKeyServiceImpl) Insert(ctx context.Context, data repository.APIKey) 
 }
 
 // Delete tag
-func (s *APIKeyServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	var oldData *repository.APIKey
-	if oldData, err = s.APIKeyRepo.FindOne(ctx, id); err != nil {
+func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error) {
+	var oldData *repository.ClientKey
+	if oldData, err = s.ClientKeyRepo.FindOne(ctx, id); err != nil {
 		return
 	}
-	if err = s.APIKeyRepo.Delete(ctx, id); err != nil {
+	if err = s.ClientKeyRepo.Delete(ctx, id); err != nil {
 		s.CancelMe(ctx, err)
 		return
 	}
