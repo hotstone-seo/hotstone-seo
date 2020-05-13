@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/server/config"
-	"github.com/typical-go/typical-go/pkg/typcfg"
+	"github.com/typical-go/typical-go/pkg/typgo"
 )
 
 var (
@@ -10,8 +10,8 @@ var (
 )
 
 // Configuration of server
-func Configuration() *typcfg.Configuration {
-	return &typcfg.Configuration{
+func Configuration() *typgo.Configuration {
+	return &typgo.Configuration{
 		Name: configName,
 		Spec: &config.Config{},
 	}

@@ -17,7 +17,6 @@ require (
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/go-redis/redis v6.15.7+incompatible
 	github.com/golang/mock v1.4.3
-	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/gomodule/redigo v1.8.0 // indirect
 	github.com/imantung/mario v0.9.0
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
@@ -30,9 +29,9 @@ require (
 	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/testify v1.5.1
 	github.com/thoas/go-funk v0.6.0
-	github.com/typical-go/typical-go v0.9.50
-	github.com/typical-go/typical-rest-server v0.8.27
-	github.com/urfave/cli/v2 v2.0.0
+	github.com/typical-go/typical-go v0.9.52
+	github.com/typical-go/typical-rest-server v0.8.28
+	github.com/urfave/cli/v2 v2.2.0
 	github.com/xorcare/pointer v1.1.0
 	github.com/yuin/gopher-lua v0.0.0-20191220021717-ab39c6098bdb // indirect
 	go.uber.org/dig v1.9.0

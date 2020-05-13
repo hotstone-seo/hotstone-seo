@@ -37,6 +37,7 @@ type AuthServiceImpl struct {
 }
 
 // NewService return new instance of AuthGoogleService
+// @ctor
 func NewService(cfg *Config, userRepo repository.UserRepo, roleTypeRepo repository.RoleTypeRepo) AuthService {
 	return &AuthServiceImpl{
 		cfg: cfg,
