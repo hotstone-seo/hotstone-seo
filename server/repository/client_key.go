@@ -29,6 +29,7 @@ type ClientKeyRepo interface {
 	Find(context.Context, ...dbkit.FindOption) ([]*ClientKey, error)
 	Insert(context.Context, ClientKey) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
+	Update(context.Context, ClientKey) error
 }
 
 // ClientKeyRepoImpl is implementation client key repository
@@ -157,6 +158,23 @@ func (r *ClientKeyRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
+	}
+	return
+}
+
+// Update tag
+func (r *ClientKeyRepoImpl) Update(ctx context.Context, e ClientKey) (err error) {
+	builder := sq.
+		Update("client_keys").
+		Set("name", e.Name).
+		Set("updated_at", time.Now()).
+		Where(sq.Eq{"id": e.ID}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
 	}
 	return
 }

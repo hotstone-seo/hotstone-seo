@@ -30,7 +30,7 @@ func NewClientKeyService(impl ClientKeyServiceImpl) ClientKeyService {
 	return &impl
 }
 
-// Insert tag
+// Insert client key
 func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.ClientKey) (newID int64, err error) {
 	if data.ID, err = s.ClientKeyRepo.Insert(ctx, data); err != nil {
 		return
@@ -38,7 +38,7 @@ func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.Clien
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"api_keys",
+			"client_keys",
 			data.ID,
 			repository.Insert,
 			nil,
@@ -50,7 +50,31 @@ func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.Clien
 	return data.ID, nil
 }
 
-// Delete tag
+// Update client key
+func (s *ClientKeyServiceImpl) Update(ctx context.Context, data repository.ClientKey) (err error) {
+	var oldData *repository.ClientKey
+	if oldData, err = s.ClientKeyRepo.FindOne(ctx, data.ID); err != nil {
+		return
+	}
+	if err = s.ClientKeyRepo.Update(ctx, data); err != nil {
+		return
+	}
+	go func() {
+		if _, auditErr := s.AuditTrailService.RecordChanges(
+			ctx,
+			"client_keys",
+			data.ID,
+			repository.Update,
+			oldData,
+			data,
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
+	return nil
+}
+
+// Delete client key
 func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 	var oldData *repository.ClientKey
 	if oldData, err = s.ClientKeyRepo.FindOne(ctx, id); err != nil {
@@ -63,7 +87,7 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 	go func() {
 		if _, histErr := s.HistoryService.RecordHistory(
 			ctx,
-			"api_keys",
+			"client_keys",
 			id,
 			oldData,
 		); histErr != nil {
@@ -71,7 +95,7 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 		}
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"api_keys",
+			"client_keys",
 			id,
 			repository.Delete,
 			oldData,
