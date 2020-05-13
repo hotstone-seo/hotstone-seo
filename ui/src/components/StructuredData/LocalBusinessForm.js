@@ -24,7 +24,7 @@ function LocalBusinessForm({ structuredData, afterSubmit }) {
   return (
     <Form
       form={form}
-      initialValues={{ data }}
+      initialValues={{ ...data }}
       onFinish={onFinish}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 12 }}
