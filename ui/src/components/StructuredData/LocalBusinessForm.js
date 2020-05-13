@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, InputNumber, Button, message, Divider,
+  Form, Input, Button, message, Divider,
 } from 'antd';
 import { addLocalBusiness, updateLocalBusiness } from 'api/structuredData';
 
@@ -26,7 +26,8 @@ function LocalBusinessForm({ structuredData, afterSubmit }) {
       form={form}
       initialValues={{ data }}
       onFinish={onFinish}
-      wrapperCol={{ span: 16 }}
+      labelCol={{ span: 6 }}
+      wrapperCol={{ span: 12 }}
     >
       <Divider orientation="left">Local Business Info</Divider>
       <Form.Item name="name" label="Name">
@@ -62,7 +63,7 @@ function LocalBusinessForm({ structuredData, afterSubmit }) {
       </Form.Item>
       <Divider orientation="left">Rating</Divider>
       <Form.Item name={['aggregateRating', 'ratingValue']} label="Value">
-        <InputNumber />
+        <Input />
       </Form.Item>
       <Form.Item name={['aggregateRating', 'bestRating']} label="Best rating">
         <Input />
@@ -71,9 +72,9 @@ function LocalBusinessForm({ structuredData, afterSubmit }) {
         <Input />
       </Form.Item>
       <Form.Item name={['aggregateRating', 'reviewCount']} label="Review count">
-        <InputNumber />
+        <Input />
       </Form.Item>
-      <Form.Item>
+      <Form.Item wrapperCol={{ offset: 6, span: 12 }}>
         <Button type="primary" htmlType="submit">
           Save
         </Button>
@@ -104,10 +105,10 @@ LocalBusinessForm.propTypes = {
         postalCode: PropTypes.string,
       }),
       aggregateRating: PropTypes.shape({
-        ratingValue: PropTypes.number,
+        ratingValue: PropTypes.string,
         bestRating: PropTypes.string,
         worstRating: PropTypes.string,
-        reviewCount: PropTypes.number,
+        reviewCount: PropTypes.string,
       }),
     }),
   }),

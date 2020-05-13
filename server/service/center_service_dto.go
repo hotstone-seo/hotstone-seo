@@ -77,10 +77,10 @@ type Address struct {
 }
 
 type AggregateRating struct {
-	RatingValue float64 `json:"ratingValue"`
-	BestRating  string  `json:"bestRating"`
-	WorstRating string  `json:"worstRating"`
-	ReviewCount int64   `json:"reviewCount"`
+	RatingValue string `json:"ratingValue"`
+	BestRating  string `json:"bestRating"`
+	WorstRating string `json:"worstRating"`
+	ReviewCount string `json:"reviewCount"`
 }
 
 func (s LocalBusinessRequest) ToSchema() map[string]interface{} {
