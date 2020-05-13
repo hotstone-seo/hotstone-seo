@@ -19,6 +19,7 @@ func init() {
 	typapp.Provide(
 		typapp.NewConstructor("", metric.NewReportRepo),
 		typapp.NewConstructor("", metric.NewRuleMatchingRepo),
+		typapp.NewConstructor("", repository.NewAPIKeyRepo),
 		typapp.NewConstructor("", repository.NewAuditTrailRepo),
 		typapp.NewConstructor("", repository.NewDataSourceRepo),
 		typapp.NewConstructor("", repository.NewHistoryRepo),
