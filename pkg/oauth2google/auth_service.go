@@ -176,7 +176,7 @@ func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2U
 	res := responseModule{}
 	json.Unmarshal([]byte(roleModule), &res)
 	claims["modules"] = res
-	fmt.Println(res)
+
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {

@@ -25,6 +25,7 @@ func (c *UserCntrl) Route(e *echo.Group) {
 	e.GET("/users/:id", c.FindOne)
 	e.PUT("/users", c.Update)
 	e.DELETE("/users/:id", c.Delete)
+	e.POST("/users_is_exists", c.FindOneByEmail)
 }
 
 // Find all users
@@ -114,4 +115,26 @@ func (c *UserCntrl) Update(ctx echo.Context) (err error) {
 	return ctx.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Success update user #%d", user.ID),
 	})
+}
+
+// FindOneByEmail user
+func (c *UserCntrl) FindOneByEmail(ctx echo.Context) (err error) {
+	var user *repository.User
+	ctx0 := ctx.Request().Context()
+	if err = ctx.Bind(&user); err != nil {
+		return err
+	}
+	if err = user.Validate(); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	user, err = c.UserService.FindOneByEmail(ctx0, user.Email)
+	if err == sql.ErrNoRows {
+		user = nil
+	}
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return ctx.JSON(http.StatusOK, user)
 }

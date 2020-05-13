@@ -16,6 +16,7 @@ type UserService interface {
 	Insert(ctx context.Context, user repository.User) (lastInsertID int64, err error)
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, user repository.User) error
+	FindOneByEmail(ctx context.Context, email string) (*repository.User, error)
 }
 
 // UserServiceImpl is implementation of UserService
@@ -108,4 +109,9 @@ func (r *UserServiceImpl) Update(ctx context.Context, user repository.User) (err
 		return
 	}
 	return nil
+}
+
+// FindOneByEmail user
+func (r *UserServiceImpl) FindOneByEmail(ctx context.Context, email string) (user *repository.User, err error) {
+	return r.UserRepo.FindUserByEmail(ctx, email)
 }

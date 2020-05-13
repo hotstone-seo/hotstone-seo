@@ -45,12 +45,12 @@ function deleteUser(id) {
     });
 }
 
-function getUserIsExists(email) {
+function getUserIsExists(user) {
   return client
-    .get(`/users_is_exists/${email}`)
+    .post('/users_is_exists', user)
     .then((response) => response.data)
     .catch((error) => {
-      throw error;
+      return 0;
     });
 }
 

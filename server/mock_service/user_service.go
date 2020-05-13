@@ -78,6 +78,21 @@ func (mr *MockUserServiceMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockUserService)(nil).FindOne), arg0, arg1)
 }
 
+// FindOneByEmail mocks base method
+func (m *MockUserService) FindOneByEmail(arg0 context.Context, arg1 string) (*repository.User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOneByEmail", arg0, arg1)
+	ret0, _ := ret[0].(*repository.User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOneByEmail indicates an expected call of FindOneByEmail
+func (mr *MockUserServiceMockRecorder) FindOneByEmail(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByEmail", reflect.TypeOf((*MockUserService)(nil).FindOneByEmail), arg0, arg1)
+}
+
 // Insert mocks base method
 func (m *MockUserService) Insert(arg0 context.Context, arg1 repository.User) (int64, error) {
 	m.ctrl.T.Helper()
