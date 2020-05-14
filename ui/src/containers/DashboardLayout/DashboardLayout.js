@@ -22,7 +22,7 @@ function DashboardLayout() {
       message[level](content);
     }
   }, [location.state]);
-
+  
   return (
     <Layout style={{ height: '100vh' }}>
       <Sider
@@ -40,13 +40,16 @@ function DashboardLayout() {
           }}
         />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
-          {routes.map(({ path, name, icon }) => (
-            <Menu.Item key={path}>
-              {icon && React.createElement(icon)}
-              <span>{name}</span>
-              <Link to={path} />
-            </Menu.Item>
-          ))}
+          {routes.map(({ path, name, icon, visible }) => {
+            if (visible) {
+              return (
+                <Menu.Item key={path}>
+                  {icon && React.createElement(icon)}
+                  <span>{name}</span>
+                  <Link to={path} />
+                </Menu.Item>
+              )}
+          })}
         </Menu>
       </Sider>
       <Layout>
