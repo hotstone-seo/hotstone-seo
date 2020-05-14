@@ -5,6 +5,7 @@ import './App.css';
 import DashboardLayout from 'containers/DashboardLayout';
 import Login from 'views/Login';
 import GenericNotFound from 'views/GenericNotFound';
+import GenericNotAuthorized from 'views/GenericNotAuthorized';
 
 const App = () => (
   <div className="App">
@@ -18,6 +19,7 @@ const App = () => (
             render={(props) => <Login {...props} />}
           />
           <Route path="/page-404" component={GenericNotFound} />
+          <Route path="/page-403" component={GenericNotAuthorized} />
           <PrivateRoute path="/" name="Home" component={DashboardLayout} />
         </Switch>
       </BrowserRouter>
