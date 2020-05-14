@@ -4,8 +4,8 @@ package typical
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
-	"github.com/hotstone-seo/hotstone-seo/server"
 	"github.com/hotstone-seo/hotstone-seo/server/config"
+	"github.com/hotstone-seo/hotstone-seo/server/infra"
 	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
@@ -17,7 +17,7 @@ import (
 
 func init() {
 	typgo.Provide(
-		&typgo.Constructor{Name: "", Fn: server.Connect},
+		&typgo.Constructor{Name: "", Fn: infra.Connect},
 		&typgo.Constructor{Name: "", Fn: metric.NewReportRepo},
 		&typgo.Constructor{Name: "", Fn: metric.NewRuleMatchingRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewAuditTrailRepo},
@@ -87,6 +87,6 @@ func init() {
 		},
 	)
 	typgo.Destroy(
-		&typgo.Destructor{Fn: server.Disconnect},
+		&typgo.Destructor{Fn: infra.Disconnect},
 	)
 }

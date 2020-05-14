@@ -1,4 +1,4 @@
-package server
+package infra
 
 import (
 	"database/sql"
@@ -10,8 +10,8 @@ import (
 )
 
 type (
-	// InfraConfigs is config collection
-	InfraConfigs struct {
+	// Configs of infra
+	Configs struct {
 		dig.In
 		Pg    *typpostgres.Config
 		Redis *typredis.Config
@@ -24,8 +24,8 @@ type (
 		Redis *redis.Client
 	}
 
-	// InfraParams is infra as parameter
-	InfraParams struct {
+	// Params infra
+	Params struct {
 		dig.In
 		Pg    *sql.DB
 		Redis *redis.Client
@@ -34,7 +34,7 @@ type (
 
 // Connect to infra
 // @ctor
-func Connect(c InfraConfigs) (infras Infras, err error) {
+func Connect(c Configs) (infras Infras, err error) {
 	var (
 		pg    *sql.DB
 		redis *redis.Client
@@ -56,7 +56,7 @@ func Connect(c InfraConfigs) (infras Infras, err error) {
 
 // Disconnect from postgres server
 // @dtor
-func Disconnect(p InfraParams) (err error) {
+func Disconnect(p Params) (err error) {
 	if err = typpostgres.Disconnect(p.Pg); err != nil {
 		return
 	}
