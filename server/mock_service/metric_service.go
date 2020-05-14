@@ -7,7 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	metric "github.com/hotstone-seo/hotstone-seo/metric"
+	analyt "github.com/hotstone-seo/hotstone-seo/analyt"
 	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	url "net/url"
 	reflect "reflect"
@@ -67,10 +67,10 @@ func (mr *MockMetricServiceMockRecorder) CountUniquePage(arg0, arg1 interface{})
 }
 
 // DailyReports mocks base method
-func (m *MockMetricService) DailyReports(arg0 context.Context, arg1, arg2, arg3 string) ([]*metric.DailyReport, error) {
+func (m *MockMetricService) DailyReports(arg0 context.Context, arg1, arg2, arg3 string) ([]*analyt.DailyReport, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DailyReports", arg0, arg1, arg2, arg3)
-	ret0, _ := ret[0].([]*metric.DailyReport)
+	ret0, _ := ret[0].([]*analyt.DailyReport)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -82,10 +82,10 @@ func (mr *MockMetricServiceMockRecorder) DailyReports(arg0, arg1, arg2, arg3 int
 }
 
 // MismatchReports mocks base method
-func (m *MockMetricService) MismatchReports(arg0 context.Context, arg1 repository.PaginationParam) ([]*metric.MismatchReport, error) {
+func (m *MockMetricService) MismatchReports(arg0 context.Context, arg1 repository.PaginationParam) ([]*analyt.MismatchReport, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "MismatchReports", arg0, arg1)
-	ret0, _ := ret[0].([]*metric.MismatchReport)
+	ret0, _ := ret[0].([]*analyt.MismatchReport)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

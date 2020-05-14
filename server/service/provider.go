@@ -7,7 +7,7 @@ import (
 	"github.com/go-redis/redis"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/metric"
+	"github.com/hotstone-seo/hotstone-seo/analyt"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/urlstore"
 
@@ -25,7 +25,7 @@ type ProviderService interface {
 // ProviderServiceImpl is implementation of Provider
 type ProviderServiceImpl struct {
 	dig.In
-	metric.RuleMatchingRepo
+	analyt.RuleMatchingRepo
 	repository.DataSourceRepo
 	repository.RuleRepo
 	repository.TagRepo

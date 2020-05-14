@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 
-	"github.com/hotstone-seo/hotstone-seo/metric"
+	"github.com/hotstone-seo/hotstone-seo/analyt"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"go.uber.org/dig"
@@ -27,7 +27,7 @@ func (c *MetricsCntrl) Route(e *echo.Group) {
 
 // ListMismatched of metrics_unmatched
 func (c *MetricsCntrl) ListMismatched(ec echo.Context) (err error) {
-	var report []*metric.MismatchReport
+	var report []*analyt.MismatchReport
 	ctx := ec.Request().Context()
 
 	validCols := []string{"url", "first_seen", "last_seen", "count"}
@@ -58,7 +58,7 @@ func (c *MetricsCntrl) CountUniquePage(ec echo.Context) (err error) {
 }
 
 func (c *MetricsCntrl) ListCountHitPerDay(ec echo.Context) (err error) {
-	var counts []*metric.DailyReport
+	var counts []*analyt.DailyReport
 
 	ctx := ec.Request().Context()
 	startDate := ec.QueryParam("start")

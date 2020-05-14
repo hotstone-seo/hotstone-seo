@@ -1,4 +1,4 @@
-package metric
+package analyt
 
 import (
 	"context"

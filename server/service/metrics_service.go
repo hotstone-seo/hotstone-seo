@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/metric"
+	"github.com/hotstone-seo/hotstone-seo/analyt"
 	"go.uber.org/dig"
 )
 
 // MetricService contain logic for MetricsUnmatchedController
 // @mock
 type MetricService interface {
-	metric.ReportRepo
+	analyt.ReportRepo
 }
 
 // MetricServiceImpl is implementation of MetricsRuleMatchingService
 type MetricServiceImpl struct {
 	dig.In
-	metric.ReportRepo
+	analyt.ReportRepo
 }
 
 // NewMetricService return new instance of MetricsRuleMatchingService

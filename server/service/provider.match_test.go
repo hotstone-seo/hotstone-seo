@@ -9,7 +9,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/mock_urlstore"
 	"github.com/hotstone-seo/hotstone-seo/urlstore"
 
-	"github.com/hotstone-seo/hotstone-seo/mock_metric"
+	"github.com/hotstone-seo/hotstone-seo/mock_analyt"
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
@@ -29,7 +29,7 @@ func TestProvider_Match(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockStore := mock_urlstore.NewMockStore(ctrl)
-	mockRuleMatching := mock_metric.NewMockRuleMatchingRepo(ctrl)
+	mockRuleMatching := mock_analyt.NewMockRuleMatchingRepo(ctrl)
 
 	svc := service.ProviderServiceImpl{
 		Store:            mockStore,
