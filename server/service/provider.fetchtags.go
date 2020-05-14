@@ -11,12 +11,10 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
-
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/imantung/mario"
+	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 )
 
 const (
@@ -58,11 +56,11 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (i
 	ruleID, _ := strconv.ParseInt(vals.Get(ruleParam), 10, 64)
 
 	if ruleID < 1 {
-		return nil, errkit.ValidationErr("Missing url param for `ID`")
+		return nil, errvalid.New("Missing url param for `ID`")
 	}
 
 	if locale == "" {
-		return nil, errkit.ValidationErr("Missing query param for `Locale`")
+		return nil, errvalid.New("Missing query param for `Locale`")
 	}
 
 	if rule, err = p.RuleRepo.FindOne(ctx, ruleID); err != nil {
