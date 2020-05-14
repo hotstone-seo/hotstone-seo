@@ -34,14 +34,14 @@ var (
 		{
 			ID:    91,
 			Type:  "title",
-			Value: "Page for {{name}}",
+			Value: "Page for {{ds.name}}",
 		},
 		{
 			ID:   92,
 			Type: "meta",
 			Attributes: map[string]string{
 				"name":    "description",
-				"content": "This year is {{year}}",
+				"content": "This year is {{ds.year}}",
 			},
 		},
 	}
@@ -57,7 +57,7 @@ var (
 					"name":  "What is the year?",
 					"acceptedAnswer": map[string]interface{}{
 						"@type": "Answer",
-						"text":  "It's {{year}}",
+						"text":  "It's {{ds.year}}",
 					},
 				},
 			},
@@ -241,8 +241,9 @@ func TestProviderService2(t *testing.T) {
 			server:   dummyServer(ds666_response),
 			pre: func(tt fetchTestCase) {
 				ds := &repository.DataSource{
-					ID:  ds666_id,
-					URL: tt.server.URL,
+					ID:   ds666_id,
+					Name: "ds",
+					URL:  tt.server.URL,
 				}
 
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
