@@ -15,6 +15,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/imantung/mario"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -44,11 +45,10 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.V
 func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*ITag, err error) {
 	var (
 		rule            *repository.Rule
+		sources         []*IDataSource
 		tags            []*repository.Tag
 		structuredDatas []*repository.StructuredData
 		ds              *IDataSource
-		b               []byte
-		data            interface{}
 		itag            *ITag
 	)
 
@@ -95,17 +95,35 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (i
 	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, ConvertToParams(vals)); err != nil {
 		return nil, err
 	}
-
-	if b, err = call(ds); err != nil {
-		return nil, fmt.Errorf("Call: %w", err)
+	// TODO: sources should come from rule's list of datasources, for now we just want to see how an implementation
+	// with multiple datasources will look like
+	sources = []*IDataSource{ds}
+	g, ctx := errgroup.WithContext(ctx)
+	apiData := make(map[string]interface{})
+	for _, source := range sources {
+		source := source // https://golang.org/doc/faq#closures_and_goroutines
+		g.Go(func() error {
+			var (
+				b      []byte
+				data   interface{}
+				apiErr error
+			)
+			if b, apiErr = call(source); apiErr != nil {
+				return fmt.Errorf("Call: %w", apiErr)
+			}
+			if data, apiErr = UnmarshalData(b); apiErr != nil {
+				return apiErr
+			}
+			apiData[source.Name] = data
+			return nil
+		})
 	}
-
-	if data, err = UnmarshalData(b); err != nil {
+	if err = g.Wait(); err != nil {
 		return
 	}
 
 	for _, tag := range tags {
-		if itag, err = interpolateTag(tag, data); err != nil {
+		if itag, err = interpolateTag(tag, apiData); err != nil {
 			return nil, fmt.Errorf("Interpolate-Tag: %w", err)
 		}
 		itags = append(itags, itag)
@@ -179,7 +197,7 @@ func interpolateDataSource(ds *repository.DataSource, data interface{}) (*IDataS
 	}, nil
 }
 
-func interpolateTag(tag *repository.Tag, data interface{}) (*ITag, error) {
+func interpolateTag(tag *repository.Tag, data map[string]interface{}) (*ITag, error) {
 	var (
 		attribute map[string]string
 		value     string
@@ -204,7 +222,7 @@ func interpolateTag(tag *repository.Tag, data interface{}) (*ITag, error) {
 
 }
 
-func interpolateAttribute(ori map[string]string, param interface{}) (interpolated map[string]string, err error) {
+func interpolateAttribute(ori map[string]string, param map[string]interface{}) (interpolated map[string]string, err error) {
 	var (
 		tmpl *mario.Template
 		buf  bytes.Buffer
@@ -226,7 +244,7 @@ func interpolateAttribute(ori map[string]string, param interface{}) (interpolate
 	return interpolated, nil
 }
 
-func interpolateValue(ori string, param interface{}) (s string, err error) {
+func interpolateValue(ori string, param map[string]interface{}) (s string, err error) {
 	var (
 		tmpl *mario.Template
 		buf  bytes.Buffer
