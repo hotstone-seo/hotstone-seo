@@ -8,8 +8,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
@@ -18,7 +18,7 @@ import (
 func TestAuditTrailController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	auditTrailSvcMock := mock_service.NewMockAuditTrailService(ctrl)
+	auditTrailSvcMock := service_mock.NewMockAuditTrailService(ctrl)
 	auditTrailCntrl := controller.AuditTrailCntrl{
 		AuditTrailService: auditTrailSvcMock,
 	}

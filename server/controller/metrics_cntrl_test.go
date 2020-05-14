@@ -12,13 +12,13 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
 	"github.com/hotstone-seo/hotstone-seo/analyt"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 )
 
 func TestMetricsController_ListMismatched(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	metricsSvcMock := mock_service.NewMockMetricService(ctrl)
+	metricsSvcMock := service_mock.NewMockMetricService(ctrl)
 	metricsCntrl := controller.MetricsCntrl{
 		MetricService: metricsSvcMock,
 	}

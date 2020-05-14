@@ -7,7 +7,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
@@ -16,7 +16,7 @@ import (
 func TestDataSourceController_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	dataSourceSvcMock := mock_service.NewMockDataSourceService(ctrl)
+	dataSourceSvcMock := service_mock.NewMockDataSourceService(ctrl)
 	dataSourceCntrl := controller.DataSourceCntrl{
 		DataSourceService: dataSourceSvcMock,
 	}
@@ -41,7 +41,7 @@ func TestDataSourceController_Create(t *testing.T) {
 func TestDataSourceController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	dataSourceSvcMock := mock_service.NewMockDataSourceService(ctrl)
+	dataSourceSvcMock := service_mock.NewMockDataSourceService(ctrl)
 	dataSourceCntrl := controller.DataSourceCntrl{
 		DataSourceService: dataSourceSvcMock,
 	}
@@ -71,7 +71,7 @@ func TestDataSourceController_Find(t *testing.T) {
 func TestDataSourceController_FindOne(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	dataSourceSvcMock := mock_service.NewMockDataSourceService(ctrl)
+	dataSourceSvcMock := service_mock.NewMockDataSourceService(ctrl)
 	dataSourceCntrl := controller.DataSourceCntrl{
 		DataSourceService: dataSourceSvcMock,
 	}
@@ -108,7 +108,7 @@ func TestDataSourceController_FindOne(t *testing.T) {
 func TestDataSourceController_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	dataSourceSvcMock := mock_service.NewMockDataSourceService(ctrl)
+	dataSourceSvcMock := service_mock.NewMockDataSourceService(ctrl)
 	dataSourceCntrl := controller.DataSourceCntrl{
 		DataSourceService: dataSourceSvcMock,
 	}
@@ -133,7 +133,7 @@ func TestDataSourceController_Delete(t *testing.T) {
 func TestDataSourceController_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	dataSourceSvcMock := mock_service.NewMockDataSourceService(ctrl)
+	dataSourceSvcMock := service_mock.NewMockDataSourceService(ctrl)
 	dataSourceCntrl := controller.DataSourceCntrl{
 		DataSourceService: dataSourceSvcMock,
 	}

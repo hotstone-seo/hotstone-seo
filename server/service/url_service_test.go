@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
+	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/hotstone-seo/hotstone-seo/urlstore"
@@ -28,7 +28,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		&repository.URLSync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
 	}
 
-	mockRepo := mock_repository.NewMockURLSyncRepo(ctrl)
+	mockRepo := repository_mock.NewMockURLSyncRepo(ctrl)
 
 	urlStoreServer := &service.URLServiceImpl{
 		URLSyncRepo:   mockRepo,

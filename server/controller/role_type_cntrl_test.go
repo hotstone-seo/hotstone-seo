@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
@@ -17,7 +17,7 @@ import (
 func TestRoleTypeController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	roleTypeSvcMock := mock_service.NewMockRoleTypeService(ctrl)
+	roleTypeSvcMock := service_mock.NewMockRoleTypeService(ctrl)
 	roleTypeCntrl := controller.RoleTypeCntrl{
 		RoleTypeService: roleTypeSvcMock,
 	}
@@ -47,7 +47,7 @@ func TestRoleTypeController_Find(t *testing.T) {
 func TestRoleTypeController_FindOne(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	roleTypeSvcMock := mock_service.NewMockRoleTypeService(ctrl)
+	roleTypeSvcMock := service_mock.NewMockRoleTypeService(ctrl)
 	roleTypeCntrl := controller.RoleTypeCntrl{
 		RoleTypeService: roleTypeSvcMock,
 	}
@@ -84,7 +84,7 @@ func TestRoleTypeController_FindOne(t *testing.T) {
 func TestRoleTypeController_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	roleTypeSvcMock := mock_service.NewMockRoleTypeService(ctrl)
+	roleTypeSvcMock := service_mock.NewMockRoleTypeService(ctrl)
 	roleTypeCntrl := controller.RoleTypeCntrl{
 		RoleTypeService: roleTypeSvcMock,
 	}
@@ -110,7 +110,7 @@ func TestRoleTypeController_Create(t *testing.T) {
 func TestRoleTypeController_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	roleTypeSvcMock := mock_service.NewMockRoleTypeService(ctrl)
+	roleTypeSvcMock := service_mock.NewMockRoleTypeService(ctrl)
 	roleTypeCntrl := controller.RoleTypeCntrl{
 		RoleTypeService: roleTypeSvcMock,
 	}
@@ -139,7 +139,7 @@ func TestRoleTypeController_Update(t *testing.T) {
 func TestRoleTypeController_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	roleTypeSvcMock := mock_service.NewMockRoleTypeService(ctrl)
+	roleTypeSvcMock := service_mock.NewMockRoleTypeService(ctrl)
 	roleTypeCntrl := controller.RoleTypeCntrl{
 		RoleTypeService: roleTypeSvcMock,
 	}
@@ -164,7 +164,7 @@ func TestRoleTypeController_Delete(t *testing.T) {
 func TestRoleTypeController_FindOneByName(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	roleTypeSvcMock := mock_service.NewMockRoleTypeService(ctrl)
+	roleTypeSvcMock := service_mock.NewMockRoleTypeService(ctrl)
 	roleTypeCntrl := controller.RoleTypeCntrl{
 		RoleTypeService: roleTypeSvcMock,
 	}

@@ -7,7 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
@@ -17,7 +17,7 @@ import (
 func TestProviderCntrl_Match(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := mock_service.NewMockProviderService(ctrl)
+	svc := service_mock.NewMockProviderService(ctrl)
 	cntrl := controller.ProviderCntrl{
 		ProviderService: svc,
 	}
@@ -47,7 +47,7 @@ func TestProviderController_FetchTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockService := mock_service.NewMockProviderService(ctrl)
+	mockService := service_mock.NewMockProviderService(ctrl)
 	cntrl := controller.ProviderCntrl{
 		ProviderService: mockService,
 	}

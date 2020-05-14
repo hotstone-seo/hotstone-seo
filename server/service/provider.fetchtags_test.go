@@ -18,7 +18,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_repository"
+	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 )
@@ -130,10 +130,10 @@ func TestProviderService2(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	dsmock := mock_repository.NewMockDataSourceRepo(ctrl)
-	rulemock := mock_repository.NewMockRuleRepo(ctrl)
-	tagmock := mock_repository.NewMockTagRepo(ctrl)
-	strdatamock := mock_repository.NewMockStructuredDataRepo(ctrl)
+	dsmock := repository_mock.NewMockDataSourceRepo(ctrl)
+	rulemock := repository_mock.NewMockRuleRepo(ctrl)
+	tagmock := repository_mock.NewMockTagRepo(ctrl)
+	strdatamock := repository_mock.NewMockStructuredDataRepo(ctrl)
 	ctx := context.Background()
 
 	svc := service.ProviderServiceImpl{
