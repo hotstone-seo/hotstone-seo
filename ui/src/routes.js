@@ -6,7 +6,6 @@ import {
   PlayCircleOutlined,
   AuditOutlined,
   UserOutlined,
-  TeamOutlined,
 } from '@ant-design/icons';
 
 import Cookies from 'js-cookie';
@@ -20,7 +19,6 @@ import Simulation from 'views/Simulation';
 import AuditTrail from 'views/AuditTrail';
 import GenericNotFound from 'views/GenericNotFound';
 import User from './views/User';
-import RoleType from './views/RoleType';
 
 const COMPONENT_MAP = {
   rules: Rule,
@@ -30,7 +28,6 @@ const COMPONENT_MAP = {
   simulation: Simulation,
   audittrail: AuditTrail,
   user: User,
-  roleType: RoleType,
   notfound: GenericNotFound,
 };
 
@@ -42,10 +39,8 @@ const ICON_MAP = {
   simulation: PlayCircleOutlined,
   audittrail: AuditOutlined,
   user: UserOutlined,
-  roleType: TeamOutlined,
 };
 
-// TODO : save path Menu & label Menu into database
 const PATH_MAP = {
   rules: '/rules',
   datasources: '/datasources',
@@ -54,7 +49,6 @@ const PATH_MAP = {
   simulation: '/simulation',
   audittrail: '/audit-trail',
   user: '/users',
-  roleType: '/roletypes',
 };
 
 const LABEL_MAP = {
@@ -65,14 +59,12 @@ const LABEL_MAP = {
   simulation: 'Simulation',
   audittrail: 'Audit Trail',
   user: 'Users',
-  roleType: 'Role User',
 };
-// END TODO
 
 const token = Cookies.get('token');
 const tokenDecoded = token !== undefined ? jwt.decode(token) : undefined;
 const jsonModules = tokenDecoded !== undefined ? tokenDecoded.modules : [];
-let routes=[];
+let routes = [];
 
 let mn;
 if (tokenDecoded !== undefined) {
@@ -87,6 +79,7 @@ if (tokenDecoded !== undefined) {
     tempMenu.name = LABEL_MAP[item];
     tempMenu.component = COMPONENT_MAP[item];
     tempMenu.icon = ICON_MAP[item];
+    tempMenu.visible = true;
     arrMenu.push(tempMenu);
   });
 
@@ -96,62 +89,62 @@ if (tokenDecoded !== undefined) {
   arrMenu.push(menu404);
 
   routes = arrMenu;
+} else {
+  routes = [
+    {
+      path: '/rules',
+      name: 'Rules',
+      component: Rule,
+      icon: FormOutlined,
+      visible: true,
+    },
+    {
+      path: '/datasources',
+      name: 'Data Sources',
+      component: DataSource,
+      icon: DatabaseOutlined,
+      visible: true,
+    },
+    {
+      path: '/mismatch-rule',
+      name: 'Mismatch Rule',
+      component: MismatchRule,
+      icon: TagsOutlined,
+      visible: true,
+    },
+    {
+      path: '/analytic',
+      name: 'Analytic',
+      component: Analytic,
+      icon: AreaChartOutlined,
+      visible: true,
+    },
+    {
+      path: '/simulation',
+      name: 'Simulation',
+      component: Simulation,
+      icon: PlayCircleOutlined,
+      visible: true,
+    },
+    {
+      path: '/audit-trail',
+      name: 'Audit Trail',
+      component: AuditTrail,
+      icon: AuditOutlined,
+      visible: true,
+    },
+    {
+      path: '/users',
+      name: 'User',
+      component: User,
+      icon: UserOutlined,
+      visible: true,
+    },
+    {
+      path: '*',
+      component: GenericNotFound,
+    },
+  ];
 }
-/*
-const routes = [
-  {
-    path: '/rules',
-    name: 'Rules',
-    component: Rule,
-    icon: FormOutlined,
-  },
-  {
-    path: '/datasources',
-    name: 'Data Sources',
-    component: DataSource,
-    icon: DatabaseOutlined,
-  },
-  {
-    path: '/mismatch-rule',
-    name: 'Mismatch Rule',
-    component: MismatchRule,
-    icon: TagsOutlined,
-  },
-  {
-    path: '/analytic',
-    name: 'Analytic',
-    component: Analytic,
-    icon: AreaChartOutlined,
-  },
-  {
-    path: '/simulation',
-    name: 'Simulation',
-    component: Simulation,
-    icon: PlayCircleOutlined,
-  },
-  {
-    path: '/audit-trail',
-    name: 'Audit Trail',
-    component: AuditTrail,
-    icon: AuditOutlined,
-  },
-  {
-    path: '/users',
-    name: 'User',
-    component: User,
-    icon: UserOutlined,
-  },
-  {
-    path: '/roletypes',
-    name: 'Role User',
-    component: RoleType,
-    icon: TeamOutlined,
-  },
-  {
-    path: '*',
-    component: GenericNotFound,
-  },
-];
-*/
 
 export default routes;
