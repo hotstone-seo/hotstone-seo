@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 
-	"github.com/hotstone-seo/hotstone-seo/server/metric"
+	"github.com/hotstone-seo/hotstone-seo/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"go.uber.org/dig"

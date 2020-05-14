@@ -11,7 +11,7 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/metric"
+	"github.com/hotstone-seo/hotstone-seo/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
 )
 

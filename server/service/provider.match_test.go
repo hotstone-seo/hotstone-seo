@@ -9,7 +9,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/mock_urlstore"
 	"github.com/hotstone-seo/hotstone-seo/urlstore"
 
-	"github.com/hotstone-seo/hotstone-seo/server/mock_metric"
+	"github.com/hotstone-seo/hotstone-seo/mock_metric"
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"

@@ -27,6 +27,8 @@ var Descriptor = typgo.Descriptor{
 	Layouts: []string{
 		"server",
 		"pkg",
+		"urlstore",
+		"metric",
 	},
 
 	Configurer: typgo.Configurers{

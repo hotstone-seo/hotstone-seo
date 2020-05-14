@@ -7,7 +7,7 @@ import (
 	"github.com/go-redis/redis"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/metric"
+	"github.com/hotstone-seo/hotstone-seo/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/urlstore"
 

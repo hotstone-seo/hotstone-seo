@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/server/metric"
+	"github.com/hotstone-seo/hotstone-seo/metric"
 	"go.uber.org/dig"
 )
 
