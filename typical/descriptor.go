@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	mainDB = &typpostgres.Setting{
+	mainDB = &typpostgres.Settings{
 		DockerImage: "timescale/timescaledb:latest-pg11",
 		DBName:      "hoststone",
 	}
