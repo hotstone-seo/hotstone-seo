@@ -7,7 +7,7 @@ package mock_service
 import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
-	urlstore "github.com/hotstone-seo/hotstone-seo/server/urlstore"
+	urlstore "github.com/hotstone-seo/hotstone-seo/urlstore"
 	reflect "reflect"
 )
 

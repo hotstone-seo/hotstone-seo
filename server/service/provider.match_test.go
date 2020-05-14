@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/server/mock_urlstore"
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/mock_urlstore"
+	"github.com/hotstone-seo/hotstone-seo/urlstore"
 
 	"github.com/hotstone-seo/hotstone-seo/server/mock_metric"
 	"github.com/stretchr/testify/require"

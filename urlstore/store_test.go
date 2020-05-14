@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/urlstore"
 	"github.com/stretchr/testify/assert"
 )
 

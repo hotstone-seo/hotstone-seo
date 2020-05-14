@@ -9,7 +9,6 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/metric"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
-	"github.com/hotstone-seo/hotstone-seo/server/urlstore"
 	"github.com/typical-go/typical-go/pkg/typgo"
 	"github.com/typical-go/typical-rest-server/pkg/typpostgres"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
@@ -43,7 +42,6 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: service.NewTagService},
 		&typgo.Constructor{Name: "", Fn: service.NewURLService},
 		&typgo.Constructor{Name: "", Fn: service.NewUserService},
-		&typgo.Constructor{Name: "", Fn: urlstore.NewStore},
 		&typgo.Constructor{Name: "", Fn: oauth2google.NewService},
 		&typgo.Constructor{
 			Name: "",
