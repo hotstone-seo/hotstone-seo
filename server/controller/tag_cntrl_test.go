@@ -11,14 +11,14 @@ import (
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 )
 
 func TestTagController_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	tagSvcMock := mock_service.NewMockTagService(ctrl)
+	tagSvcMock := service_mock.NewMockTagService(ctrl)
 	tagCntrl := controller.TagCntrl{
 		TagService: tagSvcMock,
 	}
@@ -47,7 +47,7 @@ func TestTagController_Create(t *testing.T) {
 func TestTagController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	tagSvcMock := mock_service.NewMockTagService(ctrl)
+	tagSvcMock := service_mock.NewMockTagService(ctrl)
 	tagCntrl := controller.TagCntrl{
 		TagService: tagSvcMock,
 	}
@@ -84,7 +84,7 @@ func TestTagController_Find(t *testing.T) {
 func TestTagController_FindOne(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	tagSvcMock := mock_service.NewMockTagService(ctrl)
+	tagSvcMock := service_mock.NewMockTagService(ctrl)
 	tagCntrl := controller.TagCntrl{
 		TagService: tagSvcMock,
 	}
@@ -124,7 +124,7 @@ func TestTagController_FindOne(t *testing.T) {
 func TestTagController_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	tagSvcMock := mock_service.NewMockTagService(ctrl)
+	tagSvcMock := service_mock.NewMockTagService(ctrl)
 	tagCntrl := controller.TagCntrl{
 		TagService: tagSvcMock,
 	}
@@ -149,7 +149,7 @@ func TestTagController_Delete(t *testing.T) {
 func TestTagController_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	tagSvcMock := mock_service.NewMockTagService(ctrl)
+	tagSvcMock := service_mock.NewMockTagService(ctrl)
 	tagCntrl := controller.TagCntrl{
 		TagService: tagSvcMock,
 	}

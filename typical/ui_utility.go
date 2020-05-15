@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/typical-go/typical-go/pkg/typbuildtool"
+	"github.com/typical-go/typical-go/pkg/typgo"
 	"github.com/urfave/cli/v2"
 )
 
@@ -13,7 +13,7 @@ const (
 	uiDir = "ui"
 )
 
-func uiUtility(*typbuildtool.Context) []*cli.Command {
+func uiUtility(*typgo.BuildTool) []*cli.Command {
 	return []*cli.Command{
 		{
 			Name:  "npm",

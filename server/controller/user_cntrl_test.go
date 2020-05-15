@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
@@ -17,7 +17,7 @@ import (
 func TestUserController_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := mock_service.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserService(ctrl)
 	userCntrl := controller.UserCntrl{
 		UserService: userSvcMock,
 	}
@@ -46,7 +46,7 @@ func TestUserController_Create(t *testing.T) {
 func TestUserController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := mock_service.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserService(ctrl)
 	userCntrl := controller.UserCntrl{
 		UserService: userSvcMock,
 	}
@@ -75,7 +75,7 @@ func TestUserController_Find(t *testing.T) {
 func TestUserController_FindOne(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := mock_service.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserService(ctrl)
 	userCntrl := controller.UserCntrl{
 		UserService: userSvcMock,
 	}
@@ -111,7 +111,7 @@ func TestUserController_FindOne(t *testing.T) {
 func TestUserController_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := mock_service.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserService(ctrl)
 	userCntrl := controller.UserCntrl{
 		UserService: userSvcMock,
 	}
@@ -136,7 +136,7 @@ func TestUserController_Delete(t *testing.T) {
 func TestUserController_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := mock_service.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserService(ctrl)
 	userCntrl := controller.UserCntrl{
 		UserService: userSvcMock,
 	}
@@ -165,7 +165,7 @@ func TestUserController_Update(t *testing.T) {
 func TestUserController_FindOneByEmail(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := mock_service.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserService(ctrl)
 	userCntrl := controller.UserCntrl{
 		UserService: userSvcMock,
 	}

@@ -5,12 +5,12 @@ import (
 	"os/exec"
 
 	"github.com/typical-go/typical-go/pkg/buildkit"
-	"github.com/typical-go/typical-go/pkg/typbuildtool"
+	"github.com/typical-go/typical-go/pkg/typgo"
 	"github.com/urfave/cli/v2"
 )
 
 const (
-	jsonServerSrc  = "scripts/json-server/db.json"
+	jsonServerSrc = "scripts/json-server/db.json"
 )
 
 var (
@@ -18,28 +18,29 @@ var (
 	jsonServerPort = getEnv("JSON_SERVER_PORT", "3021")
 )
 
-func jsonServer(c *typbuildtool.Context) []*cli.Command {
+func jsonServer(b *typgo.BuildTool) []*cli.Command {
 	return []*cli.Command{
 		{
 			Name:    "json-server",
 			Aliases: []string{"j"},
-			Action:  c.ActionFunc("JSON-SERVER", startJSONServer),
+			Action:  b.ActionFunc("JSON-SERVER", startJSONServer),
 		},
 	}
 }
 
-func startJSONServer(c *typbuildtool.CliContext) (err error) {
+func startJSONServer(c *typgo.Context) (err error) {
 	jsonServer := "json-server"
-	if !buildkit.AvailableCommand(c, jsonServer) {
+	ctx := c.Cli.Context
+	if !buildkit.AvailableCommand(ctx, jsonServer) {
 		c.Infof("Install %s", jsonServer)
-		cmd := exec.CommandContext(c, "npm", "install", "-g", jsonServer)
+		cmd := exec.CommandContext(ctx, "npm", "install", "-g", jsonServer)
 		if err = cmd.Run(); err != nil {
 			return
 		}
 	}
 
 	c.Infof("Run %s", jsonServer)
-	cmd := exec.CommandContext(c, jsonServer, "--host", jsonServerHost, "--port", jsonServerPort, jsonServerSrc)
+	cmd := exec.CommandContext(ctx, jsonServer, "--host", jsonServerHost, "--port", jsonServerPort, jsonServerSrc)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -47,7 +48,7 @@ func startJSONServer(c *typbuildtool.CliContext) (err error) {
 
 func getEnv(key, defaultVal string) string {
 	if value, ok := os.LookupEnv(key); ok {
-        return value
-    }
-    return defaultVal
+		return value
+	}
+	return defaultVal
 }

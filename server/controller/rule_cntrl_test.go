@@ -8,7 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/mock_service"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
@@ -17,7 +17,7 @@ import (
 func TestRuleController_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	ruleSvcMock := mock_service.NewMockRuleService(ctrl)
+	ruleSvcMock := service_mock.NewMockRuleService(ctrl)
 	ruleCntrl := controller.RuleCntrl{
 		RuleService: ruleSvcMock,
 	}
@@ -46,7 +46,7 @@ func TestRuleController_Create(t *testing.T) {
 func TestRuleController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	ruleSvcMock := mock_service.NewMockRuleService(ctrl)
+	ruleSvcMock := service_mock.NewMockRuleService(ctrl)
 	ruleCntrl := controller.RuleCntrl{
 		RuleService: ruleSvcMock,
 	}
@@ -76,7 +76,7 @@ func TestRuleController_Find(t *testing.T) {
 func TestRuleController_FindOne(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	ruleSvcMock := mock_service.NewMockRuleService(ctrl)
+	ruleSvcMock := service_mock.NewMockRuleService(ctrl)
 	ruleCntrl := controller.RuleCntrl{
 		RuleService: ruleSvcMock,
 	}
@@ -113,7 +113,7 @@ func TestRuleController_FindOne(t *testing.T) {
 func TestRuleController_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	ruleSvcMock := mock_service.NewMockRuleService(ctrl)
+	ruleSvcMock := service_mock.NewMockRuleService(ctrl)
 	ruleCntrl := controller.RuleCntrl{
 		RuleService: ruleSvcMock,
 	}
@@ -138,7 +138,7 @@ func TestRuleController_Delete(t *testing.T) {
 func TestRuleController_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	ruleSvcMock := mock_service.NewMockRuleService(ctrl)
+	ruleSvcMock := service_mock.NewMockRuleService(ctrl)
 	ruleCntrl := controller.RuleCntrl{
 		RuleService: ruleSvcMock,
 	}

@@ -1,5 +1,12 @@
 package oauth2google
 
+import "github.com/typical-go/typical-go/pkg/typgo"
+
+var (
+	// DefaultConfigName is default config name of oauth2 google
+	DefaultConfigName = "OAUTH2_GOOGLE"
+)
+
 // Config is configuration of google social login
 type Config struct {
 	ClientID     string `envconfig:"CLIENT_ID" required:"true"`
@@ -13,4 +20,12 @@ type Config struct {
 	RedirectSuccess string `envconfig:"REDIRECT_SUCCESS"`
 	RedirectFailure string `envconfig:"REDIRECT_FAILURE"`
 	LogoutRedirect  string `envconfig:"LOGOUT_REDIRECT"`
+}
+
+// Configuration of oauth2 google
+func Configuration() *typgo.Configuration {
+	return &typgo.Configuration{
+		Name: DefaultConfigName,
+		Spec: &Config{},
+	}
 }

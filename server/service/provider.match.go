@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/errkit"
-	"github.com/hotstone-seo/hotstone-seo/server/metric"
+	"github.com/hotstone-seo/hotstone-seo/analyt"
+	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 )
 
 const (
@@ -32,7 +32,7 @@ func (p *ProviderServiceImpl) Match(ctx context.Context, vals url.Values) (resp 
 	path := vals.Get("_path")
 
 	if path == "" {
-		return nil, errkit.ValidationErr("_path can't empty")
+		return nil, errvalid.New("_path can't empty")
 	}
 
 	if _, err = url.Parse(path); err != nil {
@@ -84,7 +84,7 @@ func (p *ProviderServiceImpl) onMatched(url string, ruleID int64) {
 	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
 	defer cancel()
 
-	p.RuleMatchingRepo.Insert(ctx, metric.RuleMatching{
+	p.RuleMatchingRepo.Insert(ctx, analyt.RuleMatching{
 		IsMatched: 1,
 		URL:       &url,
 		RuleID:    &ruleID,
@@ -95,7 +95,7 @@ func (p *ProviderServiceImpl) onNotMatched(url string) {
 	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
 	defer cancel()
 
-	p.RuleMatchingRepo.Insert(ctx, metric.RuleMatching{
+	p.RuleMatchingRepo.Insert(ctx, analyt.RuleMatching{
 		IsMatched: 0,
 		URL:       &url,
 	})
