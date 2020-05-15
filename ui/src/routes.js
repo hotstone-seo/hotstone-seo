@@ -21,7 +21,7 @@ import GenericNotFound from 'views/GenericNotFound';
 import User from './views/User';
 
 const COMPONENT_MAP = {
-  rules: Rule,
+  rule: Rule,
   datasources: DataSource,
   mismatchrule: MismatchRule,
   analytic: Analytic,
@@ -32,7 +32,7 @@ const COMPONENT_MAP = {
 };
 
 const ICON_MAP = {
-  rules: FormOutlined,
+  rule: FormOutlined,
   datasources: DatabaseOutlined,
   mismatchrule: TagsOutlined,
   analytic: AreaChartOutlined,
@@ -41,18 +41,8 @@ const ICON_MAP = {
   user: UserOutlined,
 };
 
-const PATH_MAP = {
-  rules: '/rules',
-  datasources: '/datasources',
-  mismatchrule: '/mismatch-rule',
-  analytic: '/analytic',
-  simulation: '/simulation',
-  audittrail: '/audit-trail',
-  user: '/users',
-};
-
 const LABEL_MAP = {
-  rules: 'Rules',
+  rule: 'Rules',
   datasources: 'Data Sources',
   mismatchrule: 'Mismatch Rule',
   analytic: 'Analytic',
@@ -63,22 +53,28 @@ const LABEL_MAP = {
 
 const token = Cookies.get('token');
 const tokenDecoded = token !== undefined ? jwt.decode(token) : undefined;
-const jsonModules = tokenDecoded !== undefined ? tokenDecoded.modules : [];
+
+let isOldCookieVersion = false;
+if (tokenDecoded !== undefined) isOldCookieVersion = tokenDecoded.modules === undefined;
+
 let routes = [];
 
-let mn;
-if (tokenDecoded !== undefined) {
+if (tokenDecoded !== undefined && isOldCookieVersion === false) { // status : already login
+  let jsonModules = tokenDecoded !== undefined ? tokenDecoded.modules : [];
+  let mn;
+  jsonModules = JSON.parse(jsonModules);
+
   Object.keys(jsonModules).forEach((key) => {
     mn = jsonModules[key];
   });
 
-  let arrMenu = [];
-  mn.forEach((item, index) => {
+  const arrMenu = [];
+  mn.forEach((item) => {
     const tempMenu = [];
-    tempMenu.path = PATH_MAP[item];
-    tempMenu.name = LABEL_MAP[item];
-    tempMenu.component = COMPONENT_MAP[item];
-    tempMenu.icon = ICON_MAP[item];
+    tempMenu.path = '/'.concat(item.path);
+    tempMenu.name = LABEL_MAP[item.name];
+    tempMenu.component = COMPONENT_MAP[item.name];
+    tempMenu.icon = ICON_MAP[item.name];
     tempMenu.visible = true;
     arrMenu.push(tempMenu);
   });
@@ -89,7 +85,7 @@ if (tokenDecoded !== undefined) {
   arrMenu.push(menu404);
 
   routes = arrMenu;
-} else {
+} else { // status : still not login
   routes = [
     {
       path: '/rules',

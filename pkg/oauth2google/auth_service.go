@@ -93,7 +93,7 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 	var roleAccess string
 	var roleModule string
 	if user != nil {
-		roleType, err := c.RoleTypeRepo.FindOne(ce.Request().Context(), 3)
+		roleType, err := c.RoleTypeRepo.FindOne(ce.Request().Context(), user.RoleTypeID)
 		if err == sql.ErrNoRows {
 			return "", fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 		}
