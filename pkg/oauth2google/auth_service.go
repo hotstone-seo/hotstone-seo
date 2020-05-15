@@ -93,18 +93,17 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 	var roleAccess string
 	var roleModule string
 	if user != nil {
-		roleType, err := c.RoleTypeRepo.FindOne(ce.Request().Context(), user.RoleTypeID)
+		roleType, err := c.RoleTypeRepo.FindOne(ce.Request().Context(), 3)
 		if err == sql.ErrNoRows {
-			return "", fmt.Errorf("AuthVerifyCallback get role: %w", err)
+			return "", fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 		}
 		roleAccess = roleType.Name
-		//TODO : still error. will re-check when get value
-		// roleModule = roleType.Modules
-		// res1D := &response1{roleModule}
-		// res1B, _ := json.Marshal(res1D)
-		//slcB, _ := json.Marshal(roleModule)
-		//fmt.Print(slcB)
-		roleModule = `{"modules": ["rules","datasources","mismatchrule","analytic","simulation","audittrail","user","roleType"]}`
+
+		rawData, err := json.Marshal(roleType.Modules)
+		if err != nil {
+			return "", fmt.Errorf("AuthVerifyCallback convert JSON: %w", err)
+		}
+		roleModule = string(rawData)
 	}
 	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess, roleModule)
 	if err != nil {
@@ -171,12 +170,7 @@ func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2U
 	claims["exp"] = time.Now().Add(TokenEpiration).Unix()
 	claims["user_id"] = userID
 	claims["user_role"] = roleAccess
-
-	// fmt.Println(roleModule)
-	// str := `{"modules": ["rules","datasources","mismatchrule","analytic","simulation","audittrail","user","roleType"]}`
-	res := responseModule{}
-	json.Unmarshal([]byte(roleModule), &res)
-	claims["modules"] = res
+	claims["modules"] = roleModule
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))
