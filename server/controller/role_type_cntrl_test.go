@@ -32,7 +32,7 @@ func TestRoleTypeController_Find(t *testing.T) {
 				&repository.RoleType{
 					ID:      100,
 					Name:    "admin",
-					Modules: map[string]string{},
+					Modules: make(map[string]interface{}, 0),
 				},
 			},
 			nil,
@@ -70,7 +70,7 @@ func TestRoleTypeController_FindOne(t *testing.T) {
 			&repository.RoleType{
 				ID:      100,
 				Name:    "admin",
-				Modules: map[string]string{},
+				Modules: make(map[string]interface{}, 0),
 			},
 			nil,
 		)
@@ -183,14 +183,15 @@ func TestRoleTypeController_FindOneByName(t *testing.T) {
 	t.Run("WHEN successful", func(t *testing.T) {
 		roleTypeSvcMock.EXPECT().FindOneByName(gomock.Any(), "admin").Return(
 			&repository.RoleType{
-				ID:   100,
-				Name: "admin",
+				ID:      100,
+				Name:    "admin",
+				Modules: make(map[string]interface{}, 0),
 			},
 			nil,
 		)
 		rr, err := echotest.DoPOST(roleTypeCntrl.FindOneByName, "/", `{ "name": "admin", "role_type_id":1}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":100,\"name\":\"admin\",\"modules\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"name\":\"admin\",\"modules\":{},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }

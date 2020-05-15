@@ -15,7 +15,7 @@ import (
 type RoleType struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
-	Modules   Attrs     `json:"modules"`
+	Modules   JSONMap   `json:"modules"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -52,7 +52,7 @@ func (roleType RoleType) Validate() error {
 func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("id", "name", "updated_at", "created_at").
+		Select("id", "name", "modules", "updated_at", "created_at").
 		From("role_type").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
@@ -63,7 +63,7 @@ func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, 
 	defer rows.Close()
 	if rows.Next() {
 		e = new(RoleType)
-		if err = rows.Scan(&e.ID, &e.Name, &e.UpdatedAt, &e.CreatedAt); err != nil {
+		if err = rows.Scan(&e.ID, &e.Name, &e.Modules, &e.UpdatedAt, &e.CreatedAt); err != nil {
 			dbtxn.SetError(ctx, err)
 			return nil, err
 		}
@@ -98,7 +98,7 @@ func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationP
 // Insert role_type
 func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID int64, err error) {
 	if e.Modules == nil {
-		e.Modules = map[string]string{}
+		e.Modules = make(map[string]interface{}, 0)
 	}
 
 	builder := sq.
@@ -123,7 +123,7 @@ func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID
 // Update role_type
 func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
 	if e.Modules == nil {
-		e.Modules = map[string]string{}
+		e.Modules = make(map[string]interface{}, 0)
 	}
 
 	builder := sq.
