@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"crypto/sha256"
+	"fmt"
 
+	"github.com/dchest/uniuri"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	log "github.com/sirupsen/logrus"
@@ -31,15 +34,20 @@ func NewClientKeyService(impl ClientKeyServiceImpl) ClientKeyService {
 }
 
 // Insert client key
-func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.ClientKey) (newID int64, err error) {
-	if data.ID, err = s.ClientKeyRepo.Insert(ctx, data); err != nil {
+func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.ClientKey) (newData repository.ClientKey, err error) {
+	newPrefix, newKey, newKeyHashed := generateClientKey()
+	data.Prefix = newPrefix
+	data.Key = newKeyHashed
+	newData, err = s.ClientKeyRepo.Insert(ctx, data)
+	newData.Key = newKey
+	if err != nil {
 		return
 	}
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
 			"client_keys",
-			data.ID,
+			newData.ID,
 			repository.Insert,
 			nil,
 			data,
@@ -47,7 +55,7 @@ func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.Clien
 			log.Error(auditErr)
 		}
 	}()
-	return data.ID, nil
+	return
 }
 
 // Update client key
@@ -105,4 +113,10 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 		}
 	}()
 	return nil
+}
+
+func generateClientKey() (prefix, key, keyHashed string) {
+	newPrefix := uniuri.NewLen(7)
+	newKey := uniuri.NewLen(32)
+	return newPrefix, newKey, fmt.Sprintf("%x", sha256.Sum256([]byte(newKey)))
 }

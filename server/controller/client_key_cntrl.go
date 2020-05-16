@@ -31,7 +31,6 @@ func (c *ClientKeyCntrl) Route(e *echo.Group) {
 // Create client_key
 func (c *ClientKeyCntrl) Create(ctx echo.Context) (err error) {
 	var clientKey repository.ClientKey
-	var lastInsertID int64
 	ctx0 := ctx.Request().Context()
 	if err = ctx.Bind(&clientKey); err != nil {
 		return err
@@ -39,10 +38,9 @@ func (c *ClientKeyCntrl) Create(ctx echo.Context) (err error) {
 	if err = validator.New().Struct(clientKey); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if lastInsertID, err = c.ClientKeyService.Insert(ctx0, clientKey); err != nil {
+	if clientKey, err = c.ClientKeyService.Insert(ctx0, clientKey); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
-	clientKey.ID = lastInsertID
 	return ctx.JSON(http.StatusCreated, clientKey)
 }
 

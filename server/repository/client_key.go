@@ -27,7 +27,7 @@ type ClientKey struct {
 type ClientKeyRepo interface {
 	FindOne(context.Context, int64) (*ClientKey, error)
 	Find(context.Context, ...dbkit.FindOption) ([]*ClientKey, error)
-	Insert(context.Context, ClientKey) (lastInsertID int64, err error)
+	Insert(context.Context, ClientKey) (ClientKey, error)
 	Delete(context.Context, int64) error
 	Update(context.Context, ClientKey) error
 }
@@ -126,8 +126,7 @@ func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) 
 }
 
 // Insert clientKey
-func (r *ClientKeyRepoImpl) Insert(ctx context.Context, e ClientKey) (lastInsertID int64, err error) {
-
+func (r *ClientKeyRepoImpl) Insert(ctx context.Context, e ClientKey) (newClientKey ClientKey, err error) {
 	builder := sq.
 		Insert("client_keys").
 		Columns(
@@ -140,11 +139,10 @@ func (r *ClientKeyRepoImpl) Insert(ctx context.Context, e ClientKey) (lastInsert
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.BaseRunner(ctx, r))
 
-	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
+	if err = builder.QueryRowContext(ctx).Scan(&newClientKey.ID, &newClientKey.Name, &newClientKey.Prefix, &newClientKey.Key, &newClientKey.CreatedAt, &newClientKey.UpdatedAt); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
 	}
-	lastInsertID = e.ID
 	return
 }
 
