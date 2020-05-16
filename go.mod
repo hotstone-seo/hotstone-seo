@@ -20,7 +20,7 @@ require (
 	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/testify v1.5.1
 	github.com/thoas/go-funk v0.6.0
-	github.com/typical-go/typical-go v0.9.53
+	github.com/typical-go/typical-go v0.9.54
 	github.com/typical-go/typical-rest-server v0.8.29
 	github.com/urfave/cli/v2 v2.2.0
 	github.com/xorcare/pointer v1.1.0
