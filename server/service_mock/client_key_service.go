@@ -85,10 +85,10 @@ func (mr *MockClientKeyServiceMockRecorder) FindOne(arg0, arg1 interface{}) *gom
 }
 
 // Insert mocks base method
-func (m *MockClientKeyService) Insert(arg0 context.Context, arg1 repository.ClientKey) (int64, error) {
+func (m *MockClientKeyService) Insert(arg0 context.Context, arg1 repository.ClientKey) (repository.ClientKey, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(repository.ClientKey)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
