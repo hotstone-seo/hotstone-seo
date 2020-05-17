@@ -10,30 +10,17 @@ const formatDate = (dateString) => moment(dateString).fromNow();
 
 function ClientKeyList(props) {
   const {
-    dataSources, loading, onClick, onEdit, onDelete,
+    clientKeys, loading, onEdit, onDelete,
   } = props;
 
   const columns = [
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Key Prefix', dataIndex: 'prefix', key: 'prefix' },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text, record) => (
-        <Button
-          type="link"
-          onClick={() => onClick(record)}
-          style={{ padding: 0 }}
-        >
-          {text}
-        </Button>
-      ),
-    },
-    { title: 'URL', dataIndex: 'url', key: 'url' },
-    {
-      title: 'Last Updated',
-      dataIndex: 'updated_at',
-      key: 'lastUpdated',
-      render: (text, record) => <div>{formatDate(record.updated_at)}</div>,
+      title: 'Last Used',
+      dataIndex: 'last_used_at',
+      key: 'lastUsedAt',
+      render: (text, record) => <div>{formatDate(record.last_used_at)}</div>,
     },
     {
       title: 'Action',
@@ -50,7 +37,7 @@ function ClientKeyList(props) {
           </Tooltip>
           <Divider type="vertical" />
           <Popconfirm
-            title="Are you sure to delete this data source?"
+            title="Are you sure to delete this client key?"
             placement="topRight"
             onConfirm={() => onDelete(record)}
           >
@@ -66,7 +53,7 @@ function ClientKeyList(props) {
   return (
     <Table
       columns={columns}
-      dataSource={dataSources}
+      dataSource={clientKeys}
       rowKey="id"
       loading={loading}
       scroll={{ x: true }}
@@ -75,12 +62,12 @@ function ClientKeyList(props) {
 }
 
 ClientKeyList.defaultProps = {
-  dataSources: [],
+  clientKeys: [],
   loading: false,
 };
 
 ClientKeyList.propTypes = {
-  dataSources: PropTypes.arrayOf(
+  clientKeys: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
       name: PropTypes.string,
