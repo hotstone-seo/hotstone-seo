@@ -5,12 +5,12 @@ import {
 } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
-function ClientKeyForm({ dataSource, handleSubmit }) {
+function ClientKeyForm({ clientKey, handleSubmit }) {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue(dataSource);
-  }, [dataSource, form]);
+    form.setFieldsValue(clientKey);
+  }, [clientKey, form]);
 
   return (
     <Form
@@ -30,23 +30,6 @@ function ClientKeyForm({ dataSource, handleSubmit }) {
         <Input data-testid="input-name" placeholder="My Client Key" maxLength="100" />
       </Form.Item>
 
-      <Form.Item
-        name="url"
-        label="Resource URL"
-        rules={[{ required: true, message: 'Please input the Resource URL' }]}
-      >
-        <Input
-          placeholder="http://api.service.com/resource"
-          suffix={(
-            <Tooltip title="Where the data to fill tags will be retrieved from">
-              <QuestionCircleOutlined />
-            </Tooltip>
-          )}
-          maxLength="255"
-          data-testid="input-url"
-        />
-      </Form.Item>
-
       <Form.Item wrapperCol={{ offset: 6, span: 14 }}>
         <Button data-testid="btn-save" type="primary" htmlType="submit">
           Save
@@ -57,11 +40,11 @@ function ClientKeyForm({ dataSource, handleSubmit }) {
 }
 
 ClientKeyForm.defaultProps = {
-  dataSource: {},
+  clientKey: {},
 };
 
 ClientKeyForm.propTypes = {
-  dataSource: PropTypes.shape({
+  clientKey: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
     url: PropTypes.string,

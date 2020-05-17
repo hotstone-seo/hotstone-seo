@@ -25,7 +25,7 @@ function EditClientKey() {
   const handleEdit = (newClientKey) => {
     updateClientKey(newClientKey)
       .then(() => {
-        history.push('/datasources');
+        history.push('/client-keys');
       })
       .catch((error) => {
         message.error(error.message);
@@ -35,7 +35,7 @@ function EditClientKey() {
   return (
     <div>
       <PageHeader
-        onBack={() => history.push('/datasources')}
+        onBack={() => history.push('/client-keys')}
         title={`Edit ${dataSource.name}`}
         style={{ background: '#fff' }}
       />
