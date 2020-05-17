@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, Tooltip,
+  Form, Input, Button,
 } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
 
 function ClientKeyForm({ clientKey, handleSubmit }) {
   const [form] = Form.useForm();
