@@ -6,6 +6,7 @@ import {
   PlayCircleOutlined,
   AuditOutlined,
   UserOutlined,
+  LockOutlined,
 } from '@ant-design/icons';
 
 import Cookies from 'js-cookie';
@@ -17,6 +18,7 @@ import DataSource from 'views/DataSource';
 import Analytic from 'views/Analytic';
 import Simulation from 'views/Simulation';
 import AuditTrail from 'views/AuditTrail';
+import ClientKey from 'views/ClientKey';
 import GenericNotFound from 'views/GenericNotFound';
 import User from './views/User';
 
@@ -28,6 +30,7 @@ const COMPONENT_MAP = {
   simulation: Simulation,
   audittrail: AuditTrail,
   user: User,
+  clientkey: ClientKey,
   notfound: GenericNotFound,
 };
 
@@ -39,6 +42,7 @@ const ICON_MAP = {
   simulation: PlayCircleOutlined,
   audittrail: AuditOutlined,
   user: UserOutlined,
+  clientkey: LockOutlined,
 };
 
 const LABEL_MAP = {
@@ -49,6 +53,7 @@ const LABEL_MAP = {
   simulation: 'Simulation',
   audittrail: 'Audit Trail',
   user: 'Users',
+  clientkey: 'Client Keys',
 };
 
 const token = Cookies.get('token');
