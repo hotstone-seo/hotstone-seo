@@ -10,7 +10,7 @@ function EditClientKey() {
   const { id } = useParams();
   const history = useHistory();
 
-  const [dataSource, setClientKey] = useState({});
+  const [clientKey, setClientKey] = useState({});
 
   useEffect(() => {
     getClientKey(id)
@@ -36,13 +36,13 @@ function EditClientKey() {
     <div>
       <PageHeader
         onBack={() => history.push('/client-keys')}
-        title={`Edit ${dataSource.name}`}
+        title={`Edit ${clientKey.name}`}
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
         <Row>
           <Col span={12} style={{ background: '#fff', paddingTop: 24 }}>
-            <ClientKeyForm handleSubmit={handleEdit} dataSource={dataSource} />
+            <ClientKeyForm handleSubmit={handleEdit} clientKey={clientKey} />
           </Col>
         </Row>
       </div>
