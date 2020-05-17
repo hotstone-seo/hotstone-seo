@@ -12,35 +12,37 @@ import (
 	"go.uber.org/dig"
 )
 
-// ReportRepo responsble to generate report
-// @mock
-type ReportRepo interface {
-	MismatchReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*MismatchReport, err error)
-	DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error)
+type (
+	// ReportRepo responsble to generate report
+	// @mock
+	ReportRepo interface {
+		MismatchReports(ctx context.Context, paginationParam repository.PaginationParam) (list []*MismatchReport, err error)
+		DailyReports(ctx context.Context, startDate, endDate, ruleID string) (list []*DailyReport, err error)
 
-	CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
-	CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
-}
+		CountMatched(ctx context.Context, whereParams url.Values) (count int64, err error)
+		CountUniquePage(ctx context.Context, whereParams url.Values) (count int64, err error)
+	}
 
-// MismatchReport contain sumary of total count of not-matching rule
-type MismatchReport struct {
-	URL       string    `json:"url"`
-	Count     int64     `json:"count"`
-	FirstSeen time.Time `json:"first_seen"`
-	LastSeen  time.Time `json:"last_seen"`
-}
+	// MismatchReport contain sumary of total count of not-matching rule
+	MismatchReport struct {
+		URL       string    `json:"url"`
+		Count     int64     `json:"count"`
+		FirstSeen time.Time `json:"first_seen"`
+		LastSeen  time.Time `json:"last_seen"`
+	}
 
-// DailyReport contain sumary of daily hit
-type DailyReport struct {
-	Date     time.Time `json:"date"`
-	HitCount int64     `json:"count"`
-}
+	// DailyReport contain sumary of daily hit
+	DailyReport struct {
+		Date     time.Time `json:"date"`
+		HitCount int64     `json:"count"`
+	}
 
-// ReportRepoImpl is implementation of ReportRepo
-type ReportRepoImpl struct {
-	dig.In
-	*sql.DB
-}
+	// ReportRepoImpl is implementation of ReportRepo
+	ReportRepoImpl struct {
+		dig.In
+		*sql.DB `name:"analyt"`
+	}
+)
 
 // NewReportRepo return new instance of MetricsRuleMatchingRepo
 // @constructor

@@ -85,6 +85,16 @@ func init() {
 				return
 			},
 		},
+		&typgo.Constructor{
+			Name: "analyt",
+			Fn: func() (cfg *typpg.Config, err error) {
+				cfg = new(typpg.Config)
+				if err = typgo.ProcessConfig("ANALYT", cfg); err != nil {
+					return nil, err
+				}
+				return
+			},
+		},
 	)
 	typgo.Destroy(
 		&typgo.Destructor{Fn: infra.Disconnect},

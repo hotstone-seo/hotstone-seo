@@ -10,30 +10,32 @@ import (
 	"go.uber.org/dig"
 )
 
-// RuleMatching represented  metrics_rule_matching entity
-type RuleMatching struct {
-	Time      time.Time
-	IsMatched int
-	RuleID    *int64
-	URL       *string
-}
+type (
+	// RuleMatching represented  metrics_rule_matching entity
+	RuleMatching struct {
+		Time      time.Time
+		IsMatched int
+		RuleID    *int64
+		URL       *string
+	}
 
-// RuleMatchingRepo to handle metrics_rule_matching entity
-// @mock
-type RuleMatchingRepo interface {
-	Insert(context.Context, RuleMatching) (err error)
-}
+	// RuleMatchingRepo to handle metrics_rule_matching entity
+	// @mock
+	RuleMatchingRepo interface {
+		Insert(context.Context, RuleMatching) (err error)
+	}
+
+	// RuleMatchingRepoImpl is implementation metrics_rule_matching repository
+	RuleMatchingRepoImpl struct {
+		dig.In
+		*sql.DB `name:"analyt"`
+	}
+)
 
 // NewRuleMatchingRepo return new instance of MetricsRuleMatchingRepo
 // @constructor
 func NewRuleMatchingRepo(impl RuleMatchingRepoImpl) RuleMatchingRepo {
 	return &impl
-}
-
-// RuleMatchingRepoImpl is implementation metrics_rule_matching repository
-type RuleMatchingRepoImpl struct {
-	dig.In
-	*sql.DB
 }
 
 // Insert metrics_rule_matching
@@ -42,7 +44,8 @@ func (r *RuleMatchingRepoImpl) Insert(ctx context.Context, e RuleMatching) (err 
 		Insert("metrics_rule_matching").
 		Columns("is_matched", "url", "rule_id").
 		Values(e.IsMatched, e.URL, e.RuleID).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

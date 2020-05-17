@@ -1,17 +1,30 @@
 version: "3"
 services:
-  postgres:
+  ht-analyt:
     image: timescale/timescaledb:latest-pg11
     environment:
       PGDATA: /data/postgres
       POSTGRES: postgres
       POSTGRES_PASSWORD: pgpass
     volumes:
-    - postgres:/data/postgres
+    - ht-analyt:/data/postgres
+    ports:
+    - 5433:5432
+    networks:
+    - ht-analyt
+    restart: unless-stopped
+  ht-main:
+    image: postgres
+    environment:
+      PGDATA: /data/postgres
+      POSTGRES: postgres
+      POSTGRES_PASSWORD: pgpass
+    volumes:
+    - ht-main:/data/postgres
     ports:
     - 5432:5432
     networks:
-    - postgres
+    - ht-main
     restart: unless-stopped
   redis:
     image: redis:4.0.5-alpine
@@ -23,9 +36,12 @@ services:
     networks:
     - redis
 networks:
-  postgres:
+  ht-analyt:
+    driver: bridge
+  ht-main:
     driver: bridge
   redis: null
 volumes:
-  postgres: null
+  ht-analyt: null
+  ht-main: null
   redis: null
