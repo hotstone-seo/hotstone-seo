@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-  PageHeader, Row, Col, message,
+  Modal, PageHeader, Row, Col, message,
 } from 'antd';
 import { ClientKeyForm } from 'components/ClientKey';
 import { createClientKey } from 'api/client_key';
@@ -12,10 +12,25 @@ function AddClientKey() {
   const handleCreate = (dataSource) => {
     createClientKey(dataSource)
       .then((newClientKey) => {
-        history.push('/datasources', {
-          message: {
-            level: 'success',
-            content: `${newClientKey.name} is successfully created`,
+        Modal.success({
+          title: 'New Client Key',
+          width: '60%',
+          content: (
+            <div>
+              <p>
+                A key for
+                {' '}
+                {newClientKey.name}
+                {' '}
+                is successfully created.
+                Please store it somewhere safe.
+              </p>
+              <p><strong>It will only be displayed now</strong></p>
+              <code>{ `${newClientKey.prefix}.${newClientKey.key}` }</code>
+            </div>
+          ),
+          onOk() {
+            history.push('/client-keys');
           },
         });
       })
@@ -27,8 +42,8 @@ function AddClientKey() {
   return (
     <div>
       <PageHeader
-        onBack={() => history.push('/datasources')}
-        title="Add new Data Source"
+        onBack={() => history.push('/client-keys')}
+        title="Add new Client Key"
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
