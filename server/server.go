@@ -7,7 +7,7 @@ import (
 
 	logrusmiddleware "github.com/bakatz/echo-logrusmiddleware"
 	"github.com/go-redis/redis"
-	"github.com/hotstone-seo/hotstone-seo/server/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/config"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 

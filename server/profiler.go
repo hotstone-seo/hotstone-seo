@@ -8,7 +8,7 @@ import (
 	"strconv"
 
 	"github.com/go-redis/redis"
-	"github.com/hotstone-seo/hotstone-seo/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/labstack/echo"
 	"github.com/typical-go/typical-rest-server/pkg/serverkit"
 	"go.uber.org/dig"

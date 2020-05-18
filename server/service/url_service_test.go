@@ -9,7 +9,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
-	"github.com/hotstone-seo/hotstone-seo/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/stretchr/testify/require"
 	"github.com/xorcare/pointer"
 )

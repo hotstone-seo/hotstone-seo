@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/server/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/config"
 	"github.com/typical-go/typical-go/pkg/typgo"
 )
 

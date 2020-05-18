@@ -7,9 +7,9 @@ import (
 	"github.com/go-redis/redis"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/analyt"
+	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 
 	"go.uber.org/dig"
 )

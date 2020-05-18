@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/urlstore_mock"
-	"github.com/hotstone-seo/hotstone-seo/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore_mock"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 
-	"github.com/hotstone-seo/hotstone-seo/analyt_mock"
+	"github.com/hotstone-seo/hotstone-seo/internal/analyt_mock"
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"

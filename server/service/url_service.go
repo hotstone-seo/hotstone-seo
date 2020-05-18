@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 
 	"go.uber.org/dig"
 )
@@ -74,7 +74,7 @@ func (s *URLServiceImpl) Sync(ctx context.Context) error {
 	}
 
 	if s.LatestVersion != 0 && LatestVersionSync == 0 {
-		s.Store = urlstore.NewStore()
+		s.Store = urlstore.NewStore() 
 		s.LatestVersion = int(LatestVersionSync)
 		return nil
 	}

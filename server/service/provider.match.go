@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/analyt"
+	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 )
 

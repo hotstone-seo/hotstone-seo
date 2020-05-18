@@ -41,8 +41,7 @@ var (
 		Layouts: []string{
 			"server",
 			"pkg",
-			"urlstore",
-			"analyt",
+			"internal",
 		},
 
 		Configurer: typgo.Configurers{
