@@ -21,6 +21,7 @@ type api struct {
 	controller.UserCntrl
 	controller.RoleTypeCntrl
 	controller.ClientKeyCntrl
+	controller.ModuleCntrl
 }
 
 func (a *api) route(e *echo.Echo) {
@@ -44,4 +45,5 @@ func (a *api) route(e *echo.Echo) {
 	a.UserCntrl.Route(group)
 	a.RoleTypeCntrl.Route(group)
 	a.ClientKeyCntrl.Route(group)
+	a.ModuleCntrl.Route(group)
 }
