@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/internal/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/worker"
 	"github.com/typical-go/typical-go/pkg/typgo"
 )
 
@@ -18,8 +19,8 @@ func Configuration() *typgo.Configuration {
 }
 
 // Main function to run server
-func Main(s server, m taskManager) (err error) {
-	if err = startTaskManager(m); err != nil {
+func Main(s server, m worker.Worker) (err error) {
+	if err = m.Start(); err != nil {
 		return
 	}
 	if err = startServer(s); err != nil {

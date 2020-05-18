@@ -53,7 +53,6 @@ func initErrHandler(e *echo.Echo) {
 		e.DefaultHTTPErrorHandler(err, c)
 		log.Error(err.Error())
 	}
-
 }
 
 func initLogger(e *echo.Echo, debug bool) {
