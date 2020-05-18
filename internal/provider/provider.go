@@ -1,4 +1,4 @@
-package server
+package provider
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
@@ -6,12 +6,14 @@ import (
 	"go.uber.org/dig"
 )
 
-type provider struct {
+// Provider side
+type Provider struct {
 	dig.In
 	controller.ProviderCntrl
 }
 
-func (p *provider) route(e *echo.Echo) {
+// SetRoute provider
+func (p *Provider) SetRoute(e *echo.Echo) {
 	e.GET("p/match", p.MatchRule)
 	e.GET("p/fetch-tags", p.FetchTag)
 }

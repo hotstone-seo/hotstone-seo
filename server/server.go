@@ -8,6 +8,8 @@ import (
 	logrusmiddleware "github.com/bakatz/echo-logrusmiddleware"
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/internal/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/profiler"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
@@ -20,9 +22,9 @@ type server struct {
 	dig.In
 	*config.Config
 
-	API      api
-	Provider provider
-	Profiler profiler
+	API      API
+	Provider provider.Provider
+	Profiler profiler.Profiler
 
 	Postgres *sql.DB
 	Redis    *redis.Client
@@ -41,9 +43,9 @@ func startServer(s server) error {
 		HTML5: true,
 	}))
 
-	s.API.route(e)
-	s.Provider.route(e)
-	s.Profiler.route(e)
+	s.API.SetRoute(e)
+	s.Provider.SetRoute(e)
+	s.Profiler.SetRoute(e)
 
 	return e.Start(s.Address)
 }
