@@ -7,6 +7,8 @@ import {
   AuditOutlined,
   UserOutlined,
   LockOutlined,
+  UsergroupAddOutlined,
+  MenuOutlined,
 } from '@ant-design/icons';
 
 import Cookies from 'js-cookie';
@@ -21,6 +23,8 @@ import AuditTrail from 'views/AuditTrail';
 import ClientKey from 'views/ClientKey';
 import GenericNotFound from 'views/GenericNotFound';
 import User from './views/User';
+import RoleType from './views/RoleType';
+import Module from './views/Module';
 
 const COMPONENT_MAP = {
   rule: Rule,
@@ -31,6 +35,8 @@ const COMPONENT_MAP = {
   audittrail: AuditTrail,
   user: User,
   clientkey: ClientKey,
+  roletype: RoleType,
+  module: Module,
   notfound: GenericNotFound,
 };
 
@@ -43,6 +49,8 @@ const ICON_MAP = {
   audittrail: AuditOutlined,
   user: UserOutlined,
   clientkey: LockOutlined,
+  roletype: UsergroupAddOutlined,
+  module: MenuOutlined,
 };
 
 const LABEL_MAP = {
@@ -54,6 +62,8 @@ const LABEL_MAP = {
   audittrail: 'Audit Trail',
   user: 'Users',
   clientkey: 'Client Keys',
+  roletype: 'Role User',
+  module: 'Modules',
 };
 
 const token = Cookies.get('token');
