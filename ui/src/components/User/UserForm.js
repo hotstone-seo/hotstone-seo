@@ -9,11 +9,6 @@ function UserForm({ user, handleSubmit, roleTypes }) {
   const [form] = Form.useForm();
   const [moduleList, setModuleList] = useState([]);
 
-  useEffect(() => {
-    setModuleList([]);
-    form.setFieldsValue(user);
-  }, [user, form]);
-
   async function handleOnChange(value) {
     try {
       const roleType = await getRoleType(value);
@@ -42,6 +37,14 @@ function UserForm({ user, handleSubmit, roleTypes }) {
       console.log(error, 'error');
     }
   }
+
+  useEffect(() => {
+    setModuleList([]);
+    if (user.role_type_id) {
+      handleOnChange(user.role_type_id);
+    }
+    form.setFieldsValue(user);
+  }, [user, form]);
 
   return (
     <Form
@@ -88,7 +91,7 @@ function UserForm({ user, handleSubmit, roleTypes }) {
         <div>
           {moduleList.map(({ id, name }) => (
             <span id={id} key={name}>
-              {name}
+              {name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase()}
               {' '}
               <br />
             </span>
