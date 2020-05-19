@@ -1,0 +1,31 @@
+@secure_token = secure_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAaG90c3RvbmUuY29tIiwiZXhwIjo0NzQyOTQxNzU3LCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1FNG5hTlVWMEo4by9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS93Y3ZMcXR6RnlpWS9waG90by5qcGcifQ.dnaLjAtB2QZBc4RlBpY73Fd5vx3ZtPf1W49cVwxuEhQ
+
+### Analytic Number of Hit (based on Rule ID)
+http://localhost:8089/api/metrics/hit
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "params": {"rule_id": 1 }
+}
+
+### Analytic Number of Unique Page (based on Rule ID)
+http://localhost:8089/api/metrics/unique-page
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "params": {"rule_id": 1 }
+}
+
+### Analytic Number of Hit Count (based on date of range)
+GET http://localhost:8089/api/metrics/hit/range?start=2020-04-08&end=2020-04-15
+Cookie: {{secure_token}}
+
+### Analytic Number of Hit Count (based on date of range & Rule ID)
+GET http://localhost:8089/api/metrics/hit/range?start=2020-04-08&end=2020-04-15&rule_id=1
+Cookie: {{secure_token}}
+
+### Last time the Client Key is used
+GET http://localhost:8089/api/metrics/client-key/last-used?client_key_id=1
+Cookie: {{secure_token}}

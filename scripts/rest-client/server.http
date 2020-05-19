@@ -208,34 +208,7 @@ content-type: application/json
 ### Delete Tag
 DELETE http://localhost:8089/api/tags/100
 Cookie: {{secure_token}}
-
-### Analytic Number of Hit (based on Rule ID)
-http://localhost:8089/api/metrics/hit
-Cookie: {{secure_token}}
-content-type: application/json
-
-{
-    "params": {"rule_id": 1 }
-}
-
-### Analytic Number of Unique Page (based on Rule ID)
-http://localhost:8089/api/metrics/unique-page
-Cookie: {{secure_token}}
-content-type: application/json
-
-{
-    "params": {"rule_id": 1 }
-}
-
-### Analytic Number of Hit Count (based on date of range)
-GET http://localhost:8089/api/metrics/hit/range?start=2020-04-08&end=2020-04-15
-Cookie: {{secure_token}}
-
-### Analytic Number of Hit Count (based on date of range & Rule ID)
-GET http://localhost:8089/api/metrics/hit/range?start=2020-04-08&end=2020-04-15&rule_id=1
-Cookie: {{secure_token}}
  
-
 ### Retrieve Rule By ID
 GET http://localhost:8089/api/rules/1
 Cookie: {{secure_token}}
