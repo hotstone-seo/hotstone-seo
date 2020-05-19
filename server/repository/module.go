@@ -27,6 +27,7 @@ type Module struct {
 type ModuleRepo interface {
 	FindOne(ctx context.Context, id int64) (*Module, error)
 	Find(ctx context.Context, paginationParam PaginationParam) ([]*Module, error)
+	FindOneByName(ctx context.Context, name string) (*Module, error)
 }
 
 // ModuleRepoImpl is implementation module repository
@@ -128,4 +129,33 @@ func (r *ModuleRepoImpl) Find(ctx context.Context, paginationParam PaginationPar
 		list = append(list, module)
 	}
 	return
+}
+
+// FindOneByName module
+func (r *ModuleRepoImpl) FindOneByName(ctx context.Context, name string) (*Module, error) {
+	row := sq.StatementBuilder.
+		Select(
+			"id",
+			"path",
+			"pattern",
+			"label",
+		).
+		From("modules").
+		Where(sq.Eq{"name": name}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r)).
+		QueryRowContext(ctx)
+
+	module := new(Module)
+	if err := row.Scan(
+		&module.ID,
+		&module.Path,
+		&module.Pattern,
+		&module.Label,
+	); err != nil {
+		dbtxn.SetError(ctx, err)
+		return nil, err
+	}
+
+	return module, nil
 }
