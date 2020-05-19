@@ -9,6 +9,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	log "github.com/sirupsen/logrus"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
@@ -61,7 +62,7 @@ func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.Clien
 // Update client key
 func (s *ClientKeyServiceImpl) Update(ctx context.Context, data repository.ClientKey) (err error) {
 	var oldData *repository.ClientKey
-	if oldData, err = s.ClientKeyRepo.FindOne(ctx, data.ID); err != nil {
+	if oldData, err = s.ClientKeyRepo.FindOne(ctx, dbkit.Equal("id", data.ID)); err != nil {
 		return
 	}
 	if err = s.ClientKeyRepo.Update(ctx, data); err != nil {
@@ -85,7 +86,7 @@ func (s *ClientKeyServiceImpl) Update(ctx context.Context, data repository.Clien
 // Delete client key
 func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 	var oldData *repository.ClientKey
-	if oldData, err = s.ClientKeyRepo.FindOne(ctx, id); err != nil {
+	if oldData, err = s.ClientKeyRepo.FindOne(ctx, dbkit.Equal("id", id)); err != nil {
 		return
 	}
 	if err = s.ClientKeyRepo.Delete(ctx, id); err != nil {
