@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
-import { ViewModules } from './scenes';
+import { ViewModules, AddModule, EditModule } from './scenes';
 
 function Module({ match }) {
   return (
@@ -14,9 +14,11 @@ function Module({ match }) {
       <Route
         exact
         path={`${match.url}/new`}
+        render={() => <AddModule />}
       />
       <Route
         path={`${match.url}/:id`}
+        render={() => <EditModule />}
       />
     </Switch>
   );
