@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
@@ -62,7 +63,7 @@ func (c *ClientKeyCntrl) FindOne(ctx echo.Context) (err error) {
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if clientKey, err = c.ClientKeyService.FindOne(ctx0, id); err != nil {
+	if clientKey, err = c.ClientKeyService.FindOne(ctx0, dbkit.Equal("id", id)); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	if clientKey == nil {

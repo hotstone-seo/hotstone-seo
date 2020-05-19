@@ -43,6 +43,7 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: service.NewURLService},
 		&typgo.Constructor{Name: "", Fn: service.NewUserService},
 		&typgo.Constructor{Name: "", Fn: oauth2google.NewService},
+		&typgo.Constructor{Name: "", Fn: analyt.NewClientKeyAnalytRepo},
 		&typgo.Constructor{Name: "", Fn: analyt.NewReportRepo},
 		&typgo.Constructor{Name: "", Fn: analyt.NewRuleMatchingRepo},
 		&typgo.Constructor{Name: "", Fn: infra.Connect},

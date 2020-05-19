@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
+	service "github.com/hotstone-seo/hotstone-seo/server/service"
 	reflect "reflect"
 )
 
@@ -94,7 +95,7 @@ func (mr *MockRoleTypeServiceMockRecorder) FindOneByName(arg0, arg1 interface{})
 }
 
 // Insert mocks base method
-func (m *MockRoleTypeService) Insert(arg0 context.Context, arg1 repository.RoleType) (int64, error) {
+func (m *MockRoleTypeService) Insert(arg0 context.Context, arg1 service.RoleTypeRequest) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
 	ret0, _ := ret[0].(int64)

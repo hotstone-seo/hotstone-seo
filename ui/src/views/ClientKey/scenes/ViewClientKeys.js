@@ -3,16 +3,27 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
 import { fetchClientKeys, deleteClientKey } from 'api/client_key';
+import { fetchClientKeyLastUsed } from 'api/metric';
 import useAsync from 'hooks/useAsync';
 import { ClientKeyList } from 'components/ClientKey';
 
 import { PlusOutlined } from '@ant-design/icons';
 
-function ViewClientKeys({ match }) {
+const fetchClientKeysAndLastTimeUsed = async () => {
+  const clientKeys = await fetchClientKeys();
+  return Promise.all(
+    clientKeys.map(async (clientKey) => {
+      const { time } = await fetchClientKeyLastUsed({ params: { client_key_id: clientKey.id } });
+      return { ...clientKey, last_used_at: time };
+    }),
+  );
+};
+
+export default function ViewClientKeys({ match }) {
   const history = useHistory();
   const {
     pending, value: clientKeys, setValue: setClientKeys, error,
-  } = useAsync(fetchClientKeys);
+  } = useAsync(fetchClientKeysAndLastTimeUsed);
 
   if (error) {
     message.error(error.message);
@@ -72,5 +83,3 @@ ViewClientKeys.propTypes = {
     url: PropTypes.string,
   }).isRequired,
 };
-
-export default ViewClientKeys;

@@ -63,3 +63,18 @@ func (mr *MockModuleRepoMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockModuleRepo)(nil).FindOne), arg0, arg1)
 }
+
+// FindOneByName mocks base method
+func (m *MockModuleRepo) FindOneByName(arg0 context.Context, arg1 string) (*repository.Module, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOneByName", arg0, arg1)
+	ret0, _ := ret[0].(*repository.Module)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOneByName indicates an expected call of FindOneByName
+func (mr *MockModuleRepoMockRecorder) FindOneByName(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOneByName", reflect.TypeOf((*MockModuleRepo)(nil).FindOneByName), arg0, arg1)
+}

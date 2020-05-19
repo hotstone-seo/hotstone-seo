@@ -25,7 +25,7 @@ type ClientKey struct {
 // ClientKeyRepo to handle client_keys entity
 // @mock
 type ClientKeyRepo interface {
-	FindOne(context.Context, int64) (*ClientKey, error)
+	FindOne(context.Context, ...dbkit.FindOption) (*ClientKey, error)
 	Find(context.Context, ...dbkit.FindOption) ([]*ClientKey, error)
 	Insert(context.Context, ClientKey) (ClientKey, error)
 	Delete(context.Context, int64) error
@@ -45,8 +45,8 @@ func NewClientKeyRepo(impl ClientKeyRepoImpl) ClientKeyRepo {
 }
 
 // FindOne clientKey
-func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *ClientKey, err error) {
-	row := sq.
+func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, opts ...dbkit.FindOption) (e *ClientKey, err error) {
+	builder := sq.
 		Select(
 			"id",
 			"name",
@@ -56,13 +56,18 @@ func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, id int64) (e *ClientKey
 			"updated_at",
 		).
 		From("client_keys").
-		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
-		QueryRowContext(ctx)
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	for _, opt := range opts {
+		if builder, err = opt.CompileQuery(builder); err != nil {
+			dbtxn.SetError(ctx, err)
+			return
+		}
+	}
 
 	e = new(ClientKey)
-	if err = row.Scan(
+	if err = builder.QueryRowContext(ctx).Scan(
 		&e.ID,
 		&e.Name,
 		&e.Prefix,

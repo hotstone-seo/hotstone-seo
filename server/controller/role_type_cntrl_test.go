@@ -8,8 +8,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 )
@@ -95,15 +95,15 @@ func TestRoleTypeController_Create(t *testing.T) {
 	})
 	t.Run("WHEN insert error", func(t *testing.T) {
 		roleTypeSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(-1), errors.New("some-insert-error"))
-		_, err := echotest.DoPOST(roleTypeCntrl.Create, "/", `{ "name": "some-name", "modules": {} }`, nil)
+		_, err := echotest.DoPOST(roleTypeCntrl.Create, "/", `{ "name": "some-name", "modules": [] }`, nil)
 		require.EqualError(t, err, "code=422, message=some-insert-error")
 	})
 	t.Run("WHEN insert success", func(t *testing.T) {
 		roleTypeSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(100), nil)
-		rr, err := echotest.DoPOST(roleTypeCntrl.Create, "/", `{ "name": "some-name" } `, nil)
+		rr, err := echotest.DoPOST(roleTypeCntrl.Create, "/", `{"name":"test 1","modules":[{"name":"Mismatched Rule"},{"name":"Analytic"}]} `, nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusCreated, rr.Code)
-		require.Equal(t, "{\"id\":100,\"name\":\"some-name\",\"modules\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"name\":\"test 1\",\"modules\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 

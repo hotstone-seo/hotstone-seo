@@ -65,20 +65,20 @@ func (c *RoleTypeCntrl) FindOne(ec echo.Context) (err error) {
 
 // Create role_type
 func (c *RoleTypeCntrl) Create(ctx echo.Context) (err error) {
-	var roleType repository.RoleType
-	var lastInsertID int64
+	var (
+		req          service.RoleTypeRequest
+		roleType     repository.RoleType
+		lastInsertID int64
+	)
 	ctx0 := ctx.Request().Context()
-	fmt.Print(ctx0)
-	if err = ctx.Bind(&roleType); err != nil {
-		return err
+	if err = ctx.Bind(&req); err != nil {
+		return
 	}
-	if err = roleType.Validate(); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	if lastInsertID, err = c.RoleTypeService.Insert(ctx0, roleType); err != nil {
+	if lastInsertID, err = c.RoleTypeService.Insert(ctx0, req); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	roleType.ID = lastInsertID
+	roleType.Name = req.Name
 	return ctx.JSON(http.StatusCreated, roleType)
 }
 

@@ -9,12 +9,14 @@ import (
 // @mock
 type MetricService interface {
 	analyt.ReportRepo
+	analyt.ClientKeyAnalytRepo
 }
 
 // MetricServiceImpl is implementation of MetricsRuleMatchingService
 type MetricServiceImpl struct {
 	dig.In
 	analyt.ReportRepo
+	analyt.ClientKeyAnalytRepo
 }
 
 // NewMetricService return new instance of MetricsRuleMatchingService

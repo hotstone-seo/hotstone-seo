@@ -11,6 +11,7 @@ import (
 	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
 	url "net/url"
 	reflect "reflect"
+	time "time"
 )
 
 // MockMetricService is a mock of MetricService interface
@@ -34,6 +35,21 @@ func NewMockMetricService(ctrl *gomock.Controller) *MockMetricService {
 // EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockMetricService) EXPECT() *MockMetricServiceMockRecorder {
 	return m.recorder
+}
+
+// ClientKeyLastUsed mocks base method
+func (m *MockMetricService) ClientKeyLastUsed(arg0 context.Context, arg1 string) (*time.Time, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ClientKeyLastUsed", arg0, arg1)
+	ret0, _ := ret[0].(*time.Time)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ClientKeyLastUsed indicates an expected call of ClientKeyLastUsed
+func (mr *MockMetricServiceMockRecorder) ClientKeyLastUsed(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClientKeyLastUsed", reflect.TypeOf((*MockMetricService)(nil).ClientKeyLastUsed), arg0, arg1)
 }
 
 // CountMatched mocks base method
