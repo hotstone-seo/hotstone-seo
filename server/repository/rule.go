@@ -16,7 +16,7 @@ type Rule struct {
 	ID             int64     `json:"id"`
 	Name           string    `json:"name" validate:"required"`
 	URLPattern     string    `json:"url_pattern" validate:"required,uri"`
-	DataSourceID   *int64    `json:"data_source_id"`
+	DataSourceIDs  []int64   `json:"data_source_ids"`
 	UpdatedAt      time.Time `json:"updated_at"`
 	CreatedAt      time.Time `json:"created_at"`
 	Status         string    `json:"status"`
@@ -36,7 +36,7 @@ type RuleRepo interface {
 // RuleRepoImpl is implementation rule repository
 type RuleRepoImpl struct {
 	dig.In
-	*sql.DB
+	dbtxn.Transactional
 }
 
 // NewRuleRepo return new instance of RuleRepo
@@ -51,13 +51,14 @@ func (rule Rule) Validate() error {
 }
 
 // FindOne rule
-func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (*Rule, error) {
+func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err error) {
+	var rows *sql.Rows
+
 	row := sq.StatementBuilder.
 		Select(
 			"id",
 			"name",
 			"url_pattern",
-			"data_source_id",
 			"updated_at",
 			"created_at",
 			"status",
@@ -69,12 +70,11 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (*Rule, error) {
 		RunWith(dbtxn.BaseRunner(ctx, r)).
 		QueryRowContext(ctx)
 
-	rule := new(Rule)
-	if err := row.Scan(
+	rule = &Rule{DataSourceIDs: make([]int64, 0)}
+	if err = row.Scan(
 		&rule.ID,
 		&rule.Name,
 		&rule.URLPattern,
-		&rule.DataSourceID,
 		&rule.UpdatedAt,
 		&rule.CreatedAt,
 		&rule.Status,
@@ -84,7 +84,28 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (*Rule, error) {
 		return nil, err
 	}
 
-	return rule, nil
+	dsBuilder := sq.StatementBuilder.
+		Select("data_source_id").
+		From("rule_data_sources").
+		Where(sq.Eq{"rule_id": id}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if rows, err = dsBuilder.QueryContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var dataSourceID int64
+		if err = rows.Scan(&dataSourceID); err != nil {
+			dbtxn.SetError(ctx, err)
+			return nil, err
+		}
+		rule.DataSourceIDs = append(rule.DataSourceIDs, dataSourceID)
+	}
+
+	return
 }
 
 // Find rule
@@ -98,7 +119,6 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 			"id",
 			"name",
 			"url_pattern",
-			"data_source_id",
 			"updated_at",
 			"created_at",
 			"status",
@@ -124,7 +144,6 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 			&rule.ID,
 			&rule.Name,
 			&rule.URLPattern,
-			&rule.DataSourceID,
 			&rule.UpdatedAt,
 			&rule.CreatedAt,
 			&rule.Status,
@@ -140,15 +159,13 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 
 // Insert rule
 func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error) {
-
+	defer r.CommitMe(&ctx)()
 	query := sq.Insert("rules").
 		Columns(
-			"data_source_id",
 			"name",
 			"url_pattern",
 		).
 		Values(
-			rule.DataSourceID,
 			rule.Name,
 			rule.URLPattern,
 		).
@@ -157,12 +174,29 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
 
-	if err = query.Scan(&rule.ID); err != nil {
-		dbtxn.SetError(ctx, err)
+	if err = query.Scan(&lastInsertID); err != nil {
+		r.CancelMe(ctx, err)
 		return
 	}
 
-	lastInsertID = rule.ID
+	if len(rule.DataSourceIDs) > 0 {
+		insertDataSource := sq.Insert("rule_data_sources").
+			Columns(
+				"rule_id",
+				"data_source_id",
+			).
+			RunWith(dbtxn.BaseRunner(ctx, r)).
+			PlaceholderFormat(sq.Dollar)
+
+		for _, dataSourceID := range rule.DataSourceIDs {
+			insertDataSource = insertDataSource.Values(lastInsertID, dataSourceID)
+		}
+		if _, err = insertDataSource.ExecContext(ctx); err != nil {
+			r.CancelMe(ctx, err)
+			return
+		}
+	}
+
 	return
 }
 
@@ -183,9 +217,9 @@ func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update rule
 func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
+	defer r.CommitMe(&ctx)()
 	builder := sq.StatementBuilder.
 		Update("rules").
-		Set("data_source_id", rule.DataSourceID).
 		Set("name", rule.Name).
 		Set("status", rule.Status).
 		Set("url_pattern", rule.URLPattern).
@@ -199,7 +233,38 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 	}
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		r.CancelMe(ctx, err)
+		return
 	}
+
+	deletePrevDataSource := sq.StatementBuilder.
+		Delete("rule_data_sources").
+		Where(sq.Eq{"rule_id": rule.ID}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.BaseRunner(ctx, r))
+
+	if _, err = deletePrevDataSource.ExecContext(ctx); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+
+	if len(rule.DataSourceIDs) > 0 {
+		insertDataSource := sq.Insert("rule_data_sources").
+			Columns(
+				"rule_id",
+				"data_source_id",
+			).
+			RunWith(dbtxn.BaseRunner(ctx, r)).
+			PlaceholderFormat(sq.Dollar)
+
+		for _, dataSourceID := range rule.DataSourceIDs {
+			insertDataSource = insertDataSource.Values(rule.ID, dataSourceID)
+		}
+		if _, err = insertDataSource.ExecContext(ctx); err != nil {
+			r.CancelMe(ctx, err)
+			return
+		}
+	}
+
 	return
 }
