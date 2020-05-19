@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"database/sql"
+	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
@@ -14,7 +16,7 @@ import (
 type RoleTypeService interface {
 	FindOne(ctx context.Context, id int64) (*repository.RoleType, error)
 	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.RoleType, error)
-	Insert(ctx context.Context, roleType repository.RoleType) (lastInsertID int64, err error)
+	Insert(ctx context.Context, req RoleTypeRequest) (lastInsertID int64, err error)
 	Update(ctx context.Context, roleType repository.RoleType) error
 	Delete(ctx context.Context, id int64) error
 	FindOneByName(ctx context.Context, name string) (*repository.RoleType, error)
@@ -27,6 +29,7 @@ type RoleTypeServiceImpl struct {
 	AuditTrailService
 	HistoryService
 	dbtxn.Transactional
+	ModuleRepo repository.ModuleRepo
 }
 
 // NewRoleTypeService return new instance of RoleTypeService
@@ -46,7 +49,17 @@ func (r *RoleTypeServiceImpl) Find(ctx context.Context, paginationParam reposito
 }
 
 // Insert RoleType
-func (r *RoleTypeServiceImpl) Insert(ctx context.Context, data repository.RoleType) (newID int64, err error) {
+func (r *RoleTypeServiceImpl) Insert(ctx context.Context, req RoleTypeRequest) (newID int64, err error) {
+	var data repository.RoleType
+	data = repository.RoleType{
+		Name: req.Name,
+		Modules: map[string]interface{}{
+			"modules": mapModules(ctx, req.Modules, r),
+		},
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
 	if data.ID, err = r.RoleTypeRepo.Insert(ctx, data); err != nil {
 		return
 	}
@@ -125,4 +138,20 @@ func (r *RoleTypeServiceImpl) Delete(ctx context.Context, id int64) (err error) 
 // FindOneByName RoleType
 func (r *RoleTypeServiceImpl) FindOneByName(ctx context.Context, name string) (roleType *repository.RoleType, err error) {
 	return r.RoleTypeRepo.FindOneByName(ctx, name)
+}
+
+func mapModules(ctx context.Context, mItem []ModuleItem, r *RoleTypeServiceImpl) []map[string]interface{} {
+	faqsMap := make([]map[string]interface{}, len(mItem))
+	for index, tempMod := range mItem {
+		moduleMs, err := r.ModuleRepo.FindOneByName(ctx, tempMod.Module)
+		if err == sql.ErrNoRows {
+			log.Error(err)
+		}
+		faqsMap[index] = map[string]interface{}{
+			"path":    moduleMs.Path,
+			"name":    moduleMs.Name,
+			"pattern": moduleMs.Pattern,
+		}
+	}
+	return faqsMap
 }
