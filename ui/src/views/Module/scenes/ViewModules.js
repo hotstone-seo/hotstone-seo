@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
-import { PageHeader, Button } from 'antd';
-// import { deleteModule } from 'api/module'; // TODO :for delete data
+import { PageHeader, Button, message } from 'antd';
+import { deleteModule } from 'api/module';
 import { ModuleList } from 'components/Module';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -15,6 +15,14 @@ function ViewModules({ match }) {
   };
 
   const handleDelete = (module) => {
+    deleteModule(module.id)
+      .then(() => {
+        message.success(`Successfully deleted ${module.name}`);
+        setListModule(listModule.filter((item) => item.id !== module.id));
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
   };
 
   const addDataModule = () => {
@@ -24,8 +32,8 @@ function ViewModules({ match }) {
   return (
     <div>
       <PageHeader
-        title="Users"
-        subTitle="List of User with Role"
+        title="Modules"
+        subTitle="List of Modules"
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
