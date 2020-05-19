@@ -1,22 +1,52 @@
-package repository
+package urlstore
 
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"go.uber.org/dig"
+
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 )
 
-// URLSyncRepoImpl is implementation urlStoreSync repository
-type URLSyncRepoImpl struct {
-	dig.In
-	*sql.DB
+type (
+	// Sync is database entity of sync information between server and url-store
+	Sync struct {
+		Version          int64     `json:"version"`
+		Operation        string    `json:"operation" validate:"required"`
+		RuleID           int64     `json:"rule_id"`
+		LatestURLPattern *string   `json:"latest_url_pattern"`
+		CreatedAt        time.Time `json:"-"`
+	}
+
+	// SyncRepo is repository of Sync entity
+	// @mock
+	SyncRepo interface {
+		FindOne(ctx context.Context, id int64) (*Sync, error)
+		Find(ctx context.Context) ([]*Sync, error)
+		Insert(ctx context.Context, Sync Sync) (lastInsertID int64, err error)
+		GetLatestVersion(ctx context.Context) (latestVersion int64, err error)
+		GetListDiff(ctx context.Context, offsetVersion int64) ([]*Sync, error)
+		FindRule(ctx context.Context, ruleID int64) (*Sync, error)
+	}
+
+	// SyncRepoImpl is implementation urlStoreSync repository
+	SyncRepoImpl struct {
+		dig.In
+		*sql.DB
+	}
+)
+
+// NewSyncRepo return new instance of SyncRepo
+// @constructor
+func NewSyncRepo(impl SyncRepoImpl) SyncRepo {
+	return &impl
 }
 
 // FindOne urlStoreSync
-func (r *URLSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreSync *URLSync, err error) {
+func (r *SyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreSync *Sync, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
@@ -29,7 +59,7 @@ func (r *URLSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreS
 	}
 	defer rows.Close()
 	if rows.Next() {
-		if urlStoreSync, err = scanURLSync(rows); err != nil {
+		if urlStoreSync, err = scanSync(rows); err != nil {
 			dbtxn.SetError(ctx, err)
 		}
 	}
@@ -37,7 +67,7 @@ func (r *URLSyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreS
 }
 
 // Find urlStoreSync
-func (r *URLSyncRepoImpl) Find(ctx context.Context) (list []*URLSync, err error) {
+func (r *SyncRepoImpl) Find(ctx context.Context) (list []*Sync, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
@@ -49,10 +79,10 @@ func (r *URLSyncRepoImpl) Find(ctx context.Context) (list []*URLSync, err error)
 		return
 	}
 	defer rows.Close()
-	list = make([]*URLSync, 0)
+	list = make([]*Sync, 0)
 	for rows.Next() {
-		var urlStoreSync *URLSync
-		if urlStoreSync, err = scanURLSync(rows); err != nil {
+		var urlStoreSync *Sync
+		if urlStoreSync, err = scanSync(rows); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}
@@ -62,7 +92,7 @@ func (r *URLSyncRepoImpl) Find(ctx context.Context) (list []*URLSync, err error)
 }
 
 // Insert urlStoreSync
-func (r *URLSyncRepoImpl) Insert(ctx context.Context, urlStoreSync URLSync) (lastInsertID int64, err error) {
+func (r *SyncRepoImpl) Insert(ctx context.Context, urlStoreSync Sync) (lastInsertID int64, err error) {
 	query := sq.
 		Insert("url_sync").
 		Columns("operation", "rule_id", "latest_url_pattern").
@@ -78,7 +108,7 @@ func (r *URLSyncRepoImpl) Insert(ctx context.Context, urlStoreSync URLSync) (las
 }
 
 // GetLatestVersion of url store
-func (r *URLSyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion int64, err error) {
+func (r *SyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion int64, err error) {
 	builder := sq.
 		Select("version").
 		From("url_sync").
@@ -96,7 +126,7 @@ func (r *URLSyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion i
 	return
 }
 
-func (r *URLSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) (list []*URLSync, err error) {
+func (r *SyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) (list []*Sync, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
@@ -110,8 +140,8 @@ func (r *URLSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) 
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var urlStoreSync *URLSync
-		if urlStoreSync, err = scanURLSync(rows); err != nil {
+		var urlStoreSync *Sync
+		if urlStoreSync, err = scanSync(rows); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}
@@ -120,7 +150,7 @@ func (r *URLSyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) 
 	return
 }
 
-func (r *URLSyncRepoImpl) FindRule(ctx context.Context, ruleID int64) (urlStoreSync *URLSync, err error) {
+func (r *SyncRepoImpl) FindRule(ctx context.Context, ruleID int64) (urlStoreSync *Sync, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
@@ -134,15 +164,15 @@ func (r *URLSyncRepoImpl) FindRule(ctx context.Context, ruleID int64) (urlStoreS
 	}
 	defer rows.Close()
 	if rows.Next() {
-		if urlStoreSync, err = scanURLSync(rows); err != nil {
+		if urlStoreSync, err = scanSync(rows); err != nil {
 			dbtxn.SetError(ctx, err)
 		}
 	}
 	return
 }
 
-func scanURLSync(rows *sql.Rows) (*URLSync, error) {
-	var urlStoreSync URLSync
+func scanSync(rows *sql.Rows) (*Sync, error) {
+	var urlStoreSync Sync
 	var err error
 	if err = rows.Scan(&urlStoreSync.Version, &urlStoreSync.Operation, &urlStoreSync.RuleID, &urlStoreSync.LatestURLPattern, &urlStoreSync.CreatedAt); err != nil {
 		return nil, err

@@ -70,18 +70,23 @@ func (mr *MockClientKeyRepoMockRecorder) Find(arg0 interface{}, arg1 ...interfac
 }
 
 // FindOne mocks base method
-func (m *MockClientKeyRepo) FindOne(arg0 context.Context, arg1 int64) (*repository.ClientKey, error) {
+func (m *MockClientKeyRepo) FindOne(arg0 context.Context, arg1 ...dbkit.FindOption) (*repository.ClientKey, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOne", arg0, arg1)
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "FindOne", varargs...)
 	ret0, _ := ret[0].(*repository.ClientKey)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FindOne indicates an expected call of FindOne
-func (mr *MockClientKeyRepoMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockClientKeyRepoMockRecorder) FindOne(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockClientKeyRepo)(nil).FindOne), arg0, arg1)
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockClientKeyRepo)(nil).FindOne), varargs...)
 }
 
 // Insert mocks base method
