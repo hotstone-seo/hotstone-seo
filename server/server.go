@@ -24,7 +24,7 @@ type server struct {
 
 	API      API
 	Provider provider.Controller
-	Profiler profiler.Profiler
+	Profiler profiler.Controller
 
 	Postgres *sql.DB
 	Redis    *redis.Client
