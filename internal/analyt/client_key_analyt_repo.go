@@ -37,7 +37,7 @@ func (r *ClientKeyAnalytRepoImpl) ClientKeyLastUsed(ctx context.Context, clientK
 		From("metrics_client_key").
 		Where(sq.Eq{"client_key_id": clientKeyID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&lastTimeUsed); err != nil {
 		dbtxn.SetError(ctx, err)

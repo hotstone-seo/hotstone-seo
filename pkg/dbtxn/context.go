@@ -44,14 +44,14 @@ func SetError(ctx context.Context, err error) error {
 	return errors.New("Context have no TXO")
 }
 
-// BaseRunner of transaction
-func BaseRunner(ctx context.Context, defaultRuner sq.BaseRunner) sq.BaseRunner {
+// DB return transaction in context if available
+func DB(ctx context.Context, defaultDB sq.BaseRunner) sq.BaseRunner {
 	if c := get(ctx); c != nil {
 		if c.tx != nil {
 			return c.tx
 		}
 	}
-	return defaultRuner
+	return defaultDB
 }
 
 // Error of transaction

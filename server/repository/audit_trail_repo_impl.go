@@ -21,7 +21,7 @@ func (r *AuditTrailRepoImpl) Find(ctx context.Context, paginationParam Paginatio
 	psql := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 	builder := psql.Select("id", "time", "entity_name", "entity_id", "operation", "username", "old_data", "new_data").
 		From("audit_trail")
-	if rows, err = ComposePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r)).QueryContext(ctx); err != nil {
+	if rows, err = ComposePagination(builder, paginationParam).RunWith(dbtxn.DB(ctx, r)).QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
 	}
@@ -44,7 +44,7 @@ func (r *AuditTrailRepoImpl) Insert(ctx context.Context, m AuditTrail) (lastInse
 		Columns("entity_name", "entity_id", "operation", "username", "old_data", "new_data").
 		Values(m.EntityName, m.EntityID, m.Operation, m.Username, m.OldData, m.NewData).
 		Suffix("RETURNING \"id\"").
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&m.ID); err != nil {
 		dbtxn.SetError(ctx, err)

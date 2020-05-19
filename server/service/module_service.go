@@ -45,7 +45,7 @@ func (r *ModuleServiceImpl) Find(ctx context.Context, paginationParam repository
 
 // Insert module
 func (r *ModuleServiceImpl) Insert(ctx context.Context, module repository.Module) (newUserID int64, err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	if newUserID, err = r.ModuleRepo.Insert(ctx, module); err != nil {
 		r.CancelMe(ctx, err)
 		return
@@ -64,7 +64,7 @@ func (r *ModuleServiceImpl) Insert(ctx context.Context, module repository.Module
 
 // Delete module
 func (r *ModuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	oldModule, err := r.ModuleRepo.FindOne(ctx, id)
 	if err != nil {
 		r.CancelMe(ctx, err)
@@ -88,7 +88,7 @@ func (r *ModuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update module
 func (r *ModuleServiceImpl) Update(ctx context.Context, module repository.Module) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	oldModule, err := r.ModuleRepo.FindOne(ctx, module.ID)
 	if err != nil {
 		r.CancelMe(ctx, err)

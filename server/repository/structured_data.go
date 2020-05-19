@@ -62,7 +62,7 @@ func (r *StructuredDataRepoImpl) FindOne(ctx context.Context, id int64) (e *Stru
 		From("structured_datas").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	e = new(StructuredData)
@@ -94,7 +94,7 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOpt
 		).
 		From("structured_datas").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileQuery(builder); err != nil {
@@ -143,7 +143,7 @@ func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (
 		Values(e.RuleID, e.Type, e.Data).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -159,7 +159,7 @@ func (r *StructuredDataRepoImpl) Delete(ctx context.Context, id int64) (err erro
 		Delete("structured_datas").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -181,7 +181,7 @@ func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

@@ -68,7 +68,7 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 
 // Delete rule
 func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	oldRule, err := r.RuleRepo.FindOne(ctx, id)
 	if err != nil {
 		r.CancelMe(ctx, err)
@@ -111,7 +111,7 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	var (
 		Sync *urlstore.Sync
 	)

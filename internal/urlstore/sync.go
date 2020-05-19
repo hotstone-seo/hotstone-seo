@@ -52,7 +52,7 @@ func (r *SyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreSync
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		Where(sq.Eq{"version": version}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -73,7 +73,7 @@ func (r *SyncRepoImpl) Find(ctx context.Context) (list []*Sync, err error) {
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -98,7 +98,7 @@ func (r *SyncRepoImpl) Insert(ctx context.Context, urlStoreSync Sync) (lastInser
 		Columns("operation", "rule_id", "latest_url_pattern").
 		Values(urlStoreSync.Operation, urlStoreSync.RuleID, urlStoreSync.LatestURLPattern).
 		Suffix("RETURNING \"version\"").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if err = query.QueryRowContext(ctx).Scan(&urlStoreSync.Version); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -114,7 +114,7 @@ func (r *SyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion int6
 		From("url_sync").
 		OrderBy("version DESC").
 		Limit(1).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if err = builder.QueryRowContext(ctx).Scan(&latestVersion); err != nil {
 		if err == sql.ErrNoRows {
 			dbtxn.SetError(ctx, err)
@@ -133,7 +133,7 @@ func (r *SyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) (li
 		From("url_sync").
 		Where(sq.Gt{"version": offsetVersion}).
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -157,7 +157,7 @@ func (r *SyncRepoImpl) FindRule(ctx context.Context, ruleID int64) (urlStoreSync
 		From("url_sync").
 		Where(sq.Eq{"rule_id": ruleID}).
 		OrderBy("version DESC").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
