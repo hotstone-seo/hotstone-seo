@@ -6,7 +6,7 @@ import {
 import moment from 'moment';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
-const formatDate = (dateString) => moment(dateString).fromNow();
+const formatDate = (dateString) => (dateString ? moment(dateString).fromNow() : '');
 
 function ClientKeyList(props) {
   const {
