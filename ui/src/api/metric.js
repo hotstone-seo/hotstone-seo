@@ -1,6 +1,6 @@
 import client from './client';
 
-function fetchMismatched(cfg = {}) {
+export function fetchMismatched(cfg = {}) {
   return client
     .get('metrics/mismatched', cfg)
     .then((response) => response.data)
@@ -9,7 +9,7 @@ function fetchMismatched(cfg = {}) {
     });
 }
 
-function fetchListCountHitPerDay(cfg = {}) {
+export function fetchListCountHitPerDay(cfg = {}) {
   return client
     .get('metrics/hit/range', cfg)
     .then((response) => response.data)
@@ -18,7 +18,7 @@ function fetchListCountHitPerDay(cfg = {}) {
     });
 }
 
-function fetchCountHit(cfg = {}) {
+export function fetchCountHit(cfg = {}) {
   return client
     .get('metrics/hit', cfg)
     .then((response) => response.data)
@@ -27,7 +27,7 @@ function fetchCountHit(cfg = {}) {
     });
 }
 
-function fetchCountUniquePage(cfg = {}) {
+export function fetchCountUniquePage(cfg = {}) {
   return client
     .get('metrics/unique-page', cfg)
     .then((response) => response.data)
@@ -36,15 +36,21 @@ function fetchCountUniquePage(cfg = {}) {
     });
 }
 
-export {
-  fetchMismatched, fetchCountHit, fetchListCountHitPerDay, fetchCountUniquePage,
-};
+export function fetchClientKeyLastUsed(cfg = {}) {
+  return client
+    .get('metrics/client-key/last-used', cfg)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
 
 const MetricAPI = {
   fetchMismatched,
   fetchCountHit,
   fetchListCountHitPerDay,
   fetchCountUniquePage,
+  fetchClientKeyLastUsed,
 };
 
 export default MetricAPI;
