@@ -23,7 +23,7 @@ type server struct {
 	*config.Config
 
 	API      API
-	Provider provider.Provider
+	Provider provider.Controller
 	Profiler profiler.Profiler
 
 	Postgres *sql.DB

@@ -6,6 +6,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/internal/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/infra"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
@@ -34,7 +35,6 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: service.NewHistoryService},
 		&typgo.Constructor{Name: "", Fn: service.NewMetricService},
 		&typgo.Constructor{Name: "", Fn: service.NewModuleService},
-		&typgo.Constructor{Name: "", Fn: service.NewProviderService},
 		&typgo.Constructor{Name: "", Fn: service.NewRoleTypeService},
 		&typgo.Constructor{Name: "", Fn: service.NewRuleService},
 		&typgo.Constructor{Name: "", Fn: service.NewStructuredDataService},
@@ -45,6 +45,7 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: analyt.NewReportRepo},
 		&typgo.Constructor{Name: "", Fn: analyt.NewRuleMatchingRepo},
 		&typgo.Constructor{Name: "", Fn: infra.Connect},
+		&typgo.Constructor{Name: "", Fn: provider.NewService},
 		&typgo.Constructor{Name: "", Fn: urlstore.NewService},
 		&typgo.Constructor{Name: "", Fn: urlstore.NewStore},
 		&typgo.Constructor{Name: "", Fn: urlstore.NewSyncRepo},
