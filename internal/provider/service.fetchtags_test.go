@@ -1,4 +1,4 @@
-package service_test
+package provider_test
 
 import (
 	"context"
@@ -17,10 +17,10 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
 )
 
 var (
@@ -64,7 +64,7 @@ var (
 		},
 	}
 	ds666_response      string = `{"name":"covid19", "year": 2020}`
-	itags_rule999_en_US        = []*service.ITag{
+	itags_rule999_en_US        = []*provider.ITag{
 		{
 			ID:    91,
 			Type:  "title",
@@ -100,11 +100,11 @@ type fetchTestCase struct {
 	server      *httptest.Server
 	pre         func(fetchTestCase)
 	vals        url.Values
-	expected    []*service.ITag
+	expected    []*provider.ITag
 	expectedErr string
 }
 
-func TestProviderService_FetchTagsWithCache(t *testing.T) {
+func TestService_FetchTagsWithCache(t *testing.T) {
 	testRedis, err := miniredis.Run()
 	require.NoError(t, err)
 	defer testRedis.Close()
@@ -117,7 +117,7 @@ func TestProviderService_FetchTagsWithCache(t *testing.T) {
 	testRedis.SetTTL(key, 10*time.Second)
 	testRedis.SetTTL(key+":time", 10*time.Second)
 
-	svc := service.ProviderServiceImpl{
+	svc := provider.ServiceImpl{
 		Redis: redis.NewClient(&redis.Options{Addr: testRedis.Addr()}),
 	}
 
@@ -126,7 +126,7 @@ func TestProviderService_FetchTagsWithCache(t *testing.T) {
 	require.Equal(t, itags_rule999_en_US, tags)
 }
 
-func TestProviderService2(t *testing.T) {
+func TestService2(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -136,7 +136,7 @@ func TestProviderService2(t *testing.T) {
 	strdatamock := repository_mock.NewMockStructuredDataRepo(ctrl)
 	ctx := context.Background()
 
-	svc := service.ProviderServiceImpl{
+	svc := provider.ServiceImpl{
 		DataSourceRepo:     dsmock,
 		RuleRepo:           rulemock,
 		TagRepo:            tagmock,
@@ -184,7 +184,7 @@ func TestProviderService2(t *testing.T) {
 				strdatamock.EXPECT().FindByRule(ctx, int64(777)).Return([]*repository.StructuredData{}, nil)
 			},
 			vals:     parseQuery(`_rule=777&_locale=en_US`),
-			expected: []*service.ITag{},
+			expected: []*provider.ITag{},
 		},
 		{
 			testName: "WHEN rule has no datasource",
@@ -194,9 +194,9 @@ func TestProviderService2(t *testing.T) {
 				strdatamock.EXPECT().FindByRule(ctx, int64(777)).Return([]*repository.StructuredData{}, nil)
 			},
 			vals: parseQuery(`_rule=777&_locale=en_US`),
-			expected: func() (tags []*service.ITag) {
+			expected: func() (tags []*provider.ITag) {
 				for _, tag := range tags_rule777_en_US {
-					itag := service.ITag(*tag)
+					itag := provider.ITag(*tag)
 					tags = append(tags, &itag)
 				}
 				return
@@ -317,7 +317,7 @@ func TestConvertToParam(t *testing.T) {
 
 	for _, tt := range testcases {
 		vals, _ := url.ParseQuery(tt.query)
-		require.Equal(t, tt.expected, service.ConvertToParams(vals))
+		require.Equal(t, tt.expected, provider.ConvertToParams(vals))
 	}
 }
 
@@ -350,7 +350,7 @@ func TestUnmarshalData(t *testing.T) {
 	}
 
 	for _, tt := range testcases {
-		v, err := service.UnmarshalData([]byte(tt.data))
+		v, err := provider.UnmarshalData([]byte(tt.data))
 		if tt.expectedErr != "" {
 			require.EqualError(t, err, tt.expectedErr)
 		} else {

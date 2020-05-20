@@ -1,4 +1,4 @@
-package service
+package provider
 
 import (
 	"bytes"
@@ -24,7 +24,7 @@ const (
 )
 
 // FetchTagsWithCache is same with FetchTag but with tag
-func (p *ProviderServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.Values, pragma *cachekit.Pragma) (itags []*ITag, err error) {
+func (p *ServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.Values, pragma *cachekit.Pragma) (itags []*ITag, err error) {
 	key := vals.Encode()
 	cache := cachekit.New(key,
 		func() (interface{}, error) {
@@ -42,7 +42,7 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.V
 }
 
 // FetchTags handle logic for fetching tag
-func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*ITag, err error) {
+func (p *ServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*ITag, err error) {
 	var (
 		rule            *repository.Rule
 		tags            []*repository.Tag
@@ -170,7 +170,7 @@ func UnmarshalData(b []byte) (v interface{}, err error) {
 	return nil, errors.New("Unmarshal-Data: Invalid data format")
 }
 
-func (p *ProviderServiceImpl) findAndInterpolateDataSource(ctx context.Context, dataSourceID int64, param interface{}) (interpolated *IDataSource, err error) {
+func (p *ServiceImpl) findAndInterpolateDataSource(ctx context.Context, dataSourceID int64, param interface{}) (interpolated *IDataSource, err error) {
 	var (
 		ds *repository.DataSource
 	)

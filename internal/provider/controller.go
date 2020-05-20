@@ -1,0 +1,76 @@
+package provider
+
+import (
+	"database/sql"
+	"net/http"
+
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+	"github.com/labstack/echo"
+	"github.com/typical-go/typical-rest-server/pkg/errvalid"
+	"go.uber.org/dig"
+)
+
+// Controller for provider function
+type Controller struct {
+	dig.In
+	Service
+}
+
+// SetRoute provider
+func (p *Controller) SetRoute(e *echo.Echo) {
+	e.GET("p/match", p.MatchRule)
+	e.GET("p/fetch-tags", p.FetchTag)
+}
+
+// MatchRule to match rule
+func (p *Controller) MatchRule(c echo.Context) (err error) {
+
+	ctx := c.Request().Context()
+	resp, err := p.Service.Match(ctx, c.QueryParams())
+
+	if err != nil {
+		return httpError(err)
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+// FetchTag to fetch the tag
+func (p *Controller) FetchTag(c echo.Context) (err error) {
+
+	pragma := cachekit.CreatePragma(c.Request())
+	tags, err := p.Service.FetchTagsWithCache(
+		c.Request().Context(),
+		c.QueryParams(),
+		pragma,
+	)
+	cachekit.SetHeader(c.Response(), pragma)
+
+	if err != nil {
+		return httpError(err)
+	}
+
+	return c.JSON(http.StatusOK, tags)
+}
+
+func httpError(err error) *echo.HTTPError {
+	if err == sql.ErrNoRows {
+		return echo.NewHTTPError(http.StatusNotFound)
+	}
+
+	if errvalid.Check(err) {
+		return echo.NewHTTPError(
+			http.StatusUnprocessableEntity,
+			errvalid.Message(err),
+		)
+	}
+
+	if cachekit.NotModifiedError(err) {
+		return echo.NewHTTPError(http.StatusNotModified)
+	}
+
+	return echo.NewHTTPError(
+		http.StatusInternalServerError,
+		err.Error(),
+	)
+}

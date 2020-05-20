@@ -28,6 +28,9 @@ type ModuleRepo interface {
 	FindOne(ctx context.Context, id int64) (*Module, error)
 	Find(ctx context.Context, paginationParam PaginationParam) ([]*Module, error)
 	FindOneByName(ctx context.Context, name string) (*Module, error)
+	Insert(ctx context.Context, module Module) (lastInsertID int64, err error)
+	Delete(ctx context.Context, id int64) error
+	Update(ctx context.Context, module Module) error
 }
 
 // ModuleRepoImpl is implementation module repository
@@ -62,7 +65,7 @@ func (r *ModuleRepoImpl) FindOne(ctx context.Context, id int64) (*Module, error)
 		From("modules").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	module := new(Module)
@@ -100,7 +103,7 @@ func (r *ModuleRepoImpl) Find(ctx context.Context, paginationParam PaginationPar
 		).
 		From("modules").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	builder = ComposePagination(builder, paginationParam)
 
@@ -143,7 +146,7 @@ func (r *ModuleRepoImpl) FindOneByName(ctx context.Context, name string) (*Modul
 		From("modules").
 		Where(sq.Eq{"name": name}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	module := new(Module)
@@ -158,4 +161,67 @@ func (r *ModuleRepoImpl) FindOneByName(ctx context.Context, name string) (*Modul
 	}
 
 	return module, nil
+}
+
+// Insert module
+func (r *ModuleRepoImpl) Insert(ctx context.Context, module Module) (lastInsertID int64, err error) {
+
+	query := sq.Insert("modules").
+		Columns(
+			"name",
+			"path",
+			"pattern",
+			"label",
+		).
+		Values(
+			module.Name,
+			module.Path,
+			module.Pattern,
+			module.Label,
+		).
+		Suffix("RETURNING \"id\"").
+		RunWith(dbtxn.DB(ctx, r)).
+		PlaceholderFormat(sq.Dollar).
+		QueryRowContext(ctx)
+
+	if err = query.Scan(&module.ID); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
+	}
+
+	lastInsertID = module.ID
+	return
+}
+
+// Delete module
+func (r *ModuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+	builder := sq.StatementBuilder.
+		Delete("modules").
+		Where(sq.Eq{"id": id}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.DB(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
+	}
+	return
+}
+
+// Update module
+func (r *ModuleRepoImpl) Update(ctx context.Context, module Module) (err error) {
+	builder := sq.StatementBuilder.
+		Update("modules").
+		Set("path", module.Path).
+		Set("pattern", module.Pattern).
+		Set("label", module.Label).
+		Set("updated_at", time.Now()).
+		Where(sq.Eq{"id": module.ID}).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.DB(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+	}
+	return
 }

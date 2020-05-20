@@ -67,7 +67,7 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err e
 		From("rules").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	rule = &Rule{DataSourceIDs: make([]int64, 0)}
@@ -126,7 +126,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 		).
 		From("rules").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	builder = ComposePagination(builder, paginationParam)
 
@@ -170,7 +170,7 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 			rule.URLPattern,
 		).
 		Suffix("RETURNING \"id\"").
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
 
@@ -206,7 +206,7 @@ func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("rules").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -226,7 +226,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": rule.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if rule.Status != "" {
 		builder = builder.Set("change_status_at", time.Now())

@@ -57,7 +57,7 @@ func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, opts ...dbkit.FindOptio
 		).
 		From("client_keys").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileQuery(builder); err != nil {
@@ -96,7 +96,7 @@ func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) 
 		).
 		From("client_keys").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileQuery(builder); err != nil {
@@ -142,7 +142,7 @@ func (r *ClientKeyRepoImpl) Insert(ctx context.Context, e ClientKey) (newClientK
 		Values(e.Name, e.Prefix, e.Key).
 		Suffix("RETURNING *").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&newClientKey.ID, &newClientKey.Name, &newClientKey.Prefix, &newClientKey.Key, &newClientKey.CreatedAt, &newClientKey.UpdatedAt); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -157,7 +157,7 @@ func (r *ClientKeyRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("client_keys").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -173,7 +173,7 @@ func (r *ClientKeyRepoImpl) Update(ctx context.Context, e ClientKey) (err error)
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

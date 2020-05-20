@@ -23,8 +23,8 @@ type server struct {
 	*config.Config
 
 	API      API
-	Provider provider.Provider
-	Profiler profiler.Profiler
+	Provider provider.Controller
+	Profiler profiler.Controller
 
 	Postgres *sql.DB
 	Redis    *redis.Client

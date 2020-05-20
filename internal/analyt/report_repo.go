@@ -69,7 +69,7 @@ func (r *ReportRepoImpl) MismatchReports(ctx context.Context, paginationParam re
 		Where("not exists(select url from metrics_rule_matching mrm where mrm.url = u.url and is_matched=1)").
 		PlaceholderFormat(sq.Dollar)
 
-	builder = repository.ComposePagination(builder, paginationParam).RunWith(dbtxn.BaseRunner(ctx, r))
+	builder = repository.ComposePagination(builder, paginationParam).RunWith(dbtxn.DB(ctx, r))
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -101,7 +101,7 @@ func (r *ReportRepoImpl) CountMatched(ctx context.Context, whereParams url.Value
 		From("metrics_rule_matching").
 		Where(sq.Eq{"is_matched": 1}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"})
 
@@ -122,7 +122,7 @@ func (r *ReportRepoImpl) CountUniquePage(ctx context.Context, whereParams url.Va
 		Where(sq.Eq{"is_matched": 1})
 
 	builder = buildWhereQuery(builder, whereParams, []string{"rule_id"}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&count); err != nil {
 		dbtxn.SetError(ctx, err)

@@ -46,7 +46,7 @@ func (r *UserServiceImpl) Find(ctx context.Context, paginationParam repository.P
 
 // Insert user
 func (r *UserServiceImpl) Insert(ctx context.Context, user repository.User) (newUserID int64, err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	if newUserID, err = r.UserRepo.Insert(ctx, user); err != nil {
 		r.CancelMe(ctx, err)
 		return
@@ -65,7 +65,7 @@ func (r *UserServiceImpl) Insert(ctx context.Context, user repository.User) (new
 
 // Delete user
 func (r *UserServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	oldUser, err := r.UserRepo.FindOne(ctx, id)
 	if err != nil {
 		r.CancelMe(ctx, err)
@@ -89,7 +89,7 @@ func (r *UserServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update user
 func (r *UserServiceImpl) Update(ctx context.Context, user repository.User) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	oldUser, err := r.UserRepo.FindOne(ctx, user.ID)
 	if err != nil {
 		r.CancelMe(ctx, err)

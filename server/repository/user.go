@@ -61,7 +61,7 @@ func (r *UserRepoImpl) FindOne(ctx context.Context, id int64) (*User, error) {
 		From("role_user").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	user := new(User)
@@ -95,7 +95,7 @@ func (r *UserRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 		).
 		From("role_user").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	builder = ComposePagination(builder, paginationParam)
 
@@ -137,7 +137,7 @@ func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int6
 			user.Email,
 		).
 		Suffix("RETURNING \"id\"").
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
 
@@ -156,7 +156,7 @@ func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("role_user").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -174,7 +174,7 @@ func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": user.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -192,7 +192,7 @@ func (r *UserRepoImpl) FindUserByEmail(ctx context.Context, email string) (*User
 		From("role_user").
 		Where(sq.Eq{"email": email}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	user := new(User)

@@ -1,4 +1,4 @@
-package service_test
+package provider_test
 
 import (
 	"context"
@@ -6,21 +6,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/internal/urlstore_mock"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore_mock"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt_mock"
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
 )
 
 type matchTestCase struct {
 	testName    string
 	vals        url.Values
 	pre         func()
-	expected    *service.MatchResponse
+	expected    *provider.MatchResponse
 	expectedErr string
 }
 
@@ -31,7 +31,7 @@ func TestProvider_Match(t *testing.T) {
 	mockStore := urlstore_mock.NewMockStore(ctrl)
 	mockRuleMatching := analyt_mock.NewMockRuleMatchingRepo(ctrl)
 
-	svc := service.ProviderServiceImpl{
+	svc := provider.ServiceImpl{
 		Store:            mockStore,
 		RuleMatchingRepo: mockRuleMatching,
 	}
@@ -50,7 +50,7 @@ func TestProvider_Match(t *testing.T) {
 				mockRuleMatching.EXPECT().Insert(gomock.Any(), gomock.Any())
 			},
 			vals:     parseQuery("_path=some-path"),
-			expected: &service.MatchResponse{},
+			expected: &provider.MatchResponse{},
 		},
 		{
 			testName: "match",
@@ -59,7 +59,7 @@ func TestProvider_Match(t *testing.T) {
 				mockRuleMatching.EXPECT().Insert(gomock.Any(), gomock.Any())
 			},
 			vals: parseQuery("_path=some-path"),
-			expected: &service.MatchResponse{
+			expected: &provider.MatchResponse{
 				RuleID:    1,
 				PathParam: map[string]string{"hello": "world"},
 			},

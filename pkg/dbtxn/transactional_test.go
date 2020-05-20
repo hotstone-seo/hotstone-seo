@@ -23,7 +23,7 @@ func TestTransactional(t *testing.T) {
 		ctx := context.Background()
 		mock.ExpectBegin()
 		mock.ExpectRollback()
-		commitFn := trx.CommitMe(&ctx)
+		commitFn := trx.BeginTxn(&ctx)
 		func(ctx context.Context) {
 			dbtxn.SetError(ctx, errors.New("unexpected-error"))
 		}(ctx)
@@ -33,7 +33,7 @@ func TestTransactional(t *testing.T) {
 	t.Run("WHEN panic occurred before commit", func(t *testing.T) {
 		ctx := context.Background()
 		mock.ExpectBegin()
-		fn := trx.CommitMe(&ctx)
+		fn := trx.BeginTxn(&ctx)
 		func(ctx context.Context) { // service level
 			defer fn()
 			dbtxn.SetError(ctx, fmt.Errorf("some-logic-error"))
@@ -46,21 +46,21 @@ func TestTransactional(t *testing.T) {
 	t.Run("WHEN begin error", func(t *testing.T) {
 		ctx := context.Background()
 		mock.ExpectBegin().WillReturnError(errors.New("some-begin-error"))
-		require.EqualError(t, trx.CommitMe(&ctx)(), "some-begin-error")
+		require.EqualError(t, trx.BeginTxn(&ctx)(), "some-begin-error")
 	})
 	t.Run("WHEN commit error", func(t *testing.T) {
 		ctx := context.Background()
 		mock.ExpectBegin()
 		mock.ExpectCommit().WillReturnError(errors.New("some-commit-error"))
-		require.EqualError(t, trx.CommitMe(&ctx)(), "some-commit-error")
+		require.EqualError(t, trx.BeginTxn(&ctx)(), "some-commit-error")
 		require.NoError(t, dbtxn.Error(ctx))
-		require.NotNil(t, dbtxn.BaseRunner(ctx, nil))
+		require.NotNil(t, dbtxn.DB(ctx, nil))
 	})
 	t.Run("WHEN rolback error", func(t *testing.T) {
 		ctx := context.Background()
 		mock.ExpectBegin()
 		mock.ExpectRollback().WillReturnError(errors.New("some-rollback-error"))
-		commitFn := trx.CommitMe(&ctx)
+		commitFn := trx.BeginTxn(&ctx)
 		func(ctx context.Context) {
 			dbtxn.SetError(ctx, errors.New("unexpected-error"))
 		}(ctx)

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	log "github.com/sirupsen/logrus"
@@ -23,7 +24,7 @@ type RuleService interface {
 type RuleServiceImpl struct {
 	dig.In
 	RuleRepo    repository.RuleRepo
-	URLSyncRepo repository.URLSyncRepo
+	SyncRepo urlstore.SyncRepo
 	AuditTrailService
 	HistoryService
 	dbtxn.Transactional
@@ -67,7 +68,7 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (new
 
 // Delete rule
 func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	oldRule, err := r.RuleRepo.FindOne(ctx, id)
 	if err != nil {
 		r.CancelMe(ctx, err)
@@ -77,7 +78,7 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.URLSyncRepo.Insert(ctx, repository.URLSync{
+	if _, err = r.SyncRepo.Insert(ctx, urlstore.Sync{
 		Operation:        "DELETE",
 		RuleID:           id,
 		LatestURLPattern: nil,
@@ -110,9 +111,9 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	var (
-		urlSync *repository.URLSync
+		Sync *urlstore.Sync
 	)
 	oldRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
 	if err != nil {
@@ -123,12 +124,12 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 		r.CancelMe(ctx, err)
 		return
 	}
-	if urlSync, err = r.URLSyncRepo.FindRule(ctx, rule.ID); err != nil {
+	if Sync, err = r.SyncRepo.FindRule(ctx, rule.ID); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	if syncOP := syncOperation(rule, urlSync); syncOP != "" {
-		if _, err = r.URLSyncRepo.Insert(ctx, repository.URLSync{
+	if syncOP := syncOperation(rule, Sync); syncOP != "" {
+		if _, err = r.SyncRepo.Insert(ctx, urlstore.Sync{
 			Operation:        syncOP,
 			RuleID:           rule.ID,
 			LatestURLPattern: &rule.URLPattern,
@@ -152,8 +153,8 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 	return nil
 }
 
-func syncOperation(rule repository.Rule, lastURLSync *repository.URLSync) string {
-	if lastURLSync == nil || lastURLSync.Operation == "DELETE" {
+func syncOperation(rule repository.Rule, lastSync *urlstore.Sync) string {
+	if lastSync == nil || lastSync.Operation == "DELETE" {
 		if rule.Status == "start" {
 			return "INSERT"
 		}

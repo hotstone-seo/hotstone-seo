@@ -1,4 +1,4 @@
-package service_test
+package urlstore_test
 
 import (
 	"context"
@@ -6,10 +6,8 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
+	"github.com/hotstone-seo/hotstone-seo/internal/urlstore_mock"
 	"github.com/stretchr/testify/require"
 	"github.com/xorcare/pointer"
 )
@@ -18,20 +16,20 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	list1And2URLSync := []*repository.URLSync{
-		&repository.URLSync{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: pointer.String("/url/1")},
-		&repository.URLSync{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: pointer.String("/url/1update")},
+	list1And2Sync := []*urlstore.Sync{
+		&urlstore.Sync{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: pointer.String("/url/1")},
+		&urlstore.Sync{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: pointer.String("/url/1update")},
 	}
 
-	list3And4URLSync := []*repository.URLSync{
-		&repository.URLSync{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: pointer.String("/url/b")},
-		&repository.URLSync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
+	list3And4Sync := []*urlstore.Sync{
+		&urlstore.Sync{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: pointer.String("/url/b")},
+		&urlstore.Sync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
 	}
 
-	mockRepo := repository_mock.NewMockURLSyncRepo(ctrl)
+	mockRepo := urlstore_mock.NewMockSyncRepo(ctrl)
 
-	urlStoreServer := &service.URLServiceImpl{
-		URLSyncRepo:   mockRepo,
+	urlStoreServer := &urlstore.Service{
+		SyncRepo:   mockRepo,
 		Store:         urlstore.NewStore(),
 		LatestVersion: -1,
 	}
@@ -41,8 +39,8 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		require.Equal(t, 0, urlStoreServer.Store.Count())
 
 		ctx := context.Background()
-		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(len(list1And2URLSync)), nil)
-		mockRepo.EXPECT().GetListDiff(ctx, gomock.Eq(int64(-1))).Return(list1And2URLSync, nil)
+		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(len(list1And2Sync)), nil)
+		mockRepo.EXPECT().GetListDiff(ctx, gomock.Eq(int64(-1))).Return(list1And2Sync, nil)
 
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
@@ -71,7 +69,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 		ctx := context.Background()
 		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(4), nil)
-		mockRepo.EXPECT().GetListDiff(ctx, gomock.Eq(int64(2))).Return(list3And4URLSync, nil)
+		mockRepo.EXPECT().GetListDiff(ctx, gomock.Eq(int64(2))).Return(list3And4Sync, nil)
 
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
@@ -86,7 +84,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 		ctx := context.Background()
 		mockRepo.EXPECT().GetLatestVersion(ctx).Return(int64(2), nil) // latestVersion from DB = 2 (somehow some rows has been deleted)
-		mockRepo.EXPECT().Find(ctx).Return(list1And2URLSync, nil)
+		mockRepo.EXPECT().Find(ctx).Return(list1And2Sync, nil)
 
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
@@ -115,28 +113,28 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 func TestURLStoreImpl_Match(t *testing.T) {
 	t.Run("WHEN static url not exist", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		id, varMap := svc.Get("/gopher/doc.jpg")
 		require.Nil(t, id)
 		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN static url exist", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		id, varMap := svc.Get("/gopher/doc.png")
 		require.Equal(t, "6", id)
 		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN param url not exist", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		id, varMap := svc.Get("/users/def/abc")
 		require.Nil(t, id)
 		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN param url exist", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		id, varMap := svc.Get("/users/def/123")
 		require.Equal(t, "12", id)
 		require.Equal(t, 2, len(varMap.Keys()))
@@ -145,7 +143,7 @@ func TestURLStoreImpl_Match(t *testing.T) {
 	})
 
 	t.Run("WHEN more than 1 param exist in a subpath", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		id, varMap := svc.Get("/flight/src-abc-dst-def")
 		require.Equal(t, "15", id)
 		require.Equal(t, 2, len(varMap.Keys()))
@@ -156,7 +154,7 @@ func TestURLStoreImpl_Match(t *testing.T) {
 
 func TestURLStoreImpl_AddURL(t *testing.T) {
 	t.Run("WHEN new static url added AND id not exist before", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		url := "/gopher/doc.jpg"
 		svc.Insert(20, url)
 		id, varMap := svc.Get(url)
@@ -166,7 +164,7 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 	})
 
 	t.Run("WHEN new static url added AND id exist before THEN double data added (with same id)", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		svc.Insert(20, "/gopher/old.jpg")
 		svc.Insert(20, "/gopher/new.img")
 
@@ -183,7 +181,7 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 
 func TestURLStoreImpl_UpdateURL(t *testing.T) {
 	t.Run("WHEN existing static url updated with different url", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		svc.Update(6, "/gopher/updated.bmp")
 
 		id, varMap := svc.Get("/gopher/old.png")
@@ -199,7 +197,7 @@ func TestURLStoreImpl_UpdateURL(t *testing.T) {
 
 func TestURLStoreImpl_DeleteURL(t *testing.T) {
 	t.Run("WHEN existing static url deleted", func(t *testing.T) {
-		svc := &service.URLServiceImpl{Store: buildStore()}
+		svc := &urlstore.Service{Store: buildStore()}
 		require.Equal(t, true, svc.Delete(6))
 
 		id, varMap := svc.Get("/gopher/doc.png")
