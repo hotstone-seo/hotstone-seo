@@ -104,6 +104,20 @@ func (mr *MockClientKeyServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockClientKeyService)(nil).Insert), arg0, arg1)
 }
 
+// IsValidClientKey mocks base method
+func (m *MockClientKeyService) IsValidClientKey(arg0 context.Context, arg1 string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsValidClientKey", arg0, arg1)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsValidClientKey indicates an expected call of IsValidClientKey
+func (mr *MockClientKeyServiceMockRecorder) IsValidClientKey(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsValidClientKey", reflect.TypeOf((*MockClientKeyService)(nil).IsValidClientKey), arg0, arg1)
+}
+
 // Update mocks base method
 func (m *MockClientKeyService) Update(arg0 context.Context, arg1 repository.ClientKey) error {
 	m.ctrl.T.Helper()
