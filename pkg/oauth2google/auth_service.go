@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 
 	"github.com/labstack/echo"
 	"go.uber.org/dig"

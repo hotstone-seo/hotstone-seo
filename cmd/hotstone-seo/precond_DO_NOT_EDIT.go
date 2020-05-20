@@ -4,13 +4,13 @@ package main
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	"github.com/hotstone-seo/hotstone-seo/internal/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/infra"
 	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/typical-go/typical-go/pkg/typgo"
 	"github.com/typical-go/typical-rest-server/pkg/typpg"
 	"github.com/typical-go/typical-rest-server/pkg/typredis"
@@ -18,6 +18,10 @@ import (
 
 func init() {
 	typgo.Provide(
+		&typgo.Constructor{Name: "", Fn: oauth2google.NewService},
+		&typgo.Constructor{Name: "", Fn: analyt.NewClientKeyAnalytRepo},
+		&typgo.Constructor{Name: "", Fn: analyt.NewReportRepo},
+		&typgo.Constructor{Name: "", Fn: analyt.NewRuleMatchingRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewAuditTrailRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewClientKeyRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewDataSourceRepo},
@@ -41,10 +45,6 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: service.NewStructuredDataService},
 		&typgo.Constructor{Name: "", Fn: service.NewTagService},
 		&typgo.Constructor{Name: "", Fn: service.NewUserService},
-		&typgo.Constructor{Name: "", Fn: oauth2google.NewService},
-		&typgo.Constructor{Name: "", Fn: analyt.NewClientKeyAnalytRepo},
-		&typgo.Constructor{Name: "", Fn: analyt.NewReportRepo},
-		&typgo.Constructor{Name: "", Fn: analyt.NewRuleMatchingRepo},
 		&typgo.Constructor{Name: "", Fn: infra.Connect},
 		&typgo.Constructor{Name: "", Fn: provider.NewService},
 		&typgo.Constructor{Name: "", Fn: urlstore.NewService},

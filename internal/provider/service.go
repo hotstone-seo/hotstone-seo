@@ -8,7 +8,7 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"go.uber.org/dig"
 )
 

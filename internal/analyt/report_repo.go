@@ -8,7 +8,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"go.uber.org/dig"
 )
 

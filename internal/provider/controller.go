@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"

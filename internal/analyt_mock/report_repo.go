@@ -8,7 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	analyt "github.com/hotstone-seo/hotstone-seo/internal/analyt"
-	repository "github.com/hotstone-seo/hotstone-seo/server/repository"
+	repository "github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	url "net/url"
 	reflect "reflect"
 )

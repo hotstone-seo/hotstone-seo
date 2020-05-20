@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	log "github.com/sirupsen/logrus"
 
 	"net/http"

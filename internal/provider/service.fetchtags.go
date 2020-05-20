@@ -12,7 +12,7 @@ import (
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/imantung/mario"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 	"golang.org/x/sync/errgroup"

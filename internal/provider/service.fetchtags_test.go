@@ -19,8 +19,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/repository"
-	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository_mock"
 )
 
 var (
