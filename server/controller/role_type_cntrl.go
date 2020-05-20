@@ -84,7 +84,10 @@ func (c *RoleTypeCntrl) Create(ctx echo.Context) (err error) {
 
 // Update role_type
 func (c *RoleTypeCntrl) Update(ctx echo.Context) (err error) {
-	var roleType repository.RoleType
+	var (
+		req      service.RoleTypeRequest
+		roleType repository.RoleType
+	)
 	ctx0 := ctx.Request().Context()
 	if err = ctx.Bind(&roleType); err != nil {
 		return err
@@ -95,7 +98,7 @@ func (c *RoleTypeCntrl) Update(ctx echo.Context) (err error) {
 	if err = roleType.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if err = c.RoleTypeService.Update(ctx0, roleType); err != nil {
+	if err = c.RoleTypeService.Update(ctx0, req); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{
