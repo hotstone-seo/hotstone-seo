@@ -19,3 +19,6 @@ jobs:
       
     - name: Test
       run: ./typicalw test
+
+    - name: Check runtime error
+      run: ./scripts/ci/check-runtime-error.sh
