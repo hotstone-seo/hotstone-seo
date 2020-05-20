@@ -19,7 +19,7 @@ function EditRoleType() {
         setRoleType(newRoleType);
       })
       .catch((error) => {
-        history.push('/roletypes', {
+        history.push('/role-type', {
           message: {
             level: 'error',
             content: error.message,
@@ -32,7 +32,7 @@ function EditRoleType() {
     // TO DO : re-check . Still not get value module access
     updateRoleType(newRoleType)
       .then(() => {
-        history.push('/roletypes', {
+        history.push('/role-type', {
           message: {
             level: 'success',
             content: `Role ${newRoleType.name} is successfully edit`,
@@ -47,7 +47,7 @@ function EditRoleType() {
   return (
     <div>
       <PageHeader
-        onBack={() => history.push('/roletypes')}
+        onBack={() => history.push('/role-type')}
         title="Edit Role"
         style={{ background: '#fff' }}
       />
