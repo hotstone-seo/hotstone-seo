@@ -45,10 +45,8 @@ func (p *ProviderServiceImpl) FetchTagsWithCache(ctx context.Context, vals url.V
 func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*ITag, err error) {
 	var (
 		rule            *repository.Rule
-		sources         []*IDataSource
 		tags            []*repository.Tag
 		structuredDatas []*repository.StructuredData
-		ds              *IDataSource
 		itag            *ITag
 	)
 
@@ -84,7 +82,7 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (i
 		return []*ITag{}, nil
 	}
 
-	if rule.DataSourceID == nil {
+	if len(rule.DataSourceIDs) == 0 {
 		for _, tag := range tags {
 			itag := ITag(*tag)
 			itags = append(itags, &itag)
@@ -92,17 +90,31 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (i
 		return
 	}
 
-	if ds, err = p.findAndInterpolateDataSource(ctx, *rule.DataSourceID, ConvertToParams(vals)); err != nil {
-		return nil, err
+	findDS, ctx := errgroup.WithContext(ctx)
+	sources := make([]*IDataSource, len(rule.DataSourceIDs))
+	for index, dsID := range rule.DataSourceIDs {
+		index, dsID := index, dsID
+		findDS.Go(func() error {
+			var (
+				ds      *IDataSource
+				findErr error
+			)
+			if ds, findErr = p.findAndInterpolateDataSource(ctx, dsID, ConvertToParams(vals)); findErr != nil {
+				return findErr
+			}
+			sources[index] = ds
+			return nil
+		})
 	}
-	// TODO: sources should come from rule's list of datasources, for now we just want to see how an implementation
-	// with multiple datasources will look like
-	sources = []*IDataSource{ds}
-	g, ctx := errgroup.WithContext(ctx)
+	if err = findDS.Wait(); err != nil {
+		return
+	}
+
+	callDS, ctx := errgroup.WithContext(ctx)
 	apiData := make(map[string]interface{})
 	for _, source := range sources {
 		source := source // https://golang.org/doc/faq#closures_and_goroutines
-		g.Go(func() error {
+		callDS.Go(func() error {
 			var (
 				b      []byte
 				data   interface{}
@@ -118,7 +130,7 @@ func (p *ProviderServiceImpl) FetchTags(ctx context.Context, vals url.Values) (i
 			return nil
 		})
 	}
-	if err = g.Wait(); err != nil {
+	if err = callDS.Wait(); err != nil {
 		return
 	}
 
