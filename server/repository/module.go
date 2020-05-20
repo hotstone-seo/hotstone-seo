@@ -65,7 +65,7 @@ func (r *ModuleRepoImpl) FindOne(ctx context.Context, id int64) (*Module, error)
 		From("modules").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	module := new(Module)
@@ -103,7 +103,7 @@ func (r *ModuleRepoImpl) Find(ctx context.Context, paginationParam PaginationPar
 		).
 		From("modules").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	builder = ComposePagination(builder, paginationParam)
 
@@ -146,7 +146,7 @@ func (r *ModuleRepoImpl) FindOneByName(ctx context.Context, name string) (*Modul
 		From("modules").
 		Where(sq.Eq{"name": name}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	module := new(Module)
@@ -180,7 +180,7 @@ func (r *ModuleRepoImpl) Insert(ctx context.Context, module Module) (lastInsertI
 			module.Label,
 		).
 		Suffix("RETURNING \"id\"").
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
 
@@ -199,7 +199,7 @@ func (r *ModuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("modules").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -218,7 +218,7 @@ func (r *ModuleRepoImpl) Update(ctx context.Context, module Module) (err error) 
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": module.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

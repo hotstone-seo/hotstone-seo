@@ -55,7 +55,7 @@ func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, 
 		Select("id", "name", "modules", "updated_at", "created_at").
 		From("role_type").
 		Where(sq.Eq{"id": id}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -77,7 +77,7 @@ func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationP
 	builder := sq.
 		Select("id", "name", "updated_at", "created_at").
 		From("role_type").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -110,7 +110,7 @@ func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID
 		Values(e.Name, e.Modules).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -133,7 +133,7 @@ func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -148,7 +148,7 @@ func (r *RoleTypeRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("role_type").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -163,7 +163,7 @@ func (r *RoleTypeRepoImpl) FindOneByName(ctx context.Context, name string) (e *R
 		Select("id").
 		From("role_type").
 		Where(sq.Eq{"name": name}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return

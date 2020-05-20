@@ -8,8 +8,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 )
@@ -31,15 +31,15 @@ func TestRuleController_Create(t *testing.T) {
 	})
 	t.Run("WHEN insert error", func(t *testing.T) {
 		ruleSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(-1), errors.New("some-insert-error"))
-		_, err := echotest.DoPOST(ruleCntrl.Create, "/", `{ "name": "some-name", "url_pattern": "http://some-pattern", "data_source_id":1}`, nil)
+		_, err := echotest.DoPOST(ruleCntrl.Create, "/", `{ "name": "some-name", "url_pattern": "http://some-pattern", "data_source_ids": [1] }`, nil)
 		require.EqualError(t, err, "code=422, message=some-insert-error")
 	})
 	t.Run("WHEN insert success", func(t *testing.T) {
 		ruleSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(999), nil)
-		rr, err := echotest.DoPOST(ruleCntrl.Create, "/", `{ "name": "some-name", "url_pattern": "http://some-pattern", "data_source_id":1}`, nil)
+		rr, err := echotest.DoPOST(ruleCntrl.Create, "/", `{ "name": "some-name", "url_pattern": "http://some-pattern", "data_source_ids": [1] }`, nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusCreated, rr.Code)
-		require.Equal(t, "{\"id\":999,\"name\":\"some-name\",\"url_pattern\":\"http://some-pattern\",\"data_source_id\":1,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\",\"status\":\"\",\"change_status_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":999,\"name\":\"some-name\",\"url_pattern\":\"http://some-pattern\",\"data_source_ids\":[1],\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\",\"status\":\"\",\"change_status_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 
@@ -69,7 +69,7 @@ func TestRuleController_Find(t *testing.T) {
 		rr, err := echotest.DoGET(ruleCntrl.Find, "/", nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "[{\"id\":999,\"name\":\"Airport Rule\",\"url_pattern\":\"/airport\",\"data_source_id\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\",\"status\":\"\",\"change_status_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
+		require.Equal(t, "[{\"id\":999,\"name\":\"Airport Rule\",\"url_pattern\":\"/airport\",\"data_source_ids\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\",\"status\":\"\",\"change_status_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
 	})
 }
 
@@ -97,16 +97,17 @@ func TestRuleController_FindOne(t *testing.T) {
 	t.Run("WHEN successful", func(t *testing.T) {
 		ruleSvcMock.EXPECT().FindOne(gomock.Any(), int64(999)).Return(
 			&repository.Rule{
-				ID:         999,
-				Name:       "Airport Rule",
-				URLPattern: "/airport",
+				ID:            999,
+				Name:          "Airport Rule",
+				URLPattern:    "/airport",
+				DataSourceIDs: make([]int64, 0),
 			},
 			nil,
 		)
 		rr, err := echotest.DoGET(ruleCntrl.FindOne, "/", map[string]string{"id": "999"})
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":999,\"name\":\"Airport Rule\",\"url_pattern\":\"/airport\",\"data_source_id\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\",\"status\":\"\",\"change_status_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":999,\"name\":\"Airport Rule\",\"url_pattern\":\"/airport\",\"data_source_ids\":[],\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\",\"status\":\"\",\"change_status_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 

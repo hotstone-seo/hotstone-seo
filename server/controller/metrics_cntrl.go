@@ -2,10 +2,11 @@ package controller
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo"
 
-	"github.com/hotstone-seo/hotstone-seo/analyt"
+	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"go.uber.org/dig"
@@ -23,6 +24,7 @@ func (c *MetricsCntrl) Route(e *echo.Group) {
 	e.GET("/metrics/hit", c.CountHit)
 	e.GET("/metrics/hit/range", c.ListCountHitPerDay)
 	e.GET("/metrics/unique-page", c.CountUniquePage)
+	e.GET("/metrics/client-key/last-used", c.ClientKeyLastUsed)
 }
 
 // ListMismatched of metrics_unmatched
@@ -73,4 +75,20 @@ func (c *MetricsCntrl) ListCountHitPerDay(ec echo.Context) (err error) {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ec.JSON(http.StatusOK, counts)
+}
+
+func (c *MetricsCntrl) ClientKeyLastUsed(ec echo.Context) (err error) {
+	var lastUsed *time.Time
+
+	ctx := ec.Request().Context()
+	clientKeyID := ec.QueryParam("client_key_id")
+
+	if clientKeyID == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "'client_key_id' query param is required")
+	}
+
+	if lastUsed, err = c.MetricService.ClientKeyLastUsed(ctx, clientKeyID); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return ec.JSON(http.StatusOK, map[string]*time.Time{"time": lastUsed})
 }

@@ -21,7 +21,7 @@ func (r *HistoryRepoImpl) Insert(ctx context.Context, m History) (lastInsertID i
 		Columns("entity_id", "entity_from", "username", "data").
 		Values(m.EntityID, m.EntityFrom, m.Username, m.Data).
 		Suffix("RETURNING \"id\"").
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&m.ID); err != nil {
 		dbtxn.SetError(ctx, err)

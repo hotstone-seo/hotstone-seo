@@ -1,4 +1,4 @@
-package service
+package provider
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/analyt"
+	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 )
 
@@ -23,7 +23,7 @@ type MatchResponse struct {
 }
 
 // Match url with its rule
-func (p *ProviderServiceImpl) Match(ctx context.Context, vals url.Values) (resp *MatchResponse, err error) {
+func (p *ServiceImpl) Match(ctx context.Context, vals url.Values) (resp *MatchResponse, err error) {
 	var (
 		ruleID    int64
 		pathParam map[string]string
@@ -80,7 +80,7 @@ func convertToRuleID(data interface{}) (ruleID int64, err error) {
 	return
 }
 
-func (p *ProviderServiceImpl) onMatched(url string, ruleID int64) {
+func (p *ServiceImpl) onMatched(url string, ruleID int64) {
 	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
 	defer cancel()
 
@@ -91,7 +91,7 @@ func (p *ProviderServiceImpl) onMatched(url string, ruleID int64) {
 	})
 }
 
-func (p *ProviderServiceImpl) onNotMatched(url string) {
+func (p *ServiceImpl) onNotMatched(url string) {
 	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
 	defer cancel()
 

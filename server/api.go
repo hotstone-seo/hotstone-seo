@@ -8,7 +8,8 @@ import (
 	"go.uber.org/dig"
 )
 
-type api struct {
+// API side
+type API struct {
 	dig.In
 	oauth2google.AuthCntrl
 	controller.RuleCntrl
@@ -24,7 +25,8 @@ type api struct {
 	controller.ModuleCntrl
 }
 
-func (a *api) route(e *echo.Echo) {
+// SetRoute for API
+func (a *API) SetRoute(e *echo.Echo) {
 	e.POST("auth/google/login", a.AuthCntrl.Login)
 	e.GET("auth/google/callback", a.AuthCntrl.Callback)
 

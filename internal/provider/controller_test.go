@@ -1,25 +1,24 @@
-package controller_test
+package provider_test
 
 import (
 	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider_mock"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/controller"
-	"github.com/hotstone-seo/hotstone-seo/server/service_mock"
-	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 )
 
-func TestProviderCntrl_Match(t *testing.T) {
+func TestController_Match(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	svc := service_mock.NewMockProviderService(ctrl)
-	cntrl := controller.ProviderCntrl{
-		ProviderService: svc,
+	svc := provider_mock.NewMockService(ctrl)
+	cntrl := provider.Controller{
+		Service: svc,
 	}
 
 	t.Run("WHEN error match rule", func(t *testing.T) {
@@ -35,7 +34,7 @@ func TestProviderCntrl_Match(t *testing.T) {
 	})
 
 	t.Run("WHEN okay", func(t *testing.T) {
-		svc.EXPECT().Match(gomock.Any(), gomock.Any()).Return(&service.MatchResponse{RuleID: 12345, PathParam: map[string]string{"param01": "value01"}}, nil)
+		svc.EXPECT().Match(gomock.Any(), gomock.Any()).Return(&provider.MatchResponse{RuleID: 12345, PathParam: map[string]string{"param01": "value01"}}, nil)
 		rec, err := echotest.DoPOST(cntrl.MatchRule, "/", `{"path":"some-path"}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, 200, rec.Code)
@@ -47,9 +46,9 @@ func TestProviderController_FetchTag(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	mockService := service_mock.NewMockProviderService(ctrl)
-	cntrl := controller.ProviderCntrl{
-		ProviderService: mockService,
+	mockService := provider_mock.NewMockService(ctrl)
+	cntrl := provider.Controller{
+		Service: mockService,
 	}
 
 	t.Run("", func(t *testing.T) {

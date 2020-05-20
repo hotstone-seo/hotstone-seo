@@ -10,14 +10,19 @@ import (
 	"go.uber.org/dig"
 )
 
-// Transactional database
-type Transactional struct {
-	dig.In
-	*sql.DB
-}
+type (
+	// Transactional database
+	Transactional struct {
+		dig.In
+		*sql.DB
+	}
 
-// CommitMe to create begin transaction and return commit function to be deffered
-func (t *Transactional) CommitMe(ctx *context.Context) func() error {
+	// CommitFn is commit function to close the transaction
+	CommitFn func() error
+)
+
+// BeginTxn to begin transaction and return the commit function
+func (t *Transactional) BeginTxn(ctx *context.Context) CommitFn {
 	var (
 		tx  *sql.Tx
 		err error

@@ -24,7 +24,7 @@ func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSour
 		Select("id", "name", "url", "updated_at", "created_at").
 		From("data_sources").
 		Where(sq.Eq{"id": id}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -46,7 +46,7 @@ func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err 
 	builder := sq.
 		Select("id", "name", "url", "updated_at", "created_at").
 		From("data_sources").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -71,7 +71,7 @@ func (r *DataSourceRepoImpl) Insert(ctx context.Context, e DataSource) (lastInse
 		Columns("name", "url").
 		Values(e.Name, e.URL).
 		Suffix("RETURNING \"id\"").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -85,7 +85,7 @@ func (r *DataSourceRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
 		Delete("data_sources").
 		Where(sq.Eq{"id": id}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 	}
@@ -100,7 +100,7 @@ func (r *DataSourceRepoImpl) Update(ctx context.Context, e DataSource) (err erro
 		Set("url", e.URL).
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.BaseRunner(ctx, r))
+		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 	}

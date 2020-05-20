@@ -65,7 +65,7 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 		From("tags").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r)).
+		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
 
 	e = new(Tag)
@@ -102,7 +102,7 @@ func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list 
 		).
 		From("tags").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileQuery(builder); err != nil {
@@ -164,7 +164,7 @@ func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, er
 		Values(e.RuleID, e.Locale, e.Type, e.Attributes, e.Value).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -180,7 +180,7 @@ func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("tags").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -204,7 +204,7 @@ func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

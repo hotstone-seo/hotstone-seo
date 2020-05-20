@@ -45,7 +45,7 @@ func (r *RuleMatchingRepoImpl) Insert(ctx context.Context, e RuleMatching) (err 
 		Columns("is_matched", "url", "rule_id").
 		Values(e.IsMatched, e.URL, e.RuleID).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
