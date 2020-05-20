@@ -37,6 +37,7 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: service.NewModuleService},
 		&typgo.Constructor{Name: "", Fn: service.NewRoleTypeService},
 		&typgo.Constructor{Name: "", Fn: service.NewRuleService},
+		&typgo.Constructor{Name: "", Fn: service.NewSettingService},
 		&typgo.Constructor{Name: "", Fn: service.NewStructuredDataService},
 		&typgo.Constructor{Name: "", Fn: service.NewTagService},
 		&typgo.Constructor{Name: "", Fn: service.NewUserService},

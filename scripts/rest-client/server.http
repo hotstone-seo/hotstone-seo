@@ -212,3 +212,24 @@ Cookie: {{secure_token}}
 ### Retrieve Rule By ID
 GET http://localhost:8089/api/rules/1
 Cookie: {{secure_token}}
+
+### Find setting
+
+GET http://localhost:8089/api/settings
+Cookie: {{secure_token}}
+
+### FindOne setting
+
+GET http://localhost:8089/api/settings/simulation_key
+Cookie: {{secure_token}}
+
+### Update setting
+
+PUT http://localhost:8089/api/settings/simulation_key
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "key": "simulation_key",
+    "value": "key123456"
+}

@@ -23,6 +23,7 @@ type API struct {
 	controller.RoleTypeCntrl
 	controller.ClientKeyCntrl
 	controller.ModuleCntrl
+	controller.SettingCntrl
 }
 
 // SetRoute for API
@@ -48,4 +49,5 @@ func (a *API) SetRoute(e *echo.Echo) {
 	a.RoleTypeCntrl.Route(group)
 	a.ClientKeyCntrl.Route(group)
 	a.ModuleCntrl.Route(group)
+	a.SettingCntrl.Route(group)
 }

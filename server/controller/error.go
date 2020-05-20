@@ -3,6 +3,7 @@ package controller
 import (
 	"database/sql"
 	"net/http"
+	"strings"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/labstack/echo"
@@ -10,6 +11,11 @@ import (
 )
 
 func httpError(err error) *echo.HTTPError {
+
+	if notImplemented(err) {
+		return echo.NewHTTPError(http.StatusNotImplemented)
+	}
+
 	if err == sql.ErrNoRows {
 		return echo.NewHTTPError(http.StatusNotFound)
 	}
@@ -29,4 +35,8 @@ func httpError(err error) *echo.HTTPError {
 		http.StatusInternalServerError,
 		err.Error(),
 	)
+}
+
+func notImplemented(err error) bool {
+	return strings.EqualFold(err.Error(), "Not implemented")
 }
