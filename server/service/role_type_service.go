@@ -17,7 +17,7 @@ type RoleTypeService interface {
 	FindOne(ctx context.Context, id int64) (*repository.RoleType, error)
 	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.RoleType, error)
 	Insert(ctx context.Context, req RoleTypeRequest) (lastInsertID int64, err error)
-	Update(ctx context.Context, roleType repository.RoleType) error
+	Update(ctx context.Context, req RoleTypeRequest) error
 	Delete(ctx context.Context, id int64) error
 	FindOneByName(ctx context.Context, name string) (*repository.RoleType, error)
 }
@@ -79,10 +79,18 @@ func (r *RoleTypeServiceImpl) Insert(ctx context.Context, req RoleTypeRequest) (
 }
 
 // Update RoleType
-func (r *RoleTypeServiceImpl) Update(ctx context.Context, data repository.RoleType) (err error) {
+func (r *RoleTypeServiceImpl) Update(ctx context.Context, req RoleTypeRequest) (err error) {
 	var oldData *repository.RoleType
-	if oldData, err = r.RoleTypeRepo.FindOne(ctx, data.ID); err != nil {
+	if oldData, err = r.RoleTypeRepo.FindOne(ctx, req.ID); err != nil {
 		return
+	}
+	var data repository.RoleType
+	data = repository.RoleType{
+		Name: req.Name,
+		Modules: map[string]interface{}{
+			"modules": mapModules(ctx, req.Modules, r),
+		},
+		UpdatedAt: time.Now(),
 	}
 	if err = r.RoleTypeRepo.Update(ctx, data); err != nil {
 		return
@@ -149,7 +157,7 @@ func mapModules(ctx context.Context, mItem []ModuleItem, r *RoleTypeServiceImpl)
 		}
 		faqsMap[index] = map[string]interface{}{
 			"path":    moduleMs.Path,
-			"name":    moduleMs.Name,
+			"name":    tempMod.Module,
 			"pattern": moduleMs.Pattern,
 		}
 	}
