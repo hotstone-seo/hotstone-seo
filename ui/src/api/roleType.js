@@ -1,7 +1,7 @@
 import client from './client';
 
-export function fetchRoleTypes() {
-  return client.get('/role_types')
+export function fetchRoleTypes(cfg = {}) {
+  return client.get('/role_types', cfg)
     .then((response) => response.data)
     .catch((error) => {
       throw error;

@@ -1,7 +1,8 @@
 import client from './client';
 
-export function fetchModules() {
-  return client.get('/modules')
+export function fetchModules(cfg = {}) {
+  return client
+    .get('/modules', cfg)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
