@@ -17,13 +17,13 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 	defer ctrl.Finish()
 
 	list1And2Sync := []*urlstore.Sync{
-		&urlstore.Sync{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: pointer.String("/url/1")},
-		&urlstore.Sync{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: pointer.String("/url/1update")},
+		{Version: 1, Operation: "INSERT", RuleID: 1, LatestURLPattern: pointer.String("/url/1")},
+		{Version: 2, Operation: "UPDATE", RuleID: 1, LatestURLPattern: pointer.String("/url/1update")},
 	}
 
 	list3And4Sync := []*urlstore.Sync{
-		&urlstore.Sync{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: pointer.String("/url/b")},
-		&urlstore.Sync{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
+		{Version: 3, Operation: "INSERT", RuleID: 2, LatestURLPattern: pointer.String("/url/b")},
+		{Version: 4, Operation: "UPDATE", RuleID: 2, LatestURLPattern: pointer.String("/url/bupdate")},
 	}
 
 	mockRepo := urlstore_mock.NewMockSyncRepo(ctrl)
