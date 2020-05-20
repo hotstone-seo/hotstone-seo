@@ -23,7 +23,7 @@ type (
 		dig.In
 		SyncRepo
 		Store
-		LatestVersion int
+		Version int64
 	}
 )
 
@@ -31,9 +31,9 @@ type (
 // @constructor
 func NewService(svc SyncRepo, store Store) Service {
 	return &ServiceImpl{
-		SyncRepo:      svc,
-		Store:         store,
-		LatestVersion: 0,
+		SyncRepo: svc,
+		Store:    store,
+		Version:  0,
 	}
 }
 
@@ -53,7 +53,7 @@ func (s *ServiceImpl) FullSync(ctx context.Context) error {
 	s.setStore(list)
 
 	oldestSync := list[len(list)-1]
-	s.LatestVersion = int(oldestSync.Version)
+	s.Version = oldestSync.Version
 
 	return nil
 }
@@ -61,34 +61,34 @@ func (s *ServiceImpl) FullSync(ctx context.Context) error {
 // Sync to  from url-sync data to in-memory url-store based on diff
 func (s *ServiceImpl) Sync(ctx context.Context) error {
 
-	LatestVersionSync, err := s.GetLatestVersion(ctx)
+	latestVersion, err := s.GetLatestVersion(ctx)
 	if err != nil {
 		return err
 	}
 
-	if s.LatestVersion == int(LatestVersionSync) {
+	if s.Version == latestVersion {
 		return nil
 	}
 
-	if s.LatestVersion != 0 && LatestVersionSync == 0 {
-		s.Store = NewStore()
-		s.LatestVersion = int(LatestVersionSync)
+	if s.Version != 0 && latestVersion == 0 {
+		s.Store.Reset()
+		s.Version = latestVersion
 		return nil
 	}
 
-	if s.LatestVersion > int(LatestVersionSync) {
+	if s.Version > latestVersion {
 		return s.FullSync(ctx)
 	}
 
-	if s.LatestVersion < int(LatestVersionSync) {
-		listDiffSync, err := s.GetListDiff(ctx, int64(s.LatestVersion))
+	if s.Version < latestVersion {
+		listDiffSync, err := s.GetListDiff(ctx, s.Version)
 		if err != nil {
 			return err
 		}
 		s.setStore(listDiffSync)
 
 		oldestSync := listDiffSync[len(listDiffSync)-1]
-		s.LatestVersion = int(oldestSync.Version)
+		s.Version = oldestSync.Version
 	}
 
 	return nil

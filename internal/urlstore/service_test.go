@@ -2,7 +2,6 @@ package urlstore_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -29,13 +28,13 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 	mockRepo := urlstore_mock.NewMockSyncRepo(ctrl)
 
 	urlStoreServer := &urlstore.ServiceImpl{
-		SyncRepo:      mockRepo,
-		Store:         urlstore.NewStore(),
-		LatestVersion: -1,
+		SyncRepo: mockRepo,
+		Store:    urlstore.NewStore(),
+		Version:  -1,
 	}
 
 	t.Run("WHEN first sync (s.LatestVersion < latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, -1, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(-1), urlStoreServer.Version)
 		require.Equal(t, 0, urlStoreServer.Store.Count())
 
 		ctx := context.Background()
@@ -45,12 +44,12 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
-		require.Equal(t, 2, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(2), urlStoreServer.Version)
 		require.Equal(t, 1, urlStoreServer.Store.Count())
 	})
 
 	t.Run("WHEN second sync (s.LatestVersion == latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, 2, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(2), urlStoreServer.Version)
 		require.Equal(t, 1, urlStoreServer.Store.Count())
 
 		ctx := context.Background()
@@ -59,12 +58,12 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
-		require.Equal(t, 2, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(2), urlStoreServer.Version)
 		require.Equal(t, 1, urlStoreServer.Store.Count())
 	})
 
 	t.Run("WHEN third sync (s.LatestVersion < latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, 2, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(2), urlStoreServer.Version)
 		require.Equal(t, 1, urlStoreServer.Store.Count())
 
 		ctx := context.Background()
@@ -74,12 +73,12 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
-		require.Equal(t, 4, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(4), urlStoreServer.Version)
 		require.Equal(t, 2, urlStoreServer.Store.Count())
 	})
 
 	t.Run("WHEN outlier case (s.LatestVersion > latestVersionSyncDB)", func(t *testing.T) {
-		require.Equal(t, 4, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(4), urlStoreServer.Version)
 		require.Equal(t, 2, urlStoreServer.Store.Count())
 
 		ctx := context.Background()
@@ -89,14 +88,14 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
-		fmt.Println(urlStoreServer.Store.String())
+		// fmt.Println(urlStoreServer.Store.String())
 
-		require.Equal(t, 2, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(2), urlStoreServer.Version)
 		require.Equal(t, 1, urlStoreServer.Store.Count())
 	})
 
 	t.Run("WHEN outlier case (no data in url_sync)", func(t *testing.T) {
-		require.Equal(t, 2, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(2), urlStoreServer.Version)
 		require.Equal(t, 1, urlStoreServer.Store.Count())
 
 		ctx := context.Background()
@@ -105,7 +104,7 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 		err := urlStoreServer.Sync(ctx)
 		require.NoError(t, err)
 
-		require.Equal(t, 0, urlStoreServer.LatestVersion)
+		require.Equal(t, int64(0), urlStoreServer.Version)
 		require.Equal(t, 0, urlStoreServer.Store.Count())
 	})
 
