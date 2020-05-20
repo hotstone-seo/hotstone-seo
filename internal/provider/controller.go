@@ -5,7 +5,9 @@ import (
 	"net/http"
 
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
+	"github.com/hotstone-seo/hotstone-seo/server/service"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 	"go.uber.org/dig"
 )
@@ -14,10 +16,11 @@ import (
 type Controller struct {
 	dig.In
 	Service
+	service.ClientKeyService
 }
 
-// SetRoute provider
-func (p *Controller) SetRoute(e *echo.Echo) {
+// Route provider
+func (p *Controller) Route(e *echo.Group) {
 	e.GET("p/match", p.MatchRule)
 	e.GET("p/fetch-tags", p.FetchTag)
 }
@@ -51,6 +54,18 @@ func (p *Controller) FetchTag(c echo.Context) (err error) {
 	}
 
 	return c.JSON(http.StatusOK, tags)
+}
+
+// AuthMiddleware do key-based auth
+func (p *Controller) AuthMiddleware() echo.MiddlewareFunc {
+	return middleware.KeyAuthWithConfig(middleware.KeyAuthConfig{
+		Validator: func(clientKey string, e echo.Context) (bool, error) {
+			if p.ClientKeyService.IsValidClientKey(e.Request().Context(), clientKey) {
+				return true, nil
+			}
+			return false, nil
+		},
+	})
 }
 
 func httpError(err error) *echo.HTTPError {

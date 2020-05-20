@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/dchest/uniuri"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
@@ -17,6 +19,7 @@ import (
 // @mock
 type ClientKeyService interface {
 	repository.ClientKeyRepo
+	IsValidClientKey(ctx context.Context, clientKey string) bool
 }
 
 // ClientKeyServiceImpl is implementation of ClientKeyService
@@ -116,8 +119,38 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 	return nil
 }
 
+// IsValidClientKey check validity of client key
+func (s *ClientKeyServiceImpl) IsValidClientKey(ctx context.Context, clientKey string) bool {
+	prefix, _, hashKey, err := extractClientKey(clientKey)
+	if err != nil {
+		return false
+	}
+
+	cKey, err := s.FindOne(ctx, dbkit.Equal("prefix", prefix), dbkit.Equal("key", hashKey))
+	if err != nil || cKey == nil {
+		return false
+	}
+
+	return true
+}
+
 func generateClientKey() (prefix, key, keyHashed string) {
 	newPrefix := uniuri.NewLen(7)
 	newKey := uniuri.NewLen(32)
 	return newPrefix, newKey, fmt.Sprintf("%x", sha256.Sum256([]byte(newKey)))
+}
+
+func extractClientKey(clientKey string) (prefix, key, hashKey string, err error) {
+	errNotValidKey := errors.New("Not valid key")
+	k := strings.Split(clientKey, ".")
+	if len(k) != 2 {
+		return "", "", "", errNotValidKey
+	}
+	prefix = k[0]
+	key = k[1]
+	if len(prefix) != 7 && len(key) != 32 {
+		return "", "", "", errNotValidKey
+	}
+	hashKey = fmt.Sprintf("%x", sha256.Sum256([]byte(key)))
+	return
 }
