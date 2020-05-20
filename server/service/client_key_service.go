@@ -121,12 +121,12 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 
 // IsValidClientKey check validity of client key
 func (s *ClientKeyServiceImpl) IsValidClientKey(ctx context.Context, clientKey string) bool {
-	prefix, _, hashKey, err := extractClientKey(clientKey)
+	prefix, _, keyHashed, err := extractClientKey(clientKey)
 	if err != nil {
 		return false
 	}
 
-	cKey, err := s.FindOne(ctx, dbkit.Equal("prefix", prefix), dbkit.Equal("key", hashKey))
+	cKey, err := s.FindOne(ctx, dbkit.Equal("prefix", prefix), dbkit.Equal("key", keyHashed))
 	if err != nil || cKey == nil {
 		return false
 	}
@@ -140,7 +140,7 @@ func generateClientKey() (prefix, key, keyHashed string) {
 	return newPrefix, newKey, fmt.Sprintf("%x", sha256.Sum256([]byte(newKey)))
 }
 
-func extractClientKey(clientKey string) (prefix, key, hashKey string, err error) {
+func extractClientKey(clientKey string) (prefix, key, keyHashed string, err error) {
 	errNotValidKey := errors.New("Not valid key")
 	k := strings.Split(clientKey, ".")
 	if len(k) != 2 {
@@ -151,6 +151,6 @@ func extractClientKey(clientKey string) (prefix, key, hashKey string, err error)
 	if len(prefix) != 7 && len(key) != 32 {
 		return "", "", "", errNotValidKey
 	}
-	hashKey = fmt.Sprintf("%x", sha256.Sum256([]byte(key)))
+	keyHashed = fmt.Sprintf("%x", sha256.Sum256([]byte(key)))
 	return
 }
