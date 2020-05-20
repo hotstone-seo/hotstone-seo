@@ -6,8 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/dchest/uniuri"
+	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
 	log "github.com/sirupsen/logrus"
@@ -15,21 +17,28 @@ import (
 	"go.uber.org/dig"
 )
 
-// ClientKeyService contain logic for ClientKeyController
-// @mock
-type ClientKeyService interface {
-	repository.ClientKeyRepo
-	IsValidClientKey(ctx context.Context, clientKey string) bool
-}
+const (
+	insertMetricTimeout = 30 * time.Second
+)
 
-// ClientKeyServiceImpl is implementation of ClientKeyService
-type ClientKeyServiceImpl struct {
-	dig.In
-	repository.ClientKeyRepo
-	dbtxn.Transactional
-	AuditTrailService AuditTrailService
-	HistoryService    HistoryService
-}
+type (
+	// ClientKeyService contain logic for ClientKeyController
+	// @mock
+	ClientKeyService interface {
+		repository.ClientKeyRepo
+		IsValidClientKey(ctx context.Context, clientKey string) bool
+	}
+
+	// ClientKeyServiceImpl is implementation of ClientKeyService
+	ClientKeyServiceImpl struct {
+		dig.In
+		repository.ClientKeyRepo
+		analyt.ClientKeyAnalytRepo
+		dbtxn.Transactional
+		AuditTrailService AuditTrailService
+		HistoryService    HistoryService
+	}
+)
 
 // NewClientKeyService return new instance of ClientKeyService
 // @constructor
@@ -131,7 +140,14 @@ func (s *ClientKeyServiceImpl) IsValidClientKey(ctx context.Context, clientKey s
 		return false
 	}
 
+	go s.onValid(cKey.ID)
 	return true
+}
+
+func (s *ClientKeyServiceImpl) onValid(clientKeyID int64) {
+	ctx, cancel := context.WithTimeout(context.Background(), insertMetricTimeout)
+	defer cancel()
+	s.ClientKeyAnalytRepo.Insert(ctx, clientKeyID)
 }
 
 func generateClientKey() (prefix, key, keyHashed string) {

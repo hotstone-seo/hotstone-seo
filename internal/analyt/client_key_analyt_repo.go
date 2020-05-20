@@ -15,6 +15,7 @@ type (
 	// @mock
 	ClientKeyAnalytRepo interface {
 		ClientKeyLastUsed(ctx context.Context, clientKeyID string) (lastUsed *time.Time, err error)
+		Insert(context.Context, int64) (err error)
 	}
 
 	// ClientKeyAnalytRepoImpl is implementation of ClientKeyAnalytRepo
@@ -40,6 +41,22 @@ func (r *ClientKeyAnalytRepoImpl) ClientKeyLastUsed(ctx context.Context, clientK
 		RunWith(dbtxn.DB(ctx, r))
 
 	if err = builder.QueryRowContext(ctx).Scan(&lastTimeUsed); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
+	}
+	return
+}
+
+// Insert metrics_client_key
+func (r *ClientKeyAnalytRepoImpl) Insert(ctx context.Context, clientKeyID int64) (err error) {
+	builder := sq.
+		Insert("metrics_client_key").
+		Columns("client_key_id").
+		Values(clientKeyID).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.DB(ctx, r))
+
+	if _, err = builder.ExecContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
 	}

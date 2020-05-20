@@ -48,3 +48,17 @@ func (mr *MockClientKeyAnalytRepoMockRecorder) ClientKeyLastUsed(arg0, arg1 inte
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ClientKeyLastUsed", reflect.TypeOf((*MockClientKeyAnalytRepo)(nil).ClientKeyLastUsed), arg0, arg1)
 }
+
+// Insert mocks base method
+func (m *MockClientKeyAnalytRepo) Insert(arg0 context.Context, arg1 int64) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Insert indicates an expected call of Insert
+func (mr *MockClientKeyAnalytRepoMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockClientKeyAnalytRepo)(nil).Insert), arg0, arg1)
+}
