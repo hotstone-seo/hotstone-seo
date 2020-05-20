@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, Button, Checkbox,
 } from 'antd';
-import { createRoleType } from 'api/roleType';
+import { createRoleType, updateRoleType } from 'api/roleType';
 import { fetchModules } from 'api/module';
 
 const CheckboxGroup = Checkbox.Group;
@@ -21,13 +21,16 @@ function RoleTypeForm({ roleType, handleSubmit }) {
   const [plainOptions, setPlainOptions] = useState([]);
   const [modulesList, setModuleList] = useState([]);
 
-  async function fetchModulesList() {
+  async function fetchModulesList(roleTyp) {
     try {
       const modulesAPI = await fetchModules();
       let mn = null;
       let noModule = 0;
       const plainOptionsTemp = [];
       const arrMenu = [];
+      let arrMenuWhenEdit = [];
+      let mnEdit = null;
+      let idxArrEdit = 0;
       if (modulesAPI) {
         Object.keys(modulesAPI).forEach((key) => {
           mn = modulesAPI[key];
@@ -42,17 +45,38 @@ function RoleTypeForm({ roleType, handleSubmit }) {
           tempMenu.name = mn.name;
           tempMenu.id = mn.id;
           arrMenu.push(tempMenu);
+
+          // set default checkbox value in edit form
+          if (roleTyp.id !== undefined) {
+            arrMenuWhenEdit = roleTyp.modules.modules;
+
+            Object.keys(arrMenuWhenEdit).forEach((keyEdit) => {
+              mnEdit = arrMenuWhenEdit[keyEdit];
+              if (mn.name === mnEdit.name) {
+                defaultCheckedList[idxArrEdit] = mn.label;
+                idxArrEdit += 1;
+              }
+            });
+          }
         });
         setPlainOptions(plainOptionsTemp);
         setModuleList(arrMenu);
+
+        // set default checkbox value in edit form
+        if (roleTyp.id !== undefined) {
+          setCheckedList({
+            checkedList: defaultCheckedList,
+          });
+        }
       }
     } catch (error) {
       console.log(error, 'error getModules');
     }
   }
+
   useEffect(() => {
     form.setFieldsValue(roleType);
-    fetchModulesList();
+    fetchModulesList(roleType);
   }, [roleType, form]);
 
   const handleonChange = (checkedListNew) => {
@@ -74,7 +98,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
       checkAll: e.target.checked,
     });
   };
-  const onSubmit = createRoleType;
+  const onSubmit = roleType.id === undefined ? createRoleType : updateRoleType;
 
   const onFinish = (values) => {
     const checkListFinal = checkedList.checkedList;
