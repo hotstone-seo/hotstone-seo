@@ -89,7 +89,7 @@ func (r *RuleRepoImpl) FindOne(ctx context.Context, id int64) (rule *Rule, err e
 		From("rule_data_sources").
 		Where(sq.Eq{"rule_id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if rows, err = dsBuilder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
@@ -185,7 +185,7 @@ func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int6
 				"rule_id",
 				"data_source_id",
 			).
-			RunWith(dbtxn.BaseRunner(ctx, r)).
+			RunWith(dbtxn.DB(ctx, r)).
 			PlaceholderFormat(sq.Dollar)
 
 		for _, dataSourceID := range rule.DataSourceIDs {
@@ -241,7 +241,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 		Delete("rule_data_sources").
 		Where(sq.Eq{"rule_id": rule.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.BaseRunner(ctx, r))
+		RunWith(dbtxn.DB(ctx, r))
 
 	if _, err = deletePrevDataSource.ExecContext(ctx); err != nil {
 		r.CancelMe(ctx, err)
@@ -254,7 +254,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 				"rule_id",
 				"data_source_id",
 			).
-			RunWith(dbtxn.BaseRunner(ctx, r)).
+			RunWith(dbtxn.DB(ctx, r)).
 			PlaceholderFormat(sq.Dollar)
 
 		for _, dataSourceID := range rule.DataSourceIDs {
