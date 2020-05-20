@@ -143,7 +143,7 @@ func generateClientKey() (prefix, key, keyHashed string) {
 // ExtractClientKey returns prefix, raw key, and hashed key from client key
 func ExtractClientKey(clientKey string) (prefix, key, keyHashed string, err error) {
 	errNotValidKey := errors.New("Not valid key")
-	k := strings.Split(clientKey, ".")
+	k := strings.Split(strings.TrimSpace(clientKey), ".")
 	if len(k) != 2 {
 		return "", "", "", errNotValidKey
 	}
