@@ -18,8 +18,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/repository"
+	"github.com/hotstone-seo/hotstone-seo/server/repository_mock"
 	"github.com/hotstone-seo/hotstone-seo/server/service"
 )
 
@@ -27,8 +27,8 @@ var (
 	ds666_id int64 = 666
 
 	rule999 = &repository.Rule{
-		ID:           999,
-		DataSourceID: &ds666_id,
+		ID:            999,
+		DataSourceIDs: []int64{ds666_id},
 	}
 	tags_rule999_en_US = []*repository.Tag{
 		{
@@ -88,7 +88,7 @@ var (
 		},
 	}
 
-	rule777_noDS       = &repository.Rule{ID: 777}
+	rule777_noDS       = &repository.Rule{ID: 777, DataSourceIDs: make([]int64, 0)}
 	tags_rule777_en_US = []*repository.Tag{
 		{ID: 71},
 		{ID: 72},
@@ -208,7 +208,7 @@ func TestProviderService2(t *testing.T) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return([]*repository.StructuredData{}, nil)
-				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(nil, fmt.Errorf("some-error"))
+				dsmock.EXPECT().FindOne(gomock.Any(), ds666_id).Return(nil, fmt.Errorf("some-error"))
 			},
 			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: "DataSource: some-error",
@@ -219,7 +219,7 @@ func TestProviderService2(t *testing.T) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return([]*repository.StructuredData{}, nil)
-				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(&repository.DataSource{URL: "bad-url"}, nil)
+				dsmock.EXPECT().FindOne(gomock.Any(), ds666_id).Return(&repository.DataSource{URL: "bad-url"}, nil)
 			},
 			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: "Call: Get \"bad-url\": unsupported protocol scheme \"\"",
@@ -231,7 +231,7 @@ func TestProviderService2(t *testing.T) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return([]*repository.StructuredData{}, nil)
-				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(&repository.DataSource{URL: tt.server.URL}, nil)
+				dsmock.EXPECT().FindOne(gomock.Any(), ds666_id).Return(&repository.DataSource{URL: tt.server.URL}, nil)
 			},
 			vals:        parseQuery(`_rule=999&_locale=en_US`),
 			expectedErr: "JSON: invalid character 'b' looking for beginning of object key string",
@@ -249,7 +249,7 @@ func TestProviderService2(t *testing.T) {
 				rulemock.EXPECT().FindOne(ctx, int64(999)).Return(rule999, nil)
 				tagmock.EXPECT().FindByRuleAndLocale(ctx, int64(999), "en_US").Return(tags_rule999_en_US, nil)
 				strdatamock.EXPECT().FindByRule(ctx, int64(999)).Return(strdata_rule999, nil)
-				dsmock.EXPECT().FindOne(ctx, ds666_id).Return(ds, nil)
+				dsmock.EXPECT().FindOne(gomock.Any(), ds666_id).Return(ds, nil)
 			},
 			vals:     parseQuery(`_rule=999&_locale=en_US`),
 			expected: itags_rule999_en_US,
