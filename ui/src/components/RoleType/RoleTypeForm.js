@@ -4,10 +4,10 @@ import {
   Form, Input, Button, Checkbox,
 } from 'antd';
 import { createRoleType } from 'api/roleType';
+import { fetchModules } from 'api/module';
 
 const CheckboxGroup = Checkbox.Group;
-const plainOptions = ['Rules', 'Data Sources', 'Mismatched Rule', 'Analytic', 'Simulation', 'Audit Trail', 'User', 'Role User'];
-const defaultCheckedList = ['Mismatched Rule', 'Analytic', 'Simulation'];
+const defaultCheckedList = [];
 
 function RoleTypeForm({ roleType, handleSubmit }) {
   const [form] = Form.useForm();
@@ -18,9 +18,41 @@ function RoleTypeForm({ roleType, handleSubmit }) {
     checkAll: false,
     checkboxArray: [],
   });
+  const [plainOptions, setPlainOptions] = useState([]);
+  const [modulesList, setModuleList] = useState([]);
 
+  async function fetchModulesList() {
+    try {
+      const modulesAPI = await fetchModules();
+      let mn = null;
+      let noModule = 0;
+      const plainOptionsTemp = [];
+      const arrMenu = [];
+      if (modulesAPI) {
+        Object.keys(modulesAPI).forEach((key) => {
+          mn = modulesAPI[key];
+
+          // for label in UI
+          plainOptionsTemp[noModule] = mn.label;
+          noModule += 1;
+
+          // for checking before process to API create Role
+          const tempMenu = [];
+          tempMenu.label = mn.label;
+          tempMenu.name = mn.name;
+          tempMenu.id = mn.id;
+          arrMenu.push(tempMenu);
+        });
+        setPlainOptions(plainOptionsTemp);
+        setModuleList(arrMenu);
+      }
+    } catch (error) {
+      console.log(error, 'error getModules');
+    }
+  }
   useEffect(() => {
     form.setFieldsValue(roleType);
+    fetchModulesList();
   }, [roleType, form]);
 
   const handleonChange = (checkedListNew) => {
@@ -45,12 +77,18 @@ function RoleTypeForm({ roleType, handleSubmit }) {
   const onSubmit = createRoleType;
 
   const onFinish = (values) => {
-    // TODO : re-check still on progress
-    const arrayInsert = {
-      pattern: checkedList.checkedList
-    };
-    values.modules = JSON.stringify(arrayInsert);
-
+    const checkListFinal = checkedList.checkedList;
+    const modulesValue = [];
+    Object.keys(modulesList).forEach((keyList) => {
+      Object.keys(checkListFinal).forEach((key) => {
+        if (checkListFinal[key] === modulesList[keyList].label) {
+          const arr = {};
+          arr.name = modulesList[keyList].name;
+          modulesValue.push(arr);
+        }
+      });
+    });
+    values.modules = modulesValue;
     onSubmit(values)
       .then((response) => {
         handleSubmit(response);
@@ -72,7 +110,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
 
       <Form.Item
         name="name"
-        label="Role"
+        label="Role Name"
         rules={[{ required: true, message: 'Please input the role' }]}
       >
         <Input data-testid="input-role-type" placeholder="Role Name" maxLength="200" />
@@ -80,7 +118,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
 
       <Form.Item
         name="modules"
-        label="Module Access"
+        label="Role Privilege"
       >
         <div>
           <div className="site-checkbox-all-wrapper">
