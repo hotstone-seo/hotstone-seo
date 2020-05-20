@@ -19,10 +19,15 @@ type Controller struct {
 	service.ClientKeyService
 }
 
-// Route provider
-func (p *Controller) Route(e *echo.Group) {
-	e.GET("p/match", p.MatchRule)
-	e.GET("p/fetch-tags", p.FetchTag)
+// SetRoute for provider
+func (p *Controller) SetRoute(e *echo.Echo) {
+	g := e.Group("/p")
+	g.Use(p.AuthMiddleware())
+	g.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
+	g.Use(middleware.Recover())
+
+	g.GET("p/match", p.MatchRule)
+	g.GET("p/fetch-tags", p.FetchTag)
 }
 
 // MatchRule to match rule

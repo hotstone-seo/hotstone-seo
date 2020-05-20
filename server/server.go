@@ -9,6 +9,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/internal/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/profiler"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 
@@ -22,7 +23,7 @@ type server struct {
 	*config.Config
 
 	API      API
-	Provider Provider
+	Provider provider.Controller
 	Profiler profiler.Controller
 
 	Postgres *sql.DB
