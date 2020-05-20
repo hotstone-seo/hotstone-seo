@@ -148,7 +148,7 @@ func ExtractClientKey(clientKey string) (prefix, key, keyHashed string, err erro
 	}
 	prefix = k[0]
 	key = k[1]
-	if len(prefix) != 7 && len(key) != 32 {
+	if len(prefix) != 7 || len(key) != 32 {
 		return "", "", "", errNotValidKey
 	}
 	keyHashed = fmt.Sprintf("%x", sha256.Sum256([]byte(key)))

@@ -46,14 +46,16 @@ func Test_ExtractClientKey(t *testing.T) {
 		{name: "Bad format", clientKey: "123.8888.34", wantErr: true},
 		{name: "No prefix", clientKey: ".777", wantErr: true},
 		{name: "No key", clientKey: "123.", wantErr: true},
+		{name: "Prefix length != 7", clientKey: "12345.12345678901234567890123456789012", wantErr: true},
+		{name: "Key length != 32", clientKey: "1234567.1234567890", wantErr: true},
+		{name: "Valid", clientKey: "1234567.12345678901234567890123456789012",
+			wantErr: false, wantPrefix: "1234567", wantKey: "12345678901234567890123456789012",
+			wantKeyHashed: "e1b85b27d6bcb05846c18e6a48f118e89f0c0587140de9fb3359f8370d0dba08",},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotPrefix, gotKey, gotKeyHashed, err := service.ExtractClientKey(tt.clientKey)
-			if !tt.wantErr {
-				require.NoError(t, err)
-			}
-			// require.Equal(t, tt.wantErr, tt.err)
+			require.Equal(t, tt.wantErr, err != nil)
 			require.Equal(t, tt.wantPrefix, gotPrefix)
 			require.Equal(t, tt.wantKey, gotKey)
 			require.Equal(t, tt.wantKeyHashed, gotKeyHashed)
