@@ -121,7 +121,7 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 
 // IsValidClientKey check validity of client key
 func (s *ClientKeyServiceImpl) IsValidClientKey(ctx context.Context, clientKey string) bool {
-	prefix, _, keyHashed, err := extractClientKey(clientKey)
+	prefix, _, keyHashed, err := ExtractClientKey(clientKey)
 	if err != nil {
 		return false
 	}
@@ -140,7 +140,7 @@ func generateClientKey() (prefix, key, keyHashed string) {
 	return newPrefix, newKey, fmt.Sprintf("%x", sha256.Sum256([]byte(newKey)))
 }
 
-func extractClientKey(clientKey string) (prefix, key, keyHashed string, err error) {
+func ExtractClientKey(clientKey string) (prefix, key, keyHashed string, err error) {
 	errNotValidKey := errors.New("Not valid key")
 	k := strings.Split(clientKey, ".")
 	if len(k) != 2 {
