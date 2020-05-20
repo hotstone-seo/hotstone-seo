@@ -140,6 +140,7 @@ func generateClientKey() (prefix, key, keyHashed string) {
 	return newPrefix, newKey, fmt.Sprintf("%x", sha256.Sum256([]byte(newKey)))
 }
 
+// ExtractClientKey returns prefix, raw key, and hashed key from client key
 func ExtractClientKey(clientKey string) (prefix, key, keyHashed string, err error) {
 	errNotValidKey := errors.New("Not valid key")
 	k := strings.Split(clientKey, ".")
