@@ -8,8 +8,18 @@ import (
 )
 
 type (
-	// Service contain logic of url
-	Service struct {
+
+	// Service contain logic for url store api
+	// @mock
+	Service interface {
+		FullSync(ctx context.Context) error
+		Sync(ctx context.Context) error
+		Insert(id int64, key string)
+		Update(id int64, key string)
+	}
+
+	// ServiceImpl contain logic of url
+	ServiceImpl struct {
 		dig.In
 		SyncRepo
 		Store
@@ -17,10 +27,10 @@ type (
 	}
 )
 
-// NewService return new instance of Service
+// NewService return new instance of ServiceImpl
 // @constructor
-func NewService(svc SyncRepo, store Store) *Service {
-	return &Service{
+func NewService(svc SyncRepo, store Store) Service {
+	return &ServiceImpl{
 		SyncRepo:      svc,
 		Store:         store,
 		LatestVersion: 0,
@@ -28,7 +38,7 @@ func NewService(svc SyncRepo, store Store) *Service {
 }
 
 // FullSync to sync from url-sync data to in-memory url-store from beginning
-func (s *Service) FullSync(ctx context.Context) error {
+func (s *ServiceImpl) FullSync(ctx context.Context) error {
 
 	list, err := s.Find(ctx)
 	if err != nil {
@@ -49,7 +59,7 @@ func (s *Service) FullSync(ctx context.Context) error {
 }
 
 // Sync to  from url-sync data to in-memory url-store based on diff
-func (s *Service) Sync(ctx context.Context) error {
+func (s *ServiceImpl) Sync(ctx context.Context) error {
 
 	LatestVersionSync, err := s.GetLatestVersion(ctx)
 	if err != nil {
@@ -85,18 +95,18 @@ func (s *Service) Sync(ctx context.Context) error {
 }
 
 // Insert to store
-func (s *Service) Insert(id int64, key string) {
+func (s *ServiceImpl) Insert(id int64, key string) {
 	data := strconv.FormatInt(id, 10)
 	s.Store.Add(id, key, data)
 }
 
 // Update store
-func (s *Service) Update(id int64, key string) {
+func (s *ServiceImpl) Update(id int64, key string) {
 	s.Delete(id)
 	s.Insert(id, key)
 }
 
-func (s *Service) setStore(listSync []*Sync) {
+func (s *ServiceImpl) setStore(listSync []*Sync) {
 	for _, sync := range listSync {
 		switch sync.Operation {
 		case "INSERT":

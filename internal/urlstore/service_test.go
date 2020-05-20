@@ -28,8 +28,8 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 	mockRepo := urlstore_mock.NewMockSyncRepo(ctrl)
 
-	urlStoreServer := &urlstore.Service{
-		SyncRepo:   mockRepo,
+	urlStoreServer := &urlstore.ServiceImpl{
+		SyncRepo:      mockRepo,
 		Store:         urlstore.NewStore(),
 		LatestVersion: -1,
 	}
@@ -113,28 +113,28 @@ func TestURLStoreServerImpl_Sync(t *testing.T) {
 
 func TestURLStoreImpl_Match(t *testing.T) {
 	t.Run("WHEN static url not exist", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		id, varMap := svc.Get("/gopher/doc.jpg")
 		require.Nil(t, id)
 		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN static url exist", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		id, varMap := svc.Get("/gopher/doc.png")
 		require.Equal(t, "6", id)
 		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN param url not exist", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		id, varMap := svc.Get("/users/def/abc")
 		require.Nil(t, id)
 		require.True(t, varMap.Empty())
 	})
 
 	t.Run("WHEN param url exist", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		id, varMap := svc.Get("/users/def/123")
 		require.Equal(t, "12", id)
 		require.Equal(t, 2, len(varMap.Keys()))
@@ -143,7 +143,7 @@ func TestURLStoreImpl_Match(t *testing.T) {
 	})
 
 	t.Run("WHEN more than 1 param exist in a subpath", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		id, varMap := svc.Get("/flight/src-abc-dst-def")
 		require.Equal(t, "15", id)
 		require.Equal(t, 2, len(varMap.Keys()))
@@ -154,7 +154,7 @@ func TestURLStoreImpl_Match(t *testing.T) {
 
 func TestURLStoreImpl_AddURL(t *testing.T) {
 	t.Run("WHEN new static url added AND id not exist before", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		url := "/gopher/doc.jpg"
 		svc.Insert(20, url)
 		id, varMap := svc.Get(url)
@@ -164,7 +164,7 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 	})
 
 	t.Run("WHEN new static url added AND id exist before THEN double data added (with same id)", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		svc.Insert(20, "/gopher/old.jpg")
 		svc.Insert(20, "/gopher/new.img")
 
@@ -181,7 +181,7 @@ func TestURLStoreImpl_AddURL(t *testing.T) {
 
 func TestURLStoreImpl_UpdateURL(t *testing.T) {
 	t.Run("WHEN existing static url updated with different url", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		svc.Update(6, "/gopher/updated.bmp")
 
 		id, varMap := svc.Get("/gopher/old.png")
@@ -197,7 +197,7 @@ func TestURLStoreImpl_UpdateURL(t *testing.T) {
 
 func TestURLStoreImpl_DeleteURL(t *testing.T) {
 	t.Run("WHEN existing static url deleted", func(t *testing.T) {
-		svc := &urlstore.Service{Store: buildStore()}
+		svc := &urlstore.ServiceImpl{Store: buildStore()}
 		require.Equal(t, true, svc.Delete(6))
 
 		id, varMap := svc.Get("/gopher/doc.png")

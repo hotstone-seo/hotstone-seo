@@ -12,7 +12,7 @@ import (
 // Worker responsible manage the task
 type Worker struct {
 	dig.In
-	*Service
+	Service
 }
 
 // Start the task
