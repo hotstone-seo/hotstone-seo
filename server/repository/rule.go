@@ -159,7 +159,7 @@ func (r *RuleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 
 // Insert rule
 func (r *RuleRepoImpl) Insert(ctx context.Context, rule Rule) (lastInsertID int64, err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	query := sq.Insert("rules").
 		Columns(
 			"name",
@@ -217,7 +217,7 @@ func (r *RuleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update rule
 func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
-	defer r.CommitMe(&ctx)()
+	defer r.BeginTxn(&ctx)()
 	builder := sq.StatementBuilder.
 		Update("rules").
 		Set("name", rule.Name).
