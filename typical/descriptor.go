@@ -12,9 +12,11 @@ import (
 
 var (
 	mainDB = typpg.Init(&typpg.Settings{
-		DockerName: "ht-main",
-		DBName:     "hotstone",
-		UtilityCmd: "main-db",
+		DockerName:   "ht-main",
+		DBName:       "hotstone",
+		UtilityCmd:   "main-db",
+		MigrationSrc: "scripts/main-db/migration",
+		SeedSrc:      "scripts/main-db/seed",
 	})
 
 	analytDB = typpg.Init(&typpg.Settings{
@@ -24,8 +26,8 @@ var (
 		DockerName:   "ht-analyt",
 		DBName:       "hotstone_analyt",
 		UtilityCmd:   "analyt-db",
-		MigrationSrc: "scripts/analyt/migration",
-		SeedSrc:      "scripts/analyt/seed",
+		MigrationSrc: "scripts/analyt-db/migration",
+		SeedSrc:      "scripts/analyt-db/seed",
 		Port:         5433,
 	})
 
