@@ -1,4 +1,4 @@
-package api
+package app
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 
 	logrusmiddleware "github.com/bakatz/echo-logrusmiddleware"
 	"github.com/go-redis/redis"
+	"github.com/hotstone-seo/hotstone-seo/internal/api"
 	"github.com/hotstone-seo/hotstone-seo/internal/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/profiler"
 	"github.com/hotstone-seo/hotstone-seo/internal/provider"
@@ -22,7 +23,7 @@ type server struct {
 	dig.In
 	*config.Config
 
-	API      API
+	API      api.API
 	Provider provider.Controller
 	Profiler profiler.Controller
 

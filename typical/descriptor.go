@@ -1,7 +1,7 @@
 package typical
 
 import (
-	"github.com/hotstone-seo/hotstone-seo/internal/api"
+	"github.com/hotstone-seo/hotstone-seo/internal/app"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/typical-go/typical-go/pkg/typdocker"
 	"github.com/typical-go/typical-go/pkg/typgo"
@@ -36,7 +36,7 @@ var (
 		Name:    "hotstone-seo",
 		Version: "0.0.1",
 
-		EntryPoint: api.Main,
+		EntryPoint: app.Main,
 
 		Layouts: []string{
 			"pkg",
@@ -44,7 +44,7 @@ var (
 		},
 
 		Configurer: typgo.Configurers{
-			api.Configuration(),
+			app.Configuration(),
 			oauth2google.Configuration(),
 			typredis.Configuration(redis),
 			typpg.Configuration(mainDB),
