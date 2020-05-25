@@ -1,13 +1,15 @@
+@authorization = Bearer:Otdu1qe.A5eKbNQ3Kj26kiTQmwWAmzaQGk5uYmSI
+
 ### Match Rule
 
 http://localhost:8089/p/match?_path=/events/bingbang
-
+Authorization: {{authorization}}
 ### Tags
 
 http://localhost:8089/p/fetch-tags?_rule=1&_locale=en_US
-
+Authorization: {{authorization}}
 
 ### Tags with params
 
 http://localhost:8089/p/fetch-tags?_rule=4&_locale=en_US&eventName=bigbang
-
+Authorization: {{authorization}}
