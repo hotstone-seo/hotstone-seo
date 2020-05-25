@@ -25,8 +25,8 @@ type ClientKey struct {
 // ClientKeyRepo to handle client_keys entity
 // @mock
 type ClientKeyRepo interface {
-	FindOne(context.Context, ...dbkit.FindOption) (*ClientKey, error)
-	Find(context.Context, ...dbkit.FindOption) ([]*ClientKey, error)
+	FindOne(context.Context, ...dbkit.SelectOption) (*ClientKey, error)
+	Find(context.Context, ...dbkit.SelectOption) ([]*ClientKey, error)
 	Insert(context.Context, ClientKey) (ClientKey, error)
 	Delete(context.Context, int64) error
 	Update(context.Context, ClientKey) error
@@ -45,7 +45,7 @@ func NewClientKeyRepo(impl ClientKeyRepoImpl) ClientKeyRepo {
 }
 
 // FindOne clientKey
-func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, opts ...dbkit.FindOption) (e *ClientKey, err error) {
+func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, opts ...dbkit.SelectOption) (e *ClientKey, err error) {
 	builder := sq.
 		Select(
 			"id",
@@ -60,7 +60,7 @@ func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, opts ...dbkit.FindOptio
 		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
-		if builder, err = opt.CompileQuery(builder); err != nil {
+		if builder, err = opt.CompileSelect(builder); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}
@@ -83,7 +83,7 @@ func (r *ClientKeyRepoImpl) FindOne(ctx context.Context, opts ...dbkit.FindOptio
 }
 
 // Find client_keys
-func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list []*ClientKey, err error) {
+func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (list []*ClientKey, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select(
@@ -99,7 +99,7 @@ func (r *ClientKeyRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) 
 		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
-		if builder, err = opt.CompileQuery(builder); err != nil {
+		if builder, err = opt.CompileSelect(builder); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}

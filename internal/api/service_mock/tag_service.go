@@ -50,7 +50,7 @@ func (mr *MockTagServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Cal
 }
 
 // Find mocks base method
-func (m *MockTagService) Find(arg0 context.Context, arg1 ...dbkit.FindOption) ([]*repository.Tag, error) {
+func (m *MockTagService) Find(arg0 context.Context, arg1 ...dbkit.SelectOption) ([]*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
 	for _, a := range arg1 {

@@ -28,7 +28,7 @@ type StructuredData struct {
 // @mock
 type StructuredDataRepo interface {
 	FindOne(context.Context, int64) (*StructuredData, error)
-	Find(context.Context, ...dbkit.FindOption) ([]*StructuredData, error)
+	Find(context.Context, ...dbkit.SelectOption) ([]*StructuredData, error)
 	Insert(context.Context, StructuredData) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, StructuredData) error
@@ -81,7 +81,7 @@ func (r *StructuredDataRepoImpl) FindOne(ctx context.Context, id int64) (e *Stru
 }
 
 // Find select a list of Structured data by filtering options
-func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list []*StructuredData, err error) {
+func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (list []*StructuredData, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select(
@@ -97,7 +97,7 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOpt
 		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
-		if builder, err = opt.CompileQuery(builder); err != nil {
+		if builder, err = opt.CompileSelect(builder); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}

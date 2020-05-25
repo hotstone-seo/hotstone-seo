@@ -18,19 +18,19 @@ var (
 	jsonServerPort = getEnv("JSON_SERVER_PORT", "3021")
 )
 
-func jsonServer(b *typgo.BuildTool) []*cli.Command {
+func jsonServer(b *typgo.BuildCli) []*cli.Command {
 	return []*cli.Command{
 		{
 			Name:    "json-server",
 			Aliases: []string{"j"},
-			Action:  b.ActionFunc("JSON-SERVER", startJSONServer),
+			Action:  b.ActionFn("JSON-SERVER", startJSONServer),
 		},
 	}
 }
 
 func startJSONServer(c *typgo.Context) (err error) {
 	jsonServer := "json-server"
-	ctx := c.Cli.Context
+	ctx := c.Ctx()
 	if !buildkit.AvailableCommand(ctx, jsonServer) {
 		c.Infof("Install %s", jsonServer)
 		cmd := exec.CommandContext(ctx, "npm", "install", "-g", jsonServer)

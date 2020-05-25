@@ -50,7 +50,7 @@ func (mr *MockClientKeyRepoMockRecorder) Delete(arg0, arg1 interface{}) *gomock.
 }
 
 // Find mocks base method
-func (m *MockClientKeyRepo) Find(arg0 context.Context, arg1 ...dbkit.FindOption) ([]*repository.ClientKey, error) {
+func (m *MockClientKeyRepo) Find(arg0 context.Context, arg1 ...dbkit.SelectOption) ([]*repository.ClientKey, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
 	for _, a := range arg1 {
@@ -70,7 +70,7 @@ func (mr *MockClientKeyRepoMockRecorder) Find(arg0 interface{}, arg1 ...interfac
 }
 
 // FindOne mocks base method
-func (m *MockClientKeyRepo) FindOne(arg0 context.Context, arg1 ...dbkit.FindOption) (*repository.ClientKey, error) {
+func (m *MockClientKeyRepo) FindOne(arg0 context.Context, arg1 ...dbkit.SelectOption) (*repository.ClientKey, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
 	for _, a := range arg1 {

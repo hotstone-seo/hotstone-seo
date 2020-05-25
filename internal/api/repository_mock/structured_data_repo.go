@@ -50,7 +50,7 @@ func (mr *MockStructuredDataRepoMockRecorder) Delete(arg0, arg1 interface{}) *go
 }
 
 // Find mocks base method
-func (m *MockStructuredDataRepo) Find(arg0 context.Context, arg1 ...dbkit.FindOption) ([]*repository.StructuredData, error) {
+func (m *MockStructuredDataRepo) Find(arg0 context.Context, arg1 ...dbkit.SelectOption) ([]*repository.StructuredData, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0}
 	for _, a := range arg1 {

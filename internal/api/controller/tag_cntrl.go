@@ -53,7 +53,7 @@ func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 func (c *TagCntrl) Find(ce echo.Context) (err error) {
 	var (
 		tags []*repository.Tag
-		opts []dbkit.FindOption
+		opts []dbkit.SelectOption
 		ctx  = ce.Request().Context()
 	)
 

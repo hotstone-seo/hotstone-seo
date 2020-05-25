@@ -140,10 +140,10 @@ github.com/stretchr/testify v1.5.1 h1:nOGnQDM7FYENwehXlg/kFVnos3rEvtKTjRvOWSzb6H
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/thoas/go-funk v0.6.0 h1:ryxN0pa9FnI7YHgODdLIZ4T6paCZJt8od6N9oRztMxM=
 github.com/thoas/go-funk v0.6.0/go.mod h1:+IWnUfUmFO1+WVYQWQtIJHeRRdaIyyYglZN7xzUPe4Q=
-github.com/typical-go/typical-go v0.9.54 h1:LUEMFC5omV9vsXHuocFIVcZzrOTIbsASLLTu+EkcJAA=
-github.com/typical-go/typical-go v0.9.54/go.mod h1:np08BSBfNE4H0D0dTjSx9n8j9WoU/j6yumCQwFEoKII=
-github.com/typical-go/typical-rest-server v0.8.30 h1:PkFzyk8W8H1/R7m7Ii/m1SAb8vttE2RNO2Je0+xRI18=
-github.com/typical-go/typical-rest-server v0.8.30/go.mod h1:3lyCJ6z2Se+NvDqI0JKm+5kRZDV9qc+mGZAaUK9bAhg=
+github.com/typical-go/typical-go v0.9.55 h1:/woVkrAlO5jqr/e0G9DuGDI06+STzu9hbqVBymNDaE4=
+github.com/typical-go/typical-go v0.9.55/go.mod h1:np08BSBfNE4H0D0dTjSx9n8j9WoU/j6yumCQwFEoKII=
+github.com/typical-go/typical-rest-server v0.8.31 h1:cjYFVPSZ1ve1yd5x5VARzlXdowX3fShaMTVhxhhuaEU=
+github.com/typical-go/typical-rest-server v0.8.31/go.mod h1:hl3rTmUKwoi3KIcEX1Pc8Dgjuc9fY9Y0VvoY0gPK8j4=
 github.com/urfave/cli/v2 v2.2.0 h1:JTTnM6wKzdA0Jqodd966MVj4vWbbquZykeX1sKbe2C4=
 github.com/urfave/cli/v2 v2.2.0/go.mod h1:SE9GqnLQmjVa0iPEY0f1w3ygNIYcIJ0OKPMoW2caLfQ=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=

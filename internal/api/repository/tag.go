@@ -29,7 +29,7 @@ type Tag struct {
 // @mock
 type TagRepo interface {
 	FindOne(context.Context, int64) (*Tag, error)
-	Find(context.Context, ...dbkit.FindOption) ([]*Tag, error)
+	Find(context.Context, ...dbkit.SelectOption) ([]*Tag, error)
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Tag) error
@@ -87,7 +87,7 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 }
 
 // Find tags
-func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list []*Tag, err error) {
+func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (list []*Tag, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select(
@@ -105,7 +105,7 @@ func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.FindOption) (list 
 		RunWith(dbtxn.DB(ctx, r))
 
 	for _, opt := range opts {
-		if builder, err = opt.CompileQuery(builder); err != nil {
+		if builder, err = opt.CompileSelect(builder); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}

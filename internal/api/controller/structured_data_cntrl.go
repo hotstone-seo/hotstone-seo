@@ -51,7 +51,7 @@ func (c *StructuredDataCntrl) Create(ctx echo.Context) (err error) {
 func (c *StructuredDataCntrl) Find(ce echo.Context) (err error) {
 	var (
 		structDatas []*repository.StructuredData
-		opts        []dbkit.FindOption
+		opts        []dbkit.SelectOption
 		ctx         = ce.Request().Context()
 	)
 	if ruleID := ce.QueryParam("rule_id"); ruleID != "" {

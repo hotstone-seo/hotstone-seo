@@ -13,7 +13,7 @@ const (
 	uiDir = "ui"
 )
 
-func uiUtility(*typgo.BuildTool) []*cli.Command {
+func uiUtility(*typgo.BuildCli) []*cli.Command {
 	return []*cli.Command{
 		{
 			Name:  "npm",
