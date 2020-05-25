@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
@@ -86,6 +86,7 @@ func (r *RoleTypeServiceImpl) Update(ctx context.Context, req RoleTypeRequest) (
 	}
 	var data repository.RoleType
 	data = repository.RoleType{
+		ID:   req.ID,
 		Name: req.Name,
 		Modules: map[string]interface{}{
 			"modules": mapModules(ctx, req.Modules, r),

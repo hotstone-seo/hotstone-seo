@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  PageHeader, Row, Col, message,
+  PageHeader, Row, Col,
 } from 'antd';
 import { RoleTypeForm } from 'components/RoleType';
-import { getRoleType, updateRoleType } from 'api/roleType';
+import { getRoleType } from 'api/roleType';
 
 function EditRoleType() {
   const { id } = useParams();
@@ -29,19 +29,12 @@ function EditRoleType() {
   }, [roleTypeID, history]);
 
   const handleEdit = (newRoleType) => {
-    // TO DO : re-check . Still not get value module access
-    updateRoleType(newRoleType)
-      .then(() => {
-        history.push('/role-type', {
-          message: {
-            level: 'success',
-            content: `Role ${newRoleType.name} is successfully edit`,
-          },
-        });
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
+    history.push('/role-type', {
+      message: {
+        level: 'success',
+        content: `Role ${roleType.name} is successfully edit`,
+      },
+    });
   };
 
   return (

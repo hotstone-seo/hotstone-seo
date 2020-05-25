@@ -85,25 +85,22 @@ func (c *RoleTypeCntrl) Create(ctx echo.Context) (err error) {
 // Update role_type
 func (c *RoleTypeCntrl) Update(ctx echo.Context) (err error) {
 	var (
-		req      service.RoleTypeRequest
-		roleType repository.RoleType
+		req service.RoleTypeRequest
 	)
 	ctx0 := ctx.Request().Context()
-	if err = ctx.Bind(&roleType); err != nil {
+	if err = ctx.Bind(&req); err != nil {
 		return err
 	}
-	if roleType.ID <= 0 {
+	if req.ID <= 0 {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
-	}
-	if err = roleType.Validate(); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	if err = c.RoleTypeService.Update(ctx0, req); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{
-		Message: fmt.Sprintf("Success update role type #%d", roleType.ID),
+		Message: fmt.Sprintf("Success update role type #%d", req.ID),
 	})
+
 }
 
 // Delete role_type
