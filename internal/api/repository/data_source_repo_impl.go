@@ -41,12 +41,15 @@ func (r *DataSourceRepoImpl) FindOne(ctx context.Context, id int64) (e *DataSour
 }
 
 // Find data_source
-func (r *DataSourceRepoImpl) Find(ctx context.Context) (list []*DataSource, err error) {
+func (r *DataSourceRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*DataSource, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id", "name", "url", "updated_at", "created_at").
 		From("data_sources").
 		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
+
+	builder = ComposePagination(builder, paginationParam)
+
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return

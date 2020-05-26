@@ -18,7 +18,7 @@ type DataSource struct {
 // @mock
 type DataSourceRepo interface {
 	FindOne(context.Context, int64) (*DataSource, error)
-	Find(context.Context) ([]*DataSource, error)
+	Find(ctx context.Context, paginationParam PaginationParam) ([]*DataSource, error)
 	Insert(context.Context, DataSource) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, DataSource) error
