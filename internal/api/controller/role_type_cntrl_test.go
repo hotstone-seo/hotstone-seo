@@ -160,38 +160,3 @@ func TestRoleTypeController_Delete(t *testing.T) {
 		require.Equal(t, "{\"message\":\"Success delete role type #100\"}\n", rr.Body.String())
 	})
 }
-
-func TestRoleTypeController_FindOneByName(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	roleTypeSvcMock := service_mock.NewMockRoleTypeService(ctrl)
-	roleTypeCntrl := controller.RoleTypeCntrl{
-		RoleTypeService: roleTypeSvcMock,
-	}
-
-	t.Run("WHEN invalid json format", func(t *testing.T) {
-		_, err := echotest.DoPOST(roleTypeCntrl.FindOneByName, "/", `invalid`, nil)
-		require.EqualError(t, err, "code=400, message=Syntax error: offset=1, error=invalid character 'i' looking for beginning of value")
-	})
-
-	t.Run("WHEN role is not register yet", func(t *testing.T) {
-		roleTypeSvcMock.EXPECT().FindOneByName(gomock.Any(), "admin").Return(nil, sql.ErrNoRows)
-		_, err := echotest.DoPOST(roleTypeCntrl.FindOneByName, "/", `{ "name": "admin"}`, nil)
-		require.EqualError(t, err, "code=500, message=sql: no rows in result set")
-	})
-
-	t.Run("WHEN successful", func(t *testing.T) {
-		roleTypeSvcMock.EXPECT().FindOneByName(gomock.Any(), "admin").Return(
-			&repository.RoleType{
-				ID:      100,
-				Name:    "admin",
-				Modules: make(map[string]interface{}, 0),
-			},
-			nil,
-		)
-		rr, err := echotest.DoPOST(roleTypeCntrl.FindOneByName, "/", `{ "name": "admin", "role_type_id":1}`, nil)
-		require.NoError(t, err)
-		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":100,\"name\":\"admin\",\"modules\":{},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
-	})
-}

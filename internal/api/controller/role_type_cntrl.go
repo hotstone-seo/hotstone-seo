@@ -25,7 +25,6 @@ func (c *RoleTypeCntrl) Route(e *echo.Group) {
 	e.POST("/role_types", c.Create)
 	e.PUT("/role_types", c.Update)
 	e.DELETE("/role_types/:id", c.Delete)
-	e.POST("/role_types_is_exists", c.FindOneByName)
 }
 
 // Find all role_type
@@ -116,26 +115,4 @@ func (c *RoleTypeCntrl) Delete(ctx echo.Context) (err error) {
 	return ctx.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Success delete role type #%d", id),
 	})
-}
-
-// FindOneByName role_type
-func (c *RoleTypeCntrl) FindOneByName(ec echo.Context) (err error) {
-	var roleType *repository.RoleType
-	ctx0 := ec.Request().Context()
-	if err = ec.Bind(&roleType); err != nil {
-		return err
-	}
-	if err = roleType.Validate(); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	roleType, err = c.RoleTypeService.FindOneByName(ctx0, roleType.Name)
-	if err == sql.ErrNoRows {
-		roleType = nil
-	}
-
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-
-	return ec.JSON(http.StatusOK, roleType)
 }
