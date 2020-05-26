@@ -19,18 +19,18 @@ type (
 		settingCntrlBuilder
 	}
 	settingCntrlBuilder struct {
-		settingSvcFn func(*service_mock.MockSettingService)
+		settingSvcFn func(*service_mock.MockSettingSvc)
 	}
 )
 
 func (b *settingCntrlBuilder) build(mock *gomock.Controller) *controller.SettingCntrl {
-	mockSvc := service_mock.NewMockSettingService(mock)
+	mockSvc := service_mock.NewMockSettingSvc(mock)
 	if b.settingSvcFn != nil {
 		b.settingSvcFn(mockSvc)
 	}
 
 	return &controller.SettingCntrl{
-		SettingService: mockSvc,
+		SettingSvc: mockSvc,
 	}
 }
 
@@ -46,7 +46,7 @@ func TestSettingCntrl_Find(t *testing.T) {
 				ExpectedBody: "[{\"key\":\"key-1\",\"value\":\"value-1\"},{\"key\":\"key-2\",\"value\":\"value-2\"}]\n",
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
-				settingSvcFn: func(svc *service_mock.MockSettingService) {
+				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
 					svc.EXPECT().Find(gomock.Any()).Return([]*repository.Setting{
 						{Key: "key-1", Value: "value-1"},
 						{Key: "key-2", Value: "value-2"},
@@ -64,7 +64,7 @@ func TestSettingCntrl_Find(t *testing.T) {
 				ExpectedErr: "code=500, message=some-error",
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
-				settingSvcFn: func(svc *service_mock.MockSettingService) {
+				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
 					svc.EXPECT().Find(gomock.Any()).Return(nil, errors.New("some-error"))
 				},
 			},
@@ -94,7 +94,7 @@ func TestSettingCntrl_FindOne(t *testing.T) {
 				ExpectedErr: "code=500, message=some-error",
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
-				settingSvcFn: func(svc *service_mock.MockSettingService) {
+				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
 					svc.EXPECT().FindOne(gomock.Any(), "some-key").Return(nil, errors.New("some-error"))
 				},
 			},
@@ -113,7 +113,7 @@ func TestSettingCntrl_FindOne(t *testing.T) {
 				ExpectedBody: "{\"key\":\"key-1\",\"value\":\"value-1\"}\n",
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
-				settingSvcFn: func(svc *service_mock.MockSettingService) {
+				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
 					svc.EXPECT().FindOne(gomock.Any(), "some-key").Return(&repository.Setting{
 						Key:   "key-1",
 						Value: "value-1",
@@ -149,7 +149,7 @@ func TestSettingCntrl_Update(t *testing.T) {
 				ExpectedErr: "code=500, message=some-error",
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
-				settingSvcFn: func(svc *service_mock.MockSettingService) {
+				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
 					svc.EXPECT().
 						Update(
 							gomock.Any(),
@@ -177,7 +177,7 @@ func TestSettingCntrl_Update(t *testing.T) {
 				ExpectedCode: http.StatusOK,
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
-				settingSvcFn: func(svc *service_mock.MockSettingService) {
+				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
 					svc.EXPECT().
 						Update(
 							gomock.Any(),

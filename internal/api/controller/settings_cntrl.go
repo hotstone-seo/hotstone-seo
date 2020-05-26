@@ -12,7 +12,7 @@ import (
 // SettingCntrl is controller to rule entity
 type SettingCntrl struct {
 	dig.In
-	service.SettingService
+	service.SettingSvc
 }
 
 // Route to define API Route
@@ -24,7 +24,7 @@ func (c *SettingCntrl) Route(e *echo.Group) {
 
 // Find api to get all setting
 func (c *SettingCntrl) Find(ec echo.Context) (err error) {
-	settings, err := c.SettingService.Find(ec.Request().Context())
+	settings, err := c.SettingSvc.Find(ec.Request().Context())
 	if err != nil {
 		return httpError(err)
 	}
@@ -33,7 +33,7 @@ func (c *SettingCntrl) Find(ec echo.Context) (err error) {
 
 // FindOne api to get one setting
 func (c *SettingCntrl) FindOne(ec echo.Context) (err error) {
-	setting, err := c.SettingService.FindOne(
+	setting, err := c.SettingSvc.FindOne(
 		ec.Request().Context(),
 		ec.Param("key"),
 	)
@@ -51,7 +51,7 @@ func (c *SettingCntrl) Update(ec echo.Context) (err error) {
 		return err
 	}
 
-	if err = c.SettingService.Update(
+	if err = c.SettingSvc.Update(
 		ec.Request().Context(),
 		ec.Param("key"),
 		&setting,
