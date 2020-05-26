@@ -32,7 +32,7 @@ func (c *RoleTypeCntrl) Find(ctx echo.Context) (err error) {
 	var roleTypes []*repository.RoleType
 	ctx0 := ctx.Request().Context()
 
-	validCols := []string{"id", "name", "updated_at", "created_at"}
+	validCols := []string{"id", "name", "modules", "updated_at", "created_at"}
 	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
 	if roleTypes, err = c.RoleTypeService.Find(ctx0, paginationParam); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

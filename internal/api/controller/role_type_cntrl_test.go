@@ -30,9 +30,13 @@ func TestRoleTypeController_Find(t *testing.T) {
 		roleTypeSvcMock.EXPECT().Find(gomock.Any(), gomock.Any()).Return(
 			[]*repository.RoleType{
 				&repository.RoleType{
-					ID:      100,
-					Name:    "admin",
-					Modules: make(map[string]interface{}, 0),
+					ID:   100,
+					Name: "admin",
+					Modules: map[string]interface{}{
+						"name":    "name",
+						"path":    "link-web",
+						"pattern": "name*",
+					},
 				},
 			},
 			nil,
@@ -40,7 +44,7 @@ func TestRoleTypeController_Find(t *testing.T) {
 		rr, err := echotest.DoGET(roleTypeCntrl.Find, "/", nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "[{\"id\":100,\"name\":\"admin\",\"modules\":{},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
+		require.Equal(t, "[{\"id\":100,\"name\":\"admin\",\"modules\":{\"name\":\"name\",\"path\":\"link-web\",\"pattern\":\"name*\"},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
 	})
 }
 

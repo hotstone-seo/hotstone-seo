@@ -7,7 +7,7 @@ import { createRoleType, updateRoleType } from 'api/roleType';
 import { fetchModules } from 'api/module';
 
 const CheckboxGroup = Checkbox.Group;
-const defaultCheckedList = [];
+let defaultCheckedList = [];
 
 function RoleTypeForm({ roleType, handleSubmit }) {
   const [form] = Form.useForm();
@@ -31,6 +31,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
       let arrMenuWhenEdit = [];
       let mnEdit = null;
       let idxArrEdit = 0;
+      defaultCheckedList = [];
       if (modulesAPI) {
         Object.keys(modulesAPI).forEach((key) => {
           mn = modulesAPI[key];
@@ -46,7 +47,7 @@ function RoleTypeForm({ roleType, handleSubmit }) {
           tempMenu.id = mn.id;
           arrMenu.push(tempMenu);
 
-          // set default checkbox value in edit form
+          // get default checkbox value for edit form
           if (roleTyp.id !== undefined) {
             arrMenuWhenEdit = roleTyp.modules.modules;
 
@@ -62,12 +63,10 @@ function RoleTypeForm({ roleType, handleSubmit }) {
         setPlainOptions(plainOptionsTemp);
         setModuleList(arrMenu);
 
-        // set default checkbox value in edit form
-        if (roleTyp.id !== undefined) {
-          setCheckedList({
-            checkedList: defaultCheckedList,
-          });
-        }
+        // set default checkbox value in edit form & add form
+        setCheckedList({
+          checkedList: defaultCheckedList,
+        });
       }
     } catch (error) {
       console.log(error, 'error getModules');
