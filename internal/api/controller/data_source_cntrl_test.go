@@ -7,8 +7,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/controller"
-	"github.com/hotstone-seo/hotstone-seo/internal/api/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/service_mock"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 )
@@ -46,12 +46,12 @@ func TestDataSourceController_Find(t *testing.T) {
 		DataSourceService: dataSourceSvcMock,
 	}
 	t.Run("WHEN retrieved error", func(t *testing.T) {
-		dataSourceSvcMock.EXPECT().Find(gomock.Any()).Return(nil, errors.New("retrieve error"))
+		dataSourceSvcMock.EXPECT().Find(gomock.Any(), gomock.Any()).Return(nil, errors.New("retrieve error"))
 		_, err := echotest.DoGET(dataSourceCntrl.Find, "/", nil)
 		require.EqualError(t, err, "code=500, message=retrieve error")
 	})
 	t.Run("WHEN successful", func(t *testing.T) {
-		dataSourceSvcMock.EXPECT().Find(gomock.Any()).Return(
+		dataSourceSvcMock.EXPECT().Find(gomock.Any(), gomock.Any()).Return(
 			[]*repository.DataSource{
 				&repository.DataSource{
 					ID:   100,

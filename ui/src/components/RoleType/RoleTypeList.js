@@ -60,6 +60,7 @@ function RoleTypeList(props) {
       dataIndex: 'name',
       key: 'name',
       className: 'col-name',
+      width: '20%',
       sorter: true,
       sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
       ...useTableFilterProps('name'),
@@ -72,16 +73,24 @@ function RoleTypeList(props) {
       dataIndex: 'modules',
       key: 'modules',
       className: 'col-name',
-      width: '10%',
+      width: '35%',
       render: (text, record) => {
         const arrMenu = record.modules.modules;
         let privList = '';
+        let mnLabel = '';
         Object.keys(arrMenu).forEach((key) => {
           const mnName = arrMenu[key];
-          if (privList === '') {
-            privList = privList.concat(mnName.name.charAt(0).toUpperCase() + mnName.name.slice(1));
+          const isAnyLabel = mnName.label !== undefined;
+          mnLabel = '';
+          if (isAnyLabel) {
+            mnLabel = mnName.label;
           } else {
-            privList = privList.concat(',').concat(mnName.name.charAt(0).toUpperCase() + mnName.name.slice(1));
+            mnLabel = mnName.name.charAt(0).toUpperCase() + mnName.name.slice(1);
+          }
+          if (privList === '') {
+            privList = privList.concat(mnLabel);
+          } else {
+            privList = privList.concat(', ').concat(mnLabel);
           }
         });
         return <div>{privList}</div>;

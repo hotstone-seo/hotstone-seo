@@ -160,6 +160,7 @@ func mapModules(ctx context.Context, mItem []ModuleItem, r *RoleTypeServiceImpl)
 			"path":    moduleMs.Path,
 			"name":    tempMod.Module,
 			"pattern": moduleMs.Pattern,
+			"label":   moduleMs.Label,
 		}
 	}
 	return faqsMap

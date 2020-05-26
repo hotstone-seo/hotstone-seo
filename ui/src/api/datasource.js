@@ -1,3 +1,4 @@
+import axios from 'axios';
 import client from './client';
 
 export function fetchDataSources() {
@@ -11,6 +12,15 @@ export function fetchDataSources() {
 export function getDataSource(id) {
   return client.get(`/data_sources/${id}`)
     .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function getDataSourcesByIDs(ids) {
+  const reqURLs = ids.map((id) => `/data_sources/${id}`);
+  return axios.all(reqURLs.map((reqURL) => client.get(reqURL)))
+    .then((responses) => responses.map((response) => response.data))
     .catch((error) => {
       throw error;
     });

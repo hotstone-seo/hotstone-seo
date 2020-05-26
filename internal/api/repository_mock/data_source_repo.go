@@ -49,18 +49,18 @@ func (mr *MockDataSourceRepoMockRecorder) Delete(arg0, arg1 interface{}) *gomock
 }
 
 // Find mocks base method
-func (m *MockDataSourceRepo) Find(arg0 context.Context) ([]*repository.DataSource, error) {
+func (m *MockDataSourceRepo) Find(arg0 context.Context, arg1 repository.PaginationParam) ([]*repository.DataSource, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0)
+	ret := m.ctrl.Call(m, "Find", arg0, arg1)
 	ret0, _ := ret[0].([]*repository.DataSource)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find
-func (mr *MockDataSourceRepoMockRecorder) Find(arg0 interface{}) *gomock.Call {
+func (mr *MockDataSourceRepoMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockDataSourceRepo)(nil).Find), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockDataSourceRepo)(nil).Find), arg0, arg1)
 }
 
 // FindOne mocks base method

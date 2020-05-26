@@ -48,21 +48,35 @@ function RoleTypeForm({ roleType, handleSubmit }) {
           arrMenu.push(tempMenu);
 
           // get default checkbox value for edit form
-          if (roleTyp.id !== undefined) {
+          /* if (roleTyp.id !== undefined) {
             arrMenuWhenEdit = roleTyp.modules.modules;
 
             Object.keys(arrMenuWhenEdit).forEach((keyEdit) => {
               mnEdit = arrMenuWhenEdit[keyEdit];
+
               if (mn.name === mnEdit.name) {
                 defaultCheckedList[idxArrEdit] = mn.label;
                 idxArrEdit += 1;
               }
             });
-          }
+          } */
         });
         setPlainOptions(plainOptionsTemp);
         setModuleList(arrMenu);
 
+        // get default checkbox value for edit form
+        if (roleTyp.id !== undefined) {
+          arrMenuWhenEdit = roleTyp.modules.modules;
+
+          Object.keys(arrMenuWhenEdit).forEach((keyEdit) => {
+            mnEdit = arrMenuWhenEdit[keyEdit];
+            const isAnyLabel = mnEdit.label !== undefined;
+            if (isAnyLabel) {
+              defaultCheckedList[idxArrEdit] = mnEdit.label;
+              idxArrEdit += 1;
+            }
+          });
+        }
         // set default checkbox value in edit form & add form
         setCheckedList({
           checkedList: defaultCheckedList,
