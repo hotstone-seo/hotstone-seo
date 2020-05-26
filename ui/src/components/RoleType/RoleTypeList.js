@@ -1,4 +1,4 @@
- 
+
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -66,6 +66,26 @@ function RoleTypeList(props) {
       render: (text) => (
         <div>{text}</div>
       ),
+    },
+    {
+      title: 'Privilege',
+      dataIndex: 'modules',
+      key: 'modules',
+      className: 'col-name',
+      width: '10%',
+      render: (text, record) => {
+        const arrMenu = record.modules.modules;
+        let privList = '';
+        Object.keys(arrMenu).forEach((key) => {
+          const mnName = arrMenu[key];
+          if (privList === '') {
+            privList = privList.concat(mnName.name.charAt(0).toUpperCase() + mnName.name.slice(1));
+          } else {
+            privList = privList.concat(',').concat(mnName.name.charAt(0).toUpperCase() + mnName.name.slice(1));
+          }
+        });
+        return <div>{privList}</div>;
+      },
     },
     {
       title: 'Last Updated',

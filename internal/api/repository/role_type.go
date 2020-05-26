@@ -75,7 +75,7 @@ func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, 
 func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*RoleType, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("id", "name", "updated_at", "created_at").
+		Select("id", "name", "modules", "updated_at", "created_at").
 		From("role_type").
 		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
@@ -86,7 +86,7 @@ func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationP
 	list = make([]*RoleType, 0)
 	for rows.Next() {
 		var e0 RoleType
-		if err = rows.Scan(&e0.ID, &e0.Name, &e0.UpdatedAt, &e0.CreatedAt); err != nil {
+		if err = rows.Scan(&e0.ID, &e0.Name, &e0.Modules, &e0.UpdatedAt, &e0.CreatedAt); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}
