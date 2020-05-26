@@ -50,7 +50,10 @@ func (c *DataSourceCntrl) Create(ctx echo.Context) (err error) {
 func (c *DataSourceCntrl) Find(ctx echo.Context) (err error) {
 	var dataSource []*repository.DataSource
 	ctx0 := ctx.Request().Context()
-	if dataSource, err = c.DataSourceService.Find(ctx0); err != nil {
+
+	validCols := []string{"id", "name", "url", "updated_at", "created_at"}
+	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
+	if dataSource, err = c.DataSourceService.Find(ctx0, paginationParam); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, dataSource)
