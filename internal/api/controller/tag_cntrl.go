@@ -8,7 +8,7 @@ import (
 
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
-	"github.com/hotstone-seo/hotstone-seo/internal/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	"github.com/labstack/echo"
