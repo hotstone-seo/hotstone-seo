@@ -29,8 +29,8 @@ type (
 
 // NewSettingSvc return new instance of setting
 // @ctor
-func NewSettingSvc() SettingSvc {
-	return &SettingSvcImpl{}
+func NewSettingSvc(impl SettingSvcImpl) SettingSvc {
+	return &impl
 }
 
 // Find all setting

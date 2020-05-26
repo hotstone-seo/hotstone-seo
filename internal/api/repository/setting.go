@@ -50,8 +50,8 @@ type (
 
 // NewSettingRepo return new instance of SettingRepo
 // @ctor
-func NewSettingRepo() SettingRepo {
-	return &SettingRepoImpl{}
+func NewSettingRepo(impl SettingRepoImpl) SettingRepo {
+	return &impl
 }
 
 // Find setting
