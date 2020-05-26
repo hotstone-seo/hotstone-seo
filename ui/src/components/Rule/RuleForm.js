@@ -65,16 +65,19 @@ function RuleForm(props) {
       </Form.Item>
 
       <Form.Item
-        name="data_source_id"
+        name="data_source_ids"
         label="Data Source"
       >
         <Select
+          mode="multiple"
           data-testid="select-data-source-id"
           showSearch
           allowClear
           placeholder="Select Data Source"
           style={{ width: 150 }}
-          filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          filterOption={(input, option) => (
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          )}
         >
           {dataSources.map(({ id, name }) => (
             <Option value={id} key={id}>{name}</Option>
@@ -106,7 +109,7 @@ RuleForm.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string,
     url_pattern: PropTypes.string,
-    data_source_id: PropTypes.number,
+    data_source_ids: PropTypes.arrayOf(PropTypes.number),
   }),
 
   dataSources: PropTypes.arrayOf(
