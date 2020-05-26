@@ -40,21 +40,12 @@ export function deleteRoleType(id) {
     });
 }
 
-export function getRoleTypeIsExists(roleType) {
-  return client.get(`/role_types_is_exists/${roleType}`)
-    .then((response) => response.data)
-    .catch((error) => {
-      throw error;
-    });
-}
-
 const RoleTypeAPI = {
   fetch: fetchRoleTypes,
   get: getRoleType,
   create: createRoleType,
   update: updateRoleType,
   delete: deleteRoleType,
-  getIsExist: getRoleTypeIsExists,
 };
 
 export default RoleTypeAPI;
