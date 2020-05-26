@@ -4,27 +4,35 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 
+	sq "github.com/Masterminds/squirrel"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
 var (
+	// SettingTable is table name for setting entity
+	SettingTable = "settings"
 	// SettingCols is columns of setting
 	SettingCols = struct {
-		Key   string
-		Value string
+		Key       string
+		Value     string
+		UpdatedAt string
 	}{
-		Key:   "key",
-		Value: "value",
+		Key:       "key",
+		Value:     "value",
+		UpdatedAt: "updated_at",
 	}
 )
 
 type (
 	// Setting entity
 	Setting struct {
-		Key   string `json:"key"`
-		Value string `json:"value" validate:"required"`
+		Key       string    `json:"key"`
+		Value     string    `json:"value" validate:"required"`
+		UpdatedAt time.Time `json:"updated_at"`
 	}
 
 	// SettingRepo to get Setting entity
@@ -48,8 +56,48 @@ func NewSettingRepo() SettingRepo {
 }
 
 // Find setting
-func (*SettingRepoImpl) Find(context.Context, ...dbkit.SelectOption) ([]*Setting, error) {
-	return nil, errors.New("Not implemented")
+func (s *SettingRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) ([]*Setting, error) {
+	var err error
+
+	builder := sq.StatementBuilder.
+		Select(
+			SettingCols.Key,
+			SettingCols.Value,
+			SettingCols.UpdatedAt,
+		).
+		From(SettingTable).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.DB(ctx, s))
+
+	for _, opt := range opts {
+		if builder, err = opt.CompileSelect(builder); err != nil {
+			return nil, err
+		}
+	}
+
+	rows, err := builder.QueryContext(ctx)
+	if err != nil {
+		dbtxn.SetError(ctx, err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	settings := make([]*Setting, 0)
+
+	for rows.Next() {
+		var setting Setting
+		if err = rows.Scan(
+			&setting.Key,
+			&setting.Value,
+			&setting.UpdatedAt,
+		); err != nil {
+			dbtxn.SetError(ctx, err)
+			return nil, err
+		}
+		settings = append(settings, &setting)
+	}
+
+	return settings, nil
 }
 
 // Update setting
