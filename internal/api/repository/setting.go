@@ -24,7 +24,7 @@ type (
 	// Setting entity
 	Setting struct {
 		Key   string `json:"key"`
-		Value string `json:"value"`
+		Value string `json:"value" validate:"required"`
 	}
 
 	// SettingRepo to get Setting entity

@@ -155,10 +155,59 @@ func TestSetting_FindOne(t *testing.T) {
 }
 
 func TestSetting_Update(t *testing.T) {
-	testcases := []settingUpdate{}
+	testcases := []settingUpdate{
+		{
+			testName:    "key is missing",
+			key:         "",
+			expectedErr: "Validation: key is missing",
+		},
+		{
+			testName:    "value is missing",
+			key:         "some-key",
+			setting:     &repository.Setting{},
+			expectedErr: "Key: 'Setting.Value' Error:Field validation for 'Value' failed on the 'required' tag",
+		},
+		{
+			key:     "some-key",
+			setting: &repository.Setting{Key: "some-key", Value: "some-value"},
+			onSettingSvc: func(repo *repository_mock.MockSettingRepo) {
+				repo.EXPECT().
+					Update(
+						gomock.Any(),
+						&repository.Setting{Key: "some-key", Value: "some-value"},
+						dbkit.Equal("key", "some-key"),
+					).
+					Return(errors.New("some-error"))
+			},
+			expectedErr: "some-error",
+		},
+		{
+			key:     "some-key",
+			setting: &repository.Setting{Key: "some-key", Value: "some-value"},
+			onSettingSvc: func(repo *repository_mock.MockSettingRepo) {
+				repo.EXPECT().
+					Update(
+						gomock.Any(),
+						&repository.Setting{Key: "some-key", Value: "some-value"},
+						dbkit.Equal("key", "some-key"),
+					).
+					Return(nil)
+			},
+		},
+	}
 
 	for _, tt := range testcases {
 		t.Run(tt.testName, func(t *testing.T) {
+			svc, ctrl := createSettingSvc(t, tt.onSettingSvc)
+			defer ctrl.Finish()
+
+			err := svc.Update(context.Background(), tt.key, tt.setting)
+			if tt.expectedErr != "" {
+				require.EqualError(t, err, tt.expectedErr)
+				return
+			}
+
+			require.NoError(t, err)
 		})
 	}
 }

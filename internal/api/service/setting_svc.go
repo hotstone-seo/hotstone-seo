@@ -3,12 +3,12 @@ package service
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 	"go.uber.org/dig"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type (
@@ -60,7 +60,15 @@ func (s *SettingSvcImpl) FindOne(ctx context.Context, key string) (*repository.S
 }
 
 // Update specific setting by key
-func (*SettingSvcImpl) Update(ctx context.Context, key string, setting *repository.Setting) error {
-	// TODO:
-	return errors.New("Not implemented")
+func (s *SettingSvcImpl) Update(ctx context.Context, key string, setting *repository.Setting) error {
+	if key == "" {
+		return errvalid.New("key is missing")
+	}
+	if err := validator.New().Struct(setting); err != nil {
+		return err
+	}
+	return s.SettingRepo.Update(ctx,
+		setting,
+		dbkit.Equal(repository.SettingCols.Key, key),
+	)
 }
