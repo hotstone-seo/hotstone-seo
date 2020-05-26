@@ -43,7 +43,7 @@ func TestSettingCntrl_Find(t *testing.T) {
 					Target: "/",
 				},
 				ExpectedCode: http.StatusOK,
-				ExpectedBody: "[{\"key\":\"key-1\",\"value\":\"value-1\"},{\"key\":\"key-2\",\"value\":\"value-2\"}]\n",
+				ExpectedBody: "[{\"key\":\"key-1\",\"value\":\"value-1\",\"updated_at\":\"0001-01-01T00:00:00Z\"},{\"key\":\"key-2\",\"value\":\"value-2\",\"updated_at\":\"0001-01-01T00:00:00Z\"}]\n",
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
 				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
@@ -110,7 +110,7 @@ func TestSettingCntrl_FindOne(t *testing.T) {
 				},
 
 				ExpectedCode: http.StatusOK,
-				ExpectedBody: "{\"key\":\"key-1\",\"value\":\"value-1\"}\n",
+				ExpectedBody: "{\"key\":\"key-1\",\"value\":\"value-1\",\"updated_at\":\"0001-01-01T00:00:00Z\"}\n",
 			},
 			settingCntrlBuilder: settingCntrlBuilder{
 				settingSvcFn: func(svc *service_mock.MockSettingSvc) {
