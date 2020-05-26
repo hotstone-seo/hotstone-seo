@@ -7,7 +7,7 @@ VALUES
     (5, 'simulation', 'simulation', 'simulation*', 'Simulation Page'),
     (6, 'audittrail', 'audit-trail', 'audit*', 'Audit Trail'),
     (7, 'user', 'users', 'users*', 'Users'),
-    (8, 'roletype', 'role-type', 'role-types*', 'User Role'),
+    (8, 'roletype', 'role-type', 'role-type*', 'User Role'),
     (9, 'module', 'modules', 'modules*', 'Modules'),
     (10, 'clientkey', 'client-keys', 'client-keys*', 'Client Keys')
     ;

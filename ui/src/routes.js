@@ -53,6 +53,7 @@ const ICON_MAP = {
   module: MenuOutlined,
 };
 
+// TODO : Label menu will use label from API
 const LABEL_MAP = {
   rule: 'Rules',
   datasources: 'Data Sources',
@@ -86,8 +87,10 @@ if (tokenDecoded !== undefined && isOldCookieVersion === false) { // status : al
   const arrMenu = [];
   mn.forEach((item) => {
     const tempMenu = [];
+    const isAnyLabel = item.label !== undefined;
     tempMenu.path = '/'.concat(item.path);
-    tempMenu.name = LABEL_MAP[item.name];
+    if (isAnyLabel) tempMenu.name = item.label;
+    else tempMenu.name = LABEL_MAP[item.name];
     tempMenu.component = COMPONENT_MAP[item.name];
     tempMenu.icon = ICON_MAP[item.name];
     tempMenu.visible = true;
