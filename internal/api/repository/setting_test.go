@@ -25,6 +25,14 @@ type (
 		expected      []*repository.Setting
 		expectedErr   string
 	}
+
+	settingUpdate struct {
+		testName      string
+		onSettingRepo onSettingRepo
+		setting       *repository.Setting
+		opt           dbkit.UpdateOption
+		expectedErr   string
+	}
 )
 
 func createSettingRepo(fn onSettingRepo) (repository.SettingRepo, *sql.DB) {
@@ -67,7 +75,6 @@ func TestSetting_Find(t *testing.T) {
 				dbkit.Equal("value", "some-value"),
 			},
 			onSettingRepo: func(mock sqlmock.Sqlmock) {
-
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT key, value, updated_at FROM settings WHERE key = $1 AND value = $2`)).
 					WithArgs("some-key", "some-value").
 					WillReturnRows(sqlmock.
@@ -95,4 +102,47 @@ func TestSetting_Find(t *testing.T) {
 			require.Equal(t, tt.expected, settings)
 		})
 	}
+}
+
+func TestSettingUpdate(t *testing.T) {
+	testcases := []settingUpdate{
+		{
+			setting: &repository.Setting{
+				Value: "new-value",
+			},
+			opt: dbkit.Equal(repository.SettingCols.Key, "some-key"),
+			onSettingRepo: func(mock sqlmock.Sqlmock) {
+				mock.ExpectExec(regexp.QuoteMeta(`UPDATE settings SET value = $1, updated_at = $2 WHERE key = $3`)).
+					WithArgs("new-value", sqlmock.AnyArg(), "some-key").
+					WillReturnError(errors.New("some-error"))
+			},
+			expectedErr: "some-error",
+		},
+		{
+			setting: &repository.Setting{
+				Value: "new-value",
+			},
+			opt: dbkit.Equal(repository.SettingCols.Key, "some-key"),
+			onSettingRepo: func(mock sqlmock.Sqlmock) {
+				mock.ExpectExec(regexp.QuoteMeta(`UPDATE settings SET value = $1, updated_at = $2 WHERE key = $3`)).
+					WithArgs("new-value", sqlmock.AnyArg(), "some-key").
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+		},
+	}
+
+	for _, tt := range testcases {
+		t.Run(tt.testName, func(t *testing.T) {
+			repo, db := createSettingRepo(tt.onSettingRepo)
+			defer db.Close()
+
+			err := repo.Update(context.Background(), tt.setting, tt.opt)
+			if tt.expectedErr != "" {
+				require.EqualError(t, err, tt.expectedErr)
+				return
+			}
+			require.NoError(t, err)
+		})
+	}
+
 }

@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -101,6 +100,22 @@ func (s *SettingRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) 
 }
 
 // Update setting
-func (*SettingRepoImpl) Update(context.Context, *Setting, dbkit.UpdateOption) error {
-	return errors.New("Not implemented")
+func (s *SettingRepoImpl) Update(ctx context.Context, setting *Setting, opt dbkit.UpdateOption) (err error) {
+	builder := sq.
+		Update(SettingTable).
+		Set(SettingCols.Value, setting.Value).
+		Set(SettingCols.UpdatedAt, time.Now()).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.DB(ctx, s))
+
+	if builder, err = opt.CompileUpdate(builder); err != nil {
+		return
+	}
+
+	if _, err = builder.ExecContext(ctx); err != nil {
+		dbtxn.SetError(ctx, err)
+		return
+	}
+
+	return
 }
