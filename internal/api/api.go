@@ -34,6 +34,8 @@ func (a *API) SetRoute(e *echo.Echo) {
 	group := e.Group("/api")
 	group.Use(a.AuthCntrl.Middleware())
 	group.Use(a.AuthCntrl.SetTokenCtxMiddleware())
+	//TODO: middleware for check auth module. still on progress
+	//group.Use(a.AuthCntrl.CheckAuthModules())
 	group.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	group.Use(middleware.Recover())
 	group.POST("/logout", a.AuthCntrl.Logout)
