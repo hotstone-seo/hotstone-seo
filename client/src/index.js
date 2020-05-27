@@ -25,7 +25,8 @@ function interpolate(tag, data) {
 }
 
 class HotStoneClient {
-  constructor(hostURL, opts = {}) {
+  constructor(hostURL, key, opts = {}) {
+    this.bearer = `Bearer ${key}`
     this.baseURL = hostURL
     this.fetch = cachingFetch.defaults(opts)
   }
@@ -34,7 +35,11 @@ class HotStoneClient {
     let rule = {};
     try {
       const param = {_path: path}
-      const resp = await this.fetch(`${this.baseURL}/p/match?${queryString.stringify(param)}`);
+      const resp = await this.fetch(`${this.baseURL}/p/match?${queryString.stringify(param)}`, {
+        headers: {
+          Authorization: this.bearer
+        }
+      });
       if (!resp.ok && resp.status != 304) {
         throw new Error("HTTP status code: " + resp.status + " Resp: " + await resp.text())
       }
@@ -58,7 +63,11 @@ class HotStoneClient {
         _locale: locale,
         ...path_param
       }
-      const resp = await this.fetch(`${this.baseURL}/p/fetch-tags?${queryString.stringify(param)}`);
+      const resp = await this.fetch(`${this.baseURL}/p/fetch-tags?${queryString.stringify(param)}`, {
+        headers: {
+          Authorization: this.bearer
+        }
+      });
       if (!resp.ok && resp.status != 304) {
         throw new Error("HTTP status code: " + resp.status + " Resp: " + await resp.text())
       }

@@ -7,7 +7,8 @@ describe('HotStone-Client', () => {
 
     beforeEach(() => {
         const baseURL = "http://foo.com"
-        subject = new HotStoneClient(baseURL);
+        const key = "abc.12345678901234567890123456789012"
+        subject = new HotStoneClient(baseURL, key);
         mockServer = nock(baseURL)
     })
 

@@ -16,7 +16,8 @@ describe('HotStone-Client with Caching', () => {
 
     beforeEach(() => {
         const baseURL = "http://foo.com"
-        subject = new HotStoneClient(baseURL, {
+        const key = "abc.12345678901234567890123456789012"
+        subject = new HotStoneClient(baseURL, key, {
             cacheManager: `./test-local-cache/${random(7)}`,
             // cacheManager: new RedisCache({ prefix: `test-${random(7)}:`, host: 'localhost', port: 6379, password: 'redispass' })
         });
