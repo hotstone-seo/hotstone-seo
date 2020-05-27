@@ -1,22 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
-import { fetchDataSources, deleteDataSource } from 'api/datasource';
-import useAsync from 'hooks/useAsync';
+import { deleteDataSource } from 'api/datasource';
 import { DataSourceList } from 'components/DataSource';
-
 import { PlusOutlined } from '@ant-design/icons';
 
 function ViewDataSources({ match }) {
   const history = useHistory();
-  const {
-    pending, value: dataSources, setValue: setDataSources, error,
-  } = useAsync(fetchDataSources);
-
-  if (error) {
-    message.error(error.message);
-  }
+  const [dataSources, setDataSources] = useState([]);
 
   const showEditScene = (dataSource) => {
     history.push(`${match.url}/${dataSource.id}`);
@@ -57,10 +49,10 @@ function ViewDataSources({ match }) {
         </Button>
         <DataSourceList
           dataSources={dataSources}
-          loading={pending}
           onClick={showEditScene}
           onEdit={showEditScene}
           onDelete={removeDataSource}
+          setDataSources={setDataSources}
         />
       </div>
     </div>

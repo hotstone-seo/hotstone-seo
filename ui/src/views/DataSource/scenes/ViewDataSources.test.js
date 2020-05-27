@@ -2,8 +2,7 @@ import React from 'react';
 import { render, wait } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import mockAxios from 'jest-mock-axios';
-import userEvent from '@testing-library/user-event';
-// import { createMemoryHistory } from 'history';
+import { MemoryRouter } from 'react-router-dom';
 import ViewDataSources from './ViewDataSources';
 
 const respMock = [
@@ -24,16 +23,18 @@ jest.mock('react-router-dom', () => ({
 
 describe('ViewDataSources', () => {
   test('first load', async () => {
-    const url = '/datasources';
-    const { queryByText } = render(<ViewDataSources match={{ url }} />);
+    const {
+      queryByText,
+    } = render(<ViewDataSources match={{ url: '/data_sources' }} />, { wrapper: MemoryRouter });
 
-    await wait(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/data_sources');
-      mockAxios.mockResponse({ data: respMock });
+    const queryParam = { params: { _limit: 10, _offset: 0 } };
+    expect(mockAxios.get).toHaveBeenCalledWith('/data_sources', queryParam);
+    mockAxios.mockResponse({ data: respMock });
 
-      expect(queryByText(/Data Sources/)).toBeInTheDocument();
-      expect(queryByText(/FooDS/)).toBeInTheDocument();
-    });
+    await wait();
+
+    const firstRow = queryByText(/Data Sources/);
+    expect(firstRow).not.toBeNull();
   });
 
   // FIXME:
