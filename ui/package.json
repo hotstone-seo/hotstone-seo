@@ -9,7 +9,7 @@
     "@testing-library/react": "^9.4.0",
     "@use-hooks/interval": "^1.0.1",
     "@xstate/react": "^0.8.1",
-    "antd": "^4.2.0",
+    "antd": "^4.2.5",
     "axios": "^0.19.2",
     "date-fns": "^2.10.0",
     "http-proxy-middleware": "^1.0.0",
