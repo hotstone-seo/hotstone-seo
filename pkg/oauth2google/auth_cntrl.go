@@ -2,8 +2,11 @@ package oauth2google
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	log "github.com/sirupsen/logrus"
@@ -125,4 +128,51 @@ func urlWithQueryParams(rawurl string, values url.Values) (s string, err error) 
 	}
 	u.RawQuery = values.Encode()
 	return u.String(), nil
+}
+
+type DataModule struct {
+	Module []Module `json:"modules"`
+}
+type Module struct {
+	Label string `json:"label"`
+	Name  string `json:"name"`
+	Path  string `json:"path"`
+}
+
+// Middleware for check auth module access
+func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(ce echo.Context) error {
+			// get user data from cookie
+			user := ce.Get("user").(*jwt.Token)
+			claims := user.Claims.(jwt.MapClaims)
+			modules := claims["modules"]
+
+			currentURLPath := ce.Path() // get API Path
+
+			in := []byte(modules.(string))
+			var raw DataModule
+			if err := json.Unmarshal(in, &raw); err != nil {
+				log.Warnf("JWT Error CheckAuthModules: %s", err.Error())
+			}
+			modArray := raw.Module
+
+			isAllow := false
+			for index, result := range modArray {
+				fmt.Println(index)
+
+				// TODO: compare currentURLPath with regex pattern module
+				if "/api/"+result.Path == currentURLPath { //compare current URL with user privilege user
+					isAllow = true
+					break
+				}
+			}
+			fmt.Println(isAllow)
+			/* if !isAllow {
+				// return c.Logout(ce)
+				return echo.ErrUnauthorized
+			} */
+			return next(ce)
+		}
+	}
 }
