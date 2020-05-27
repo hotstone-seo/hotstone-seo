@@ -9,6 +9,14 @@ export function fetchDataSources() {
     });
 }
 
+export function fetchDataSourcesPagination(cfg = {}) {
+  return client.get('/data_sources', cfg)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
 export function getDataSource(id) {
   return client.get(`/data_sources/${id}`)
     .then((response) => response.data)
@@ -56,6 +64,7 @@ const DataSourceAPI = {
   create: createDataSource,
   update: updateDataSource,
   delete: deleteDataSource,
+  fetchPagination: fetchDataSourcesPagination,
 };
 
 export default DataSourceAPI;
