@@ -17,7 +17,7 @@ COPY ${ROOT_REPO}/ .
 
 RUN go get -u -v golang.org/x/tools/cmd/goimports
 
-RUN go build -o bin/hotstone-seo  cmd/hotstone-seo/main.go
+RUN go build -o bin/hotstone-seo ./cmd/hotstone-seo
 
 # === BUILD FINAL ===
 FROM golang:alpine

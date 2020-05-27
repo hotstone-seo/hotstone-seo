@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Form,
   Input,
@@ -10,26 +10,26 @@ import {
   Collapse,
   Col,
   Result,
-} from 'antd';
-import { Machine, assign } from 'xstate';
-import { useMachine } from '@xstate/react';
-import { Link } from 'react-router-dom';
-import _ from 'lodash';
-import parse from 'url-parse';
-import { match, fetchTags } from 'api/provider';
-import { getRule } from 'api/rule';
-import locales from 'locales';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+} from "antd";
+import { Machine, assign } from "xstate";
+import { useMachine } from "@xstate/react";
+import { Link } from "react-router-dom";
+import _ from "lodash";
+import parse from "url-parse";
+import { match, fetchTags } from "api/provider";
+import { getRule } from "api/rule";
+import locales from "locales";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { docco } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 
 const { Option } = Select;
 const { Panel } = Collapse;
 
-let execTime = '';
+let execTime = "";
 
 function millisToMinutesAndSeconds(duration) {
-  const milliseconds = parseInt((duration % 1000), 10);
-  return ''.concat(milliseconds, ' milliseconds');
+  const milliseconds = parseInt(duration % 1000, 10);
+  return "".concat(milliseconds, " milliseconds");
 }
 
 const pageMachine = Machine({
@@ -91,7 +91,7 @@ async function simulateMatch(locale, url) {
   const rule = await match(url);
   if (_.isEmpty(rule) || rule.rule_id === 0) {
     execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
-    throw new Error('Not matched Rule.');
+    throw new Error("Not matched Rule.");
   }
   const tags = await fetchTags(rule, locale);
   const ruleDetail = await getRule(rule.rule_id);
@@ -105,7 +105,7 @@ function SimulationPage() {
   const { matchResp, matchError, pageError } = current.context;
   const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
-    send('SUBMIT', { locale, url: urlObj.pathname });
+    send("SUBMIT", { locale, url: urlObj.pathname });
   };
 
   return (
@@ -182,7 +182,11 @@ function renderResp(matchResp) {
     <>
       <br />
       <Card>
-        <Alert type="success" message={`Matched. Execution time : ${execTime}`} closable />
+        <Alert
+          type="success"
+          message={`Matched. Execution time : ${execTime}`}
+          closable
+        />
         <br />
         <Collapse defaultActiveKey={["3"]} expandIconPosition="left">
           {!_.isEmpty(ruleDetail) && (
@@ -211,12 +215,12 @@ function renderResp(matchResp) {
 function renderMatchError(matchError) {
   let msgError = matchError.message;
   let ps = 0;
-  if (msgError !== '') ps = msgError.search('500');
+  if (msgError !== "") ps = msgError.search("500");
 
   if (ps > 0) {
     msgError = matchError.response.data.message;
   }
-  msgError = msgError.concat(' Execution Time :', execTime)
+  msgError = msgError.concat(" Execution Time :", execTime);
   return (
     <>
       <br />
@@ -237,7 +241,7 @@ function renderPageError(pageError) {
   if (pageError.response) {
     msgError = pageError.response.data.message;
   }
-  const subTitle = ''.concat('Sorry, the server is wrong. ', msgError);
+  const subTitle = "".concat("Sorry, the server is wrong. ", msgError);
   return (
     <>
       <br />
@@ -259,9 +263,7 @@ function renderPreview(ruleID, tags) {
   if (_.isEmpty(tags)) {
     return (
       <div>
-        No tags data. Register tags at
-        {' '}
-        {' '}
+        No tags data. Register tags at{" "}
         <Link to={`/rules/${ruleID}`}>Rule Detail</Link>
       </div>
     );
