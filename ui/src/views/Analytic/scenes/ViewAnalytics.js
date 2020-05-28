@@ -34,7 +34,7 @@ function ViewAnalytics() {
 
   return (
     <div>
-      <Row>
+      <Row gutter={[8, 8]}>
         <Col span={24}>
           <Card>
             <Form
@@ -45,7 +45,6 @@ function ViewAnalytics() {
             >
               <Form.Item
                 name="ruleID"
-                // label="Rule"
                 rules={[{ required: true, message: 'Please select rule' }]}
                 style={{ width: '60%' }}
               >
@@ -61,10 +60,9 @@ function ViewAnalytics() {
                     type="primary"
                     htmlType="submit"
                     disabled={
-                      // !form.isFieldsTouched(true) ||
-                     form
-                       .getFieldsError()
-                       .filter(({ errors }) => errors.length).length
+                      form
+                        .getFieldsError()
+                        .filter(({ errors }) => errors.length).length
                     }
                   >
                     Submit
@@ -75,17 +73,21 @@ function ViewAnalytics() {
           </Card>
         </Col>
       </Row>
-      <Row>
-        <Col span={4} justify="space-around" align="middle">
-          <HitCounterCard ruleID={ruleID} />
-        </Col>
-        <Col span={4} justify="space-around" align="middle">
-          <UniquePageCounterCard ruleID={ruleID} />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
+      <Row gutter={[8, 8]}>
+        <Col span={20}>
           <HitChartCard ruleID={ruleID} />
+        </Col>
+        <Col span={4}>
+          <Row gutter={[8, 8]}>
+            <Col span={24} justify="space-around" align="middle">
+              <HitCounterCard ruleID={ruleID} />
+            </Col>
+          </Row>
+          <Row gutter={[8, 8]}>
+            <Col span={24} justify="space-around" align="middle">
+              <UniquePageCounterCard ruleID={ruleID} />
+            </Col>
+          </Row>
         </Col>
       </Row>
     </div>

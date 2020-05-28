@@ -98,19 +98,6 @@ function RuleListV2(props) {
       ...useTableFilterProps('url_pattern'),
     },
     {
-      title: 'Data Source',
-      dataIndex: 'dataSource',
-      key: 'data_source',
-      sorter: false,
-      sortOrder: sortedInfo.columnKey === 'data_source' && sortedInfo.order,
-      render: (dataSource) => {
-        if (dataSource) {
-          return <Link to={`/datasources/${dataSource.id}`}>{dataSource.name}</Link>;
-        }
-        return null;
-      },
-    },
-    {
       title: 'Last Updated',
       dataIndex: 'updated_at',
       key: 'updated_at',
