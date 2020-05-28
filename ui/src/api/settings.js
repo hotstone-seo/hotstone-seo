@@ -1,12 +1,12 @@
-import client from "./client";
+import client from './client';
 
-function fetchSettings(cfg = {}) {
+export async function fetchSettings(cfg = {}) {
   return client
-    .get("/settings", cfg)
+    .get('/settings', cfg)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
 
-export { fetchSettings };
+export default { fetchSettings };
