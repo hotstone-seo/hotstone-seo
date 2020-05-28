@@ -157,10 +157,11 @@ func mapModules(ctx context.Context, mItem []ModuleItem, r *RoleTypeServiceImpl)
 			log.Error(err)
 		}
 		faqsMap[index] = map[string]interface{}{
-			"path":    moduleMs.Path,
-			"name":    tempMod.Module,
-			"pattern": moduleMs.Pattern,
-			"label":   moduleMs.Label,
+			"path":     moduleMs.Path,
+			"name":     tempMod.Module,
+			"pattern":  moduleMs.Pattern,
+			"label":    moduleMs.Label,
+			"api_path": moduleMs.APIPath,
 		}
 	}
 	return faqsMap

@@ -16,6 +16,7 @@ type Module struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name" validate:"required"`
 	Path      string    `json:"path"`
+	APIPath   string    `json:"api_path"`
 	Pattern   string    `json:"pattern"`
 	Label     string    `json:"label"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -57,6 +58,7 @@ func (r *ModuleRepoImpl) FindOne(ctx context.Context, id int64) (*Module, error)
 			"id",
 			"name",
 			"path",
+			"api_path",
 			"pattern",
 			"label",
 			"updated_at",
@@ -73,6 +75,7 @@ func (r *ModuleRepoImpl) FindOne(ctx context.Context, id int64) (*Module, error)
 		&module.ID,
 		&module.Name,
 		&module.Path,
+		&module.APIPath,
 		&module.Pattern,
 		&module.Label,
 		&module.UpdatedAt,
@@ -96,6 +99,7 @@ func (r *ModuleRepoImpl) Find(ctx context.Context, paginationParam PaginationPar
 			"id",
 			"name",
 			"path",
+			"api_path",
 			"pattern",
 			"label",
 			"updated_at",
@@ -121,6 +125,7 @@ func (r *ModuleRepoImpl) Find(ctx context.Context, paginationParam PaginationPar
 			&module.ID,
 			&module.Name,
 			&module.Path,
+			&module.APIPath,
 			&module.Pattern,
 			&module.Label,
 			&module.UpdatedAt,
@@ -140,6 +145,7 @@ func (r *ModuleRepoImpl) FindOneByName(ctx context.Context, name string) (*Modul
 		Select(
 			"id",
 			"path",
+			"api_path",
 			"pattern",
 			"label",
 		).
@@ -153,6 +159,7 @@ func (r *ModuleRepoImpl) FindOneByName(ctx context.Context, name string) (*Modul
 	if err := row.Scan(
 		&module.ID,
 		&module.Path,
+		&module.APIPath,
 		&module.Pattern,
 		&module.Label,
 	); err != nil {
@@ -170,12 +177,14 @@ func (r *ModuleRepoImpl) Insert(ctx context.Context, module Module) (lastInsertI
 		Columns(
 			"name",
 			"path",
+			"api_path",
 			"pattern",
 			"label",
 		).
 		Values(
 			module.Name,
 			module.Path,
+			module.APIPath,
 			module.Pattern,
 			module.Label,
 		).
@@ -213,6 +222,7 @@ func (r *ModuleRepoImpl) Update(ctx context.Context, module Module) (err error) 
 	builder := sq.StatementBuilder.
 		Update("modules").
 		Set("path", module.Path).
+		Set("api_path", module.APIPath).
 		Set("pattern", module.Pattern).
 		Set("label", module.Label).
 		Set("updated_at", time.Now()).

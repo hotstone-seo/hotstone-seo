@@ -32,10 +32,18 @@ function ModuleForm({ module, handleSubmit }) {
 
       <Form.Item
         name="path"
-        label="URL Path"
-        rules={[{ required: true, message: 'Please input the URL Path' }]}
+        label="Front End Path"
+        rules={[{ required: true, message: 'Please input the Front End Path' }]}
       >
-        <Input data-testid="input-path" placeholder="URL Path" maxLength="50" />
+        <Input data-testid="input-path" placeholder="Front End Path" maxLength="50" />
+      </Form.Item>
+
+      <Form.Item
+        name="api_path"
+        label="API Path"
+        rules={[{ required: true, message: 'Please input the API Path' }]}
+      >
+        <Input data-testid="input-api-path" placeholder="API Path" maxLength="50" />
       </Form.Item>
 
       <Form.Item
