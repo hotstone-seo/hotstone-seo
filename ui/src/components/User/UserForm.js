@@ -31,7 +31,6 @@ function UserForm({ user, handleSubmit, roleTypes }) {
           noModule += 1;
         });
       }
-      // still show data in common text. TODO : Next time must upper the First Character
       setModuleList(mn);
     } catch (error) {
       console.log(error, 'error');
@@ -89,9 +88,9 @@ function UserForm({ user, handleSubmit, roleTypes }) {
       >
         <Input type="hidden" />
         <div>
-          {moduleList.map(({ id, name }) => (
+          {moduleList.map(({ id, name, label }) => (
             <span id={id} key={name}>
-              {name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase()}
+              {label}
               {' '}
               <br />
             </span>
