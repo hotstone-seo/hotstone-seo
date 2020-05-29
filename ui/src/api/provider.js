@@ -1,50 +1,60 @@
 import axios from 'axios';
+import qs from 'qs';
+import Cookies from 'js-cookie';
+import jwt from 'jsonwebtoken';
 
-const client = axios.create({});
-
-client.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.status !== 401) {
-      return Promise.reject(error || 'Network error.Failed to connect API');
-    }
-    if (error.response) {
-      const {
-        data: { message },
-      } = error.response;
-      return Promise.reject(
-        new Error(message || 'Unexpected error occured in server'),
-      );
-    }
-    return Promise.reject(error);
-  },
-);
-
-function match(path) {
-  return client
-    .get(`p/match?_path=${path}`)
-    .then((response) => response.data)
-    .catch((error) => {
-      throw error;
-    });
+export function getSimulationKey() {
+  const token = Cookies.get('token');
+  return jwt.decode(token).simulation_key;
 }
 
-function fetchTags(rule, locale, contentData) {
-  const { rule_id, path_param } = rule;
-  if (rule_id > 0) {
-    path_param._locale = locale;
-    path_param._rule = rule_id;
+export default class ProviderAPI {
+  constructor() {
+    const key = getSimulationKey();
+    this.client = axios.create({
+      headers: { Authorization: `Bearer ${key}` },
+    });
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.status !== 401) {
+          return Promise.reject(error || 'Network error.Failed to connect API');
+        }
+        if (error.response) {
+          const {
+            data: { message },
+          } = error.response;
+          return Promise.reject(
+            new Error(message || 'Unexpected error occured in server'),
+          );
+        }
+        return Promise.reject(error);
+      },
+    );
   }
 
-  const qs = require('qs');
+  async match(path) {
+    return this.client
+      .get(`p/match?_path=${path}`)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
 
-  const queryParam = qs.stringify(path_param);
-  return client
-    .get(`p/fetch-tags?${queryParam}`)
-    .then((response) => response.data)
-    .catch((error) => {
-      throw error;
-    });
+  async fetchTags(rule, locale) {
+    const { rule_id, path_param } = rule;
+    if (rule_id > 0) {
+      path_param._locale = locale;
+      path_param._rule = rule_id;
+    }
+
+    const queryParam = qs.stringify(path_param);
+    return this.client
+      .get(`p/fetch-tags?${queryParam}`)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
+  }
 }
-
-export { match, fetchTags };

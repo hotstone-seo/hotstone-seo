@@ -16,7 +16,7 @@ import { useMachine } from '@xstate/react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import parse from 'url-parse';
-import { match, fetchTags } from 'api/provider';
+import ProviderAPI from 'api/provider';
 import { getRule } from 'api/rule';
 import locales from 'locales';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -36,6 +36,7 @@ const pageMachine = Machine({
   id: 'simulation',
   initial: 'idle',
   context: {
+    providerAPI: new ProviderAPI(),
     url: null,
     locale: locales[0],
     listLocale: locales,
@@ -52,7 +53,7 @@ const pageMachine = Machine({
         matchError: null,
       }),
       invoke: {
-        src: (context) => simulateMatch(context.locale, context.url),
+        src: (context) => simulateMatch(context.providerAPI, context.locale, context.url),
         onDone: {
           target: 'success',
           actions: assign({
@@ -82,14 +83,14 @@ const pageMachine = Machine({
   },
 });
 
-async function simulateMatch(locale, url) {
+async function simulateMatch(providerAPI, locale, url) {
   const startTime = new Date().getTime();
-  const rule = await match(url);
+  const rule = await providerAPI.match(url);
   if (_.isEmpty(rule) || rule.rule_id === 0) {
     execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
     throw new Error('Not matched Rule.');
   }
-  const tags = await fetchTags(rule, locale);
+  const tags = await providerAPI.fetchTags(rule, locale);
   const ruleDetail = await getRule(rule.rule_id);
   const data = { rule, tags, ruleDetail };
   execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
