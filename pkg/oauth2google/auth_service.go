@@ -109,12 +109,9 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 		}
 		roleModule = string(rawData)
 	}
-	simulationKey, err := c.SettingSvc.FindOne(ctx, service.SimulationKey)
-	if err != nil {
-		return "", fmt.Errorf("AuthVerifyCallback failed to get Simulation key: %w", err)
-	}
+	simulationKey := c.SettingSvc.GetValue(ctx, service.SimulationKey)
 
-	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess, roleModule, simulationKey.Value)
+	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess, roleModule, simulationKey)
 	if err != nil {
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}

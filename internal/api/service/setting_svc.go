@@ -23,6 +23,7 @@ type (
 		Find(ctx context.Context) ([]*repository.Setting, error)
 		FindOne(ctx context.Context, key string) (*repository.Setting, error)
 		Update(ctx context.Context, key string, setting *repository.Setting) (err error)
+		GetValue(ctx context.Context, key string) string
 	}
 
 	// SettingSvcImpl is implementation of SettingService
@@ -76,4 +77,13 @@ func (s *SettingSvcImpl) Update(ctx context.Context, key string, setting *reposi
 		setting,
 		dbkit.Equal(repository.SettingCols.Key, key),
 	)
+}
+
+// GetValue returns value of given key on settings
+func (s *SettingSvcImpl) GetValue(ctx context.Context, key string) string {
+	setting, err := s.FindOne(ctx, key)
+	if err != nil {
+		return ""
+	}
+	return setting.Value
 }
