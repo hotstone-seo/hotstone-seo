@@ -16,7 +16,8 @@ server.use(cors());
  
 // Instantiate the client by providing the URL of HotStone provider
 const hotstoneURL = process.env.HOTSTONE_URL || 'http://localhost:8089'
-const client = new HotStoneClient(hotstoneURL, {cacheManager: `./test-local-cache`});
+const clientKey = process.env.CLIENT_KEY || 'Otdu1qe.A5eKbNQ3Kj26kiTQmwWAmzaQGk5uYmSI'
+const client = new HotStoneClient(hotstoneURL, clientKey, {cacheManager: `./test-local-cache`});
 
 const template = ({ body, head }, data) => {
   return `
