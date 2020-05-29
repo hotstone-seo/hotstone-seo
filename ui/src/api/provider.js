@@ -2,9 +2,13 @@ import axios from 'axios';
 import qs from 'qs';
 import Cookies from 'js-cookie';
 import jwt from 'jsonwebtoken';
+import _ from 'lodash';
 
 export function getSimulationKey() {
   const token = Cookies.get('token');
+  if (_.isEmpty(token)) {
+    return '';
+  }
   return jwt.decode(token).simulation_key;
 }
 
