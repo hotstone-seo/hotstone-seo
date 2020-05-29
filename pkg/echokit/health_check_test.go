@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/typical-go/typical-rest-server/pkg/echokit"
+	"github.com/hotstone-seo/hotstone-seo/pkg/echokit"
 )
 
 type (
