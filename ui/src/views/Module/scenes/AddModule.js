@@ -12,12 +12,16 @@ function AddModule() {
   const handleCreate = (module) => {
     createModule(module)
       .then((newModule) => {
-        history.push('/modules', {
-          message: {
-            level: 'success',
-            content: `${newModule.name} is successfully created`,
-          },
-        });
+        if (newModule.name === undefined) {
+          message.error(`Module ${module.name} already register`);
+        } else {
+          history.push('/modules', {
+            message: {
+              level: 'success',
+              content: `${newModule.name} is successfully created`,
+            },
+          });
+        }
       })
       .catch((error) => {
         message.error(error.message);

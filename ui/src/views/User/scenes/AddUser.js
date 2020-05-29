@@ -4,7 +4,7 @@ import {
   PageHeader, Row, Col, message,
 } from 'antd';
 import { UserForm } from 'components/User';
-import { createUser, getUserIsExists } from 'api/user';
+import { createUser } from 'api/user';
 import useRoleTypes from 'hooks/useRoleTypes';
 
 function AddUser() {
@@ -12,23 +12,17 @@ function AddUser() {
   const [roleTypes] = useRoleTypes();
 
   const handleCreate = (user) => {
-    getUserIsExists(user)
-      .then((data) => {
-        if (data == null) {
-          createUser(user)
-            .then((newUser) => {
-              history.push('/users', {
-                message: {
-                  level: 'success',
-                  content: `${newUser.email} is successfully created`,
-                },
-              });
-            })
-            .catch((error) => {
-              message.error(error.message);
-            });
+    createUser(user)
+      .then((newUser) => {
+        if (newUser.email === undefined) {
+          message.error(`${user.email} already register`);
         } else {
-          message.error(`${user.email} is already register`);
+          history.push('/users', {
+            message: {
+              level: 'success',
+              content: `${newUser.email} is successfully created`,
+            },
+          });
         }
       })
       .catch((error) => {
