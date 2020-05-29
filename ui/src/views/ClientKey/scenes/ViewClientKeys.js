@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
 import { fetchClientKeys, deleteClientKey } from 'api/client_key';
 import { fetchClientKeyLastUsed } from 'api/metric';
+import { getSimulationKeyPrefix } from 'api/provider';
 import useAsync from 'hooks/useAsync';
 import { ClientKeyList } from 'components/ClientKey';
 
@@ -11,10 +12,11 @@ import { PlusOutlined } from '@ant-design/icons';
 
 const fetchClientKeysAndLastTimeUsed = async () => {
   const clientKeys = await fetchClientKeys();
+  console.log('PREFIX: ', getSimulationKeyPrefix());
   return Promise.all(
     clientKeys.map(async (clientKey) => {
       const { time } = await fetchClientKeyLastUsed({ params: { client_key_id: clientKey.id } });
-      return { ...clientKey, last_used_at: time };
+      return { ...clientKey, last_used_at: time, disabled: (clientKey.prefix === getSimulationKeyPrefix()) };
     }),
   );
 };

@@ -12,6 +12,11 @@ export function getSimulationKey() {
   return jwt.decode(token).simulation_key;
 }
 
+export function getSimulationKeyPrefix() {
+  const key = getSimulationKey();
+  return key.slice(0, 7);
+}
+
 export default class ProviderAPI {
   constructor() {
     const key = getSimulationKey();

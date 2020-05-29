@@ -42,7 +42,7 @@ function ClientKeyList(props) {
             onConfirm={() => onDelete(record)}
           >
             <Tooltip title="Delete">
-              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+              <Button disabled={record.disabled} type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
             </Tooltip>
           </Popconfirm>
         </span>
