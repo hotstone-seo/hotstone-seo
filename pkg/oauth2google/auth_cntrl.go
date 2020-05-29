@@ -90,10 +90,15 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
 }
 
-// Logout by invalidating cookies
-func (c *AuthCntrl) Logout(ce echo.Context) (err error) {
+func (c *AuthCntrl) clean(ce echo.Context) (err error) {
 	ce.SetCookie(&http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"})
 	ce.SetCookie(&http.Cookie{Name: "token", MaxAge: -1, Path: "/"})
+	return
+}
+
+// Logout by invalidating cookies
+func (c *AuthCntrl) Logout(ce echo.Context) (err error) {
+	c.clean(ce)
 	return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
 }
 
@@ -106,8 +111,8 @@ func (c *AuthCntrl) Middleware() echo.MiddlewareFunc {
 			cfg.TokenLookup = "cookie:secure_token"
 
 			if err := middleware.JWTWithConfig(cfg)(next)(ce); err != nil {
-				log.Warnf("JWT Error: %s", err.Error())
-				return c.Logout(ce)
+				c.clean(ce)
+				return err
 			}
 
 			return nil
