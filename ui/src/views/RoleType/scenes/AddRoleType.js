@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import {
-  PageHeader, Row, Col,
+  PageHeader, Row, Col, message,
 } from 'antd';
 import { RoleTypeForm } from 'components/RoleType';
 
@@ -9,12 +9,16 @@ function AddRoleType() {
   const history = useHistory();
 
   const handleCreate = (newRole) => {
-    history.push('/role-type', {
-      message: {
-        level: 'success',
-        content: `${newRole.name} is successfully created`,
-      },
-    });
+    if (newRole.name === undefined) {
+      message.error('Role already exists');
+    } else {
+      history.push('/role-type', {
+        message: {
+          level: 'success',
+          content: `${newRole.name} is successfully created`,
+        },
+      });
+    }
   };
 
   return (

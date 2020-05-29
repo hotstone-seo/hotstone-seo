@@ -45,17 +45,8 @@ function deleteUser(id) {
     });
 }
 
-function getUserIsExists(user) {
-  return client
-    .post('/users_is_exists', user)
-    .then((response) => response.data)
-    .catch((error) => {
-      return 0;
-    });
-}
-
 export {
-  fetchUsers, getUser, createUser, updateUser, deleteUser, getUserIsExists,
+  fetchUsers, getUser, createUser, updateUser, deleteUser,
 };
 
 const UserAPI = {
@@ -64,7 +55,6 @@ const UserAPI = {
   create: createUser,
   update: updateUser,
   delete: deleteUser,
-  getIsExist: getUserIsExists,
 };
 
 export default UserAPI;
