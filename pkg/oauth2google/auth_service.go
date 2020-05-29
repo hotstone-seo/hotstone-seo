@@ -13,6 +13,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
@@ -34,11 +35,12 @@ type AuthServiceImpl struct {
 	cfg          *Config
 	UserRepo     repository.UserRepo
 	RoleTypeRepo repository.RoleTypeRepo
+	SettingSvc   service.SettingSvc
 }
 
 // NewService return new instance of AuthGoogleService
 // @ctor
-func NewService(cfg *Config, userRepo repository.UserRepo, roleTypeRepo repository.RoleTypeRepo) AuthService {
+func NewService(cfg *Config, userRepo repository.UserRepo, roleTypeRepo repository.RoleTypeRepo, settingSvc service.SettingSvc) AuthService {
 	return &AuthServiceImpl{
 		cfg: cfg,
 		Config: &oauth2.Config{
@@ -50,6 +52,7 @@ func NewService(cfg *Config, userRepo repository.UserRepo, roleTypeRepo reposito
 		},
 		UserRepo:     userRepo,
 		RoleTypeRepo: roleTypeRepo,
+		SettingSvc:   settingSvc,
 	}
 }
 
@@ -66,6 +69,7 @@ func (c *AuthServiceImpl) GetAuthCodeURL(ce echo.Context, cookieSecure bool) (au
 
 // VerifyCallback to add metaTag
 func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (string, error) {
+	ctx := ce.Request().Context()
 	oauthState, err := ce.Cookie("oauthstate")
 	if err != nil {
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
@@ -75,7 +79,7 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 		return "", errors.New("invalid oauth google state")
 	}
 
-	userInfoResp, err := c.getUserInfoFromGoogle(ce.Request().Context(), ce.QueryParam("code"))
+	userInfoResp, err := c.getUserInfoFromGoogle(ctx, ce.QueryParam("code"))
 	if err != nil {
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
@@ -86,14 +90,14 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 	}
 
 	email := userInfoResp["email"].(string)
-	user, err := c.UserRepo.FindUserByEmail(ce.Request().Context(), email)
+	user, err := c.UserRepo.FindUserByEmail(ctx, email)
 	if user == nil || err == sql.ErrNoRows {
 		return "", fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
 	}
 	var roleAccess string
 	var roleModule string
 	if user != nil {
-		roleType, err := c.RoleTypeRepo.FindOne(ce.Request().Context(), user.RoleTypeID)
+		roleType, err := c.RoleTypeRepo.FindOne(ctx, user.RoleTypeID)
 		if err == sql.ErrNoRows {
 			return "", fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 		}
@@ -105,7 +109,12 @@ func (c *AuthServiceImpl) VerifyCallback(ce echo.Context, jwtSecret string) (str
 		}
 		roleModule = string(rawData)
 	}
-	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess, roleModule)
+	simulationKey, err := c.SettingSvc.FindOne(ctx, service.SimulationKey)
+	if err != nil {
+		return "", fmt.Errorf("AuthVerifyCallback failed to get Simulation key: %w", err)
+	}
+
+	jwtToken, err := c.generateJwtToken(userInfoResp, jwtSecret, user.ID, roleAccess, roleModule, simulationKey.Value)
 	if err != nil {
 		return "", fmt.Errorf("AuthVerifyCallback: %w", err)
 	}
@@ -158,7 +167,7 @@ func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp repository.GoogleOau
 	return nil
 }
 
-func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string, userID int64, roleAccess string, roleModule string) (string, error) {
+func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2UserInfoResp, jwtSecret string, userID int64, roleAccess string, roleModule string, simulationKey string) (string, error) {
 
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -171,6 +180,7 @@ func (c *AuthServiceImpl) generateJwtToken(userInfoResp repository.GoogleOauth2U
 	claims["user_id"] = userID
 	claims["user_role"] = roleAccess
 	claims["modules"] = roleModule
+	claims["simulation_key"] = simulationKey
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))

@@ -11,6 +11,11 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
+const (
+	// SimulationKey is HotStone client key for Simulation
+	SimulationKey string = "simulation_key"
+)
+
 type (
 	// SettingSvc contain logic of setting controller
 	// @mock

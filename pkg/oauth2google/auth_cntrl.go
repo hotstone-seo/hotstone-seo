@@ -20,11 +20,15 @@ import (
 )
 
 // AuthCntrl is controller to handle authentication
-type AuthCntrl struct {
-	dig.In
-	*Config
-	AuthService
-}
+type (
+	AuthCntrl struct {
+		dig.In
+		*Config
+		AuthService
+	}
+
+	Callback func(string) error
+)
 
 // Login with google auth
 func (c *AuthCntrl) Login(ce echo.Context) (err error) {
@@ -35,6 +39,12 @@ func (c *AuthCntrl) Login(ce echo.Context) (err error) {
 
 	authCodeURL := c.GetAuthCodeURL(ce, c.CookieSecure)
 	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
+}
+
+func (c *AuthCntrl) CallbackX(cb Callback) func(echo.Context) error {
+	return func(ce echo.Context) (err error) {
+		return nil
+	}
 }
 
 // Callback for google auth
