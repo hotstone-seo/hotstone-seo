@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Form,
   Input,
@@ -10,32 +10,33 @@ import {
   Collapse,
   Col,
   Result,
-} from "antd";
-import { Machine, assign } from "xstate";
-import { useMachine } from "@xstate/react";
-import { Link } from "react-router-dom";
-import _ from "lodash";
-import parse from "url-parse";
-import { match, fetchTags } from "api/provider";
-import { getRule } from "api/rule";
-import locales from "locales";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { docco } from "react-syntax-highlighter/dist/cjs/styles/hljs";
+} from 'antd';
+import { Machine, assign } from 'xstate';
+import { useMachine } from '@xstate/react';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
+import parse from 'url-parse';
+import ProviderAPI from 'api/provider';
+import { getRule } from 'api/rule';
+import locales from 'locales';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 const { Option } = Select;
 const { Panel } = Collapse;
 
-let execTime = "";
+let execTime = '';
 
 function millisToMinutesAndSeconds(duration) {
   const milliseconds = parseInt(duration % 1000, 10);
-  return "".concat(milliseconds, " milliseconds");
+  return ''.concat(milliseconds, ' milliseconds');
 }
 
 const pageMachine = Machine({
-  id: "simulation",
-  initial: "idle",
+  id: 'simulation',
+  initial: 'idle',
   context: {
+    providerAPI: new ProviderAPI(),
     url: null,
     locale: locales[0],
     listLocale: locales,
@@ -52,21 +53,17 @@ const pageMachine = Machine({
         matchError: null,
       }),
       invoke: {
-        src: (context) => simulateMatch(context.locale, context.url),
+        src: (context) => simulateMatch(context.providerAPI, context.locale, context.url),
         onDone: {
-          target: "success",
+          target: 'success',
           actions: assign({
-            matchResp: (context, event) => {
-              return event.data;
-            },
+            matchResp: (context, event) => event.data,
           }),
         },
         onError: {
-          target: "failed",
+          target: 'failed',
           actions: assign({
-            matchError: (context, event) => {
-              return event.data;
-            },
+            matchError: (context, event) => event.data,
           }),
         },
       },
@@ -77,7 +74,7 @@ const pageMachine = Machine({
   },
   on: {
     SUBMIT: {
-      target: ".submitting",
+      target: '.submitting',
       actions: assign({
         url: (context, event) => event.url,
         locale: (context, event) => event.locale,
@@ -86,14 +83,14 @@ const pageMachine = Machine({
   },
 });
 
-async function simulateMatch(locale, url) {
+async function simulateMatch(providerAPI, locale, url) {
   const startTime = new Date().getTime();
-  const rule = await match(url);
+  const rule = await providerAPI.match(url);
   if (_.isEmpty(rule) || rule.rule_id === 0) {
     execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
-    throw new Error("Not matched Rule.");
+    throw new Error('Not matched Rule.');
   }
-  const tags = await fetchTags(rule, locale);
+  const tags = await providerAPI.fetchTags(rule, locale);
   const ruleDetail = await getRule(rule.rule_id);
   const data = { rule, tags, ruleDetail };
   execTime = millisToMinutesAndSeconds(new Date().getTime() - startTime);
@@ -105,7 +102,7 @@ function SimulationPage() {
   const { matchResp, matchError, pageError } = current.context;
   const onSubmit = ({ locale, url }) => {
     const urlObj = parse(url);
-    send("SUBMIT", { locale, url: urlObj.pathname });
+    send('SUBMIT', { locale, url: urlObj.pathname });
   };
 
   return (
@@ -134,7 +131,7 @@ function renderForm(current, onSubmit) {
       >
         <Form.Item
           name="locale"
-          rules={[{ required: true, message: "Please select locale" }]}
+          rules={[{ required: true, message: 'Please select locale' }]}
         >
           <Select>
             {current.context.listLocale.map((locale, index) => (
@@ -147,8 +144,8 @@ function renderForm(current, onSubmit) {
 
         <Form.Item
           name="url"
-          rules={[{ required: true, message: "Please input URL path" }]}
-          style={{ width: "60%" }}
+          rules={[{ required: true, message: 'Please input URL path' }]}
+          style={{ width: '60%' }}
         >
           <Input placeholder="URL Path" />
         </Form.Item>
@@ -159,9 +156,9 @@ function renderForm(current, onSubmit) {
               type="primary"
               htmlType="submit"
               disabled={
-                isLoading(current) ||
-                current.matches("pageFailed") ||
-                form.getFieldsError().filter(({ errors }) => errors.length)
+                isLoading(current)
+                || current.matches('pageFailed')
+                || form.getFieldsError().filter(({ errors }) => errors.length)
                   .length
               }
             >
@@ -188,7 +185,7 @@ function renderResp(matchResp) {
           closable
         />
         <br />
-        <Collapse defaultActiveKey={["3"]} expandIconPosition="left">
+        <Collapse defaultActiveKey={['3']} expandIconPosition="left">
           {!_.isEmpty(ruleDetail) && (
             <Panel
               header="Rule"
@@ -215,12 +212,12 @@ function renderResp(matchResp) {
 function renderMatchError(matchError) {
   let msgError = matchError.message;
   let ps = 0;
-  if (msgError !== "") ps = msgError.search("500");
+  if (msgError !== '') ps = msgError.search('500');
 
   if (ps > 0) {
     msgError = matchError.response.data.message;
   }
-  msgError = msgError.concat(" Execution Time :", execTime);
+  msgError = msgError.concat(' Execution Time :', execTime);
   return (
     <>
       <br />
@@ -241,7 +238,7 @@ function renderPageError(pageError) {
   if (pageError.response) {
     msgError = pageError.response.data.message;
   }
-  const subTitle = "".concat("Sorry, the server is wrong. ", msgError);
+  const subTitle = ''.concat('Sorry, the server is wrong. ', msgError);
   return (
     <>
       <br />
@@ -256,21 +253,22 @@ function renderPageError(pageError) {
 }
 
 function isLoading(current) {
-  return current.matches("init") || current.matches("submitting");
+  return current.matches('init') || current.matches('submitting');
 }
 
 function renderPreview(ruleID, tags) {
   if (_.isEmpty(tags)) {
     return (
       <div>
-        No tags data. Register tags at{" "}
+        No tags data. Register tags at
+        {' '}
         <Link to={`/rules/${ruleID}`}>Rule Detail</Link>
       </div>
     );
   }
   const textAreaVal = tags
     .map(({ type, value, attributes }) => {
-      let attributesStr = "";
+      let attributesStr = '';
       if (!_.isEmpty(attributes)) {
         if (_.isPlainObject(attributes)) {
           Object.entries(attributes).forEach(([key, value]) => {
@@ -287,7 +285,7 @@ function renderPreview(ruleID, tags) {
 
       return `<${type}${attributesStr}>${value}</${type}>`;
     })
-    .join("\n");
+    .join('\n');
 
   return (
     <SyntaxHighlighter language="html" style={docco}>

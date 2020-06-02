@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
@@ -26,13 +26,12 @@ func (p *Controller) SetRoute(e *echo.Echo) {
 	g.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	g.Use(middleware.Recover())
 
-	g.GET("p/match", p.MatchRule)
-	g.GET("p/fetch-tags", p.FetchTag)
+	g.GET("/match", p.MatchRule)
+	g.GET("/fetch-tags", p.FetchTag)
 }
 
 // MatchRule to match rule
 func (p *Controller) MatchRule(c echo.Context) (err error) {
-
 	ctx := c.Request().Context()
 	resp, err := p.Service.Match(ctx, c.QueryParams())
 

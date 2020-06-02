@@ -2,11 +2,9 @@ package app
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	logrusmiddleware "github.com/bakatz/echo-logrusmiddleware"
-	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/internal/api"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/profiler"
@@ -25,10 +23,7 @@ type server struct {
 
 	API      api.API
 	Provider provider.Controller
-	Profiler profiler.Controller
-
-	Postgres *sql.DB
-	Redis    *redis.Client
+	Profiler profiler.Router
 }
 
 func startServer(s server) error {
@@ -46,7 +41,7 @@ func startServer(s server) error {
 
 	s.API.SetRoute(e)
 	s.Provider.SetRoute(e)
-	s.Profiler.SetRoute(e)
+	s.Profiler.Route(e)
 
 	return e.Start(s.Address)
 }

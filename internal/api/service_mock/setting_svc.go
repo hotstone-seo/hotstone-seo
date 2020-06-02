@@ -64,6 +64,20 @@ func (mr *MockSettingSvcMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockSettingSvc)(nil).FindOne), arg0, arg1)
 }
 
+// GetValue mocks base method
+func (m *MockSettingSvc) GetValue(arg0 context.Context, arg1 string) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetValue", arg0, arg1)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GetValue indicates an expected call of GetValue
+func (mr *MockSettingSvcMockRecorder) GetValue(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValue", reflect.TypeOf((*MockSettingSvc)(nil).GetValue), arg0, arg1)
+}
+
 // Update mocks base method
 func (m *MockSettingSvc) Update(arg0 context.Context, arg1 string, arg2 *repository.Setting) error {
 	m.ctrl.T.Helper()
