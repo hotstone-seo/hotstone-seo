@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -134,9 +135,10 @@ type DataModule struct {
 	Module []Module `json:"modules"`
 }
 type Module struct {
-	Label string `json:"label"`
-	Name  string `json:"name"`
-	Path  string `json:"path"`
+	Label   string `json:"label"`
+	Name    string `json:"name"`
+	Path    string `json:"path"`
+	APIPath string `json:"api_path"`
 }
 
 // Middleware for check auth module access
@@ -148,7 +150,7 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			claims := user.Claims.(jwt.MapClaims)
 			modules := claims["modules"]
 
-			currentURLPath := ce.Path() // get API Path
+			currentAccessAPIPath := ce.Path() // get current API Path
 
 			in := []byte(modules.(string))
 			var raw DataModule
@@ -157,21 +159,56 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			}
 			modArray := raw.Module
 
+			//TODO: save these paths to modules (in array)
+			var newModule = new(Module)
+			newModule.Name = "center"
+			newModule.Label = "api center for add local business, etc"
+			newModule.Path = "-"
+			newModule.APIPath = "api/center"
+			modArray = append(modArray, *newModule)
+
+			newModule = new(Module)
+			newModule.Name = "structureddata"
+			newModule.Label = "api center for get structured-data"
+			newModule.Path = "-"
+			newModule.APIPath = "api/structured-data"
+			modArray = append(modArray, *newModule)
+
+			newModule = new(Module)
+			newModule.Name = "tags"
+			newModule.Label = "api tags"
+			newModule.Path = "-"
+			newModule.APIPath = "api/tags"
+			modArray = append(modArray, *newModule)
+
+			newModule = new(Module)
+			newModule.Name = "fetchtags"
+			newModule.Label = "fetch tags"
+			newModule.Path = "-"
+			newModule.APIPath = "p/fetch-tags"
+			modArray = append(modArray, *newModule)
+			//end TODO
+
 			isAllow := false
 			for index, result := range modArray {
-				fmt.Println(index)
-
-				// TODO: compare currentURLPath with regex pattern module
-				if "/api/"+result.Path == currentURLPath { //compare current URL with user privilege user
+				idxStr := strings.Index(currentAccessAPIPath, "/"+result.APIPath)
+				if idxStr > -1 {
+					log.Infof(currentAccessAPIPath, " was found at index", index)
 					isAllow = true
 					break
 				}
 			}
-			fmt.Println(isAllow)
-			/* if !isAllow {
-				// return c.Logout(ce)
-				return echo.ErrUnauthorized
-			} */
+
+			if !isAllow {
+				log.Errorf("CheckAuthModules. Invalid Access")
+				failureURL, err := urlWithQueryParams(c.RedirectFailure, url.Values{"oauth_error": {"true"}})
+				if err != nil {
+					return fmt.Errorf("CheckAuthModules: %s", err.Error())
+				}
+				ce.SetCookie(&http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"})
+				ce.SetCookie(&http.Cookie{Name: "token", MaxAge: -1, Path: "/"})
+				return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
+			}
 			return next(ce)
 		}
 	}
