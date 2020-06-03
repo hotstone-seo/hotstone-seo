@@ -12,15 +12,21 @@ function RuleForm(props) {
     rule, dataSources, onSubmit, formLayout,
   } = props;
   const [form] = Form.useForm();
+  const { id, status } = rule;
 
   useEffect(() => {
     form.setFieldsValue(rule);
   }, [rule, form]);
 
+  const onFinish = (values) => {
+    const formRule = { ...values, id, status };
+    onSubmit(formRule);
+  };
+
   return (
     <Form
       form={form}
-      onFinish={onSubmit}
+      onFinish={onFinish}
       layout={formLayout}
       labelCol={
         formLayout === 'horizontal' ? { span: 6 } : null
@@ -108,6 +114,7 @@ RuleForm.propTypes = {
   rule: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
+    status: PropTypes.string,
     url_pattern: PropTypes.string,
     data_source_ids: PropTypes.arrayOf(PropTypes.number),
   }),
