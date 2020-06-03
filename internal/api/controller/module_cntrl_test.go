@@ -46,7 +46,7 @@ func TestModuleController_Find(t *testing.T) {
 					Target: "/",
 				},
 				ExpectedCode: http.StatusOK,
-				ExpectedBody: "[{\"id\":1,\"name\":\"rule\",\"path\":\"rules\",\"api_path\":\"\",\"pattern\":\"rules*\",\"label\":\"Rules\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n",
+				ExpectedBody: "[{\"id\":1,\"name\":\"rule\",\"path\":\"rules\",\"api_path\":null,\"pattern\":\"rules*\",\"label\":\"Rules\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n",
 			},
 			moduleCntrlBuilder: moduleCntrlBuilder{
 				moduleSvcFn: func(svc *service_mock.MockModuleService) {
@@ -92,7 +92,7 @@ func TestModuleController_FindOne(t *testing.T) {
 					URLParams: map[string]string{"id": "1"},
 				},
 				ExpectedCode: http.StatusOK,
-				ExpectedBody: "{\"id\":1,\"name\":\"rule\",\"path\":\"rules\",\"api_path\":\"\",\"pattern\":\"rules*\",\"label\":\"Rules\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n",
+				ExpectedBody: "{\"id\":1,\"name\":\"rule\",\"path\":\"rules\",\"api_path\":null,\"pattern\":\"rules*\",\"label\":\"Rules\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n",
 			},
 			moduleCntrlBuilder: moduleCntrlBuilder{
 				moduleSvcFn: func(svc *service_mock.MockModuleService) {
@@ -252,11 +252,11 @@ func TestModuleController_Create(t *testing.T) {
 				Request: echotest.Request{
 					Method: http.MethodPost,
 					Target: "/",
-					Body:   `{"name":"some-name", "path":"some-path", "api_path":"some-api-path"}`,
+					Body:   `{"name":"some-name", "path":"some-path","pattern":"string pattern","label":"string label","api_path":[{"path":"api/rules"}]}`,
 					Header: echotest.HeaderForJSON(),
 				},
 				ExpectedCode: http.StatusCreated,
-				ExpectedBody: "{\"id\":100,\"name\":\"some-name\",\"path\":\"some-path\",\"api_path\":\"some-api-path\",\"pattern\":\"\",\"label\":\"\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n",
+				ExpectedBody: "{\"id\":100,\"name\":\"some-name\",\"path\":\"\",\"api_path\":null,\"pattern\":\"\",\"label\":\"\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n",
 			},
 			moduleCntrlBuilder: moduleCntrlBuilder{
 				moduleSvcFn: func(svc *service_mock.MockModuleService) {
@@ -275,6 +275,14 @@ func TestModuleController_Create(t *testing.T) {
 	}
 }
 
+/*
+ID       int64     `json:"id"`
+	Name     string    `json:"name"`
+	Path     string    `json:"path"`
+	APIPaths []APIPath `json:"api_path"`
+	Pattern  string    `json:"pattern"`
+	Label    string    `json:"label"`
+*/
 func TestModuleController_Update(t *testing.T) {
 	testcases := []testCase{
 		{

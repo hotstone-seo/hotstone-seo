@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"time"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
@@ -13,7 +15,8 @@ import (
 type ModuleService interface {
 	FindOne(ctx context.Context, id int64) (*repository.Module, error)
 	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.Module, error)
-	Insert(ctx context.Context, module repository.Module) (lastInsertID int64, err error)
+	//Insert(ctx context.Context, module repository.Module) (lastInsertID int64, err error)
+	Insert(ctx context.Context, req ModuleRequest) (lastInsertID int64, err error)
 	Delete(ctx context.Context, id int64) error
 	Update(ctx context.Context, module repository.Module) error
 }
@@ -44,22 +47,40 @@ func (r *ModuleServiceImpl) Find(ctx context.Context, paginationParam repository
 }
 
 // Insert module
-func (r *ModuleServiceImpl) Insert(ctx context.Context, module repository.Module) (newUserID int64, err error) {
+//func (r *ModuleServiceImpl) Insert(ctx context.Context, module repository.Module) (newUserID int64, err error) {
+func (r *ModuleServiceImpl) Insert(ctx context.Context, req ModuleRequest) (newID int64, err error) {
+	var data repository.Module
+	data = repository.Module{
+		Name:    req.Name,
+		Path:    req.Path,
+		Label:   req.Label,
+		Pattern: req.Pattern,
+		APIPath: map[string]interface{}{
+			"api_path": mapAPIPath(req.APIPaths),
+		},
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
 	defer r.BeginTxn(&ctx)()
-	if newUserID, err = r.ModuleRepo.Insert(ctx, module); err != nil {
+	if data.ID, err = r.ModuleRepo.Insert(ctx, data); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	newModule, err := r.ModuleRepo.FindOne(ctx, newUserID)
+
+	/*if newUserID, err = r.ModuleRepo.Insert(ctx, module); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}*/
+	newModule, err := r.ModuleRepo.FindOne(ctx, data.ID)
 	if err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "modules", newUserID, repository.Insert, nil, newModule); err != nil {
+	if _, err = r.AuditTrailService.RecordChanges(ctx, "modules", data.ID, repository.Insert, nil, newModule); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	return newUserID, nil
+	return data.ID, nil
 }
 
 // Delete module
@@ -108,4 +129,15 @@ func (r *ModuleServiceImpl) Update(ctx context.Context, module repository.Module
 		return
 	}
 	return nil
+}
+
+func mapAPIPath(mItem []APIPath) []map[string]interface{} {
+	pathsMap := make([]map[string]interface{}, len(mItem))
+	for index, tempPath := range mItem {
+		fmt.Println(tempPath.Path)
+		pathsMap[index] = map[string]interface{}{
+			"path": tempPath.Path,
+		}
+	}
+	return pathsMap
 }
