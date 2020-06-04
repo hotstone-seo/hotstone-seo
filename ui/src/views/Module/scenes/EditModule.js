@@ -29,18 +29,12 @@ function EditModule() {
   }, [moduleID, history]);
 
   const handleEdit = (newModule) => {
-    updateModule(newModule)
-      .then(() => {
-        history.push('/modules', {
-          message: {
-            level: 'success',
-            content: `Module ${newModule.name} is successfully edit`,
-          },
-        });
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
+    history.push('/modules', {
+      message: {
+        level: 'success',
+        content: `Module ${newModule.name} is successfully edit`,
+      },
+    });
   };
 
   return (

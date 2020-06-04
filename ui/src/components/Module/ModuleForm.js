@@ -8,19 +8,24 @@ import { createModule , updateModule } from 'api/module';
 
 function ModuleForm({ module, handleSubmit }) {
   const [form] = Form.useForm();
-
+  const { api_path, id } = module;
+  let apiPaths = [];
+  if ( api_path !== undefined) {
+    Object.keys(module.api_path).forEach((key) => {
+      apiPaths = api_path[key];
+    });
+  }
   useEffect(() => {
+    module.api_path = apiPaths;
     form.setFieldsValue(module);
-  }, [module, form]);
-
-  const { api_path, id, name, path, pattern, label } = module;
-  const apiPs = undefined;
+  }, [module, form, apiPaths]);
 
   const onFinish = (values) => {
     const formStruct = { ...values, id };
     const submit = id ? updateModule : createModule;
     submit(formStruct)
       .then((response) => {
+        response.name = values.name;
         handleSubmit(response);
       })
       .catch((error) => {
@@ -31,10 +36,10 @@ function ModuleForm({ module, handleSubmit }) {
   return (
     <Form
       form={form}
+      initialValues={{ ...module }}
       onFinish={onFinish}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
-      initialValues={apiPs}
     >
       <Form.Item name="id" noStyle>
         <Input type="hidden" />
@@ -132,6 +137,22 @@ ModuleForm.propTypes = {
     path: PropTypes.string,
     pattern: PropTypes.string,
     label: PropTypes.string,
+    api_path: PropTypes.arrayOf(
+      PropTypes.shape({
+        path: PropTypes.string,
+      }),
+    ),
+  }),
+  handleSubmit: PropTypes.func.isRequired,
+};
+
+/*
+module: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    path: PropTypes.string,
+    pattern: PropTypes.string,
+    label: PropTypes.string,
     api_path: PropTypes.shape({
       apiPaths: PropTypes.arrayOf(
         PropTypes.shape({
@@ -141,6 +162,5 @@ ModuleForm.propTypes = {
     }),
   }),
   handleSubmit: PropTypes.func.isRequired,
-};
-
+  */
 export default ModuleForm;
