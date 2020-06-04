@@ -9,3 +9,5 @@ CREATE TABLE tags (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL
 );
+
+CREATE INDEX tags_rule_id_locale_idx ON tags(rule_id, locale);
