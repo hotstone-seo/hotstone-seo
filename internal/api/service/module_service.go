@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
@@ -15,10 +14,9 @@ import (
 type ModuleService interface {
 	FindOne(ctx context.Context, id int64) (*repository.Module, error)
 	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.Module, error)
-	//Insert(ctx context.Context, module repository.Module) (lastInsertID int64, err error)
 	Insert(ctx context.Context, req ModuleRequest) (lastInsertID int64, err error)
 	Delete(ctx context.Context, id int64) error
-	Update(ctx context.Context, module repository.Module) error
+	Update(ctx context.Context, req ModuleRequest) error
 }
 
 // ModuleServiceImpl is implementation of ModuleService
@@ -66,11 +64,6 @@ func (r *ModuleServiceImpl) Insert(ctx context.Context, req ModuleRequest) (newI
 		r.CancelMe(ctx, err)
 		return
 	}
-
-	/*if newUserID, err = r.ModuleRepo.Insert(ctx, module); err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}*/
 	newModule, err := r.ModuleRepo.FindOne(ctx, data.ID)
 	if err != nil {
 		r.CancelMe(ctx, err)
@@ -108,23 +101,36 @@ func (r *ModuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 }
 
 // Update module
-func (r *ModuleServiceImpl) Update(ctx context.Context, module repository.Module) (err error) {
+func (r *ModuleServiceImpl) Update(ctx context.Context, req ModuleRequest) (err error) {
 	defer r.BeginTxn(&ctx)()
-	oldModule, err := r.ModuleRepo.FindOne(ctx, module.ID)
+	oldModule, err := r.ModuleRepo.FindOne(ctx, req.ID)
 	if err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	if err = r.ModuleRepo.Update(ctx, module); err != nil {
+	var data repository.Module
+	data = repository.Module{
+		ID:      req.ID,
+		Name:    req.Name,
+		Path:    req.Path,
+		Label:   req.Label,
+		Pattern: req.Pattern,
+		APIPath: map[string]interface{}{
+			"api_path": mapAPIPath(req.APIPaths),
+		},
+		UpdatedAt: time.Now(),
+	}
+
+	if err = r.ModuleRepo.Update(ctx, data); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	newUser, err := r.ModuleRepo.FindOne(ctx, module.ID)
+	newModule, err := r.ModuleRepo.FindOne(ctx, req.ID)
 	if err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "modules", module.ID, repository.Update, oldModule, newUser); err != nil {
+	if _, err = r.AuditTrailService.RecordChanges(ctx, "modules", req.ID, repository.Update, oldModule, newModule); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
@@ -134,7 +140,6 @@ func (r *ModuleServiceImpl) Update(ctx context.Context, module repository.Module
 func mapAPIPath(mItem []APIPath) []map[string]interface{} {
 	pathsMap := make([]map[string]interface{}, len(mItem))
 	for index, tempPath := range mItem {
-		fmt.Println(tempPath.Path)
 		pathsMap[index] = map[string]interface{}{
 			"path": tempPath.Path,
 		}

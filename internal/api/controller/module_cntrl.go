@@ -98,7 +98,7 @@ func (c *ModuleCntrl) Delete(ctx echo.Context) (err error) {
 
 // Update module
 func (c *ModuleCntrl) Update(ctx echo.Context) (err error) {
-	var module repository.Module
+	/* var module repository.Module
 	ctx0 := ctx.Request().Context()
 	if err = ctx.Bind(&module); err != nil {
 		return err
@@ -114,5 +114,21 @@ func (c *ModuleCntrl) Update(ctx echo.Context) (err error) {
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Success update module #%d", module.ID),
+	}) */
+	var (
+		req service.ModuleRequest
+	)
+	ctx0 := ctx.Request().Context()
+	if err = ctx.Bind(&req); err != nil {
+		return err
+	}
+	if req.ID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	}
+	if err = c.ModuleService.Update(ctx0, req); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Success update module #%d", req.ID),
 	})
 }

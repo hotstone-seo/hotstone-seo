@@ -95,7 +95,7 @@ func (mr *MockModuleServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.
 }
 
 // Update mocks base method
-func (m *MockModuleService) Update(arg0 context.Context, arg1 repository.Module) error {
+func (m *MockModuleService) Update(arg0 context.Context, arg1 service.ModuleRequest) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1)
 	ret0, _ := ret[0].(error)

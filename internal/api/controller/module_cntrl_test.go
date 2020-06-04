@@ -275,14 +275,6 @@ func TestModuleController_Create(t *testing.T) {
 	}
 }
 
-/*
-ID       int64     `json:"id"`
-	Name     string    `json:"name"`
-	Path     string    `json:"path"`
-	APIPaths []APIPath `json:"api_path"`
-	Pattern  string    `json:"pattern"`
-	Label    string    `json:"label"`
-*/
 func TestModuleController_Update(t *testing.T) {
 	testcases := []testCase{
 		{
@@ -301,7 +293,7 @@ func TestModuleController_Update(t *testing.T) {
 				Request: echotest.Request{
 					Method: http.MethodPost,
 					Target: "/",
-					Body:   `{"id" : 1, "name":"some-name", "path":"some-path"}`,
+					Body:   `{"id" : 1,"name":"some-name", "path":"some-path","pattern":"string pattern","label":"string label","api_path":[{"path":"api/rules"}]}`,
 					Header: echotest.HeaderForJSON(),
 				},
 				ExpectedCode: http.StatusOK,
