@@ -6,4 +6,6 @@ CREATE TABLE structured_datas (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ DEFAULT NULL
-)
+);
+
+CREATE INDEX structured_datas_rule_id_idx ON structured_datas(rule_id);
