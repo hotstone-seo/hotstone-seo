@@ -1,20 +1,43 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button,
+  Form, Input, Button, Divider, message,
 } from 'antd';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { createModule , updateModule } from 'api/module';
 
 function ModuleForm({ module, handleSubmit }) {
   const [form] = Form.useForm();
-
+  const { api_path, id } = module;
+  let apiPaths = [];
+  if ( api_path !== undefined) {
+    Object.keys(module.api_path).forEach((key) => {
+      apiPaths = api_path[key];
+    });
+  }
   useEffect(() => {
+    module.api_path = apiPaths;
     form.setFieldsValue(module);
-  }, [module, form]);
+  }, [module, form, apiPaths]);
+
+  const onFinish = (values) => {
+    const formStruct = { ...values, id };
+    const submit = id ? updateModule : createModule;
+    submit(formStruct)
+      .then((response) => {
+        response.name = values.name;
+        handleSubmit(response);
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
 
   return (
     <Form
       form={form}
-      onFinish={handleSubmit}
+      initialValues={{ ...module }}
+      onFinish={onFinish}
       labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
     >
@@ -39,14 +62,6 @@ function ModuleForm({ module, handleSubmit }) {
       </Form.Item>
 
       <Form.Item
-        name="api_path"
-        label="API Path"
-        rules={[{ required: true, message: 'Please input the API Path' }]}
-      >
-        <Input data-testid="input-api-path" placeholder="API Path" maxLength="50" />
-      </Form.Item>
-
-      <Form.Item
         name="pattern"
         label="URL Regex Pattern"
         rules={[{ required: true, message: 'Please input the URL Regex Pattern' }]}
@@ -62,6 +77,44 @@ function ModuleForm({ module, handleSubmit }) {
         <Input data-testid="input-label" placeholder="Label Text" maxLength="30" />
       </Form.Item>
 
+      <Form.Item
+        label="API Path"
+      >
+        <Form.List name="api_path">
+          {(fields, { add, remove }) => (
+            <div>
+              {fields.map((field, index) => (
+                <>
+                  <Divider orientation="left">{`API Path #${index + 1}`}</Divider>
+                  <Form.Item>
+                    <Form.Item
+                      name={[field.name, 'path']}
+                      fieldKey={[field.fieldKey, 'path']}
+                      noStyle
+                    >
+                      <Input placeholder="API Path" style={{ width: '90%' }} />
+                    </Form.Item>
+                    <Button
+                      type="primary"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => { remove(field.name); }}
+                      style={{ position: 'relative', margin: '0 8px' }}
+                    />
+                  </Form.Item>
+                </>
+              ))}
+              <Button
+                type="dashed"
+                onClick={() => { add(); }}
+              >
+                <PlusOutlined />
+                Add API Path
+              </Button>
+            </div>
+          )}
+        </Form.List>
+      </Form.Item>
       <Form.Item
         wrapperCol={{ offset: 6, span: 14 }}
       >
@@ -84,8 +137,30 @@ ModuleForm.propTypes = {
     path: PropTypes.string,
     pattern: PropTypes.string,
     label: PropTypes.string,
+    api_path: PropTypes.arrayOf(
+      PropTypes.shape({
+        path: PropTypes.string,
+      }),
+    ),
   }),
   handleSubmit: PropTypes.func.isRequired,
 };
 
+/*
+module: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+    path: PropTypes.string,
+    pattern: PropTypes.string,
+    label: PropTypes.string,
+    api_path: PropTypes.shape({
+      apiPaths: PropTypes.arrayOf(
+        PropTypes.shape({
+          path: PropTypes.string,
+        }),
+      ),
+    }),
+  }),
+  handleSubmit: PropTypes.func.isRequired,
+  */
 export default ModuleForm;

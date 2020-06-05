@@ -4,28 +4,21 @@ import {
   PageHeader, Row, Col, message,
 } from 'antd';
 import { ModuleForm } from 'components/Module';
-import { createModule } from 'api/module';
 
 function AddModule() {
   const history = useHistory();
 
   const handleCreate = (module) => {
-    createModule(module)
-      .then((newModule) => {
-        if (newModule.name === undefined) {
-          message.error(`Module ${module.name} already register`);
-        } else {
-          history.push('/modules', {
-            message: {
-              level: 'success',
-              content: `${newModule.name} is successfully created`,
-            },
-          });
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
+    if (module.name === undefined) {
+      message.error(`Module ${module.name} already register`);
+    } else {
+      history.push('/modules', {
+        message: {
+          level: 'success',
+          content: `${module.name} is successfully created`,
+        },
       });
+    }
   };
 
   return (

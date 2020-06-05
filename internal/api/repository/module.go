@@ -16,7 +16,7 @@ type Module struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name" validate:"required"`
 	Path      string    `json:"path"`
-	APIPath   string    `json:"api_path"`
+	APIPath   JSONMap   `json:"api_path"`
 	Pattern   string    `json:"pattern"`
 	Label     string    `json:"label"`
 	UpdatedAt time.Time `json:"updated_at"`
