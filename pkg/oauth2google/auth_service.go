@@ -56,6 +56,7 @@ func NewService(cfg *Config, userRepo repository.UserRepo, roleTypeRepo reposito
 	}
 }
 
+// GetAuthCodeURL returns URL to validate and protect user from CSRF attacks
 func (c *AuthServiceImpl) GetAuthCodeURL(ce echo.Context, cookieSecure bool) (authCodeURL string) {
 	// Create oauthState cookie
 	oauthState := c.setRandomCookie(ce, "oauthstate", time.Now().Add(StateExpiration), cookieSecure)
