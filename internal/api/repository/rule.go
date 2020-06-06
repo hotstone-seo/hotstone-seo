@@ -13,14 +13,14 @@ import (
 
 // Rule Entity
 type Rule struct {
-	ID             int64     `json:"id"`
-	Name           string    `json:"name" validate:"required"`
-	URLPattern     string    `json:"url_pattern" validate:"required,uri"`
-	DataSourceIDs  []int64   `json:"data_source_ids"`
-	UpdatedAt      time.Time `json:"updated_at"`
-	CreatedAt      time.Time `json:"created_at"`
-	Status         string    `json:"status"`
-	ChangeStatusAt time.Time `json:"change_status_at"`
+	ID             int64     `json:"id" structs:"id"`
+	Name           string    `json:"name" structs:"name" validate:"required"`
+	URLPattern     string    `json:"url_pattern" structs:"url_pattern" validate:"required,uri"`
+	DataSourceIDs  []int64   `json:"data_source_ids" structs:"data_source_ids"`
+	UpdatedAt      time.Time `json:"updated_at" structs:"updated_at"`
+	CreatedAt      time.Time `json:"created_at" structs:"created_at"`
+	Status         string    `json:"status" structs:"status"`
+	ChangeStatusAt time.Time `json:"change_status_at" structs:"change_status_at"`
 }
 
 // RuleRepo is rule repository
