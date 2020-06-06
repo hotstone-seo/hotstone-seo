@@ -36,6 +36,15 @@ export function updateRule(rule) {
     });
 }
 
+export function patchRule(id, fields) {
+  return client
+    .patch(`/rules/${id}`, fields)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
 export function deleteRule(id) {
   return client
     .delete(`/rules/${id}`)
@@ -50,6 +59,7 @@ const RuleAPI = {
   get: getRule,
   create: createRule,
   update: updateRule,
+  patch: patchRule,
   delete: deleteRule,
 };
 
