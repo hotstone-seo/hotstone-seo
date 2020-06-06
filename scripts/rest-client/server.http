@@ -33,6 +33,14 @@ content-type: application/json
     "data_source_id" : 2
 }
 
+### Patch Rule
+PATCH http://localhost:8089/api/rules/1
+Cookie: {{secure_token}}
+Content-Type: application/json
+
+{
+    "status": "start"
+}
 
 ### Update Status Start/Stop Rule
 PUT http://localhost:8089/api/rules
