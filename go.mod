@@ -18,6 +18,7 @@ require (
 	github.com/imantung/mario v0.9.0
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/labstack/echo v3.3.10+incompatible
+	github.com/labstack/gommon v0.2.8
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/stretchr/testify v1.5.1

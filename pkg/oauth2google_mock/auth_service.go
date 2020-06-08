@@ -5,7 +5,9 @@
 package oauth2google_mock
 
 import (
+	context "context"
 	gomock "github.com/golang/mock/gomock"
+	oauth2google "github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	echo "github.com/labstack/echo"
 	reflect "reflect"
 )
@@ -33,31 +35,71 @@ func (m *MockAuthService) EXPECT() *MockAuthServiceMockRecorder {
 	return m.recorder
 }
 
-// GetAuthCodeURL mocks base method
-func (m *MockAuthService) GetAuthCodeURL(arg0 echo.Context, arg1 bool) string {
+// GenerateOauthState mocks base method
+func (m *MockAuthService) GenerateOauthState() string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAuthCodeURL", arg0, arg1)
+	ret := m.ctrl.Call(m, "GenerateOauthState")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// GenerateOauthState indicates an expected call of GenerateOauthState
+func (mr *MockAuthServiceMockRecorder) GenerateOauthState() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateOauthState", reflect.TypeOf((*MockAuthService)(nil).GenerateOauthState))
+}
+
+// GetAuthCodeURL mocks base method
+func (m *MockAuthService) GetAuthCodeURL(arg0 string) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAuthCodeURL", arg0)
 	ret0, _ := ret[0].(string)
 	return ret0
 }
 
 // GetAuthCodeURL indicates an expected call of GetAuthCodeURL
-func (mr *MockAuthServiceMockRecorder) GetAuthCodeURL(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockAuthServiceMockRecorder) GetAuthCodeURL(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAuthCodeURL", reflect.TypeOf((*MockAuthService)(nil).GetAuthCodeURL), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAuthCodeURL", reflect.TypeOf((*MockAuthService)(nil).GetAuthCodeURL), arg0)
 }
 
-// VerifyCallback mocks base method
-func (m *MockAuthService) VerifyCallback(arg0 echo.Context, arg1 string) (string, error) {
+// SetState mocks base method
+func (m *MockAuthService) SetState(arg0 echo.Context, arg1 string) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "VerifyCallback", arg0, arg1)
-	ret0, _ := ret[0].(string)
+	m.ctrl.Call(m, "SetState", arg0, arg1)
+}
+
+// SetState indicates an expected call of SetState
+func (mr *MockAuthServiceMockRecorder) SetState(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetState", reflect.TypeOf((*MockAuthService)(nil).SetState), arg0, arg1)
+}
+
+// VerifyState mocks base method
+func (m *MockAuthService) VerifyState(arg0 echo.Context, arg1 string) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyState", arg0, arg1)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// VerifyState indicates an expected call of VerifyState
+func (mr *MockAuthServiceMockRecorder) VerifyState(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyState", reflect.TypeOf((*MockAuthService)(nil).VerifyState), arg0, arg1)
+}
+
+// VerifyUser mocks base method
+func (m *MockAuthService) VerifyUser(arg0 context.Context, arg1 string) (oauth2google.GoogleUser, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyUser", arg0, arg1)
+	ret0, _ := ret[0].(oauth2google.GoogleUser)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// VerifyCallback indicates an expected call of VerifyCallback
-func (mr *MockAuthServiceMockRecorder) VerifyCallback(arg0, arg1 interface{}) *gomock.Call {
+// VerifyUser indicates an expected call of VerifyUser
+func (mr *MockAuthServiceMockRecorder) VerifyUser(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyCallback", reflect.TypeOf((*MockAuthService)(nil).VerifyCallback), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyUser", reflect.TypeOf((*MockAuthService)(nil).VerifyUser), arg0, arg1)
 }
