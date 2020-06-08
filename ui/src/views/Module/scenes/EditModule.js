@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import {
-  PageHeader, Row, Col, message,
+  PageHeader, Row, Col,
 } from 'antd';
 import { ModuleForm } from 'components/Module';
-import { getModule, updateModule } from 'api/module';
+import { getModule } from 'api/module';
 
 function EditModule() {
   const { id } = useParams();
@@ -32,7 +32,7 @@ function EditModule() {
     history.push('/modules', {
       message: {
         level: 'success',
-        content: `Module ${newModule.name} is successfully edit`,
+        content: `Module ${newModule.name} has been successfully updated`,
       },
     });
   };
