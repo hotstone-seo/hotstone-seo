@@ -37,8 +37,9 @@ type (
 		cfg *Config
 	}
 
-	GoogleOauth2UserInfoResp map[string]interface{}
+	googleOauth2UserInfoResp map[string]interface{}
 
+	// GoogleUser holds Google user information
 	GoogleUser struct {
 		Email   string
 		Picture string
@@ -110,14 +111,7 @@ func (c *AuthServiceImpl) VerifyUser(ctx context.Context, code string) (gUser Go
 	return GoogleUser{Email: userInfoResp["email"].(string), Picture: userInfoResp["picture"].(string)}, nil
 }
 
-func (c *AuthServiceImpl) setRandomCookie(ce echo.Context, cookieName string, expiration time.Time, cookieSecure bool) string {
-	randomVal := generateRandomBase64(64)
-	cookie := &http.Cookie{Name: cookieName, Value: randomVal, Expires: expiration, HttpOnly: true, Secure: cookieSecure}
-	ce.SetCookie(cookie)
-	return randomVal
-}
-
-func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string) (userInfoResp GoogleOauth2UserInfoResp, err error) {
+func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string) (userInfoResp googleOauth2UserInfoResp, err error) {
 	// Use code to get token and get user info from Google.
 	token, err := c.Exchange(ctx, code)
 	if err != nil {
@@ -142,7 +136,7 @@ func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string
 	return userInfoResp, nil
 }
 
-func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp GoogleOauth2UserInfoResp) error {
+func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp googleOauth2UserInfoResp) error {
 	if verifiedEmail, ok := userInfoResp["verified_email"]; !ok || !verifiedEmail.(bool) {
 		return errors.New("AuthUserInfo: invalid or empty verified_email")
 	}
