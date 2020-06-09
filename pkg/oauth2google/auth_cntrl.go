@@ -2,13 +2,11 @@ package oauth2google
 
 import (
 	"fmt"
-
-	log "github.com/sirupsen/logrus"
-
 	"net/http"
 	"net/url"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 	"go.uber.org/dig"
 )
 

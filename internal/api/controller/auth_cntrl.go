@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -115,10 +114,14 @@ type DataModule struct {
 	Module []Module `json:"modules"`
 }
 type Module struct {
-	Label   string `json:"label"`
-	Name    string `json:"name"`
-	Path    string `json:"path"`
-	APIPath string `json:"api_path"`
+	Label   string     `json:"label"`
+	Name    string     `json:"name"`
+	Path    string     `json:"path"`
+	APIPath []APIPathS `json:"api_path"`
+}
+
+type APIPathS struct {
+	Path string `json:"path"`
 }
 
 // CheckAuthModules for check auth module access
@@ -139,55 +142,24 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			}
 			modArray := raw.Module
 
-			//TODO: save these paths to modules (in array)
-			var newModule = new(Module)
-			newModule.Name = "center"
-			newModule.Label = "api center for add local business, etc"
-			newModule.Path = "-"
-			newModule.APIPath = "api/center"
-			modArray = append(modArray, *newModule)
-
-			newModule = new(Module)
-			newModule.Name = "structureddata"
-			newModule.Label = "api center for get structured-data"
-			newModule.Path = "-"
-			newModule.APIPath = "api/structured-data"
-			modArray = append(modArray, *newModule)
-
-			newModule = new(Module)
-			newModule.Name = "tags"
-			newModule.Label = "api tags"
-			newModule.Path = "-"
-			newModule.APIPath = "api/tags"
-			modArray = append(modArray, *newModule)
-
-			newModule = new(Module)
-			newModule.Name = "fetchtags"
-			newModule.Label = "fetch tags"
-			newModule.Path = "-"
-			newModule.APIPath = "p/fetch-tags"
-			modArray = append(modArray, *newModule)
-			//end TODO
-
 			isAllow := false
 			for index, result := range modArray {
-				idxStr := strings.Index(currentAccessAPIPath, "/"+result.APIPath)
-				if idxStr > -1 {
-					log.Infof(currentAccessAPIPath, " was found at index", index)
-					isAllow = true
+				for k, v := range result.APIPath {
+					idxStr := strings.Index(currentAccessAPIPath, v.Path)
+					if idxStr > -1 {
+						log.Infof(currentAccessAPIPath, " was found at index", index, ";", k)
+						isAllow = true
+						break
+					}
+				}
+				if isAllow {
 					break
 				}
 			}
-
 			if !isAllow {
 				log.Errorf("CheckAuthModules. Invalid Access")
-				failureURL, err := urlWithQueryParams(c.LogoutRedirect, url.Values{"oauth_error": {"true"}})
-				if err != nil {
-					return fmt.Errorf("CheckAuthModules: %s", err.Error())
-				}
-				ce.SetCookie(&http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"})
-				ce.SetCookie(&http.Cookie{Name: "token", MaxAge: -1, Path: "/"})
-				return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
+				c.clean(ce)
+				return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
 			}
 			return next(ce)
 		}
