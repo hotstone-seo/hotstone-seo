@@ -24,6 +24,7 @@ func (c *RuleCntrl) Route(e *echo.Group) {
 	e.POST("/rules", c.Create)
 	e.GET("/rules/:id", c.FindOne)
 	e.PUT("/rules", c.Update)
+	e.PATCH("/rules/:id", c.Patch)
 	e.DELETE("/rules/:id", c.Delete)
 }
 
@@ -113,5 +114,25 @@ func (c *RuleCntrl) Update(ctx echo.Context) (err error) {
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Success update rule #%d", rule.ID),
+	})
+}
+
+func (c *RuleCntrl) Patch(ctx echo.Context) (err error) {
+	var (
+		id     int64
+		fields map[string]interface{}
+	)
+	reqCtx := ctx.Request().Context()
+	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid ID")
+	}
+	if err = ctx.Bind(&fields); err != nil {
+		return err
+	}
+	if err = c.RuleService.Patch(reqCtx, id, fields); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return ctx.JSON(http.StatusOK, GeneralResponse{
+		Message: fmt.Sprintf("Successfully patch rule #%d", id),
 	})
 }

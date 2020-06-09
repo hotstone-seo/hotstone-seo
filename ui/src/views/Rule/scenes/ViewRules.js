@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { PageHeader, Button, message } from 'antd';
-import { deleteRule, updateRule } from 'api/rule';
+import { deleteRule, patchRule } from 'api/rule';
 import { RuleListV2 } from 'components/Rule';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -26,11 +26,10 @@ function ViewRules({ match }) {
   };
 
   const handleUpdateStatusStart = (checked, rule) => {
-    const onOFF = checked === true ? 'start' : 'stop';
-    rule.status = onOFF;
-    updateRule(rule)
+    const status = checked === true ? 'start' : 'stop';
+    patchRule(rule.id, { status })
       .then(() => {
-        message.success(`Successfully switch ${rule.name} to be ${onOFF}`);
+        message.success(`Successfully switch ${rule.name} to be ${status}`);
         // FIXME: We want to refresh the data of the updated rule, the
         // laziest way to do this is to reload the ViewRules.
         history.push(`${match.url}`);

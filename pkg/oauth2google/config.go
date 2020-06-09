@@ -15,11 +15,9 @@ type Config struct {
 	HostedDomain string `envconfig:"HOSTED_DOMAIN"`
 
 	CookieSecure bool   `envconfig:"COOKIE_SECURE" default:"false"`
-	JWTSecret    string `envconfig:"JWT_SECRET"`
 
 	RedirectSuccess string `envconfig:"REDIRECT_SUCCESS"`
 	RedirectFailure string `envconfig:"REDIRECT_FAILURE"`
-	LogoutRedirect  string `envconfig:"LOGOUT_REDIRECT"`
 }
 
 // Configuration of oauth2 google

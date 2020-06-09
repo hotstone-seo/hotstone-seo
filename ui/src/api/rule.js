@@ -1,15 +1,15 @@
-import client from "./client";
+import client from './client';
 
-function fetchRules(cfg = {}) {
+export function fetchRules(cfg = {}) {
   return client
-    .get("/rules", cfg)
+    .get('/rules', cfg)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
 
-function getRule(id) {
+export function getRule(id) {
   return client
     .get(`/rules/${id}`)
     .then((response) => response.data)
@@ -18,25 +18,34 @@ function getRule(id) {
     });
 }
 
-function createRule(rule) {
+export function createRule(rule) {
   return client
-    .post("/rules", rule)
+    .post('/rules', rule)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
 
-function updateRule(rule) {
+export function updateRule(rule) {
   return client
-    .put("/rules", rule)
+    .put('/rules', rule)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
     });
 }
 
-function deleteRule(id) {
+export function patchRule(id, fields) {
+  return client
+    .patch(`/rules/${id}`, fields)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+}
+
+export function deleteRule(id) {
   return client
     .delete(`/rules/${id}`)
     .then((response) => response.data)
@@ -45,13 +54,12 @@ function deleteRule(id) {
     });
 }
 
-export { fetchRules, getRule, createRule, updateRule, deleteRule };
-
 const RuleAPI = {
   fetch: fetchRules,
   get: getRule,
   create: createRule,
   update: updateRule,
+  patch: patchRule,
   delete: deleteRule,
 };
 

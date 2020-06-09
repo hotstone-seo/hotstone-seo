@@ -93,6 +93,20 @@ func (mr *MockRuleServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockRuleService)(nil).Insert), arg0, arg1)
 }
 
+// Patch mocks base method
+func (m *MockRuleService) Patch(arg0 context.Context, arg1 int64, arg2 map[string]interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Patch", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Patch indicates an expected call of Patch
+func (mr *MockRuleServiceMockRecorder) Patch(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Patch", reflect.TypeOf((*MockRuleService)(nil).Patch), arg0, arg1, arg2)
+}
+
 // Update mocks base method
 func (m *MockRuleService) Update(arg0 context.Context, arg1 repository.Rule) error {
 	m.ctrl.T.Helper()
