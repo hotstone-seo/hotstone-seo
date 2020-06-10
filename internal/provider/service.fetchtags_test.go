@@ -17,10 +17,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hotstone-seo/hotstone-seo/internal/provider"
-	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository_mock"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/service_mock"
+	"github.com/hotstone-seo/hotstone-seo/internal/provider"
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 )
 
 var (
@@ -132,14 +133,14 @@ func TestService2(t *testing.T) {
 
 	dsmock := repository_mock.NewMockDataSourceRepo(ctrl)
 	rulemock := repository_mock.NewMockRuleRepo(ctrl)
-	tagmock := repository_mock.NewMockTagRepo(ctrl)
+	tagmock := service_mock.NewMockTagService(ctrl)
 	strdatamock := repository_mock.NewMockStructuredDataRepo(ctrl)
 	ctx := context.Background()
 
 	svc := provider.ServiceImpl{
 		DataSourceRepo:     dsmock,
 		RuleRepo:           rulemock,
-		TagRepo:            tagmock,
+		TagService:         tagmock,
 		StructuredDataRepo: strdatamock,
 	}
 
