@@ -37,3 +37,9 @@ import HotStone from 'hotstone-client';
   // Rendering tag element...
 })();
 ```
+
+## Changelog
+
+- 0.5.0
+  - Support auth with client key to access HotStone service
+  - Support HTTP caching

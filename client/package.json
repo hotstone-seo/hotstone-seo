@@ -1,6 +1,6 @@
 {
   "name": "hotstone-client",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "Client side module for interacting with a HotStone service",
   "main": "./lib/hotstone-client.js",
   "scripts": {
@@ -12,6 +12,9 @@
     "url": "https://github.com/hotstone-seo/hotstone-seo.git"
   },
   "author": "Hawari Rahman <hawari.rahman17@gmail.com",
+  "maintainers": [
+    "Fahri Nurul Hidayat <fahri.cyber@gmail.com> (https://fahri.id)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/hotstone-seo/hotstone-seo/issues"
