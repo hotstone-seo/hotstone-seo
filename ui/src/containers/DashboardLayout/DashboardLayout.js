@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Link, Route, Switch, useLocation, Redirect
+  Link, Route, Switch, useLocation, Redirect,
 } from 'react-router-dom';
 import { Layout, Menu, message } from 'antd';
 import routes from 'routes';
@@ -22,7 +22,7 @@ function DashboardLayout() {
       message[level](content);
     }
   }, [location.state]);
-  
+
   return (
     <Layout style={{ height: '100vh' }}>
       <Sider
@@ -40,7 +40,9 @@ function DashboardLayout() {
           }}
         />
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[location.pathname]}>
-          {routes.map(({ path, name, icon, visible }) => {
+          {routes.map(({
+            path, name, icon, visible,
+          }) => {
             if (visible) {
               return (
                 <Menu.Item key={path}>
@@ -48,7 +50,9 @@ function DashboardLayout() {
                   <span>{name}</span>
                   <Link to={path} />
                 </Menu.Item>
-              )}
+              );
+            }
+            return null;
           })}
         </Menu>
       </Sider>
