@@ -134,14 +134,14 @@ func TestService2(t *testing.T) {
 	dsmock := repository_mock.NewMockDataSourceRepo(ctrl)
 	rulemock := repository_mock.NewMockRuleRepo(ctrl)
 	tagmock := service_mock.NewMockTagService(ctrl)
-	strdatamock := repository_mock.NewMockStructuredDataRepo(ctrl)
+	strdatamock := service_mock.NewMockStructuredDataService(ctrl)
 	ctx := context.Background()
 
 	svc := provider.ServiceImpl{
-		DataSourceRepo:     dsmock,
-		RuleRepo:           rulemock,
-		TagService:         tagmock,
-		StructuredDataRepo: strdatamock,
+		DataSourceRepo:        dsmock,
+		RuleRepo:              rulemock,
+		TagService:            tagmock,
+		StructuredDataService: strdatamock,
 	}
 
 	testCases := []fetchTestCase{

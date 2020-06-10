@@ -69,7 +69,7 @@ func (p *ServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*
 		return nil, fmt.Errorf("Find-Tags: %w", err)
 	}
 
-	if structuredDatas, err = p.StructuredDataRepo.FindByRule(ctx, rule.ID); err != nil {
+	if structuredDatas, err = p.StructuredDataService.FindByRule(ctx, rule.ID); err != nil {
 		return nil, fmt.Errorf("Find-StructuredDatas: %w", err)
 	}
 

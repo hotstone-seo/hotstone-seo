@@ -29,7 +29,7 @@ type (
 		repository.DataSourceRepo
 		repository.RuleRepo
 		service.TagService
-		repository.StructuredDataRepo
+		service.StructuredDataService
 
 		Redis *redis.Client
 		urlstore.Store
