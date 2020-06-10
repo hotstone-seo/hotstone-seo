@@ -52,27 +52,17 @@ func (r *RoleTypeServiceImpl) Find(ctx context.Context, paginationParam reposito
 // Insert RoleType
 func (r *RoleTypeServiceImpl) Insert(ctx context.Context, req RoleTypeRequest) (newID int64, err error) {
 	var data repository.RoleType
-	var menuStrs []string
-	menuStrs = strings.Split(req.Menus, "\n")
-
-	var pathStrs []string
-	pathStrs = strings.Split(req.Paths, "\n")
 
 	data = repository.RoleType{
 		Name: req.Name,
 		Modules: map[string]interface{}{
 			"modules": mapModules(ctx, req.Modules, r),
 		},
-		Menus: map[string]interface{}{
-			"menus": mapMenus(menuStrs),
-		},
-		Paths: map[string]interface{}{
-			"paths": mapPaths(pathStrs),
-		},
+		Menus:     strings.Split(req.Menus, "\n"),
+		Paths:     strings.Split(req.Paths, "\n"),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-
 	if data.ID, err = r.RoleTypeRepo.Insert(ctx, data); err != nil {
 		return
 	}
@@ -98,24 +88,14 @@ func (r *RoleTypeServiceImpl) Update(ctx context.Context, req RoleTypeRequest) (
 		return
 	}
 	var data repository.RoleType
-	var menuStrs []string
-	menuStrs = strings.Split(req.Menus, "\n")
-
-	var pathStrs []string
-	pathStrs = strings.Split(req.Paths, "\n")
-
 	data = repository.RoleType{
 		ID:   req.ID,
 		Name: req.Name,
 		Modules: map[string]interface{}{
 			"modules": mapModules(ctx, req.Modules, r),
 		},
-		Menus: map[string]interface{}{
-			"menus": mapMenus(menuStrs),
-		},
-		Paths: map[string]interface{}{
-			"paths": mapPaths(pathStrs),
-		},
+		Menus:     strings.Split(req.Menus, "\n"),
+		Paths:     strings.Split(req.Paths, "\n"),
 		UpdatedAt: time.Now(),
 	}
 	if err = r.RoleTypeRepo.Update(ctx, data); err != nil {

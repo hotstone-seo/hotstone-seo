@@ -53,6 +53,8 @@ function RoleTypeForm({ roleType, handleSubmit }) {
         setModuleList(arrMenu);
 
         // get value for edit form
+        let menusTextArea = '';
+        let pathsTextArea = '';
         if (roleTyp.id !== undefined) {
           arrMenuWhenEdit = roleTyp.modules.modules;
 
@@ -64,34 +66,28 @@ function RoleTypeForm({ roleType, handleSubmit }) {
               idxArrEdit += 1;
             }
           });
-          const menusWhenEdit = roleTyp.menus.menus;
-          const pathsWhenEdit = roleTyp.paths.paths;
-          let menusTextArea = '';
-          let pathsTextArea = '';
 
+          const menusWhenEdit = roleTyp.menus;
+          const pathsWhenEdit = roleTyp.paths;
+          let i = 0;
           if (menusWhenEdit !== undefined) {
-            let tempValue;
-            Object.keys(menusWhenEdit).forEach((keyMenus) => {
-              tempValue = menusWhenEdit[keyMenus].menu;
-              menusTextArea += tempValue;
+            for (i = 0; i < menusWhenEdit.length; i++) {
+              menusTextArea += menusWhenEdit[i];
               menusTextArea += '\n';
-            });
+            }
           }
-
           if (pathsWhenEdit !== undefined) {
-            let tempValue;
-            Object.keys(pathsWhenEdit).forEach((keyPaths) => {
-              tempValue = pathsWhenEdit[keyPaths].path;
-              pathsTextArea += tempValue;
+            for (i = 0; i < pathsWhenEdit.length; i++) {
+              pathsTextArea += pathsWhenEdit[i];
               pathsTextArea += '\n';
-            });
+            }
           }
-
-          form.setFieldsValue({
-            menus: menusTextArea,
-            paths: pathsTextArea,
-          });
         }
+        form.setFieldsValue({
+          menus: menusTextArea,
+          paths: pathsTextArea,
+        });
+
         // set default checkbox value in edit form & add form
         setCheckedList({
           checkedList: defaultCheckedList,

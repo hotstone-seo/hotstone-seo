@@ -41,7 +41,7 @@ function EditRoleType() {
     <div>
       <PageHeader
         onBack={() => history.push('/role-type')}
-        title="Edit Role"
+        title="Edit User Role"
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
