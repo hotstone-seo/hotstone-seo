@@ -8,9 +8,9 @@ import (
 
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
-	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
@@ -35,14 +35,14 @@ func (c *TagCntrl) Route(e *echo.Group) {
 func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 	var tag repository.Tag
 	var lastInsertID int64
-	ctx0 := ctx.Request().Context()
+	reqCtx := ctx.Request().Context()
 	if err = ctx.Bind(&tag); err != nil {
 		return err
 	}
 	if err = tag.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if lastInsertID, err = c.TagService.Insert(ctx0, tag); err != nil {
+	if lastInsertID, err = c.TagService.Insert(reqCtx, tag); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	tag.ID = lastInsertID
@@ -104,11 +104,11 @@ func (c *TagCntrl) FindOne(ec echo.Context) (err error) {
 // Delete tag
 func (c *TagCntrl) Delete(ctx echo.Context) (err error) {
 	var id int64
-	ctx0 := ctx.Request().Context()
+	reqCtx := ctx.Request().Context()
 	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if err = c.TagService.Delete(ctx0, id); err != nil {
+	if err = c.TagService.Delete(reqCtx, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{
@@ -119,7 +119,7 @@ func (c *TagCntrl) Delete(ctx echo.Context) (err error) {
 // Update tag
 func (c *TagCntrl) Update(ctx echo.Context) (err error) {
 	var tag repository.Tag
-	ctx0 := ctx.Request().Context()
+	reqCtx := ctx.Request().Context()
 	if err = ctx.Bind(&tag); err != nil {
 		return err
 	}
@@ -129,7 +129,7 @@ func (c *TagCntrl) Update(ctx echo.Context) (err error) {
 	if err = tag.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if err = c.TagService.Update(ctx0, tag); err != nil {
+	if err = c.TagService.Update(reqCtx, tag); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, GeneralResponse{
