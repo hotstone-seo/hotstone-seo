@@ -1,5 +1,5 @@
 import React from 'react';
-import { HotStone, HotStoneContext } from './hotstone-client';
+import { HotStone, HotStoneContext } from 'hotstone-client';
 import Layout from './Layout';
 import TagInfo from './TagInfo';
 import links from '../links';
