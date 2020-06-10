@@ -16,8 +16,8 @@ type RoleType struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
 	Modules   JSONMap   `json:"modules"`
-	Menus     JSONMap   `json:"menus"`
-	Paths     JSONMap   `json:"paths"`
+	Menus     Strings   `json:"menus"`
+	Paths     Strings   `json:"paths"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -102,15 +102,6 @@ func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID
 	if e.Modules == nil {
 		e.Modules = make(map[string]interface{}, 0)
 	}
-
-	if e.Menus == nil {
-		e.Menus = make(map[string]interface{}, 0)
-	}
-
-	if e.Paths == nil {
-		e.Paths = make(map[string]interface{}, 0)
-	}
-
 	builder := sq.
 		Insert("role_type").
 		Columns(
@@ -137,14 +128,6 @@ func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
 	if e.Modules == nil {
 		e.Modules = make(map[string]interface{}, 0)
 	}
-	if e.Menus == nil {
-		e.Menus = make(map[string]interface{}, 0)
-	}
-
-	if e.Paths == nil {
-		e.Paths = make(map[string]interface{}, 0)
-	}
-
 	builder := sq.
 		Update("role_type").
 		Set("name", e.Name).

@@ -25,7 +25,7 @@ function AddRoleType() {
     <div>
       <PageHeader
         onBack={() => history.push('/role-type')}
-        title="Add new Role User"
+        title="Add New User Role"
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>

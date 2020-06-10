@@ -37,8 +37,6 @@ func TestRoleTypeController_Find(t *testing.T) {
 						"path":    "link-web",
 						"pattern": "name*",
 					},
-					Menus: nil,
-					Paths: nil,
 				},
 			},
 			nil,
@@ -77,15 +75,15 @@ func TestRoleTypeController_FindOne(t *testing.T) {
 				ID:      100,
 				Name:    "admin",
 				Modules: make(map[string]interface{}, 0),
-				Menus:   make(map[string]interface{}, 0),
-				Paths:   make(map[string]interface{}, 0),
+				Menus:   []string{"menu1", "menu2"},
+				Paths:   []string{"/path1", "/path2"},
 			},
 			nil,
 		)
 		rr, err := echotest.DoGET(roleTypeCntrl.FindOne, "/", map[string]string{"id": "100"})
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":100,\"name\":\"admin\",\"modules\":{},\"menus\":{},\"paths\":{},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"name\":\"admin\",\"modules\":{},\"menus\":[\"menu1\",\"menu2\"],\"paths\":[\"/path1\",\"/path2\"],\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 

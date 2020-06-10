@@ -32,8 +32,8 @@ function ViewRoleTypes({ match }) {
   return (
     <div>
       <PageHeader
-        title="Role User"
-        subTitle="List of Role User"
+        title="User Role"
+        subTitle="List of User Role"
         style={{ background: '#fff' }}
       />
       <div style={{ padding: 24 }}>
