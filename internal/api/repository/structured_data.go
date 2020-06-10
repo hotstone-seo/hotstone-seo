@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"strconv"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -32,8 +31,6 @@ type StructuredDataRepo interface {
 	Insert(context.Context, StructuredData) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, StructuredData) error
-
-	FindByRule(ctx context.Context, ruleID int64) ([]*StructuredData, error)
 }
 
 // StructuredDataRepoImpl is an implementation of StructuredDataRepo
@@ -130,9 +127,6 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectO
 
 // Insert creates a new Structured Data in database, returning its ID if success
 func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (lastInsertID int64, err error) {
-	if e.Data == nil {
-		e.Data = make(map[string]interface{}, 0)
-	}
 	builder := sq.
 		Insert("structured_datas").
 		Columns(
@@ -169,10 +163,6 @@ func (r *StructuredDataRepoImpl) Delete(ctx context.Context, id int64) (err erro
 
 // Update modifies existing Structured Data fields in the database
 func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (err error) {
-	if e.Data == nil {
-		e.Data = make(map[string]interface{}, 0)
-	}
-
 	builder := sq.
 		Update("structured_datas").
 		Set("rule_id", e.RuleID).
@@ -188,11 +178,6 @@ func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (
 		return
 	}
 	return
-}
-
-// FindByRule returns list of structured data based on rule ID
-func (r *StructuredDataRepoImpl) FindByRule(ctx context.Context, ruleID int64) ([]*StructuredData, error) {
-	return r.Find(ctx, dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)))
 }
 
 // TODO: Create implementation for validating structured data
