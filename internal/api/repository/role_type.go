@@ -16,6 +16,8 @@ type RoleType struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
 	Modules   JSONMap   `json:"modules"`
+	Menus     JSONMap   `json:"menus"`
+	Paths     JSONMap   `json:"paths"`
 	UpdatedAt time.Time `json:"updated_at"`
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -52,7 +54,7 @@ func (roleType RoleType) Validate() error {
 func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("id", "name", "modules", "updated_at", "created_at").
+		Select("id", "name", "modules", "menus", "paths", "updated_at", "created_at").
 		From("role_type").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
@@ -63,7 +65,7 @@ func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, 
 	defer rows.Close()
 	if rows.Next() {
 		e = new(RoleType)
-		if err = rows.Scan(&e.ID, &e.Name, &e.Modules, &e.UpdatedAt, &e.CreatedAt); err != nil {
+		if err = rows.Scan(&e.ID, &e.Name, &e.Modules, &e.Menus, &e.Paths, &e.UpdatedAt, &e.CreatedAt); err != nil {
 			dbtxn.SetError(ctx, err)
 			return nil, err
 		}
@@ -101,13 +103,23 @@ func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID
 		e.Modules = make(map[string]interface{}, 0)
 	}
 
+	if e.Menus == nil {
+		e.Menus = make(map[string]interface{}, 0)
+	}
+
+	if e.Paths == nil {
+		e.Paths = make(map[string]interface{}, 0)
+	}
+
 	builder := sq.
 		Insert("role_type").
 		Columns(
 			"name",
 			"modules",
+			"menus",
+			"paths",
 		).
-		Values(e.Name, e.Modules).
+		Values(e.Name, e.Modules, e.Menus, e.Paths).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
@@ -125,11 +137,20 @@ func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
 	if e.Modules == nil {
 		e.Modules = make(map[string]interface{}, 0)
 	}
+	if e.Menus == nil {
+		e.Menus = make(map[string]interface{}, 0)
+	}
+
+	if e.Paths == nil {
+		e.Paths = make(map[string]interface{}, 0)
+	}
 
 	builder := sq.
 		Update("role_type").
 		Set("name", e.Name).
 		Set("modules", e.Modules).
+		Set("menus", e.Menus).
+		Set("paths", e.Paths).
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).

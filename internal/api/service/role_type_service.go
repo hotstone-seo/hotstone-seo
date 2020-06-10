@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"strings"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
@@ -51,10 +52,22 @@ func (r *RoleTypeServiceImpl) Find(ctx context.Context, paginationParam reposito
 // Insert RoleType
 func (r *RoleTypeServiceImpl) Insert(ctx context.Context, req RoleTypeRequest) (newID int64, err error) {
 	var data repository.RoleType
+	var menuStrs []string
+	menuStrs = strings.Split(req.Menus, "\n")
+
+	var pathStrs []string
+	pathStrs = strings.Split(req.Paths, "\n")
+
 	data = repository.RoleType{
 		Name: req.Name,
 		Modules: map[string]interface{}{
 			"modules": mapModules(ctx, req.Modules, r),
+		},
+		Menus: map[string]interface{}{
+			"menus": mapMenus(menuStrs),
+		},
+		Paths: map[string]interface{}{
+			"paths": mapPaths(pathStrs),
 		},
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -85,11 +98,23 @@ func (r *RoleTypeServiceImpl) Update(ctx context.Context, req RoleTypeRequest) (
 		return
 	}
 	var data repository.RoleType
+	var menuStrs []string
+	menuStrs = strings.Split(req.Menus, "\n")
+
+	var pathStrs []string
+	pathStrs = strings.Split(req.Paths, "\n")
+
 	data = repository.RoleType{
 		ID:   req.ID,
 		Name: req.Name,
 		Modules: map[string]interface{}{
 			"modules": mapModules(ctx, req.Modules, r),
+		},
+		Menus: map[string]interface{}{
+			"menus": mapMenus(menuStrs),
+		},
+		Paths: map[string]interface{}{
+			"paths": mapPaths(pathStrs),
 		},
 		UpdatedAt: time.Now(),
 	}
@@ -174,4 +199,24 @@ func mapModules(ctx context.Context, mItem []ModuleItem, r *RoleTypeServiceImpl)
 		}
 	}
 	return faqsMap
+}
+
+func mapMenus(mItem []string) []map[string]interface{} {
+	menusMap := make([]map[string]interface{}, len(mItem))
+	for index, temp := range mItem {
+		menusMap[index] = map[string]interface{}{
+			"menu": temp,
+		}
+	}
+	return menusMap
+}
+
+func mapPaths(mItem []string) []map[string]interface{} {
+	pathsMap := make([]map[string]interface{}, len(mItem))
+	for index, temp := range mItem {
+		pathsMap[index] = map[string]interface{}{
+			"path": temp,
+		}
+	}
+	return pathsMap
 }

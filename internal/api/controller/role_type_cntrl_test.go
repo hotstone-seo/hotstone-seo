@@ -37,6 +37,8 @@ func TestRoleTypeController_Find(t *testing.T) {
 						"path":    "link-web",
 						"pattern": "name*",
 					},
+					Menus: nil,
+					Paths: nil,
 				},
 			},
 			nil,
@@ -44,7 +46,7 @@ func TestRoleTypeController_Find(t *testing.T) {
 		rr, err := echotest.DoGET(roleTypeCntrl.Find, "/", nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "[{\"id\":100,\"name\":\"admin\",\"modules\":{\"name\":\"name\",\"path\":\"link-web\",\"pattern\":\"name*\"},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
+		require.Equal(t, "[{\"id\":100,\"name\":\"admin\",\"modules\":{\"name\":\"name\",\"path\":\"link-web\",\"pattern\":\"name*\"},\"menus\":null,\"paths\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
 	})
 }
 
@@ -75,13 +77,15 @@ func TestRoleTypeController_FindOne(t *testing.T) {
 				ID:      100,
 				Name:    "admin",
 				Modules: make(map[string]interface{}, 0),
+				Menus:   make(map[string]interface{}, 0),
+				Paths:   make(map[string]interface{}, 0),
 			},
 			nil,
 		)
 		rr, err := echotest.DoGET(roleTypeCntrl.FindOne, "/", map[string]string{"id": "100"})
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":100,\"name\":\"admin\",\"modules\":{},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"name\":\"admin\",\"modules\":{},\"menus\":{},\"paths\":{},\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 
@@ -107,7 +111,7 @@ func TestRoleTypeController_Create(t *testing.T) {
 		rr, err := echotest.DoPOST(roleTypeCntrl.Create, "/", `{"name":"test 1","modules":[{"name":"Mismatched Rule"},{"name":"Analytic"}]} `, nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusCreated, rr.Code)
-		require.Equal(t, "{\"id\":100,\"name\":\"test 1\",\"modules\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"name\":\"test 1\",\"modules\":null,\"menus\":null,\"paths\":null,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 
