@@ -9,6 +9,8 @@ import { fetchModules } from 'api/module';
 const CheckboxGroup = Checkbox.Group;
 let defaultCheckedList = [];
 
+const { TextArea } = Input;
+
 function RoleTypeForm({ roleType, handleSubmit }) {
   const [form] = Form.useForm();
   const [arrayCheck, setArrayCheck] = useState([]);
@@ -46,25 +48,11 @@ function RoleTypeForm({ roleType, handleSubmit }) {
           tempMenu.name = mn.name;
           tempMenu.id = mn.id;
           arrMenu.push(tempMenu);
-
-          // get default checkbox value for edit form
-          /* if (roleTyp.id !== undefined) {
-            arrMenuWhenEdit = roleTyp.modules.modules;
-
-            Object.keys(arrMenuWhenEdit).forEach((keyEdit) => {
-              mnEdit = arrMenuWhenEdit[keyEdit];
-
-              if (mn.name === mnEdit.name) {
-                defaultCheckedList[idxArrEdit] = mn.label;
-                idxArrEdit += 1;
-              }
-            });
-          } */
         });
         setPlainOptions(plainOptionsTemp);
         setModuleList(arrMenu);
 
-        // get default checkbox value for edit form
+        // get value for edit form
         if (roleTyp.id !== undefined) {
           arrMenuWhenEdit = roleTyp.modules.modules;
 
@@ -75,6 +63,33 @@ function RoleTypeForm({ roleType, handleSubmit }) {
               defaultCheckedList[idxArrEdit] = mnEdit.label;
               idxArrEdit += 1;
             }
+          });
+          const menusWhenEdit = roleTyp.menus.menus;
+          const pathsWhenEdit = roleTyp.paths.paths;
+          let menusTextArea = '';
+          let pathsTextArea = '';
+
+          if (menusWhenEdit !== undefined) {
+            let tempValue;
+            Object.keys(menusWhenEdit).forEach((keyMenus) => {
+              tempValue = menusWhenEdit[keyMenus].menu;
+              menusTextArea += tempValue;
+              menusTextArea += '\n';
+            });
+          }
+
+          if (pathsWhenEdit !== undefined) {
+            let tempValue;
+            Object.keys(pathsWhenEdit).forEach((keyPaths) => {
+              tempValue = pathsWhenEdit[keyPaths].path;
+              pathsTextArea += tempValue;
+              pathsTextArea += '\n';
+            });
+          }
+
+          form.setFieldsValue({
+            menus: menusTextArea,
+            paths: pathsTextArea,
           });
         }
         // set default checkbox value in edit form & add form
@@ -151,6 +166,22 @@ function RoleTypeForm({ roleType, handleSubmit }) {
         rules={[{ required: true, message: 'Please input the role' }]}
       >
         <Input data-testid="input-role-type" placeholder="Role Name" maxLength="200" />
+      </Form.Item>
+
+      <Form.Item
+        name="menus"
+        label="Menus"
+        rules={[{ required: true, message: 'Please input the menus' }]}
+      >
+        <TextArea rows={6} defaultValue="aaa" />
+      </Form.Item>
+
+      <Form.Item
+        name="paths"
+        label="Paths"
+        rules={[{ required: true, message: 'Please input the paths' }]}
+      >
+        <TextArea rows={6} />
       </Form.Item>
 
       <Form.Item
