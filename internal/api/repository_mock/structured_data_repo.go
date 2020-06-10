@@ -69,21 +69,6 @@ func (mr *MockStructuredDataRepoMockRecorder) Find(arg0 interface{}, arg1 ...int
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockStructuredDataRepo)(nil).Find), varargs...)
 }
 
-// FindByRule mocks base method
-func (m *MockStructuredDataRepo) FindByRule(arg0 context.Context, arg1 int64) ([]*repository.StructuredData, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindByRule", arg0, arg1)
-	ret0, _ := ret[0].([]*repository.StructuredData)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindByRule indicates an expected call of FindByRule
-func (mr *MockStructuredDataRepoMockRecorder) FindByRule(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByRule", reflect.TypeOf((*MockStructuredDataRepo)(nil).FindByRule), arg0, arg1)
-}
-
 // FindOne mocks base method
 func (m *MockStructuredDataRepo) FindOne(arg0 context.Context, arg1 int64) (*repository.StructuredData, error) {
 	m.ctrl.T.Helper()

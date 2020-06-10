@@ -11,8 +11,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
 	"github.com/imantung/mario"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 	"golang.org/x/sync/errgroup"
@@ -65,11 +65,11 @@ func (p *ServiceImpl) FetchTags(ctx context.Context, vals url.Values) (itags []*
 		return
 	}
 
-	if tags, err = p.TagRepo.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
+	if tags, err = p.TagService.FindByRuleAndLocale(ctx, rule.ID, locale); err != nil {
 		return nil, fmt.Errorf("Find-Tags: %w", err)
 	}
 
-	if structuredDatas, err = p.StructuredDataRepo.FindByRule(ctx, rule.ID); err != nil {
+	if structuredDatas, err = p.StructuredDataService.FindByRule(ctx, rule.ID); err != nil {
 		return nil, fmt.Errorf("Find-StructuredDatas: %w", err)
 	}
 

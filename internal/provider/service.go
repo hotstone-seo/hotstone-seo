@@ -6,9 +6,10 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/hotstone-seo/hotstone-seo/pkg/cachekit"
-	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"go.uber.org/dig"
 )
 
@@ -27,8 +28,8 @@ type (
 		analyt.RuleMatchingRepo
 		repository.DataSourceRepo
 		repository.RuleRepo
-		repository.TagRepo
-		repository.StructuredDataRepo
+		service.TagService
+		service.StructuredDataService
 
 		Redis *redis.Client
 		urlstore.Store
