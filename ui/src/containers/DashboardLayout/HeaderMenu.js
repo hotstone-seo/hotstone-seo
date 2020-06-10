@@ -29,7 +29,7 @@ function HeaderMenu() {
       {role}
       <Dropdown overlay={accountMenu}>
         <Button type="link" icon={<UserOutlined />}>
-          {email} 
+          {email}
         </Button>
       </Dropdown>
       <form ref={logoutForm} action="/api/logout" method="post" />
