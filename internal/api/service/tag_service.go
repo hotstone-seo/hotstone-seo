@@ -2,20 +2,23 @@ package service
 
 import (
 	"context"
+	"strconv"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	log "github.com/sirupsen/logrus"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
-// TagService contain logic for TagController
+// TagService provides available method to be used for managing Tag entity
 // @mock
 type TagService interface {
+	FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) ([]*repository.Tag, error)
 	repository.TagRepo
 }
 
-// TagServiceImpl is implementation of TagService
+// TagServiceImpl is the implementation of TagService
 type TagServiceImpl struct {
 	dig.In
 	repository.TagRepo
@@ -30,27 +33,38 @@ func NewTagService(impl TagServiceImpl) TagService {
 	return &impl
 }
 
-// Insert tag
-func (s *TagServiceImpl) Insert(ctx context.Context, data repository.Tag) (newID int64, err error) {
-	if data.ID, err = s.TagRepo.Insert(ctx, data); err != nil {
+// FindByRuleAndLocale returns list of Tag entity by searching on matching ruleID and locale
+func (s *TagServiceImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) (list []*repository.Tag, err error) {
+	return s.Find(ctx,
+		dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)),
+		dbkit.Equal("locale", locale),
+	)
+}
+
+// Insert creates a new Tag entity
+func (s *TagServiceImpl) Insert(ctx context.Context, tag repository.Tag) (newID int64, err error) {
+	if tag.Attributes == nil {
+		tag.Attributes = map[string]string{}
+	}
+	if newID, err = s.TagRepo.Insert(ctx, tag); err != nil {
 		return
 	}
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
 			"tags",
-			data.ID,
+			newID,
 			repository.Insert,
 			nil,
-			data,
+			tag,
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
 	}()
-	return data.ID, nil
+	return
 }
 
-// Update tag
+// Update modify existing Tag entity
 func (s *TagServiceImpl) Update(ctx context.Context, data repository.Tag) (err error) {
 	var oldData *repository.Tag
 	if oldData, err = s.TagRepo.FindOne(ctx, data.ID); err != nil {

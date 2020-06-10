@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"strconv"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -13,7 +12,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-// Tag represented  tag entity
+// Tag represents Tag entity
 type Tag struct {
 	ID         int64     `json:"id"`
 	RuleID     int64     `json:"rule_id" validate:"required"`
@@ -33,8 +32,6 @@ type TagRepo interface {
 	Insert(context.Context, Tag) (lastInsertID int64, err error)
 	Delete(context.Context, int64) error
 	Update(context.Context, Tag) error
-
-	FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) ([]*Tag, error)
 }
 
 // TagRepoImpl is implementation tag repository
@@ -138,20 +135,8 @@ func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (lis
 	return
 }
 
-// FindByRuleAndLocale return list of tag baed on ruleID and locale
-func (r *TagRepoImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) (list []*Tag, err error) {
-	return r.Find(ctx,
-		dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)),
-		dbkit.Equal("locale", locale),
-	)
-}
-
 // Insert tag
 func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, err error) {
-	if e.Attributes == nil {
-		e.Attributes = map[string]string{}
-	}
-
 	builder := sq.
 		Insert("tags").
 		Columns(
@@ -166,11 +151,10 @@ func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, er
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
 
-	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
+	if err = builder.QueryRowContext(ctx).Scan(&lastInsertID); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
 	}
-	lastInsertID = e.ID
 	return
 }
 
