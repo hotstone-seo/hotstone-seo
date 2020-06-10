@@ -1,11 +1,8 @@
 package repository_test
 
 import (
-	"context"
-	"regexp"
 	"testing"
 
-	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/stretchr/testify/require"
 )
@@ -128,19 +125,4 @@ func TestTagValidation(t *testing.T) {
 		require.EqualError(t, tag.Validate(),
 			"Key: 'Tag.Attributes' Error:Field validation for 'Attributes' failed on the '' tag")
 	})
-}
-
-func TestTag_FindByRuleAndLocale(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	require.NoError(t, err)
-	defer db.Close()
-
-	repo := repository.TagRepoImpl{DB: db}
-
-	mock.ExpectQuery(regexp.QuoteMeta("SELECT id, rule_id, locale, type, attributes, value, updated_at, created_at FROM tags WHERE rule_id = $1 AND locale = $2")).
-		WithArgs("123", "en_US").
-		WillReturnRows(sqlmock.NewRows([]string{"id", "rule_id", "locale", "type", "attributes", "value", "updated_at", "created_at"}))
-	_, err = repo.FindByRuleAndLocale(context.Background(), 123, "en_US")
-	require.NoError(t, err)
-
 }
