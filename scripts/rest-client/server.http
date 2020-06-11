@@ -1,4 +1,4 @@
-@secure_token = secure_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAaG90c3RvbmUuY29tIiwiZXhwIjo0NzQyOTQxNzU3LCJwaWN0dXJlIjoiaHR0cHM6Ly9saDUuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1FNG5hTlVWMEo4by9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS93Y3ZMcXR6RnlpWS9waG90by5qcGcifQ.dnaLjAtB2QZBc4RlBpY73Fd5vx3ZtPf1W49cVwxuEhQ
+@secure_token = secure_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhlbmRyaS5jaGlhQHRpa2V0LmNvbSIsImV4cCI6MTU5MjEwNDY2MywibW9kdWxlcyI6IntcIm1vZHVsZXNcIjpbe1wibGFiZWxcIjpcIlJ1bGVzXCIsXCJuYW1lXCI6XCJydWxlXCIsXCJwYXRoXCI6XCJydWxlc1wiLFwicGF0dGVyblwiOlwicnVsZXMqXCJ9LHtcImxhYmVsXCI6XCJEYXRhIFNvdXJjZXNcIixcIm5hbWVcIjpcImRhdGFzb3VyY2VzXCIsXCJwYXRoXCI6XCJkYXRhc291cmNlc1wiLFwicGF0dGVyblwiOlwiZGF0YXNvdXJjZXMqXCJ9LHtcImxhYmVsXCI6XCJNaXNtYXRjaCBSdWxlXCIsXCJuYW1lXCI6XCJtaXNtYXRjaHJ1bGVcIixcInBhdGhcIjpcIm1pc21hdGNoLXJ1bGVcIixcInBhdHRlcm5cIjpcIm1pc21hdGNoKlwifSx7XCJsYWJlbFwiOlwiQW5hbHl0aWNcIixcIm5hbWVcIjpcImFuYWx5dGljXCIsXCJwYXRoXCI6XCJhbmFseXRpY1wiLFwicGF0dGVyblwiOlwiYW5hbHl0aWMqXCJ9LHtcImxhYmVsXCI6XCJTaW11bGF0aW9uIFBhZ2VcIixcIm5hbWVcIjpcInNpbXVsYXRpb25cIixcInBhdGhcIjpcInNpbXVsYXRpb25cIixcInBhdHRlcm5cIjpcInNpbXVsYXRpb24qXCJ9LHtcImxhYmVsXCI6XCJBdWRpdCBUcmFpbFwiLFwibmFtZVwiOlwiYXVkaXR0cmFpbFwiLFwicGF0aFwiOlwiYXVkaXQtdHJhaWxcIixcInBhdHRlcm5cIjpcImF1ZGl0KlwifSx7XCJsYWJlbFwiOlwiVXNlcnNcIixcIm5hbWVcIjpcInVzZXJcIixcInBhdGhcIjpcInVzZXJzXCIsXCJwYXR0ZXJuXCI6XCJ1c2VycypcIn0se1wibGFiZWxcIjpcIlVzZXIgUm9sZVwiLFwibmFtZVwiOlwicm9sZXR5cGVcIixcInBhdGhcIjpcInJvbGUtdHlwZVwiLFwicGF0dGVyblwiOlwicm9sZS10eXBlKlwifSx7XCJsYWJlbFwiOlwiTW9kdWxlc1wiLFwibmFtZVwiOlwibW9kdWxlXCIsXCJwYXRoXCI6XCJtb2R1bGVzXCIsXCJwYXR0ZXJuXCI6XCJtb2R1bGVzKlwifSx7XCJsYWJlbFwiOlwiQ2xpZW50IEtleXNcIixcIm5hbWVcIjpcImNsaWVudGtleVwiLFwicGF0aFwiOlwiY2xpZW50LWtleXNcIixcInBhdHRlcm5cIjpcImNsaWVudC1rZXlzKlwifSx7XCJsYWJlbFwiOlwiU2V0dGluZ1wiLFwibmFtZVwiOlwic2V0dGluZ1wiLFwicGF0aFwiOlwic2V0dGluZ1wiLFwicGF0dGVyblwiOlwic2V0dGluZypcIn1dfSIsInBpY3R1cmUiOiJodHRwczovL2xoNS5nb29nbGV1c2VyY29udGVudC5jb20vLVk4Z2VfT1pNcnE0L0FBQUFBQUFBQUFJL0FBQUFBQUFBQUFBL2dmcEdpT1FSekZNL3Bob3RvLmpwZyIsInNpbXVsYXRpb25fa2V5IjoiT3RkdTFxZS5BNWVLYk5RM0tqMjZraVRRbXdXQW16YVFHazV1WW1TSSIsInVzZXJfaWQiOjQsInVzZXJfcm9sZSI6IkFkbWluIn0.Yu8eRhQDm0kMCRYj5kv1o3cSk3SGZJEnA-3UwWTvsuw
 
 ### Retrieve Mismatched Rule
 http://localhost:8089/api/metrics/mismatched
@@ -241,3 +241,37 @@ content-type: application/json
     "key": "simulation_key",
     "value": "key123456"
 }
+
+### Find users
+GET http://localhost:8089/api/users
+Cookie: {{secure_token}}
+
+
+### FindOne users
+GET http://localhost:8089/api/users/1
+Cookie: {{secure_token}}
+
+### Add User
+POST http://localhost:8089/api/users
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "email": "test@tiket.com",
+    "role_type_id": 1
+}
+
+### Update User
+PUT http://localhost:8089/api/users
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "id": 5,
+    "email": "test@tiket.com",
+    "role_type_id": 1
+}
+
+### Delete User
+DELETE http://localhost:8089/api/users/5
+Cookie: {{secure_token}}
