@@ -28,14 +28,14 @@ For MacOS:
 
 ### Run 
 
+Make sure you have a configuration set, use the template from .env.template
+
 ```bash
-./typicalw docker up  # equivalent with `docker-compose up -d` (if infrastructure not up)
-./typicalw pg reset  # drop, create and migrate postgres database (if database not ready)
+./typicalw docker up        # equivalent with `docker-compose up -d` (if infrastructure not up)
+./typicalw main-db create   # 
+./typicalw main-db migrate  # create and migrate postgres database
 
-./typicalw mock  # generate mock (if require mock)
-./typicalw test # run test 
+./typicalw mock             # generate mock (if require mock)
+./typicalw test             # run test 
 
-./typicalw run  # run the application
-```
-
-
+./typicalw run              # run the application
