@@ -14,3 +14,20 @@ examples/
 .eslintrc
 .babelrc
 .gitignore
+
+# MacOS specific
+.DS_Store
+
+# Jest coverage report
+coverage/
+
+# local cache on integration test
+test-local-cache/
+
+*.config.*
+
+*.captain-definition
+*.Dockerfile
+
+# Final build (npm pack)
+hotstone-client-*.tgz
