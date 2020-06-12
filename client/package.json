@@ -1,6 +1,6 @@
 {
   "name": "hotstone-client",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Client side module for interacting with a HotStone service",
   "main": "./lib/hotstone-client.js",
   "scripts": {
