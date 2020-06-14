@@ -46,6 +46,8 @@ type (
 		userRole      string
 		modules       string
 		simulationKey string
+		paths         []string
+		menus         []string
 	}
 )
 
@@ -67,16 +69,20 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 	}
 	var roleAccess string
 	var roleModule string
+	var roleMenus []string
+	var rolePaths []string
 	if user != nil {
 		roleType, err := c.RoleTypeRepo.FindOne(ctx, user.RoleTypeID)
 		if err == sql.ErrNoRows {
 			return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 		}
 		roleAccess = roleType.Name
+		roleMenus = roleType.Menus
+		rolePaths = roleType.Paths
 
 		rawData, err := json.Marshal(roleType.Modules)
 		if err != nil {
-			return jwtClaims, fmt.Errorf("AuthVerifyCallback convert JSON: %w", err)
+			return jwtClaims, fmt.Errorf("AuthVerifyCallback error convert JSON: %w", err)
 		}
 		roleModule = string(rawData)
 	}
@@ -88,6 +94,8 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 		userRole:      roleAccess,
 		modules:       roleModule,
 		simulationKey: simulationKey,
+		menus:         roleMenus,
+		paths:         rolePaths,
 	}, nil
 }
 
@@ -106,6 +114,8 @@ func (c *AuthServiceImpl) GenerateJwtToken(jwtClaim JwtClaims, jwtSecret string)
 	claims["user_role"] = jwtClaim.userRole
 	claims["modules"] = jwtClaim.modules
 	claims["simulation_key"] = jwtClaim.simulationKey
+	claims["menus"] = jwtClaim.menus
+	claims["paths"] = jwtClaim.paths
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))

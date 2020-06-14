@@ -49,13 +49,10 @@ func (r *ModuleServiceImpl) Find(ctx context.Context, paginationParam repository
 func (r *ModuleServiceImpl) Insert(ctx context.Context, req ModuleRequest) (newID int64, err error) {
 	var data repository.Module
 	data = repository.Module{
-		Name:    req.Name,
-		Path:    req.Path,
-		Label:   req.Label,
-		Pattern: req.Pattern,
-		APIPath: map[string]interface{}{
-			"api_path": mapAPIPath(req.APIPaths),
-		},
+		Name:      req.Name,
+		Path:      req.Path,
+		Label:     req.Label,
+		Pattern:   req.Pattern,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
@@ -110,14 +107,11 @@ func (r *ModuleServiceImpl) Update(ctx context.Context, req ModuleRequest) (err 
 	}
 	var data repository.Module
 	data = repository.Module{
-		ID:      req.ID,
-		Name:    req.Name,
-		Path:    req.Path,
-		Label:   req.Label,
-		Pattern: req.Pattern,
-		APIPath: map[string]interface{}{
-			"api_path": mapAPIPath(req.APIPaths),
-		},
+		ID:        req.ID,
+		Name:      req.Name,
+		Path:      req.Path,
+		Label:     req.Label,
+		Pattern:   req.Pattern,
 		UpdatedAt: time.Now(),
 	}
 
@@ -135,14 +129,4 @@ func (r *ModuleServiceImpl) Update(ctx context.Context, req ModuleRequest) (err 
 		return
 	}
 	return nil
-}
-
-func mapAPIPath(mItem []APIPath) []map[string]interface{} {
-	pathsMap := make([]map[string]interface{}, len(mItem))
-	for index, tempPath := range mItem {
-		pathsMap[index] = map[string]interface{}{
-			"path": tempPath.Path,
-		}
-	}
-	return pathsMap
 }

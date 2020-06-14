@@ -1,24 +1,16 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, Button, Divider, message,
+  Form, Input, Button, message,
 } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { createModule , updateModule } from 'api/module';
 
 function ModuleForm({ module, handleSubmit }) {
   const [form] = Form.useForm();
-  const { api_path, id } = module;
-  let apiPaths = [];
-  if ( api_path !== undefined) {
-    Object.keys(module.api_path).forEach((key) => {
-      apiPaths = api_path[key];
-    });
-  }
+  const { id } = module;
   useEffect(() => {
-    module.api_path = apiPaths;
     form.setFieldsValue(module);
-  }, [module, form, apiPaths]);
+  }, [module, form]);
 
   const onFinish = (values) => {
     const formStruct = { ...values, id };
@@ -76,45 +68,6 @@ function ModuleForm({ module, handleSubmit }) {
       >
         <Input data-testid="input-label" placeholder="Label Text" maxLength="30" />
       </Form.Item>
-
-      <Form.Item
-        label="API Path"
-      >
-        <Form.List name="api_path">
-          {(fields, { add, remove }) => (
-            <div>
-              {fields.map((field, index) => (
-                <>
-                  <Divider orientation="left">{`API Path #${index + 1}`}</Divider>
-                  <Form.Item>
-                    <Form.Item
-                      name={[field.name, 'path']}
-                      fieldKey={[field.fieldKey, 'path']}
-                      noStyle
-                    >
-                      <Input placeholder="API Path" style={{ width: '90%' }} />
-                    </Form.Item>
-                    <Button
-                      type="primary"
-                      danger
-                      icon={<DeleteOutlined />}
-                      onClick={() => { remove(field.name); }}
-                      style={{ position: 'relative', margin: '0 8px' }}
-                    />
-                  </Form.Item>
-                </>
-              ))}
-              <Button
-                type="dashed"
-                onClick={() => { add(); }}
-              >
-                <PlusOutlined />
-                Add API Path
-              </Button>
-            </div>
-          )}
-        </Form.List>
-      </Form.Item>
       <Form.Item
         wrapperCol={{ offset: 6, span: 14 }}
       >
@@ -137,30 +90,8 @@ ModuleForm.propTypes = {
     path: PropTypes.string,
     pattern: PropTypes.string,
     label: PropTypes.string,
-    api_path: PropTypes.arrayOf(
-      PropTypes.shape({
-        path: PropTypes.string,
-      }),
-    ),
   }),
   handleSubmit: PropTypes.func.isRequired,
 };
 
-/*
-module: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
-    path: PropTypes.string,
-    pattern: PropTypes.string,
-    label: PropTypes.string,
-    api_path: PropTypes.shape({
-      apiPaths: PropTypes.arrayOf(
-        PropTypes.shape({
-          path: PropTypes.string,
-        }),
-      ),
-    }),
-  }),
-  handleSubmit: PropTypes.func.isRequired,
-  */
 export default ModuleForm;

@@ -161,7 +161,7 @@ func mapModules(ctx context.Context, mItem []ModuleItem, r *RoleTypeServiceImpl)
 		if err == sql.ErrNoRows {
 			log.Error(err)
 		}
-		var APIPathMaps []interface{}
+		/*var APIPathMaps []interface{}
 		for k, v := range moduleMs.APIPath {
 			switch vv := v.(type) {
 			case []interface{}:
@@ -169,13 +169,12 @@ func mapModules(ctx context.Context, mItem []ModuleItem, r *RoleTypeServiceImpl)
 				log.Info("index:", k)
 				break
 			}
-		}
+		}*/
 		faqsMap[index] = map[string]interface{}{
-			"path":     moduleMs.Path,
-			"name":     tempMod.Module,
-			"pattern":  moduleMs.Pattern,
-			"label":    moduleMs.Label,
-			"api_path": APIPathMaps,
+			"path":    moduleMs.Path,
+			"name":    tempMod.Module,
+			"pattern": moduleMs.Pattern,
+			"label":   moduleMs.Label,
 		}
 	}
 	return faqsMap
