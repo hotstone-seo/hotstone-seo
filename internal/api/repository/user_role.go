@@ -11,33 +11,38 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-// RoleType represented role_type entity
-type RoleType struct {
-	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
-	Modules   JSONMap   `json:"modules"`
-	Menus     Strings   `json:"menus"`
-	Paths     Strings   `json:"paths"`
-	UpdatedAt time.Time `json:"updated_at"`
-	CreatedAt time.Time `json:"created_at"`
-}
+var (
+	// UserRoleTable is table name for user role
+	UserRoleTable = "user_roles"
+)
 
-// RoleTypeRepo to handle role_types entity
-// @mock
-type RoleTypeRepo interface {
-	FindOne(context.Context, int64) (*RoleType, error)
-	Find(ctx context.Context, paginationParam PaginationParam) ([]*RoleType, error)
-	Insert(ctx context.Context, roleType RoleType) (lastInsertID int64, err error)
-	Update(ctx context.Context, roleType RoleType) error
-	Delete(ctx context.Context, id int64) error
-	FindOneByName(context.Context, string) (*RoleType, error)
-}
-
-// RoleTypeRepoImpl is implementation role_type repository
-type RoleTypeRepoImpl struct {
-	dig.In
-	*sql.DB
-}
+type (
+	// RoleType represented role_type entity
+	RoleType struct {
+		ID        int64     `json:"id"`
+		Name      string    `json:"name"`
+		Modules   JSONMap   `json:"modules"`
+		Menus     Strings   `json:"menus"`
+		Paths     Strings   `json:"paths"`
+		UpdatedAt time.Time `json:"updated_at"`
+		CreatedAt time.Time `json:"created_at"`
+	}
+	// RoleTypeRepo to handle role_types entity
+	// @mock
+	RoleTypeRepo interface {
+		FindOne(context.Context, int64) (*RoleType, error)
+		Find(ctx context.Context, paginationParam PaginationParam) ([]*RoleType, error)
+		Insert(ctx context.Context, roleType RoleType) (lastInsertID int64, err error)
+		Update(ctx context.Context, roleType RoleType) error
+		Delete(ctx context.Context, id int64) error
+		FindOneByName(context.Context, string) (*RoleType, error)
+	}
+	// RoleTypeRepoImpl is implementation role_type repository
+	RoleTypeRepoImpl struct {
+		dig.In
+		*sql.DB
+	}
+)
 
 // NewRoleTypeRepo return new instance of RoleTypeRepo
 // @ctor
@@ -54,8 +59,16 @@ func (roleType RoleType) Validate() error {
 func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("id", "name", "modules", "menus", "paths", "updated_at", "created_at").
-		From("role_type").
+		Select(
+			"id",
+			"name",
+			"modules",
+			"menus",
+			"paths",
+			"updated_at",
+			"created_at",
+		).
+		From(UserRoleTable).
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
@@ -77,9 +90,16 @@ func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, 
 func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*RoleType, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("id", "name", "modules", "updated_at", "created_at").
-		From("role_type").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
+		Select(
+			"id",
+			"name",
+			"modules",
+			"updated_at",
+			"created_at",
+		).
+		From(UserRoleTable).
+		PlaceholderFormat(sq.Dollar).
+		RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)
 		return
@@ -88,7 +108,13 @@ func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationP
 	list = make([]*RoleType, 0)
 	for rows.Next() {
 		var e0 RoleType
-		if err = rows.Scan(&e0.ID, &e0.Name, &e0.Modules, &e0.UpdatedAt, &e0.CreatedAt); err != nil {
+		if err = rows.Scan(
+			&e0.ID,
+			&e0.Name,
+			&e0.Modules,
+			&e0.UpdatedAt,
+			&e0.CreatedAt,
+		); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}
@@ -103,14 +129,19 @@ func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID
 		e.Modules = make(map[string]interface{}, 0)
 	}
 	builder := sq.
-		Insert("role_type").
+		Insert(UserRoleTable).
 		Columns(
 			"name",
 			"modules",
 			"menus",
 			"paths",
 		).
-		Values(e.Name, e.Modules, e.Menus, e.Paths).
+		Values(
+			e.Name,
+			e.Modules,
+			e.Menus,
+			e.Paths,
+		).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
@@ -129,7 +160,7 @@ func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
 		e.Modules = make(map[string]interface{}, 0)
 	}
 	builder := sq.
-		Update("role_type").
+		Update(UserRoleTable).
 		Set("name", e.Name).
 		Set("modules", e.Modules).
 		Set("menus", e.Menus).
@@ -149,7 +180,7 @@ func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
 // Delete role_type
 func (r *RoleTypeRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
-		Delete("role_type").
+		Delete(UserRoleTable).
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
@@ -165,7 +196,7 @@ func (r *RoleTypeRepoImpl) FindOneByName(ctx context.Context, name string) (e *R
 	var rows *sql.Rows
 	builder := sq.
 		Select("id").
-		From("role_type").
+		From(UserRoleTable).
 		Where(sq.Eq{"name": name}).
 		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
 	if rows, err = builder.QueryContext(ctx); err != nil {

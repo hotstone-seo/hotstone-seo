@@ -1,4 +1,4 @@
-CREATE TABLE role_type (
+CREATE TABLE user_roles (
     id serial PRIMARY KEY,
     "name" VARCHAR (35) NOT NULL UNIQUE,
     modules JSONB NOT NULL DEFAULT '{}'::JSONB,
