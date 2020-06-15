@@ -35,8 +35,7 @@ func (a *API) SetRoute(e *echo.Echo) {
 	group := e.Group("/api")
 	group.Use(a.AuthCntrl.Middleware())
 	group.Use(a.AuthCntrl.SetTokenCtxMiddleware())
-	//TODO: user role will be refactor. Will impact to this function
-	//group.Use(a.AuthCntrl.CheckAuthModules())
+	group.Use(a.AuthCntrl.CheckAuthModules())
 	group.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	group.Use(middleware.Recover())
 	group.POST("/logout", a.AuthCntrl.Logout)
