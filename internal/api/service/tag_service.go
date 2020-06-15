@@ -43,80 +43,82 @@ func (s *TagServiceImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, 
 
 // Insert creates a new Tag entity
 func (s *TagServiceImpl) Insert(ctx context.Context, tag repository.Tag) (newID int64, err error) {
+	defer func() {
+		if err != nil {
+			return
+		}
+		if _, auditErr := s.AuditTrailService.RecordChanges(
+			ctx,
+			Record{
+				EntityName: "tags",
+				EntityID:   newID,
+				Operation:  InsertOp,
+				PrevData:   nil,
+				NextData:   tag,
+			},
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
 	if tag.Attributes == nil {
 		tag.Attributes = map[string]string{}
 	}
-	if newID, err = s.TagRepo.Insert(ctx, tag); err != nil {
-		return
-	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			"tags",
-			newID,
-			repository.Insert,
-			nil,
-			tag,
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
-	return
+	return s.TagRepo.Insert(ctx, tag)
 }
 
 // Update modify existing Tag entity
-func (s *TagServiceImpl) Update(ctx context.Context, data repository.Tag) (err error) {
-	var oldData *repository.Tag
-	if oldData, err = s.TagRepo.FindOne(ctx, data.ID); err != nil {
+func (s *TagServiceImpl) Update(ctx context.Context, tag repository.Tag) (err error) {
+	var currentTag *repository.Tag
+	if currentTag, err = s.TagRepo.FindOne(ctx, tag.ID); err != nil {
 		return
 	}
-	if err = s.TagRepo.Update(ctx, data); err != nil {
-		return
-	}
-	go func() {
+	defer func() {
+		if err != nil {
+			return
+		}
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"tags",
-			data.ID,
-			repository.Update,
-			oldData,
-			data,
+			Record{
+				EntityName: "tags",
+				EntityID:   tag.ID,
+				Operation:  UpdateOp,
+				PrevData:   currentTag,
+				NextData:   tag,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
 	}()
-	return nil
+	return s.TagRepo.Update(ctx, tag)
 }
 
 // Delete tag
 func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	var oldData *repository.Tag
-	if oldData, err = s.TagRepo.FindOne(ctx, id); err != nil {
+	var currentTag *repository.Tag
+	if currentTag, err = s.TagRepo.FindOne(ctx, id); err != nil {
 		return
 	}
-	if err = s.TagRepo.Delete(ctx, id); err != nil {
-		s.CancelMe(ctx, err)
-		return
-	}
-	go func() {
+	defer func() {
 		if _, histErr := s.HistoryService.RecordHistory(
 			ctx,
-			oldData.Type+"-tag",
+			currentTag.Type+"-tag",
 			id,
-			oldData,
+			currentTag,
 		); histErr != nil {
 			log.Error(histErr)
 		}
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"tags",
-			id,
-			repository.Delete,
-			oldData,
-			nil,
+			Record{
+				EntityName: "tags",
+				EntityID:   id,
+				Operation:  DeleteOp,
+				PrevData:   currentTag,
+				NextData:   nil,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
 	}()
-	return nil
+	return s.TagRepo.Delete(ctx, id)
 }
