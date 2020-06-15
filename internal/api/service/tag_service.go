@@ -99,6 +99,9 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		return
 	}
 	defer func() {
+		if err != nil {
+			return
+		}
 		if _, histErr := s.HistoryService.RecordHistory(
 			ctx,
 			currentTag.Type+"-tag",
