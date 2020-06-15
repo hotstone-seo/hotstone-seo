@@ -17,8 +17,8 @@ var (
 )
 
 type (
-	// RoleType represented role_type entity
-	RoleType struct {
+	// UserRole represented user role entity
+	UserRole struct {
 		ID        int64     `json:"id"`
 		Name      string    `json:"name"`
 		Modules   JSONMap   `json:"modules"`
@@ -27,36 +27,36 @@ type (
 		UpdatedAt time.Time `json:"updated_at"`
 		CreatedAt time.Time `json:"created_at"`
 	}
-	// RoleTypeRepo to handle role_types entity
+	// UserRoleRepo to handle role_types entity
 	// @mock
-	RoleTypeRepo interface {
-		FindOne(context.Context, int64) (*RoleType, error)
-		Find(ctx context.Context, paginationParam PaginationParam) ([]*RoleType, error)
-		Insert(ctx context.Context, roleType RoleType) (lastInsertID int64, err error)
-		Update(ctx context.Context, roleType RoleType) error
+	UserRoleRepo interface {
+		FindOne(context.Context, int64) (*UserRole, error)
+		Find(ctx context.Context, paginationParam PaginationParam) ([]*UserRole, error)
+		Insert(ctx context.Context, UserRole UserRole) (lastInsertID int64, err error)
+		Update(ctx context.Context, UserRole UserRole) error
 		Delete(ctx context.Context, id int64) error
-		FindOneByName(context.Context, string) (*RoleType, error)
+		FindOneByName(context.Context, string) (*UserRole, error)
 	}
-	// RoleTypeRepoImpl is implementation role_type repository
-	RoleTypeRepoImpl struct {
+	// UserRoleRepoImpl is implementation role_type repository
+	UserRoleRepoImpl struct {
 		dig.In
 		*sql.DB
 	}
 )
 
-// NewRoleTypeRepo return new instance of RoleTypeRepo
+// NewUserRoleRepo return new instance of UserRoleRepo
 // @ctor
-func NewRoleTypeRepo(impl RoleTypeRepoImpl) RoleTypeRepo {
+func NewUserRoleRepo(impl UserRoleRepoImpl) UserRoleRepo {
 	return &impl
 }
 
 // Validate role_type
-func (roleType RoleType) Validate() error {
-	return validator.New().Struct(roleType)
+func (UserRole UserRole) Validate() error {
+	return validator.New().Struct(UserRole)
 }
 
 // FindOne role_type
-func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, err error) {
+func (r *UserRoleRepoImpl) FindOne(ctx context.Context, id int64) (e *UserRole, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select(
@@ -77,7 +77,7 @@ func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, 
 	}
 	defer rows.Close()
 	if rows.Next() {
-		e = new(RoleType)
+		e = new(UserRole)
 		if err = rows.Scan(&e.ID, &e.Name, &e.Modules, &e.Menus, &e.Paths, &e.UpdatedAt, &e.CreatedAt); err != nil {
 			dbtxn.SetError(ctx, err)
 			return nil, err
@@ -87,7 +87,7 @@ func (r *RoleTypeRepoImpl) FindOne(ctx context.Context, id int64) (e *RoleType, 
 }
 
 // Find role_type
-func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*RoleType, err error) {
+func (r *UserRoleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*UserRole, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select(
@@ -105,9 +105,9 @@ func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationP
 		return
 	}
 	defer rows.Close()
-	list = make([]*RoleType, 0)
+	list = make([]*UserRole, 0)
 	for rows.Next() {
-		var e0 RoleType
+		var e0 UserRole
 		if err = rows.Scan(
 			&e0.ID,
 			&e0.Name,
@@ -124,7 +124,7 @@ func (r *RoleTypeRepoImpl) Find(ctx context.Context, paginationParam PaginationP
 }
 
 // Insert role_type
-func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID int64, err error) {
+func (r *UserRoleRepoImpl) Insert(ctx context.Context, e UserRole) (lastInsertID int64, err error) {
 	if e.Modules == nil {
 		e.Modules = make(map[string]interface{}, 0)
 	}
@@ -155,7 +155,7 @@ func (r *RoleTypeRepoImpl) Insert(ctx context.Context, e RoleType) (lastInsertID
 }
 
 // Update role_type
-func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
+func (r *UserRoleRepoImpl) Update(ctx context.Context, e UserRole) (err error) {
 	if e.Modules == nil {
 		e.Modules = make(map[string]interface{}, 0)
 	}
@@ -178,7 +178,7 @@ func (r *RoleTypeRepoImpl) Update(ctx context.Context, e RoleType) (err error) {
 }
 
 // Delete role_type
-func (r *RoleTypeRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+func (r *UserRoleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.
 		Delete(UserRoleTable).
 		Where(sq.Eq{"id": id}).
@@ -192,7 +192,7 @@ func (r *RoleTypeRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 }
 
 // FindOneByName role_type
-func (r *RoleTypeRepoImpl) FindOneByName(ctx context.Context, name string) (e *RoleType, err error) {
+func (r *UserRoleRepoImpl) FindOneByName(ctx context.Context, name string) (e *UserRole, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select("id").
@@ -205,7 +205,7 @@ func (r *RoleTypeRepoImpl) FindOneByName(ctx context.Context, name string) (e *R
 	}
 	defer rows.Close()
 	if rows.Next() {
-		e = new(RoleType)
+		e = new(UserRole)
 		if err = rows.Scan(&e.ID); err != nil {
 			dbtxn.SetError(ctx, err)
 			return nil, err
