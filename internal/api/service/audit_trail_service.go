@@ -36,9 +36,9 @@ type (
 )
 
 const (
-	Insert OperationType = "INSERT"
-	Update               = "UPDATE"
-	Delete               = "DELETE"
+	InsertOp OperationType = "INSERT"
+	UpdateOp               = "UPDATE"
+	DeleteOp               = "DELETE"
 )
 
 // NewAuditTrailService return new instance of AuditTrailService
