@@ -275,3 +275,34 @@ content-type: application/json
 ### Delete User
 DELETE http://localhost:8089/api/users/5
 Cookie: {{secure_token}}
+
+
+### Find User Role
+GET http://localhost:8089/api/role_types
+Cookie: {{secure_token}}
+
+### Update User Role
+PUT http://localhost:8089/api/role_types
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "id": 3,
+    "name": "Administrator",
+    "modules": [{"name": "rule"}]
+}
+
+### Add New User Role
+POST http://localhost:8089/api/role_types
+Cookie: {{secure_token}}
+content-type: application/json
+
+{
+    "name": "Admin Rule",
+    "modules": [{"name": "rule"}, {"name": "datasources"}]
+}
+
+### Delete User Role
+DELETE http://localhost:8089/api/role_types/3
+Cookie: {{secure_token}}
+
