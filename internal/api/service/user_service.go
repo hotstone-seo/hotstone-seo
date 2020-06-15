@@ -29,7 +29,7 @@ type UserServiceImpl struct {
 }
 
 // NewUserService return new instance of UserService
-// @constructor
+// @ctor
 func NewUserService(impl UserServiceImpl) UserService {
 	return &impl
 }

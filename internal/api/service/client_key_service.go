@@ -41,7 +41,7 @@ type (
 )
 
 // NewClientKeyService return new instance of ClientKeyService
-// @constructor
+// @ctor
 func NewClientKeyService(impl ClientKeyServiceImpl) ClientKeyService {
 	return &impl
 }

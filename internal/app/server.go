@@ -6,7 +6,7 @@ import (
 
 	logrusmiddleware "github.com/bakatz/echo-logrusmiddleware"
 	"github.com/hotstone-seo/hotstone-seo/internal/api"
-	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/profiler"
 	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/labstack/echo"
@@ -19,7 +19,7 @@ import (
 
 type server struct {
 	dig.In
-	*config.Config
+	*infra.App
 
 	API      api.API
 	Provider provider.Controller

@@ -23,7 +23,7 @@ type AuditTrailServiceImpl struct {
 }
 
 // NewAuditTrailService return new instance of AuditTrailService
-// @constructor
+// @ctor
 func NewAuditTrailService(impl AuditTrailServiceImpl) AuditTrailService {
 	return &impl
 }

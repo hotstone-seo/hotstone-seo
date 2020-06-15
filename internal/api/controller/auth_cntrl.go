@@ -11,7 +11,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
-	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -28,7 +28,7 @@ type (
 	// AuthCntrl is controller to handle authentication
 	AuthCntrl struct {
 		dig.In
-		*config.Config
+		*infra.App
 		service.AuthService
 	}
 )
@@ -41,7 +41,7 @@ func (c *AuthCntrl) Oauth2GoogleCallback(ce echo.Context, gUser oauth2google.Goo
 		return err
 	}
 
-	jwtToken, err := c.AuthService.GenerateJwtToken(jwtClaims, c.Config.JWTSecret)
+	jwtToken, err := c.AuthService.GenerateJwtToken(jwtClaims, c.App.JWTSecret)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (c *AuthCntrl) Oauth2GoogleCallback(ce echo.Context, gUser oauth2google.Goo
 		Name: "secure_token", Value: string(jwtToken),
 		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
-		HttpOnly: true, Secure: c.Config.CookieSecure,
+		HttpOnly: true, Secure: c.App.CookieSecure,
 	}
 	ce.SetCookie(secureTokenCookie)
 
@@ -58,7 +58,7 @@ func (c *AuthCntrl) Oauth2GoogleCallback(ce echo.Context, gUser oauth2google.Goo
 		Name: "token", Value: string(jwtToken),
 		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
-		HttpOnly: false, Secure: c.Config.CookieSecure,
+		HttpOnly: false, Secure: c.App.CookieSecure,
 	}
 	ce.SetCookie(tokenCookie)
 	return nil
@@ -69,7 +69,7 @@ func (c *AuthCntrl) Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ce echo.Context) error {
 			cfg := middleware.DefaultJWTConfig
-			cfg.SigningKey = []byte(c.Config.JWTSecret)
+			cfg.SigningKey = []byte(c.App.JWTSecret)
 			cfg.TokenLookup = "cookie:secure_token"
 
 			if err := middleware.JWTWithConfig(cfg)(next)(ce); err != nil {

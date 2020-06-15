@@ -1,7 +1,0 @@
-export const SET_FLASH = 'SET_FLASH';
-export const RESET_FLASH = 'RESET_FLASH';
-export const SET_POPUP = 'SET_POPUP';
-export const RESET_POPUP = 'RESET_POPUP';
-export const LOAD_ACCOUNT = 'LOAD_ACCOUNT';
-export const LOAD_ACCOUNT_SUCCESS = 'LOAD_ACCOUNT_SUCCESS';
-export const LOAD_ACCOUNT_FAIL = 'LOAD_ACCOUNT_FAIL';

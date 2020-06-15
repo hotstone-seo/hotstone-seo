@@ -45,7 +45,7 @@ type (
 )
 
 // NewReportRepo return new instance of MetricsRuleMatchingRepo
-// @constructor
+// @ctor
 func NewReportRepo(impl ReportRepoImpl) ReportRepo {
 	return &impl
 }

@@ -29,7 +29,7 @@ type HistoryRepo interface {
 }
 
 // NewHistoryRepo return new instance of HistoryRepo
-// @constructor
+// @ctor
 func NewHistoryRepo(impl HistoryRepoImpl) HistoryRepo {
 	return &impl
 }

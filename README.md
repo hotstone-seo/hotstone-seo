@@ -38,4 +38,6 @@ Make sure you have a configuration set, use the template from .env.template
 ./typicalw mock             # generate mock (if require mock)
 ./typicalw test             # run test 
 
-./typicalw run              # run the application
+./typicalw run              # run the application server
+./typicalw ui start         # run the dashboard
+```

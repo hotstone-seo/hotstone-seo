@@ -34,7 +34,7 @@ type (
 	AuthServiceImpl struct {
 		dig.In
 		UserRepo     repository.UserRepo
-		RoleTypeRepo repository.RoleTypeRepo
+		UserRoleRepo repository.UserRoleRepo
 		SettingSvc   SettingSvc
 	}
 
@@ -53,10 +53,10 @@ type (
 
 // NewService return new instance of AuthGoogleService
 // @ctor
-func NewService(userRepo repository.UserRepo, roleTypeRepo repository.RoleTypeRepo, settingSvc SettingSvc) AuthService {
+func NewService(userRepo repository.UserRepo, UserRoleRepo repository.UserRoleRepo, settingSvc SettingSvc) AuthService {
 	return &AuthServiceImpl{
 		UserRepo:     userRepo,
-		RoleTypeRepo: roleTypeRepo,
+		UserRoleRepo: UserRoleRepo,
 		SettingSvc:   settingSvc,
 	}
 }
@@ -72,15 +72,15 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 	var roleMenus []string
 	var rolePaths []string
 	if user != nil {
-		roleType, err := c.RoleTypeRepo.FindOne(ctx, user.RoleTypeID)
+		UserRole, err := c.UserRoleRepo.FindOne(ctx, user.RoleTypeID)
 		if err == sql.ErrNoRows {
 			return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 		}
-		roleAccess = roleType.Name
-		roleMenus = roleType.Menus
-		rolePaths = roleType.Paths
+		roleAccess = UserRole.Name
+		roleMenus = UserRole.Menus
+		rolePaths = UserRole.Paths
 
-		rawData, err := json.Marshal(roleType.Modules)
+		rawData, err := json.Marshal(UserRole.Modules)
 		if err != nil {
 			return jwtClaims, fmt.Errorf("AuthVerifyCallback error convert JSON: %w", err)
 		}

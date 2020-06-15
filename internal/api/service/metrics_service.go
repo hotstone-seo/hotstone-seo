@@ -20,7 +20,7 @@ type MetricServiceImpl struct {
 }
 
 // NewMetricService return new instance of MetricsRuleMatchingService
-// @constructor
+// @ctor
 func NewMetricService(impl MetricServiceImpl) MetricService {
 	return &impl
 }

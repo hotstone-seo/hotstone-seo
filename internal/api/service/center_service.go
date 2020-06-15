@@ -41,7 +41,7 @@ type CenterServiceImpl struct {
 }
 
 // NewCenterService return new instance of CenterService
-// @constructor
+// @ctor
 func NewCenterService(impl CenterServiceImpl) CenterService {
 	return &impl
 }

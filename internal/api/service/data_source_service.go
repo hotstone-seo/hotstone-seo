@@ -25,7 +25,7 @@ type DataSourceServiceImpl struct {
 }
 
 // NewDataSourceService return new instance of DataSourceService
-// @constructor
+// @ctor
 func NewDataSourceService(impl DataSourceServiceImpl) DataSourceService {
 	return &impl
 }
