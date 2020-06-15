@@ -9,7 +9,8 @@ VALUES
     (7, 'user', 'users', 'users*', 'Users'),
     (8, 'roletype', 'role-type', 'role-type*', 'User Role'),
     (9, 'module', 'modules', 'modules*', 'Modules'),
-    (10, 'clientkey', 'client-keys', 'client-keys*', 'Client Keys')
+    (10, 'clientkey', 'client-keys', 'client-keys*', 'Client Keys'),
+    (11, 'setting', 'setting', 'setting*', 'Setting')
     ;
 
 SELECT setval('modules_id_seq', (SELECT MAX(id) FROM modules));
