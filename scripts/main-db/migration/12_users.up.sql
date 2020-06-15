@@ -1,4 +1,4 @@
-CREATE TABLE role_user (
+CREATE TABLE users (
     id serial PRIMARY KEY,
     email VARCHAR (60) NOT NULL UNIQUE,
     role_type_id INTEGER DEFAULT '0',
