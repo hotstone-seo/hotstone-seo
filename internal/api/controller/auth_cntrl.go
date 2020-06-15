@@ -114,14 +114,10 @@ type DataModule struct {
 	Module []Module `json:"modules"`
 }
 type Module struct {
-	Label   string     `json:"label"`
-	Name    string     `json:"name"`
-	Path    string     `json:"path"`
-	APIPath []APIPathS `json:"api_path"`
-}
-
-type APIPathS struct {
-	Path string `json:"path"`
+	Label string `json:"label"`
+	Name  string `json:"name"`
+	Path  string `json:"path"`
+	//APIPath []APIPathS `json:"api_path"`
 }
 
 // CheckAuthModules for check auth module access
@@ -132,6 +128,7 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			user := ce.Get("user").(*jwt.Token)
 			claims := user.Claims.(jwt.MapClaims)
 			modules := claims["modules"]
+			apiPaths := claims["paths"]
 
 			currentAccessAPIPath := ce.Path() // get current API Path
 
@@ -140,26 +137,22 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			if err := json.Unmarshal(in, &raw); err != nil {
 				log.Warnf("JWT Error CheckAuthModules: %s", err.Error())
 			}
-			modArray := raw.Module
+			//modArray := raw.Module
 
+			pathsArray := apiPaths.([]interface{})
 			isAllow := false
-			for index, result := range modArray {
-				for k, v := range result.APIPath {
-					idxStr := strings.Index(currentAccessAPIPath, v.Path)
-					if idxStr > -1 {
-						log.Infof(currentAccessAPIPath, " was found at index", index, ";", k)
-						isAllow = true
-						break
-					}
-				}
-				if isAllow {
+			for _, value := range pathsArray {
+				idxStr := strings.Index(currentAccessAPIPath, value.(string))
+				if idxStr > -1 {
+					//log.Infof(currentAccessAPIPath, " was found at index", index)
+					isAllow = true
 					break
 				}
 			}
+
 			if !isAllow {
-				log.Errorf("CheckAuthModules. Invalid Access")
+				log.Errorf("CheckAuthModules. Invalid Access ", currentAccessAPIPath)
 				c.clean(ce)
-				return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
 			}
 			return next(ce)
 		}
