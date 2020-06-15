@@ -38,7 +38,7 @@ type UserRepoImpl struct {
 }
 
 // NewUserRepo return new instance of UserRepo
-// @constructor
+// @ctor
 func NewUserRepo(impl UserRepoImpl) UserRepo {
 	return &impl
 }

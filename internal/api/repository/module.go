@@ -40,7 +40,7 @@ type ModuleRepoImpl struct {
 }
 
 // NewModuleRepo return new instance of ModuleRepo
-// @constructor
+// @ctor
 func NewModuleRepo(impl ModuleRepoImpl) ModuleRepo {
 	return &impl
 }

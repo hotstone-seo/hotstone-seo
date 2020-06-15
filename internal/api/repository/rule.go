@@ -40,7 +40,7 @@ type RuleRepoImpl struct {
 }
 
 // NewRuleRepo return new instance of RuleRepo
-// @constructor
+// @ctor
 func NewRuleRepo(impl RuleRepoImpl) RuleRepo {
 	return &impl
 }

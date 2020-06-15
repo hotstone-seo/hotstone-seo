@@ -26,7 +26,7 @@ type (
 )
 
 // NewClientKeyAnalytRepo return new instance of MetricsRuleMatchingRepo
-// @constructor
+// @ctor
 func NewClientKeyAnalytRepo(impl ClientKeyAnalytRepoImpl) ClientKeyAnalytRepo {
 	return &impl
 }

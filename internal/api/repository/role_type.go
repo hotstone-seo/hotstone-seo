@@ -40,7 +40,7 @@ type RoleTypeRepoImpl struct {
 }
 
 // NewRoleTypeRepo return new instance of RoleTypeRepo
-// @constructor
+// @ctor
 func NewRoleTypeRepo(impl RoleTypeRepoImpl) RoleTypeRepo {
 	return &impl
 }

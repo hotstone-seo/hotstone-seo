@@ -6,14 +6,11 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
-	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/typical-go/typical-go/pkg/typgo"
-	"github.com/typical-go/typical-rest-server/pkg/typpg"
-	"github.com/typical-go/typical-rest-server/pkg/typredis"
 )
 
 func init() {
@@ -54,9 +51,39 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: urlstore.NewSyncRepo},
 		&typgo.Constructor{
 			Name: "",
-			Fn: func() (cfg *config.Config, err error) {
-				cfg = new(config.Config)
+			Fn: func() (cfg *infra.App, err error) {
+				cfg = new(infra.App)
 				if err = typgo.ProcessConfig("APP", cfg); err != nil {
+					return nil, err
+				}
+				return
+			},
+		},
+		&typgo.Constructor{
+			Name: "",
+			Fn: func() (cfg *infra.Redis, err error) {
+				cfg = new(infra.Redis)
+				if err = typgo.ProcessConfig("REDIS", cfg); err != nil {
+					return nil, err
+				}
+				return
+			},
+		},
+		&typgo.Constructor{
+			Name: "",
+			Fn: func() (cfg *infra.Pg, err error) {
+				cfg = new(infra.Pg)
+				if err = typgo.ProcessConfig("PG", cfg); err != nil {
+					return nil, err
+				}
+				return
+			},
+		},
+		&typgo.Constructor{
+			Name: "",
+			Fn: func() (cfg *infra.Analyt, err error) {
+				cfg = new(infra.Analyt)
+				if err = typgo.ProcessConfig("ANALYT", cfg); err != nil {
 					return nil, err
 				}
 				return
@@ -67,36 +94,6 @@ func init() {
 			Fn: func() (cfg *oauth2google.Config, err error) {
 				cfg = new(oauth2google.Config)
 				if err = typgo.ProcessConfig("OAUTH2_GOOGLE", cfg); err != nil {
-					return nil, err
-				}
-				return
-			},
-		},
-		&typgo.Constructor{
-			Name: "",
-			Fn: func() (cfg *typredis.Config, err error) {
-				cfg = new(typredis.Config)
-				if err = typgo.ProcessConfig("REDIS", cfg); err != nil {
-					return nil, err
-				}
-				return
-			},
-		},
-		&typgo.Constructor{
-			Name: "",
-			Fn: func() (cfg *typpg.Config, err error) {
-				cfg = new(typpg.Config)
-				if err = typgo.ProcessConfig("PG", cfg); err != nil {
-					return nil, err
-				}
-				return
-			},
-		},
-		&typgo.Constructor{
-			Name: "analyt",
-			Fn: func() (cfg *typpg.Config, err error) {
-				cfg = new(typpg.Config)
-				if err = typgo.ProcessConfig("ANALYT", cfg); err != nil {
 					return nil, err
 				}
 				return

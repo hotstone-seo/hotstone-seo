@@ -34,7 +34,7 @@ type RoleTypeServiceImpl struct {
 }
 
 // NewRoleTypeService return new instance of RoleTypeService
-// @constructor
+// @ctor
 func NewRoleTypeService(impl RoleTypeServiceImpl) RoleTypeService {
 	return &impl
 }
