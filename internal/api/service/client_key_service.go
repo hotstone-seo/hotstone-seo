@@ -48,6 +48,7 @@ func NewClientKeyService(impl ClientKeyServiceImpl) ClientKeyService {
 
 // Insert client key
 func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.ClientKey) (newData repository.ClientKey, err error) {
+	// NOTE: We can't really unit test Insert while this function exists
 	newPrefix, newKey, newKeyHashed := generateClientKey()
 	data.Prefix = newPrefix
 	data.Key = newKeyHashed
