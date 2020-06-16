@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	service "github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	reflect "reflect"
 )
 
@@ -50,16 +51,16 @@ func (mr *MockAuditTrailServiceMockRecorder) Find(arg0, arg1 interface{}) *gomoc
 }
 
 // RecordChanges mocks base method
-func (m *MockAuditTrailService) RecordChanges(arg0 context.Context, arg1 string, arg2 int64, arg3 repository.OperationType, arg4, arg5 interface{}) (int64, error) {
+func (m *MockAuditTrailService) RecordChanges(arg0 context.Context, arg1 service.Record) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RecordChanges", arg0, arg1, arg2, arg3, arg4, arg5)
+	ret := m.ctrl.Call(m, "RecordChanges", arg0, arg1)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // RecordChanges indicates an expected call of RecordChanges
-func (mr *MockAuditTrailServiceMockRecorder) RecordChanges(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
+func (mr *MockAuditTrailServiceMockRecorder) RecordChanges(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecordChanges", reflect.TypeOf((*MockAuditTrailService)(nil).RecordChanges), arg0, arg1, arg2, arg3, arg4, arg5)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecordChanges", reflect.TypeOf((*MockAuditTrailService)(nil).RecordChanges), arg0, arg1)
 }
