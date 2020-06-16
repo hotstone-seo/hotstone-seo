@@ -77,11 +77,13 @@ func (r *UserRoleSvcImpl) Insert(ctx context.Context, req UserRoleRequest) (newI
 	go func() {
 		if _, auditErr := r.AuditTrailService.RecordChanges(
 			ctx,
-			"UserRole",
-			data.ID,
-			repository.Insert,
-			nil,
-			data,
+			Record{
+				EntityName: "UserRole",
+				EntityID:   data.ID,
+				Operation:  InsertOp,
+				PrevData:   nil,
+				NextData:   data,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -109,11 +111,13 @@ func (r *UserRoleSvcImpl) Update(ctx context.Context, req UserRoleRequest) (err 
 	go func() {
 		if _, auditErr := r.AuditTrailService.RecordChanges(
 			ctx,
-			"UserRole",
-			data.ID,
-			repository.Update,
-			oldData,
-			data,
+			Record{
+				EntityName: "UserRole",
+				EntityID:   data.ID,
+				Operation:  UpdateOp,
+				PrevData:   oldData,
+				NextData:   data,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -142,11 +146,13 @@ func (r *UserRoleSvcImpl) Delete(ctx context.Context, id int64) (err error) {
 		}
 		if _, auditErr := r.AuditTrailService.RecordChanges(
 			ctx,
-			"UserRole",
-			id,
-			repository.Delete,
-			oldData,
-			nil,
+			Record{
+				EntityName: "UserRole",
+				EntityID:   id,
+				Operation:  DeleteOp,
+				PrevData:   oldData,
+				NextData:   nil,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
