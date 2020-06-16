@@ -10,23 +10,23 @@ import {
   UsergroupAddOutlined,
   MenuOutlined,
   SettingOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
-import Cookies from 'js-cookie';
-import jwt from 'jsonwebtoken';
+import Cookies from "js-cookie";
+import jwt from "jsonwebtoken";
 
-import Rule from 'views/Rule';
-import MismatchRule from 'views/MismatchRule';
-import DataSource from 'views/DataSource';
-import Analytic from 'views/Analytic';
-import Simulation from 'views/Simulation';
-import AuditTrail from 'views/AuditTrail';
-import ClientKey from 'views/ClientKey';
-import GenericNotFound from 'views/GenericNotFound';
-import User from './views/User';
-import RoleType from './views/RoleType';
-import Module from './views/Module';
-import Setting from './views/Setting';
+import Rule from "views/Rule";
+import MismatchRule from "views/MismatchRule";
+import DataSource from "views/DataSource";
+import Analytic from "views/Analytic";
+import Simulation from "views/Simulation";
+import AuditTrail from "views/AuditTrail";
+import ClientKey from "views/ClientKey";
+import GenericNotFound from "views/GenericNotFound";
+import User from "./views/User";
+import RoleType from "./views/RoleType";
+import Module from "./views/Module";
+import Setting from "./views/Setting";
 
 function match(text, patterns) {
   let flag = false;
@@ -50,102 +50,104 @@ function filter(routes, menuPatterns) {
 
 const defaultRoutes = [
   {
-    path: '/rules',
-    name: 'Rules',
+    path: "/rules",
+    name: "Rules",
     component: Rule,
     icon: FormOutlined,
     visible: true,
   },
   {
-    path: '/datasources',
-    name: 'Data Sources',
+    path: "/datasources",
+    name: "Data Sources",
     component: DataSource,
     icon: DatabaseOutlined,
     visible: true,
   },
   {
-    path: '/mismatch-rule',
-    name: 'Mismatch Rule',
+    path: "/mismatch-rule",
+    name: "Mismatch Rule",
     component: MismatchRule,
     icon: TagsOutlined,
     visible: true,
   },
   {
-    path: '/analytic',
-    name: 'Analytic',
+    path: "/analytic",
+    name: "Analytic",
     component: Analytic,
     icon: AreaChartOutlined,
     visible: true,
   },
   {
-    path: '/simulation',
-    name: 'Simulation',
+    path: "/simulation",
+    name: "Simulation",
     component: Simulation,
     icon: PlayCircleOutlined,
     visible: true,
   },
   {
-    path: '/audit-trail',
-    name: 'Audit Trail',
+    path: "/audit-trail",
+    name: "Audit Trail",
     component: AuditTrail,
     icon: AuditOutlined,
     visible: true,
   },
   {
-    path: '/users',
-    name: 'User',
+    path: "/users",
+    name: "User",
     component: User,
     icon: UserOutlined,
     visible: true,
   },
   {
-    path: '/role-type',
-    name: 'User Role',
+    path: "/role-type",
+    name: "User Role",
     component: RoleType,
     icon: UsergroupAddOutlined,
     visible: true,
   },
   {
-    path: '/modules',
-    name: 'Modules',
+    path: "/modules",
+    name: "Modules",
     component: Module,
     icon: MenuOutlined,
     visible: true,
   },
   {
-    path: '/client-keys',
-    name: 'Client Keys',
+    path: "/client-keys",
+    name: "Client Keys",
     component: ClientKey,
     icon: LockOutlined,
     visible: true,
   },
   {
-    path: '/setting',
-    name: 'Setting',
+    path: "/setting",
+    name: "Setting",
     component: Setting,
     icon: SettingOutlined,
     visible: true,
   },
   {
-    path: '*',
+    path: "*",
     component: GenericNotFound,
   },
 ];
-const token = Cookies.get('token');
+const token = Cookies.get("token");
 const tokenDecoded = token !== undefined ? jwt.decode(token) : undefined;
 
 let isOldCookieVersion = false;
-if (tokenDecoded !== undefined) isOldCookieVersion = tokenDecoded.menus === undefined;
+if (tokenDecoded !== undefined)
+  isOldCookieVersion = tokenDecoded.menus === undefined;
 
 let routes = defaultRoutes;
 
-if (tokenDecoded !== undefined && isOldCookieVersion === false) { // status : already login
+if (tokenDecoded !== undefined && isOldCookieVersion === false) {
+  // status : already login
   const arrayStr = tokenDecoded.menus;
   let i = 0;
-  let tempResult = '';
+  let tempResult = "";
   const regResult = [];
   for (i = 0; i < arrayStr.length; i++) {
-    tempResult = new RegExp(arrayStr[i], 'i');
+    tempResult = new RegExp(arrayStr[i], "i");
     regResult.push(tempResult);
   }
   routes = filter(defaultRoutes, regResult);

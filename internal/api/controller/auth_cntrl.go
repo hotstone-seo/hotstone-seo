@@ -2,10 +2,9 @@ package controller
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
-	"strings"
+	"regexp"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -127,36 +126,27 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			// get user data from cookie
 			user := ce.Get("user").(*jwt.Token)
 			claims := user.Claims.(jwt.MapClaims)
-			modules := claims["modules"]
-			apiPaths := claims["paths"]
 
-			currentAccessAPIPath := ce.Path() // get current API Path
-
-			in := []byte(modules.(string))
-			var raw DataModule
-			if err := json.Unmarshal(in, &raw); err != nil {
-				log.Warnf("JWT Error CheckAuthModules: %s", err.Error())
-			}
-			//modArray := raw.Module
-
-			pathsArray := apiPaths.([]interface{})
-			isAllow := false
-			for _, value := range pathsArray {
-				idxStr := strings.Index(currentAccessAPIPath, value.(string))
-				if idxStr > -1 {
-					//log.Infof(currentAccessAPIPath, " was found at index", index)
-					isAllow = true
-					break
-				}
-			}
-
-			if !isAllow {
-				log.Errorf("CheckAuthModules. Invalid Access ", currentAccessAPIPath)
+			path := ce.Path()
+			if !IsRoleAllow(path, claims) {
+				log.Errorf("CheckAuthModules. Invalid Access ", path)
 				c.clean(ce)
 			}
 			return next(ce)
 		}
 	}
+}
+
+// IsRoleAllow check is path allow by role
+func IsRoleAllow(path string, claims jwt.MapClaims) bool {
+	rolePaths := claims["paths"].([]interface{})
+	for _, v := range rolePaths {
+		matched, _ := regexp.MatchString(v.(string), path)
+		if matched {
+			return true
+		}
+	}
+	return false
 }
 
 func urlWithQueryParams(rawurl string, values url.Values) (s string, err error) {
