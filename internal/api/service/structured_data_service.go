@@ -26,7 +26,7 @@ type StructuredDataServiceImpl struct {
 }
 
 // NewStructuredDataService returns nrw instance of StructuredDataService
-// @constructor
+// @ctor
 func NewStructuredDataService(impl StructuredDataServiceImpl) StructuredDataService {
 	return &impl
 }

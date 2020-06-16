@@ -25,7 +25,7 @@ type AuditTrailRepo interface {
 }
 
 // NewAuditTrailRepo return new instance of AuditTrailRepo
-// @constructor
+// @ctor
 func NewAuditTrailRepo(impl AuditTrailRepoImpl) AuditTrailRepo {
 	return &impl
 }

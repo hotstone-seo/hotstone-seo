@@ -18,14 +18,14 @@ var (
 	jsonServerPort = getEnv("JSON_SERVER_PORT", "3021")
 )
 
-func jsonServer(b *typgo.BuildCli) []*cli.Command {
+func jsonServer(b *typgo.BuildCli) ([]*cli.Command, error) {
 	return []*cli.Command{
 		{
 			Name:    "json-server",
 			Aliases: []string{"j"},
 			Action:  b.ActionFn("JSON-SERVER", startJSONServer),
 		},
-	}
+	}, nil
 }
 
 func startJSONServer(c *typgo.Context) (err error) {

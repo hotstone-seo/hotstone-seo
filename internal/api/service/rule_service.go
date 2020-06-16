@@ -34,7 +34,7 @@ type RuleServiceImpl struct {
 }
 
 // NewRuleService creates and returns new instance of RuleService
-// @constructor
+// @ctor
 func NewRuleService(impl RuleServiceImpl) RuleService {
 	return &impl
 }

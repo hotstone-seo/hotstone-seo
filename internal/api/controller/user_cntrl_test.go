@@ -8,8 +8,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/controller"
-	"github.com/hotstone-seo/hotstone-seo/internal/api/service_mock"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/api/service_mock"
 	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
 )
@@ -17,9 +17,9 @@ import (
 func TestUserController_Create(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := service_mock.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserSvc(ctrl)
 	userCntrl := controller.UserCntrl{
-		UserService: userSvcMock,
+		Svc: userSvcMock,
 	}
 	t.Run("WHEN invalid user request", func(t *testing.T) {
 		_, err := echotest.DoPOST(userCntrl.Create, "/", `{ "email": ""}`, nil)
@@ -46,17 +46,17 @@ func TestUserController_Create(t *testing.T) {
 func TestUserController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := service_mock.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserSvc(ctrl)
 	userCntrl := controller.UserCntrl{
-		UserService: userSvcMock,
+		Svc: userSvcMock,
 	}
 	t.Run("WHEN retrieved error", func(t *testing.T) {
-		userSvcMock.EXPECT().Find(gomock.Any(), gomock.Any()).Return(nil, errors.New("retrieve error"))
+		userSvcMock.EXPECT().Find(gomock.Any()).Return(nil, errors.New("retrieve error"))
 		_, err := echotest.DoGET(userCntrl.Find, "/", nil)
 		require.EqualError(t, err, "code=500, message=retrieve error")
 	})
 	t.Run("WHEN successful", func(t *testing.T) {
-		userSvcMock.EXPECT().Find(gomock.Any(), gomock.Any()).Return(
+		userSvcMock.EXPECT().Find(gomock.Any()).Return(
 			[]*repository.User{
 				&repository.User{
 					ID:    100,
@@ -75,9 +75,9 @@ func TestUserController_Find(t *testing.T) {
 func TestUserController_FindOne(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := service_mock.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserSvc(ctrl)
 	userCntrl := controller.UserCntrl{
-		UserService: userSvcMock,
+		Svc: userSvcMock,
 	}
 	t.Run("WHEN id is not an integer", func(t *testing.T) {
 		_, err := echotest.DoGET(userCntrl.FindOne, "/", map[string]string{"id": "invalid"})
@@ -111,9 +111,9 @@ func TestUserController_FindOne(t *testing.T) {
 func TestUserController_Delete(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := service_mock.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserSvc(ctrl)
 	userCntrl := controller.UserCntrl{
-		UserService: userSvcMock,
+		Svc: userSvcMock,
 	}
 	t.Run("WHEN id is not an integer", func(t *testing.T) {
 		_, err := echotest.DoDELETE(userCntrl.Delete, "/", map[string]string{"id": "invalid"})
@@ -136,9 +136,9 @@ func TestUserController_Delete(t *testing.T) {
 func TestUserController_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
-	userSvcMock := service_mock.NewMockUserService(ctrl)
+	userSvcMock := service_mock.NewMockUserSvc(ctrl)
 	userCntrl := controller.UserCntrl{
-		UserService: userSvcMock,
+		Svc: userSvcMock,
 	}
 	t.Run("WHEN body is malformed", func(t *testing.T) {
 		_, err := echotest.DoPUT(userCntrl.Update, "/", "invalid", nil)
@@ -159,42 +159,5 @@ func TestUserController_Update(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
 		require.Equal(t, "{\"message\":\"Success update user #100\"}\n", rr.Body.String())
-	})
-}
-
-func TestUserController_FindOneByEmail(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	userSvcMock := service_mock.NewMockUserService(ctrl)
-	userCntrl := controller.UserCntrl{
-		UserService: userSvcMock,
-	}
-	t.Run("WHEN invalid user request", func(t *testing.T) {
-		_, err := echotest.DoPOST(userCntrl.FindOneByEmail, "/", `{ "email": ""}`, nil)
-		require.EqualError(t, err, "code=400, message=Key: 'User.Email' Error:Field validation for 'Email' failed on the 'required' tag")
-	})
-	t.Run("WHEN invalid json format", func(t *testing.T) {
-		_, err := echotest.DoPOST(userCntrl.FindOneByEmail, "/", `invalid`, nil)
-		require.EqualError(t, err, "code=400, message=Syntax error: offset=1, error=invalid character 'i' looking for beginning of value")
-	})
-
-	t.Run("WHEN user is not register yet", func(t *testing.T) {
-		userSvcMock.EXPECT().FindOneByEmail(gomock.Any(), "test@gmail.com").Return(nil, sql.ErrNoRows)
-		_, err := echotest.DoPOST(userCntrl.FindOneByEmail, "/", `{ "email": "test@gmail.com"}`, nil)
-		require.EqualError(t, err, "code=500, message=sql: no rows in result set")
-	})
-
-	t.Run("WHEN successful", func(t *testing.T) {
-		userSvcMock.EXPECT().FindOneByEmail(gomock.Any(), "test@gmail.com").Return(
-			&repository.User{
-				ID:    100,
-				Email: "test@gmail.com",
-			},
-			nil,
-		)
-		rr, err := echotest.DoPOST(userCntrl.FindOneByEmail, "/", `{ "email": "test@gmail.com", "role_type_id":1}`, nil)
-		require.NoError(t, err)
-		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":100,\"email\":\"test@gmail.com\",\"role_type_id\":0,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }

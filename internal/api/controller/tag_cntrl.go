@@ -10,7 +10,7 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
-	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
@@ -19,7 +19,7 @@ import (
 type TagCntrl struct {
 	dig.In
 	service.TagService
-	*config.Config
+	*infra.App
 }
 
 // Route to define API Route

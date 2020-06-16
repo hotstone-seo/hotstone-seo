@@ -40,7 +40,7 @@ type StructuredDataRepoImpl struct {
 }
 
 // NewStructuredDataRepo returns new instance of StructuredDataRepo
-// @constructor
+// @ctor
 func NewStructuredDataRepo(impl StructuredDataRepoImpl) StructuredDataRepo {
 	return &impl
 }

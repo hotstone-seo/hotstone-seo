@@ -31,7 +31,7 @@ type storeImpl struct {
 }
 
 // NewStore return new instance of Store
-// @constructor
+// @ctor
 func NewStore() Store {
 	return &storeImpl{
 		root: &node{

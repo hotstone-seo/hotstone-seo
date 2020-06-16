@@ -13,7 +13,7 @@ const (
 	uiDir = "ui"
 )
 
-func uiUtility(*typgo.BuildCli) []*cli.Command {
+func uiUtility(*typgo.BuildCli) ([]*cli.Command, error) {
 	return []*cli.Command{
 		{
 			Name:  "npm",
@@ -49,7 +49,7 @@ func uiUtility(*typgo.BuildCli) []*cli.Command {
 				},
 			},
 		},
-	}
+	}, nil
 }
 
 func npm(ctx context.Context, args ...string) error {

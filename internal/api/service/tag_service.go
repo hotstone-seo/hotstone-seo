@@ -28,7 +28,7 @@ type TagServiceImpl struct {
 }
 
 // NewTagService return new instance of TagService
-// @constructor
+// @ctor
 func NewTagService(impl TagServiceImpl) TagService {
 	return &impl
 }

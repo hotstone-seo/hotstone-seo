@@ -28,7 +28,7 @@ type (
 )
 
 // NewService return new instance of ServiceImpl
-// @constructor
+// @ctor
 func NewService(svc SyncRepo, store Store) Service {
 	return &ServiceImpl{
 		SyncRepo: svc,

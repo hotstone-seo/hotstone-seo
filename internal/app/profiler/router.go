@@ -9,8 +9,8 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
-	"github.com/hotstone-seo/hotstone-seo/pkg/echokit"
 	"github.com/labstack/echo"
+	"github.com/typical-go/typical-rest-server/pkg/echokit"
 	"go.uber.org/dig"
 )
 

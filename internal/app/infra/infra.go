@@ -4,8 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/go-redis/redis"
-	"github.com/typical-go/typical-rest-server/pkg/typpg"
-	"github.com/typical-go/typical-rest-server/pkg/typredis"
 	"go.uber.org/dig"
 )
 
@@ -13,11 +11,10 @@ type (
 	// Configs of infra
 	Configs struct {
 		dig.In
-		MainDB   *typpg.Config
-		AnalytDB *typpg.Config `name:"analyt"`
-		Redis    *typredis.Config
+		MainDB *Pg
+		Analyt *Analyt
+		Redis  *Redis
 	}
-
 	// Infras is list of infra to be provide in dependency-injection
 	Infras struct {
 		dig.Out
@@ -25,7 +22,6 @@ type (
 		AnalytDB *sql.DB `name:"analyt"`
 		Redis    *redis.Client
 	}
-
 	// Params infra
 	Params struct {
 		dig.In
@@ -44,15 +40,15 @@ func Connect(c Configs) (infras Infras, err error) {
 		redis    *redis.Client
 	)
 
-	if mainDB, err = typpg.Connect(c.MainDB); err != nil {
+	if mainDB, err = c.MainDB.connect(); err != nil {
 		return
 	}
 
-	if analytDB, err = typpg.Connect(c.AnalytDB); err != nil {
+	if analytDB, err = c.Analyt.connect(); err != nil {
 		return
 	}
 
-	if redis, err = typredis.Connect(c.Redis); err != nil {
+	if redis, err = c.Redis.connect(); err != nil {
 		return
 	}
 
@@ -66,13 +62,13 @@ func Connect(c Configs) (infras Infras, err error) {
 // Disconnect from postgres server
 // @dtor
 func Disconnect(p Params) (err error) {
-	if err = typpg.Disconnect(p.MainDB); err != nil {
+	if err = p.MainDB.Close(); err != nil {
 		return
 	}
-	if err = typpg.Disconnect(p.AnalytDB); err != nil {
+	if err = p.AnalytDB.Close(); err != nil {
 		return
 	}
-	if err = typredis.Disconnect(p.Redis); err != nil {
+	if err = p.Redis.Close(); err != nil {
 		return
 	}
 	return

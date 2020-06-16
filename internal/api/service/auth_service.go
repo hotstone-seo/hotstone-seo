@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -34,7 +33,7 @@ type (
 	AuthServiceImpl struct {
 		dig.In
 		UserRepo     repository.UserRepo
-		RoleTypeRepo repository.RoleTypeRepo
+		UserRoleRepo repository.UserRoleRepo
 		SettingSvc   SettingSvc
 	}
 
@@ -53,10 +52,10 @@ type (
 
 // NewService return new instance of AuthGoogleService
 // @ctor
-func NewService(userRepo repository.UserRepo, roleTypeRepo repository.RoleTypeRepo, settingSvc SettingSvc) AuthService {
+func NewService(userRepo repository.UserRepo, UserRoleRepo repository.UserRoleRepo, settingSvc SettingSvc) AuthService {
 	return &AuthServiceImpl{
 		UserRepo:     userRepo,
-		RoleTypeRepo: roleTypeRepo,
+		UserRoleRepo: UserRoleRepo,
 		SettingSvc:   settingSvc,
 	}
 }
@@ -68,23 +67,17 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 		return jwtClaims, fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
 	}
 	var roleAccess string
-	var roleModule string
 	var roleMenus []string
 	var rolePaths []string
 	if user != nil {
-		roleType, err := c.RoleTypeRepo.FindOne(ctx, user.RoleTypeID)
+		UserRole, err := c.UserRoleRepo.FindOne(ctx, user.RoleTypeID)
 		if err == sql.ErrNoRows {
 			return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 		}
-		roleAccess = roleType.Name
-		roleMenus = roleType.Menus
-		rolePaths = roleType.Paths
+		roleAccess = UserRole.Name
+		roleMenus = UserRole.Menus
+		rolePaths = UserRole.Paths
 
-		rawData, err := json.Marshal(roleType.Modules)
-		if err != nil {
-			return jwtClaims, fmt.Errorf("AuthVerifyCallback error convert JSON: %w", err)
-		}
-		roleModule = string(rawData)
 	}
 	simulationKey := c.SettingSvc.GetValue(ctx, SimulationKey)
 	return JwtClaims{
@@ -92,7 +85,6 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 		picture:       gUser.Picture,
 		userID:        user.ID,
 		userRole:      roleAccess,
-		modules:       roleModule,
 		simulationKey: simulationKey,
 		menus:         roleMenus,
 		paths:         rolePaths,

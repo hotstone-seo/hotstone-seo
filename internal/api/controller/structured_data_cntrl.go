@@ -8,9 +8,9 @@ import (
 
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
-	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 )
@@ -18,7 +18,7 @@ import (
 type StructuredDataCntrl struct {
 	dig.In
 	service.StructuredDataService
-	*config.Config
+	*infra.App
 }
 
 func (c *StructuredDataCntrl) Route(e *echo.Group) {

@@ -1,13 +1,13 @@
-import React from 'react';
-import Cookies from 'js-cookie';
-import jwt from 'jsonwebtoken';
-import _ from 'lodash';
-import AuthAPI from 'api/auth';
+import React from "react";
+import Cookies from "js-cookie";
+import jwt from "jsonwebtoken";
+import _ from "lodash";
+import AuthAPI from "api/auth";
 
 const AuthContext = React.createContext();
 
 const loadUserFromCookie = () => {
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
 
   if (_.isEmpty(token)) {
     return null;
@@ -19,7 +19,8 @@ const loadUserFromCookie = () => {
     picture: tokenDecoded.picture,
     role: tokenDecoded.user_role,
     user_id: tokenDecoded.user_id,
-    modules: tokenDecoded.modules,
+    paths: tokenDecoded.paths,
+    menus: tokenDecoded.menus,
   };
   return user;
 };
@@ -33,7 +34,7 @@ function AuthProvider(props) {
         setCurrentUser(user);
       });
     }
-    throw new Error('Error login: another user already logged in');
+    throw new Error("Error login: another user already logged in");
   };
   const logout = () => {
     if (currentUser) {
@@ -49,7 +50,10 @@ function AuthProvider(props) {
   return (
     <AuthContext.Provider
       value={{
-        currentUser, login, logout, register,
+        currentUser,
+        login,
+        logout,
+        register,
       }}
       {...props}
     />
@@ -59,7 +63,7 @@ function AuthProvider(props) {
 function useAuth() {
   const context = React.useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

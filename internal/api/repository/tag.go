@@ -41,7 +41,7 @@ type TagRepoImpl struct {
 }
 
 // NewTagRepo return new instance of TagRepo
-// @constructor
+// @ctor
 func NewTagRepo(impl TagRepoImpl) TagRepo {
 	return &impl
 }
