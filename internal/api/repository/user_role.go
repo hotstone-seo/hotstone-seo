@@ -21,7 +21,6 @@ type (
 	UserRole struct {
 		ID        int64     `json:"id"`
 		Name      string    `json:"name"`
-		Modules   JSONMap   `json:"modules"`
 		Menus     Strings   `json:"menus"`
 		Paths     Strings   `json:"paths"`
 		UpdatedAt time.Time `json:"updated_at"`
@@ -62,7 +61,6 @@ func (r *UserRoleRepoImpl) FindOne(ctx context.Context, id int64) (e *UserRole, 
 		Select(
 			"id",
 			"name",
-			"modules",
 			"menus",
 			"paths",
 			"updated_at",
@@ -78,7 +76,14 @@ func (r *UserRoleRepoImpl) FindOne(ctx context.Context, id int64) (e *UserRole, 
 	defer rows.Close()
 	if rows.Next() {
 		e = new(UserRole)
-		if err = rows.Scan(&e.ID, &e.Name, &e.Modules, &e.Menus, &e.Paths, &e.UpdatedAt, &e.CreatedAt); err != nil {
+		if err = rows.Scan(
+			&e.ID,
+			&e.Name,
+			&e.Menus,
+			&e.Paths,
+			&e.UpdatedAt,
+			&e.CreatedAt,
+		); err != nil {
 			dbtxn.SetError(ctx, err)
 			return nil, err
 		}
@@ -93,7 +98,8 @@ func (r *UserRoleRepoImpl) Find(ctx context.Context) (list []*UserRole, err erro
 		Select(
 			"id",
 			"name",
-			"modules",
+			"menus",
+			"paths",
 			"updated_at",
 			"created_at",
 		).
@@ -107,38 +113,35 @@ func (r *UserRoleRepoImpl) Find(ctx context.Context) (list []*UserRole, err erro
 	defer rows.Close()
 	list = make([]*UserRole, 0)
 	for rows.Next() {
-		var e0 UserRole
+		var e UserRole
 		if err = rows.Scan(
-			&e0.ID,
-			&e0.Name,
-			&e0.Modules,
-			&e0.UpdatedAt,
-			&e0.CreatedAt,
+			&e.ID,
+			&e.Name,
+			&e.Menus,
+			&e.Paths,
+			&e.UpdatedAt,
+			&e.CreatedAt,
 		); err != nil {
 			dbtxn.SetError(ctx, err)
 			return
 		}
-		list = append(list, &e0)
+		list = append(list, &e)
 	}
 	return
 }
 
 // Insert role_type
 func (r *UserRoleRepoImpl) Insert(ctx context.Context, e UserRole) (lastInsertID int64, err error) {
-	if e.Modules == nil {
-		e.Modules = make(map[string]interface{}, 0)
-	}
+
 	builder := sq.
 		Insert(UserRoleTable).
 		Columns(
 			"name",
-			"modules",
 			"menus",
 			"paths",
 		).
 		Values(
 			e.Name,
-			e.Modules,
 			e.Menus,
 			e.Paths,
 		).
@@ -156,13 +159,9 @@ func (r *UserRoleRepoImpl) Insert(ctx context.Context, e UserRole) (lastInsertID
 
 // Update role_type
 func (r *UserRoleRepoImpl) Update(ctx context.Context, e UserRole) (err error) {
-	if e.Modules == nil {
-		e.Modules = make(map[string]interface{}, 0)
-	}
 	builder := sq.
 		Update(UserRoleTable).
 		Set("name", e.Name).
-		Set("modules", e.Modules).
 		Set("menus", e.Menus).
 		Set("paths", e.Paths).
 		Set("updated_at", time.Now()).

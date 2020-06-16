@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"database/sql"
 	"strings"
 	"time"
 
@@ -30,7 +29,6 @@ type (
 		AuditTrailService
 		HistoryService
 		dbtxn.Transactional
-		ModuleRepo repository.ModuleRepo
 	}
 	// UserRoleRequest is request model for UserRole related method
 	UserRoleRequest struct {
@@ -67,10 +65,7 @@ func (r *UserRoleSvcImpl) Insert(ctx context.Context, req UserRoleRequest) (newI
 	var data repository.UserRole
 
 	data = repository.UserRole{
-		Name: req.Name,
-		Modules: map[string]interface{}{
-			"modules": mapModules(ctx, req.Modules, r),
-		},
+		Name:      req.Name,
 		Menus:     strings.Split(req.Menus, "\n"),
 		Paths:     strings.Split(req.Paths, "\n"),
 		CreatedAt: time.Now(),
@@ -102,11 +97,8 @@ func (r *UserRoleSvcImpl) Update(ctx context.Context, req UserRoleRequest) (err 
 	}
 	var data repository.UserRole
 	data = repository.UserRole{
-		ID:   req.ID,
-		Name: req.Name,
-		Modules: map[string]interface{}{
-			"modules": mapModules(ctx, req.Modules, r),
-		},
+		ID:        req.ID,
+		Name:      req.Name,
 		Menus:     strings.Split(req.Menus, "\n"),
 		Paths:     strings.Split(req.Paths, "\n"),
 		UpdatedAt: time.Now(),
@@ -165,32 +157,6 @@ func (r *UserRoleSvcImpl) Delete(ctx context.Context, id int64) (err error) {
 // FindOneByName UserRole
 func (r *UserRoleSvcImpl) FindOneByName(ctx context.Context, name string) (UserRole *repository.UserRole, err error) {
 	return r.UserRoleRepo.FindOneByName(ctx, name)
-}
-
-func mapModules(ctx context.Context, mItem []ModuleItem, r *UserRoleSvcImpl) []map[string]interface{} {
-	faqsMap := make([]map[string]interface{}, len(mItem))
-	for index, tempMod := range mItem {
-		moduleMs, err := r.ModuleRepo.FindOneByName(ctx, tempMod.Module)
-		if err == sql.ErrNoRows {
-			log.Error(err)
-		}
-		/*var APIPathMaps []interface{}
-		for k, v := range moduleMs.APIPath {
-			switch vv := v.(type) {
-			case []interface{}:
-				APIPathMaps = vv
-				log.Info("index:", k)
-				break
-			}
-		}*/
-		faqsMap[index] = map[string]interface{}{
-			"path":    moduleMs.Path,
-			"name":    tempMod.Module,
-			"pattern": moduleMs.Pattern,
-			"label":   moduleMs.Label,
-		}
-	}
-	return faqsMap
 }
 
 func mapMenus(mItem []string) []map[string]interface{} {

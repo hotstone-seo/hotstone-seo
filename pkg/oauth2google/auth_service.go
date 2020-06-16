@@ -19,7 +19,6 @@ import (
 )
 
 type (
-
 	// AuthService is center related logic
 	// @mock
 	AuthService interface {
@@ -29,16 +28,13 @@ type (
 		GetAuthCodeURL(coauthState string) string
 		VerifyUser(ctx context.Context, code string) (GoogleUser, error)
 	}
-
 	// AuthServiceImpl implementation of AuthService
 	AuthServiceImpl struct {
 		dig.In
 		*oauth2.Config
 		cfg *Config
 	}
-
 	googleOauth2UserInfoResp map[string]interface{}
-
 	// GoogleUser holds Google user information
 	GoogleUser struct {
 		Email   string
@@ -55,7 +51,7 @@ func NewService(cfg *Config) AuthService {
 			RedirectURL:  cfg.Callback,
 			ClientID:     cfg.ClientID,
 			ClientSecret: cfg.ClientSecret,
-			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"}, // TODO: put to module
+			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 			Endpoint:     google.Endpoint,
 		},
 	}

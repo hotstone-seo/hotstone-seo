@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -68,7 +67,6 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 		return jwtClaims, fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
 	}
 	var roleAccess string
-	var roleModule string
 	var roleMenus []string
 	var rolePaths []string
 	if user != nil {
@@ -80,11 +78,6 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 		roleMenus = UserRole.Menus
 		rolePaths = UserRole.Paths
 
-		rawData, err := json.Marshal(UserRole.Modules)
-		if err != nil {
-			return jwtClaims, fmt.Errorf("AuthVerifyCallback error convert JSON: %w", err)
-		}
-		roleModule = string(rawData)
 	}
 	simulationKey := c.SettingSvc.GetValue(ctx, SimulationKey)
 	return JwtClaims{
@@ -92,7 +85,6 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 		picture:       gUser.Picture,
 		userID:        user.ID,
 		userRole:      roleAccess,
-		modules:       roleModule,
 		simulationKey: simulationKey,
 		menus:         roleMenus,
 		paths:         rolePaths,

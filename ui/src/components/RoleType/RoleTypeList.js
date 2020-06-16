@@ -1,28 +1,20 @@
-
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Table, Divider, Button, Popconfirm, Tooltip, message,
-} from 'antd';
-import moment from 'moment';
-import { fetchRoleTypes } from 'api/roleType';
-import useTableFilterProps from 'hooks/useTableFilterProps';
-import { buildQueryParam, onTableChange } from 'utils/pagination';
-import useTablePaginationTotal from 'hooks/useTablePaginationTotal';
-import useTablePaginationNormalizedListData from 'hooks/useTablePaginationNormalizedListData';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { Table, Divider, Button, Popconfirm, Tooltip, message } from "antd";
+import { fetchRoleTypes } from "api/roleType";
+import useTableFilterProps from "hooks/useTableFilterProps";
+import { buildQueryParam, onTableChange } from "utils/pagination";
+import useTablePaginationTotal from "hooks/useTablePaginationTotal";
+import useTablePaginationNormalizedListData from "hooks/useTablePaginationNormalizedListData";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const defaultPagination = {
   current: 1,
   pageSize: 5,
 };
 
-const formatDate = (dateString) => moment(dateString).fromNow();
-
 function RoleTypeList(props) {
-  const {
-    listRoleType, setListRoleType, onEdit, onDelete,
-  } = props;
+  const { listRoleType, setListRoleType, onEdit, onDelete } = props;
 
   const [loading, setLoading] = useState(false);
   const [paginationInfo, setPaginationInfo] = useState(defaultPagination);
@@ -32,7 +24,7 @@ function RoleTypeList(props) {
   const total = useTablePaginationTotal(paginationInfo, listRoleType);
   const normalizedListData = useTablePaginationNormalizedListData(
     paginationInfo,
-    listRoleType,
+    listRoleType
   );
 
   useEffect(() => {
@@ -42,7 +34,7 @@ function RoleTypeList(props) {
         const queryParam = buildQueryParam(
           paginationInfo,
           filteredInfo,
-          sortedInfo,
+          sortedInfo
         );
         const users = await fetchRoleTypes({ params: queryParam });
         setListRoleType(users);
@@ -56,62 +48,23 @@ function RoleTypeList(props) {
 
   const columns = [
     {
-      title: 'Role Name',
-      dataIndex: 'name',
-      key: 'name',
-      className: 'col-name',
-      width: '20%',
+      title: "Role Name",
+      dataIndex: "name",
+      key: "name",
+      className: "col-name",
+      width: "20%",
       sorter: true,
-      sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
-      ...useTableFilterProps('name'),
-      render: (text) => (
-        <div>{text}</div>
-      ),
+      sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
+      ...useTableFilterProps("name"),
+      render: (text) => <div>{text}</div>,
     },
     {
-      title: 'Privilege',
-      dataIndex: 'modules',
-      key: 'modules',
-      className: 'col-name',
-      width: '35%',
-      render: (text, record) => {
-        const arrMenu = record.modules.modules;
-        let privList = '';
-        let mnLabel = '';
-        Object.keys(arrMenu).forEach((key) => {
-          const mnName = arrMenu[key];
-          const isAnyLabel = mnName.label !== undefined;
-          mnLabel = '';
-          if (isAnyLabel) {
-            mnLabel = mnName.label;
-          } else {
-            mnLabel = mnName.name.charAt(0).toUpperCase() + mnName.name.slice(1);
-          }
-          if (privList === '') {
-            privList = privList.concat(mnLabel);
-          } else {
-            privList = privList.concat(', ').concat(mnLabel);
-          }
-        });
-        return <div>{privList}</div>;
-      },
-    },
-    {
-      title: 'Last Updated',
-      dataIndex: 'updated_at',
-      key: 'lastUpdated',
-      render: (text, record) => <div>{formatDate(record.updated_at)}</div>,
-    },
-    {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (text, record) => (
         <span>
           <Tooltip title="Edit">
-            <Button
-              onClick={() => onEdit(record)}
-              icon={<EditOutlined />}
-            >
+            <Button onClick={() => onEdit(record)} icon={<EditOutlined />}>
               Edit
             </Button>
           </Tooltip>
@@ -122,7 +75,9 @@ function RoleTypeList(props) {
             onConfirm={() => onDelete(record)}
           >
             <Tooltip title="Delete">
-              <Button type="primary" danger icon={<DeleteOutlined />}>Delete</Button>
+              <Button type="primary" danger icon={<DeleteOutlined />}>
+                Delete
+              </Button>
             </Tooltip>
           </Popconfirm>
         </span>
@@ -139,7 +94,7 @@ function RoleTypeList(props) {
       onChange={onTableChange(
         setPaginationInfo,
         setFilteredInfo,
-        setSortedInfo,
+        setSortedInfo
       )}
       loading={loading}
       scroll={{ x: true }}

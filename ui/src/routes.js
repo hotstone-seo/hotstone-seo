@@ -8,7 +8,6 @@ import {
   UserOutlined,
   LockOutlined,
   UsergroupAddOutlined,
-  MenuOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 
@@ -25,7 +24,6 @@ import ClientKey from "views/ClientKey";
 import GenericNotFound from "views/GenericNotFound";
 import User from "./views/User";
 import RoleType from "./views/RoleType";
-import Module from "./views/Module";
 import Setting from "./views/Setting";
 
 function match(text, patterns) {
@@ -103,13 +101,6 @@ const defaultRoutes = [
     name: "User Role",
     component: RoleType,
     icon: UsergroupAddOutlined,
-    visible: true,
-  },
-  {
-    path: "/modules",
-    name: "Modules",
-    component: Module,
-    icon: MenuOutlined,
     visible: true,
   },
   {
