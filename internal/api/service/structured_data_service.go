@@ -46,11 +46,13 @@ func (s *StructuredDataServiceImpl) Insert(ctx context.Context, strData reposito
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"structured data",
-			newID,
-			repository.Insert,
-			nil,
-			strData,
+			Record{
+				EntityName: "structured data",
+				EntityID:   newID,
+				Operation:  InsertOp,
+				PrevData:   nil,
+				NextData:   strData,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -72,11 +74,13 @@ func (s *StructuredDataServiceImpl) Update(ctx context.Context, strData reposito
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"structured data",
-			strData.ID,
-			repository.Update,
-			prevStrData,
-			strData,
+			Record{
+				EntityName: "structured data",
+				EntityID:   strData.ID,
+				Operation:  UpdateOp,
+				PrevData:   prevStrData,
+				NextData:   strData,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -103,11 +107,13 @@ func (s *StructuredDataServiceImpl) Delete(ctx context.Context, id int64) (err e
 		}
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"structured data",
-			id,
-			repository.Delete,
-			strData,
-			nil,
+			Record{
+				EntityName: "structured data",
+				EntityID:   id,
+				Operation:  DeleteOp,
+				PrevData:   strData,
+				NextData:   nil,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
