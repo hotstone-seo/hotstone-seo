@@ -10,8 +10,8 @@ import (
 
 	"github.com/dchest/uniuri"
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
@@ -59,11 +59,13 @@ func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.Clien
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"client_keys",
-			newData.ID,
-			repository.Insert,
-			nil,
-			data,
+			Record{
+				EntityName: "client_keys",
+				EntityID:   newData.ID,
+				Operation:  InsertOp,
+				PrevData:   nil,
+				NextData:   data,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -83,11 +85,13 @@ func (s *ClientKeyServiceImpl) Update(ctx context.Context, data repository.Clien
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"client_keys",
-			data.ID,
-			repository.Update,
-			oldData,
-			data,
+			Record{
+				EntityName: "client_keys",
+				EntityID:   data.ID,
+				Operation:  UpdateOp,
+				PrevData:   oldData,
+				NextData:   data,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -116,11 +120,13 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 		}
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"client_keys",
-			id,
-			repository.Delete,
-			oldData,
-			nil,
+			Record{
+				EntityName: "client_keys",
+				EntityID:   id,
+				Operation:  DeleteOp,
+				PrevData:   oldData,
+				NextData:   nil,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
