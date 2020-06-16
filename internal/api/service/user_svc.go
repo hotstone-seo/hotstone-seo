@@ -56,7 +56,16 @@ func (r *UserSvcImpl) Insert(ctx context.Context, user repository.User) (newUser
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "users", newUserID, repository.Insert, nil, newUser); err != nil {
+	if _, err = r.AuditTrailService.RecordChanges(
+		ctx,
+		Record{
+			EntityName: "users",
+			EntityID:   newUserID,
+			Operation:  InsertOp,
+			PrevData:   nil,
+			NextData:   newUser,
+		},
+	); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
@@ -80,7 +89,16 @@ func (r *UserSvcImpl) Delete(ctx context.Context, id int64) (err error) {
 		return
 	}
 
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "users", id, repository.Delete, oldUser, nil); err != nil {
+	if _, err = r.AuditTrailService.RecordChanges(
+		ctx,
+		Record{
+			EntityName: "users",
+			EntityID:   id,
+			Operation:  DeleteOp,
+			PrevData:   oldUser,
+			NextData:   nil,
+		},
+	); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}
@@ -104,7 +122,16 @@ func (r *UserSvcImpl) Update(ctx context.Context, user repository.User) (err err
 		r.CancelMe(ctx, err)
 		return
 	}
-	if _, err = r.AuditTrailService.RecordChanges(ctx, "users", user.ID, repository.Update, oldUser, newUser); err != nil {
+	if _, err = r.AuditTrailService.RecordChanges(
+		ctx,
+		Record{
+			EntityName: "users",
+			EntityID:   user.ID,
+			Operation:  UpdateOp,
+			PrevData:   oldUser,
+			NextData:   newUser,
+		},
+	); err != nil {
 		r.CancelMe(ctx, err)
 		return
 	}

@@ -15,13 +15,6 @@ type History struct {
 	Data       JSON      `json:"data,omitempty"`
 }
 
-// HistoryOperationType is type of changes operation
-type HistoryOperationType string
-
-const (
-	InsertHistory OperationType = "INSERT"
-)
-
 // HistoryRepo is rule repository
 // @mock
 type HistoryRepo interface {

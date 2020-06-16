@@ -17,15 +17,6 @@ type AuditTrail struct {
 	NewData    JSON      `json:"new_data,omitempty"`
 }
 
-// OperationType is type of changes operation
-type OperationType string
-
-const (
-	Insert OperationType = "INSERT"
-	Update               = "UPDATE"
-	Delete               = "DELETE"
-)
-
 // AuditTrailRepo is rule repository
 // @mock
 type AuditTrailRepo interface {
