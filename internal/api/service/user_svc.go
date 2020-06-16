@@ -3,49 +3,49 @@ package service
 import (
 	"context"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
-// UserService contain logic for User Controller
-// @mock
-type UserService interface {
-	FindOne(ctx context.Context, id int64) (*repository.User, error)
-	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.User, error)
-	Insert(ctx context.Context, user repository.User) (lastInsertID int64, err error)
-	Delete(ctx context.Context, id int64) error
-	Update(ctx context.Context, user repository.User) error
-	FindOneByEmail(ctx context.Context, email string) (*repository.User, error)
-}
+type (
+	// UserSvc contain logic for User Controller
+	// @mock
+	UserSvc interface {
+		FindOne(ctx context.Context, id int64) (*repository.User, error)
+		Find(ctx context.Context) ([]*repository.User, error)
+		Insert(ctx context.Context, user repository.User) (lastInsertID int64, err error)
+		Delete(ctx context.Context, id int64) error
+		Update(ctx context.Context, user repository.User) error
+	}
+	// UserSvcImpl is implementation of UserService
+	UserSvcImpl struct {
+		dig.In
+		UserRepo repository.UserRepo
+		AuditTrailService
+		HistoryService
+		dbtxn.Transactional
+	}
+)
 
-// UserServiceImpl is implementation of UserService
-type UserServiceImpl struct {
-	dig.In
-	UserRepo repository.UserRepo
-	AuditTrailService
-	HistoryService
-	dbtxn.Transactional
-}
-
-// NewUserService return new instance of UserService
+// NewUserSvc return new instance of UserService
 // @ctor
-func NewUserService(impl UserServiceImpl) UserService {
+func NewUserSvc(impl UserSvcImpl) UserSvc {
 	return &impl
 }
 
 // FindOne user
-func (r *UserServiceImpl) FindOne(ctx context.Context, id int64) (user *repository.User, err error) {
+func (r *UserSvcImpl) FindOne(ctx context.Context, id int64) (user *repository.User, err error) {
 	return r.UserRepo.FindOne(ctx, id)
 }
 
 // Find user
-func (r *UserServiceImpl) Find(ctx context.Context, paginationParam repository.PaginationParam) (list []*repository.User, err error) {
-	return r.UserRepo.Find(ctx, paginationParam)
+func (r *UserSvcImpl) Find(ctx context.Context) (list []*repository.User, err error) {
+	return r.UserRepo.Find(ctx)
 }
 
 // Insert user
-func (r *UserServiceImpl) Insert(ctx context.Context, user repository.User) (newUserID int64, err error) {
+func (r *UserSvcImpl) Insert(ctx context.Context, user repository.User) (newUserID int64, err error) {
 	defer r.BeginTxn(&ctx)()
 	if newUserID, err = r.UserRepo.Insert(ctx, user); err != nil {
 		r.CancelMe(ctx, err)
@@ -64,7 +64,7 @@ func (r *UserServiceImpl) Insert(ctx context.Context, user repository.User) (new
 }
 
 // Delete user
-func (r *UserServiceImpl) Delete(ctx context.Context, id int64) (err error) {
+func (r *UserSvcImpl) Delete(ctx context.Context, id int64) (err error) {
 	defer r.BeginTxn(&ctx)()
 	oldUser, err := r.UserRepo.FindOne(ctx, id)
 	if err != nil {
@@ -88,7 +88,7 @@ func (r *UserServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 }
 
 // Update user
-func (r *UserServiceImpl) Update(ctx context.Context, user repository.User) (err error) {
+func (r *UserSvcImpl) Update(ctx context.Context, user repository.User) (err error) {
 	defer r.BeginTxn(&ctx)()
 	oldUser, err := r.UserRepo.FindOne(ctx, user.ID)
 	if err != nil {
@@ -109,9 +109,4 @@ func (r *UserServiceImpl) Update(ctx context.Context, user repository.User) (err
 		return
 	}
 	return nil
-}
-
-// FindOneByEmail user
-func (r *UserServiceImpl) FindOneByEmail(ctx context.Context, email string) (user *repository.User, err error) {
-	return r.UserRepo.FindUserByEmail(ctx, email)
 }

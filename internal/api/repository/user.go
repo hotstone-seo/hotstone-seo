@@ -29,7 +29,7 @@ type (
 	// @mock
 	UserRepo interface {
 		FindOne(ctx context.Context, id int64) (*User, error)
-		Find(ctx context.Context, paginationParam PaginationParam) ([]*User, error)
+		Find(ctx context.Context) ([]*User, error)
 		Insert(ctx context.Context, user User) (lastInsertID int64, err error)
 		Delete(ctx context.Context, id int64) error
 		Update(ctx context.Context, user User) error
@@ -85,7 +85,7 @@ func (r *UserRepoImpl) FindOne(ctx context.Context, id int64) (*User, error) {
 }
 
 // Find user
-func (r *UserRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*User, err error) {
+func (r *UserRepoImpl) Find(ctx context.Context) (list []*User, err error) {
 	var (
 		rows *sql.Rows
 	)
@@ -101,8 +101,6 @@ func (r *UserRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 		From(UserTable).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
-
-	builder = ComposePagination(builder, paginationParam)
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
 		dbtxn.SetError(ctx, err)

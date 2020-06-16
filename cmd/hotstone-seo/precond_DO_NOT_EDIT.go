@@ -41,7 +41,7 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: service.NewSettingSvc},
 		&typgo.Constructor{Name: "", Fn: service.NewStructuredDataService},
 		&typgo.Constructor{Name: "", Fn: service.NewTagService},
-		&typgo.Constructor{Name: "", Fn: service.NewUserService},
+		&typgo.Constructor{Name: "", Fn: service.NewUserSvc},
 		&typgo.Constructor{Name: "", Fn: infra.Connect},
 		&typgo.Constructor{Name: "", Fn: provider.NewService},
 		&typgo.Constructor{Name: "", Fn: urlstore.NewService},
