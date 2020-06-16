@@ -28,16 +28,7 @@ func TestClientKeyService_Insert(t *testing.T) {
 
 	newClientKey := repository.ClientKey{Name: "Foo", Prefix: "123", Key: "456"}
 	repoMock.EXPECT().Insert(ctx, gomock.Any()).Return(newClientKey, nil)
-	auditSvcMock.EXPECT().RecordChanges(
-		ctx,
-		service.Record{
-			EntityName: "client_keys",
-			EntityID:   newClientKey.ID,
-			Operation:  service.InsertOp,
-			PrevData:   nil,
-			NextData:   newClientKey,
-		},
-	).Return(int64(1), nil)
+	auditSvcMock.EXPECT().RecordChanges(ctx, gomock.Any()).Return(int64(1), nil)
 
 	givenClientKey := repository.ClientKey{Name: "Foo"}
 	data, err := svc.Insert(ctx, givenClientKey)
