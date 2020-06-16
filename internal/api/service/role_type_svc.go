@@ -17,7 +17,7 @@ type (
 	// @mock
 	UserRoleSvc interface {
 		FindOne(ctx context.Context, id int64) (*repository.UserRole, error)
-		Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.UserRole, error)
+		Find(ctx context.Context) ([]*repository.UserRole, error)
 		Insert(ctx context.Context, req UserRoleRequest) (lastInsertID int64, err error)
 		Update(ctx context.Context, req UserRoleRequest) error
 		Delete(ctx context.Context, id int64) error
@@ -58,8 +58,8 @@ func (r *UserRoleSvcImpl) FindOne(ctx context.Context, id int64) (UserRole *repo
 }
 
 // Find UserRole
-func (r *UserRoleSvcImpl) Find(ctx context.Context, paginationParam repository.PaginationParam) (list []*repository.UserRole, err error) {
-	return r.UserRoleRepo.Find(ctx, paginationParam)
+func (r *UserRoleSvcImpl) Find(ctx context.Context) (list []*repository.UserRole, err error) {
+	return r.UserRoleRepo.Find(ctx)
 }
 
 // Insert UserRole

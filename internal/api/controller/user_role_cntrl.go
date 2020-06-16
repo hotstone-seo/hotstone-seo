@@ -12,36 +12,33 @@ import (
 	"go.uber.org/dig"
 )
 
-// RoleTypeCntrl is controller to role_type entity
-type RoleTypeCntrl struct {
+// UserRoleCntrl is controller to role_type entity
+type UserRoleCntrl struct {
 	dig.In
 	Svc service.UserRoleSvc
 }
 
 // Route to define API Route
-func (r *RoleTypeCntrl) Route(e *echo.Group) {
-	e.GET("/role_types", r.Find)
-	e.GET("/role_types/:id", r.FindOne)
-	e.POST("/role_types", r.Create)
-	e.PUT("/role_types", r.Update)
-	e.DELETE("/role_types/:id", r.Delete)
+func (r *UserRoleCntrl) Route(e *echo.Group) {
+	e.GET("/user_roles", r.Find)
+	e.GET("/user_roles/:id", r.FindOne)
+	e.POST("/user_roles", r.Create)
+	e.PUT("/user_roles", r.Update)
+	e.DELETE("/user_roles/:id", r.Delete)
 }
 
 // Find all role_type
-func (r *RoleTypeCntrl) Find(ctx echo.Context) (err error) {
-	var roleTypes []*repository.UserRole
-	ctx0 := ctx.Request().Context()
-
-	validCols := []string{"id", "name", "modules", "updated_at", "created_at"}
-	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
-	if roleTypes, err = r.Svc.Find(ctx0, paginationParam); err != nil {
+func (r *UserRoleCntrl) Find(c echo.Context) (err error) {
+	ctx := c.Request().Context()
+	roleTypes, err := r.Svc.Find(ctx)
+	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, roleTypes)
+	return c.JSON(http.StatusOK, roleTypes)
 }
 
 // FindOne role_type
-func (r *RoleTypeCntrl) FindOne(c echo.Context) (err error) {
+func (r *UserRoleCntrl) FindOne(c echo.Context) (err error) {
 
 	ctx := c.Request().Context()
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -60,7 +57,7 @@ func (r *RoleTypeCntrl) FindOne(c echo.Context) (err error) {
 }
 
 // Create role_type
-func (r *RoleTypeCntrl) Create(c echo.Context) (err error) {
+func (r *UserRoleCntrl) Create(c echo.Context) (err error) {
 	var (
 		req          service.UserRoleRequest
 		roleType     repository.UserRole
@@ -79,7 +76,7 @@ func (r *RoleTypeCntrl) Create(c echo.Context) (err error) {
 }
 
 // Update role_type
-func (r *RoleTypeCntrl) Update(c echo.Context) (err error) {
+func (r *UserRoleCntrl) Update(c echo.Context) (err error) {
 	var (
 		req service.UserRoleRequest
 	)
@@ -100,7 +97,7 @@ func (r *RoleTypeCntrl) Update(c echo.Context) (err error) {
 }
 
 // Delete role_type
-func (r *RoleTypeCntrl) Delete(c echo.Context) (err error) {
+func (r *UserRoleCntrl) Delete(c echo.Context) (err error) {
 	var id int64
 	ctx0 := c.Request().Context()
 	if id, err = strconv.ParseInt(c.Param("id"), 10, 64); err != nil {

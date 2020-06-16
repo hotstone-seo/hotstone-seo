@@ -27,11 +27,11 @@ type (
 		UpdatedAt time.Time `json:"updated_at"`
 		CreatedAt time.Time `json:"created_at"`
 	}
-	// UserRoleRepo to handle role_types entity
+	// UserRoleRepo to handle user_roles entity
 	// @mock
 	UserRoleRepo interface {
 		FindOne(context.Context, int64) (*UserRole, error)
-		Find(ctx context.Context, paginationParam PaginationParam) ([]*UserRole, error)
+		Find(ctx context.Context) ([]*UserRole, error)
 		Insert(ctx context.Context, UserRole UserRole) (lastInsertID int64, err error)
 		Update(ctx context.Context, UserRole UserRole) error
 		Delete(ctx context.Context, id int64) error
@@ -87,7 +87,7 @@ func (r *UserRoleRepoImpl) FindOne(ctx context.Context, id int64) (e *UserRole, 
 }
 
 // Find role_type
-func (r *UserRoleRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*UserRole, err error) {
+func (r *UserRoleRepoImpl) Find(ctx context.Context) (list []*UserRole, err error) {
 	var rows *sql.Rows
 	builder := sq.
 		Select(
