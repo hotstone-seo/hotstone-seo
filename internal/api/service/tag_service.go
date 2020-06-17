@@ -18,7 +18,7 @@ type (
 	TagService interface {
 		Find(context.Context, map[string][]string) ([]*repository.Tag, error)
 		FindOne(context.Context, string) (*repository.Tag, error)
-		Create(context.Context, repository.Tag) (id string, err error)
+		Create(context.Context, repository.Tag) (id int64, err error)
 		Update(context.Context, string, repository.Tag) error
 		Delete(context.Context, string) error
 	}

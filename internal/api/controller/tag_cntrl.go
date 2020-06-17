@@ -56,7 +56,7 @@ func (c *TagCntrl) FindOne(ctx echo.Context) (err error) {
 func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 	var (
 		tag repository.Tag
-		id  string
+		id  int64
 	)
 	if err = ctx.Bind(&tag); err != nil {
 		return err
@@ -64,7 +64,7 @@ func (c *TagCntrl) Create(ctx echo.Context) (err error) {
 	if id, err = c.TagService.Create(ctx.Request().Context(), tag); err != nil {
 		return httpError(err)
 	}
-	ctx.Response().Header().Set(echo.HeaderLocation, fmt.Sprintf("/tags/%s", id))
+	ctx.Response().Header().Set(echo.HeaderLocation, fmt.Sprintf("/tags/%d", id))
 	return ctx.NoContent(http.StatusCreated)
 }
 
