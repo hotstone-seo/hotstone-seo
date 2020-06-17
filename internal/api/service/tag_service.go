@@ -122,9 +122,13 @@ func (s *TagServiceImpl) Update(ctx context.Context, tag repository.Tag) (err er
 }
 
 // Delete tag
-func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	var currentTag *repository.Tag
-	if currentTag, err = s.TagRepo.FindOne(ctx, id); err != nil {
+func (s *TagServiceImpl) Delete(ctx context.Context, id string) (err error) {
+	tagID, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return errvalid.New("ID is not valid")
+	}
+	currentTag, err := s.TagRepo.FindOne(ctx, tagID)
+	if err != nil {
 		return
 	}
 	defer func() {
@@ -134,7 +138,7 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		if _, histErr := s.HistoryService.RecordHistory(
 			ctx,
 			currentTag.Type+"-tag",
-			id,
+			tagID,
 			currentTag,
 		); histErr != nil {
 			log.Error(histErr)
@@ -143,7 +147,7 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 			ctx,
 			Record{
 				EntityName: "tags",
-				EntityID:   id,
+				EntityID:   tagID,
 				Operation:  DeleteOp,
 				PrevData:   currentTag,
 				NextData:   nil,
@@ -152,5 +156,5 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 			log.Error(auditErr)
 		}
 	}()
-	return s.TagRepo.Delete(ctx, id)
+	return s.TagRepo.Delete(ctx, tagID)
 }
