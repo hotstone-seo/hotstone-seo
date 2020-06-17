@@ -64,3 +64,39 @@ func (mr *MockAuditTrailServiceMockRecorder) RecordChanges(arg0, arg1 interface{
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecordChanges", reflect.TypeOf((*MockAuditTrailService)(nil).RecordChanges), arg0, arg1)
 }
+
+// RecordDelete mocks base method
+func (m *MockAuditTrailService) RecordDelete(arg0 context.Context, arg1 string, arg2 int64, arg3 interface{}) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RecordDelete", arg0, arg1, arg2, arg3)
+}
+
+// RecordDelete indicates an expected call of RecordDelete
+func (mr *MockAuditTrailServiceMockRecorder) RecordDelete(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecordDelete", reflect.TypeOf((*MockAuditTrailService)(nil).RecordDelete), arg0, arg1, arg2, arg3)
+}
+
+// RecordInsert mocks base method
+func (m *MockAuditTrailService) RecordInsert(arg0 context.Context, arg1 string, arg2 int64, arg3 interface{}) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RecordInsert", arg0, arg1, arg2, arg3)
+}
+
+// RecordInsert indicates an expected call of RecordInsert
+func (mr *MockAuditTrailServiceMockRecorder) RecordInsert(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecordInsert", reflect.TypeOf((*MockAuditTrailService)(nil).RecordInsert), arg0, arg1, arg2, arg3)
+}
+
+// RecordUpdate mocks base method
+func (m *MockAuditTrailService) RecordUpdate(arg0 context.Context, arg1 string, arg2 int64, arg3, arg4 interface{}) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "RecordUpdate", arg0, arg1, arg2, arg3, arg4)
+}
+
+// RecordUpdate indicates an expected call of RecordUpdate
+func (mr *MockAuditTrailServiceMockRecorder) RecordUpdate(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RecordUpdate", reflect.TypeOf((*MockAuditTrailService)(nil).RecordUpdate), arg0, arg1, arg2, arg3, arg4)
+}
