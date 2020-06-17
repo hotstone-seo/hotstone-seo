@@ -96,9 +96,14 @@ func (s *TagServiceImpl) Create(ctx context.Context, tag repository.Tag) (id int
 }
 
 // Update modify existing Tag entity
-func (s *TagServiceImpl) Update(ctx context.Context, tag repository.Tag) (err error) {
-	var currentTag *repository.Tag
-	if currentTag, err = s.TagRepo.FindOne(ctx, tag.ID); err != nil {
+func (s *TagServiceImpl) Update(ctx context.Context, id string, tag repository.Tag) (err error) {
+	tagID, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return errvalid.New("ID is not valid")
+	}
+	tag.ID = tagID
+	currentTag, err := s.TagRepo.FindOne(ctx, tagID)
+	if err != nil {
 		return
 	}
 	defer func() {
@@ -109,7 +114,7 @@ func (s *TagServiceImpl) Update(ctx context.Context, tag repository.Tag) (err er
 			ctx,
 			Record{
 				EntityName: "tags",
-				EntityID:   tag.ID,
+				EntityID:   tagID,
 				Operation:  UpdateOp,
 				PrevData:   currentTag,
 				NextData:   tag,
