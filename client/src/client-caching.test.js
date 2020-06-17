@@ -1,7 +1,6 @@
 import { HotStoneClient } from './index'
 import nock from 'nock'
 import crypto from 'crypto'
-import RedisCache from './redis-cache'
 
 function random(len) {
     return crypto

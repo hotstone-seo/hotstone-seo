@@ -21,11 +21,8 @@
   },
   "homepage": "https://github.com/hotstone-seo/hotstone-seo#readme",
   "dependencies": {
-    "bluebird": "^3.7.2",
     "make-fetch-happen": "^8.0.4",
-    "node-fetch": "^2.6.0",
-    "query-string": "^6.12.1",
-    "redis": "^3.0.2"
+    "query-string": "^6.12.1"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
