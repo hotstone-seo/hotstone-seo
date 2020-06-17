@@ -8,6 +8,7 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -43,12 +44,10 @@ type (
 	// UserRepo is user repository
 	// @mock
 	UserRepo interface {
-		FindOne(ctx context.Context, id int64) (*User, error)
-		Find(ctx context.Context) ([]*User, error)
+		Find(context.Context, ...dbkit.SelectOption) ([]*User, error)
 		Insert(ctx context.Context, user User) (lastInsertID int64, err error)
 		Delete(ctx context.Context, id int64) error
 		Update(ctx context.Context, user User) error
-		FindUserByEmail(ctx context.Context, email string) (*User, error)
 	}
 	// UserRepoImpl is implementation user repository
 	UserRepoImpl struct {
@@ -68,42 +67,9 @@ func (user User) Validate() error {
 	return validator.New().Struct(user)
 }
 
-// FindOne user
-func (r *UserRepoImpl) FindOne(ctx context.Context, id int64) (*User, error) {
-	row := sq.StatementBuilder.
-		Select(
-			UserTable.ID,
-			UserTable.Email,
-			UserTable.UserRoleID,
-			UserTable.UpdatedAt,
-			UserTable.CreatedAt,
-		).
-		From(UserTableName).
-		Where(
-			sq.Eq{UserTable.ID: id},
-		).
-		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r)).
-		QueryRowContext(ctx)
-
-	user := new(User)
-	if err := row.Scan(
-		&user.ID,
-		&user.Email,
-		&user.UserRoleID,
-		&user.UpdatedAt,
-		&user.CreatedAt,
-	); err != nil {
-		dbtxn.SetError(ctx, err)
-		return nil, err
-	}
-
-	return user, nil
-}
-
 // Find user
-func (r *UserRepoImpl) Find(ctx context.Context) (list []*User, err error) {
-	builder := sq.StatementBuilder.
+func (r *UserRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (list []*User, err error) {
+	builder := sq.
 		Select(
 			UserTable.ID,
 			UserTable.Email,
@@ -115,6 +81,12 @@ func (r *UserRepoImpl) Find(ctx context.Context) (list []*User, err error) {
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
 
+	for _, opt := range opts {
+		if builder, err = opt.CompileSelect(builder); err != nil {
+			return nil, fmt.Errorf("user-repo: %w", err)
+		}
+	}
+
 	rows, err := builder.QueryContext(ctx)
 	if err != nil {
 		dbtxn.SetError(ctx, err)
@@ -123,7 +95,6 @@ func (r *UserRepoImpl) Find(ctx context.Context) (list []*User, err error) {
 	defer rows.Close()
 
 	list = make([]*User, 0)
-
 	for rows.Next() {
 		user := new(User)
 		if err = rows.Scan(
@@ -199,28 +170,4 @@ func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 		dbtxn.SetError(ctx, err)
 	}
 	return
-}
-
-// FindUserByEmail address
-func (r *UserRepoImpl) FindUserByEmail(ctx context.Context, email string) (*User, error) {
-	row := sq.StatementBuilder.
-		Select(
-			UserTable.ID,
-			UserTable.UserRoleID,
-		).
-		From(UserTableName).
-		Where(sq.Eq{UserTable.Email: email}).
-		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r)).
-		QueryRowContext(ctx)
-
-	user := new(User)
-	if err := row.Scan(
-		&user.ID,
-		&user.UserRoleID,
-	); err != nil {
-		dbtxn.SetError(ctx, err)
-		return nil, err
-	}
-	return user, nil
 }

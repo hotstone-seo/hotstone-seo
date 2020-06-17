@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
@@ -21,14 +23,12 @@ var (
 )
 
 type (
-
 	// AuthService is center related logic
 	// @mock
 	AuthService interface {
 		BuildJwtClaims(ctx context.Context, gUser oauth2google.GoogleUser) (JwtClaims, error)
 		GenerateJwtToken(jwtClaim JwtClaims, jwtSecret string) (string, error)
 	}
-
 	// AuthServiceImpl implementation of AuthService
 	AuthServiceImpl struct {
 		dig.In
@@ -36,7 +36,6 @@ type (
 		UserRoleRepo repository.UserRoleRepo
 		SettingSvc   SettingSvc
 	}
-
 	// JwtClaims holds JWT claims information
 	JwtClaims struct {
 		email         string
@@ -50,44 +49,33 @@ type (
 	}
 )
 
-// NewService return new instance of AuthGoogleService
+// NewAuthService return new instance of AuthGoogleService
 // @ctor
-func NewService(userRepo repository.UserRepo, UserRoleRepo repository.UserRoleRepo, settingSvc SettingSvc) AuthService {
-	return &AuthServiceImpl{
-		UserRepo:     userRepo,
-		UserRoleRepo: UserRoleRepo,
-		SettingSvc:   settingSvc,
-	}
+func NewAuthService(impl AuthServiceImpl) AuthService {
+	return &impl
 }
 
 // BuildJwtClaims build JWT claims based on given user
 func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google.GoogleUser) (jwtClaims JwtClaims, err error) {
-	user, err := c.UserRepo.FindUserByEmail(ctx, gUser.Email)
-	if user == nil || err == sql.ErrNoRows {
+	users, _ := c.UserRepo.Find(ctx, dbkit.Equal(repository.UserTable.Email, gUser.Email))
+	if len(users) < 1 {
 		return jwtClaims, fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
 	}
-	var roleAccess string
-	var roleMenus []string
-	var rolePaths []string
-	if user != nil {
-		UserRole, err := c.UserRoleRepo.FindOne(ctx, user.UserRoleID)
-		if err == sql.ErrNoRows {
-			return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
-		}
-		roleAccess = UserRole.Name
-		roleMenus = UserRole.Menus
-		rolePaths = UserRole.Paths
 
+	role, err := c.UserRoleRepo.FindOne(ctx, users[0].UserRoleID)
+	if err == sql.ErrNoRows {
+		return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 	}
+
 	simulationKey := c.SettingSvc.GetValue(ctx, SimulationKey)
 	return JwtClaims{
 		email:         gUser.Email,
 		picture:       gUser.Picture,
-		userID:        user.ID,
-		userRole:      roleAccess,
+		userID:        users[0].ID,
+		userRole:      role.Name,
 		simulationKey: simulationKey,
-		menus:         roleMenus,
-		paths:         rolePaths,
+		menus:         role.Menus,
+		paths:         role.Paths,
 	}, nil
 }
 
