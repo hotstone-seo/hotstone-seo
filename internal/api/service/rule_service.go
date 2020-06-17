@@ -26,9 +26,9 @@ type RuleService interface {
 // RuleServiceImpl is an implementation of RuleService
 type RuleServiceImpl struct {
 	dig.In
-	RuleRepo repository.RuleRepo
-	SyncRepo urlstore.SyncRepo
-	AuditTrailService
+	RuleRepo   repository.RuleRepo
+	SyncRepo   urlstore.SyncRepo
+	AuditTrail AuditTrailService
 	HistoryService
 	dbtxn.Transactional
 }
@@ -50,25 +50,14 @@ func (r *RuleServiceImpl) Find(ctx context.Context, paginationParam repository.P
 }
 
 // Insert creates a new Rule on the persistent storage configured for the service
-func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (newID int64, err error) {
-	defer func() {
-		if err != nil {
-			return
-		}
-		if _, auditErr := r.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "rules",
-				EntityID:   newID,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   rule,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
-	return r.RuleRepo.Insert(ctx, rule)
+func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (int64, error) {
+	lastInsertedID, err := r.RuleRepo.Insert(ctx, rule)
+	if err != nil {
+		return -1, err
+	}
+
+	r.AuditTrail.RecordInsert(ctx, "rules", lastInsertedID, rule)
+	return lastInsertedID, nil
 }
 
 // Update replaces the values of an existing Rule in the persistent storage by a new Rule
@@ -101,20 +90,8 @@ func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err
 			return
 		}
 	}
-	go func() {
-		if _, auditErr := r.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "rules",
-				EntityID:   rule.ID,
-				Operation:  UpdateOp,
-				PrevData:   oldRule,
-				NextData:   rule,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	r.AuditTrail.RecordUpdate(ctx, "rules", rule.ID, oldRule, rule)
 	return nil
 }
 
@@ -168,19 +145,8 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		); histErr != nil {
 			log.Error(histErr)
 		}
-		if _, auditErr := r.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "rules",
-				EntityID:   id,
-				Operation:  DeleteOp,
-				PrevData:   oldRule,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
 	}()
+	r.AuditTrail.RecordDelete(ctx, "rules", id, oldRule)
 	return nil
 }
 

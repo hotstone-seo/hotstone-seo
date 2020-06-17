@@ -14,7 +14,6 @@ type (
 	// @mock
 	AuditTrailService interface {
 		Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error)
-		RecordChanges(ctx context.Context, record Record) (lastInsertID int64, err error)
 		RecordInsert(ctx context.Context, entity string, id int64, obj interface{})
 		RecordDelete(ctx context.Context, entity string, id int64, obj interface{})
 		RecordUpdate(ctx context.Context, entity string, id int64, prevObj, nextObj interface{})
@@ -56,43 +55,27 @@ func (r *AuditTrailServiceImpl) Find(ctx context.Context, paginationParam reposi
 	return r.AuditTrailRepo.Find(ctx, paginationParam)
 }
 
-func (r *AuditTrailServiceImpl) RecordChanges(ctx context.Context, record Record) (lastInsertID int64, err error) {
-	prevDataJSON := repository.JSON("{}")
-	if record.PrevData != nil {
-		prevDataJSON, err = json.Marshal(record.PrevData)
-		if err != nil {
-			return
+func marshal(v interface{}) []byte {
+	if v != nil {
+		b, err := json.Marshal(v)
+		if err == nil {
+			return b
 		}
 	}
 
-	nextDataJSON := repository.JSON("{}")
-	if record.NextData != nil {
-		nextDataJSON, err = json.Marshal(record.NextData)
-		if err != nil {
-			return
-		}
-	}
-
-	auditTrail := repository.AuditTrail{
-		EntityName: record.EntityName,
-		EntityID:   record.EntityID,
-		Operation:  string(record.Operation),
-		Username:   repository.GetUsername(ctx),
-		OldData:    prevDataJSON,
-		NewData:    nextDataJSON,
-	}
-
-	return r.AuditTrailRepo.Insert(ctx, auditTrail)
+	return []byte("{}")
 }
 
 // RecordInsert to insert audit-trail for insert operation
 func (r *AuditTrailServiceImpl) RecordInsert(ctx context.Context, entity string, id int64, obj interface{}) {
 	go func() {
-		_, err := r.RecordChanges(ctx, Record{
-			Operation:  InsertOp,
+		_, err := r.AuditTrailRepo.Insert(ctx, repository.AuditTrail{
 			EntityName: entity,
 			EntityID:   id,
-			NextData:   obj,
+			Operation:  "INSERT",
+			Username:   repository.GetUsername(ctx),
+			OldData:    []byte("{}"),
+			NewData:    marshal(obj),
 		})
 		if err != nil {
 			log.Warnf("record-insert-%s: %s", entity, err.Error())
@@ -103,11 +86,13 @@ func (r *AuditTrailServiceImpl) RecordInsert(ctx context.Context, entity string,
 // RecordDelete to insert audit-trail for delete operation
 func (r *AuditTrailServiceImpl) RecordDelete(ctx context.Context, entity string, id int64, obj interface{}) {
 	go func() {
-		_, err := r.RecordChanges(ctx, Record{
-			Operation:  DeleteOp,
+		_, err := r.AuditTrailRepo.Insert(ctx, repository.AuditTrail{
 			EntityName: entity,
 			EntityID:   id,
-			PrevData:   obj,
+			Operation:  "DELETE",
+			Username:   repository.GetUsername(ctx),
+			OldData:    marshal(obj),
+			NewData:    []byte("{}"),
 		})
 		if err != nil {
 			log.Warnf("record-delete-%s: %s", entity, err.Error())
@@ -116,14 +101,15 @@ func (r *AuditTrailServiceImpl) RecordDelete(ctx context.Context, entity string,
 }
 
 // RecordUpdate to insert audit-trail for update operation
-func (r *AuditTrailServiceImpl) RecordUpdate(ctx context.Context, entity string, id int64, oldData, newData interface{}) {
+func (r *AuditTrailServiceImpl) RecordUpdate(ctx context.Context, entity string, id int64, oldObj, newObj interface{}) {
 	go func() {
-		_, err := r.RecordChanges(ctx, Record{
-			Operation:  UpdateOp,
+		_, err := r.AuditTrailRepo.Insert(ctx, repository.AuditTrail{
 			EntityName: entity,
 			EntityID:   id,
-			PrevData:   oldData,
-			NextData:   newData,
+			Operation:  "UPDATE",
+			Username:   repository.GetUsername(ctx),
+			OldData:    marshal(oldObj),
+			NewData:    marshal(newObj),
 		})
 		if err != nil {
 			log.Warnf("record-update-%s: %s", entity, err.Error())

@@ -21,8 +21,8 @@ type StructuredDataService interface {
 type StructuredDataServiceImpl struct {
 	dig.In
 	repository.StructuredDataRepo
-	AuditTrailService AuditTrailService
-	HistoryService    HistoryService
+	AuditTrail     AuditTrailService
+	HistoryService HistoryService
 }
 
 // NewStructuredDataService returns nrw instance of StructuredDataService
@@ -43,20 +43,7 @@ func (s *StructuredDataServiceImpl) Insert(ctx context.Context, strData reposito
 	if newID, err = s.StructuredDataRepo.Insert(ctx, strData); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "structured data",
-				EntityID:   newID,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   strData,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+	s.AuditTrail.RecordInsert(ctx, "structured data", newID, strData)
 	return newID, nil
 }
 
@@ -71,20 +58,8 @@ func (s *StructuredDataServiceImpl) Update(ctx context.Context, strData reposito
 	if err = s.StructuredDataRepo.Update(ctx, strData); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "structured data",
-				EntityID:   strData.ID,
-				Operation:  UpdateOp,
-				PrevData:   prevStrData,
-				NextData:   strData,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordUpdate(ctx, "structured data", strData.ID, prevStrData, strData)
 	return nil
 }
 
@@ -105,18 +80,7 @@ func (s *StructuredDataServiceImpl) Delete(ctx context.Context, id int64) (err e
 		); histErr != nil {
 			log.Error(histErr)
 		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "structured data",
-				EntityID:   id,
-				Operation:  DeleteOp,
-				PrevData:   strData,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
 	}()
+	s.AuditTrail.RecordDelete(ctx, "structured data", id, strData)
 	return nil
 }

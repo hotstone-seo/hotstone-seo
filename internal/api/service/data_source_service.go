@@ -20,8 +20,8 @@ type DataSourceServiceImpl struct {
 	dig.In
 	dbtxn.Transactional
 	repository.DataSourceRepo
-	AuditTrailService AuditTrailService
-	HistoryService    HistoryService
+	AuditTrail     AuditTrailService
+	HistoryService HistoryService
 }
 
 // NewDataSourceService return new instance of DataSourceService
@@ -35,20 +35,8 @@ func (s *DataSourceServiceImpl) Insert(ctx context.Context, data repository.Data
 	if data.ID, err = s.DataSourceRepo.Insert(ctx, data); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "data_sources",
-				EntityID:   data.ID,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordInsert(ctx, "data_sources", data.ID, data)
 	return data.ID, nil
 }
 
@@ -61,20 +49,8 @@ func (s *DataSourceServiceImpl) Update(ctx context.Context, data repository.Data
 	if err = s.DataSourceRepo.Update(ctx, data); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "data_sources",
-				EntityID:   data.ID,
-				Operation:  UpdateOp,
-				PrevData:   oldData,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordUpdate(ctx, "data_sources", data.ID, oldData, data)
 	return nil
 }
 
@@ -96,18 +72,8 @@ func (s *DataSourceServiceImpl) Delete(ctx context.Context, id int64) (err error
 		); histErr != nil {
 			log.Error(histErr)
 		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "data_sources",
-				EntityID:   id,
-				Operation:  DeleteOp,
-				PrevData:   oldData,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
+
 	}()
+	s.AuditTrail.RecordDelete(ctx, "data_sources", id, oldData)
 	return nil
 }

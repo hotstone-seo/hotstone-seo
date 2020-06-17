@@ -23,8 +23,8 @@ type (
 	// UserSvcImpl is implementation of UserService
 	UserSvcImpl struct {
 		dig.In
-		UserRepo repository.UserRepo
-		AuditTrailService
+		UserRepo   repository.UserRepo
+		AuditTrail AuditTrailService
 		HistoryService
 		dbtxn.Transactional
 	}
@@ -61,16 +61,7 @@ func (r *UserSvcImpl) Insert(ctx context.Context, user repository.User) (int64, 
 	}
 	user.ID = id
 
-	r.AuditTrailService.RecordChanges(
-		ctx,
-		Record{
-			EntityName: "users",
-			EntityID:   id,
-			Operation:  InsertOp,
-			PrevData:   nil,
-			NextData:   user,
-		},
-	)
+	r.AuditTrail.RecordInsert(ctx, "users", id, user)
 	return id, nil
 }
 
@@ -92,16 +83,7 @@ func (r *UserSvcImpl) Delete(ctx context.Context, id int64) error {
 		return err
 	}
 
-	r.AuditTrailService.RecordChanges(
-		ctx,
-		Record{
-			EntityName: "users",
-			EntityID:   id,
-			Operation:  DeleteOp,
-			PrevData:   users[0],
-			NextData:   nil,
-		},
-	)
+	r.AuditTrail.RecordDelete(ctx, "users", id, users[0])
 	return nil
 }
 
@@ -116,15 +98,6 @@ func (r *UserSvcImpl) Update(ctx context.Context, user repository.User) error {
 		return err
 	}
 
-	r.AuditTrailService.RecordChanges(
-		ctx,
-		Record{
-			EntityName: "users",
-			EntityID:   user.ID,
-			Operation:  UpdateOp,
-			PrevData:   oldUser,
-			NextData:   user,
-		},
-	)
+	r.AuditTrail.RecordUpdate(ctx, "users", user.ID, oldUser, user)
 	return nil
 }

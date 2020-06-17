@@ -35,8 +35,8 @@ type (
 		repository.ClientKeyRepo
 		analyt.ClientKeyAnalytRepo
 		dbtxn.Transactional
-		AuditTrailService AuditTrailService
-		HistoryService    HistoryService
+		AuditTrail     AuditTrailService
+		HistoryService HistoryService
 	}
 )
 
@@ -57,20 +57,8 @@ func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.Clien
 	if err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "client_keys",
-				EntityID:   newData.ID,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordInsert(ctx, "client_keys", newData.ID, data)
 	return
 }
 
@@ -83,20 +71,8 @@ func (s *ClientKeyServiceImpl) Update(ctx context.Context, data repository.Clien
 	if err = s.ClientKeyRepo.Update(ctx, data); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "client_keys",
-				EntityID:   data.ID,
-				Operation:  UpdateOp,
-				PrevData:   oldData,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordUpdate(ctx, "client_keys", data.ID, oldData, data)
 	return nil
 }
 
@@ -119,19 +95,9 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 		); histErr != nil {
 			log.Error(histErr)
 		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "client_keys",
-				EntityID:   id,
-				Operation:  DeleteOp,
-				PrevData:   oldData,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
 	}()
+
+	s.AuditTrail.RecordDelete(ctx, "client_keys", id, oldData)
 	return nil
 }
 

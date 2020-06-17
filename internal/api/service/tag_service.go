@@ -23,8 +23,8 @@ type TagServiceImpl struct {
 	dig.In
 	repository.TagRepo
 	dbtxn.Transactional
-	AuditTrailService AuditTrailService
-	HistoryService    HistoryService
+	AuditTrail     AuditTrailService
+	HistoryService HistoryService
 }
 
 // NewTagService return new instance of TagService
@@ -42,28 +42,21 @@ func (s *TagServiceImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, 
 }
 
 // Insert creates a new Tag entity
-func (s *TagServiceImpl) Insert(ctx context.Context, tag repository.Tag) (newID int64, err error) {
-	defer func() {
-		if err != nil {
-			return
-		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "tags",
-				EntityID:   newID,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   tag,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+func (s *TagServiceImpl) Insert(ctx context.Context, tag repository.Tag) (int64, error) {
+
 	if tag.Attributes == nil {
 		tag.Attributes = map[string]string{}
 	}
-	return s.TagRepo.Insert(ctx, tag)
+
+	lastInsertedID, err := s.TagRepo.Insert(ctx, tag)
+	if err != nil {
+		return -1, err
+	}
+
+	tag.ID = lastInsertedID
+
+	s.AuditTrail.RecordInsert(ctx, "tags", lastInsertedID, tag)
+	return lastInsertedID, nil
 }
 
 // Update modify existing Tag entity
@@ -72,23 +65,8 @@ func (s *TagServiceImpl) Update(ctx context.Context, tag repository.Tag) (err er
 	if currentTag, err = s.TagRepo.FindOne(ctx, tag.ID); err != nil {
 		return
 	}
-	defer func() {
-		if err != nil {
-			return
-		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "tags",
-				EntityID:   tag.ID,
-				Operation:  UpdateOp,
-				PrevData:   currentTag,
-				NextData:   tag,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordUpdate(ctx, "tags", tag.ID, currentTag, tag)
 	return s.TagRepo.Update(ctx, tag)
 }
 
@@ -110,18 +88,7 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		); histErr != nil {
 			log.Error(histErr)
 		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "tags",
-				EntityID:   id,
-				Operation:  DeleteOp,
-				PrevData:   currentTag,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
 	}()
+	s.AuditTrail.RecordDelete(ctx, "tags", id, currentTag)
 	return s.TagRepo.Delete(ctx, id)
 }
