@@ -1,4 +1,4 @@
-INSERT INTO users (id, email, role_type_id)
+INSERT INTO users (id, email, user_role_id)
 VALUES 
     (1, 'iman.tunggono@tiket.com', 1),
     (2, 'fahri.hidayat@tiket.com', 1),

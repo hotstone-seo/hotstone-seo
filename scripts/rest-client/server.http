@@ -258,7 +258,7 @@ content-type: application/json
 
 {
     "email": "test@tiket.com",
-    "role_type_id": 1
+    "user_role_id": 1
 }
 
 ### Update User
@@ -269,7 +269,7 @@ content-type: application/json
 {
     "id": 5,
     "email": "test@tiket.com",
-    "role_type_id": 1
+    "user_role_id": 1
 }
 
 ### Delete User

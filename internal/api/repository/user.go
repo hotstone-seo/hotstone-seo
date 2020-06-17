@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -12,8 +13,22 @@ import (
 )
 
 var (
-	// UserTable is table name of user entity
-	UserTable = "users"
+	// UserTableName is table name of user
+	UserTableName = "users"
+	// UserTable is table column of user
+	UserTable = struct {
+		ID         string
+		Email      string
+		UserRoleID string
+		UpdatedAt  string
+		CreatedAt  string
+	}{
+		ID:         "id",
+		Email:      "email",
+		UserRoleID: "user_role_id",
+		UpdatedAt:  "updated_at",
+		CreatedAt:  "created_at",
+	}
 )
 
 type (
@@ -21,7 +36,7 @@ type (
 	User struct {
 		ID         int64     `json:"id"`
 		Email      string    `json:"email" validate:"required"`
-		RoleTypeID int64     `json:"role_type_id"`
+		UserRoleID int64     `json:"user_role_id"`
 		UpdatedAt  time.Time `json:"updated_at"`
 		CreatedAt  time.Time `json:"created_at"`
 	}
@@ -57,14 +72,16 @@ func (user User) Validate() error {
 func (r *UserRepoImpl) FindOne(ctx context.Context, id int64) (*User, error) {
 	row := sq.StatementBuilder.
 		Select(
-			"id",
-			"email",
-			"role_type_id",
-			"updated_at",
-			"created_at",
+			UserTable.ID,
+			UserTable.Email,
+			UserTable.UserRoleID,
+			UserTable.UpdatedAt,
+			UserTable.CreatedAt,
 		).
-		From(UserTable).
-		Where(sq.Eq{"id": id}).
+		From(UserTableName).
+		Where(
+			sq.Eq{UserTable.ID: id},
+		).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
@@ -73,7 +90,7 @@ func (r *UserRepoImpl) FindOne(ctx context.Context, id int64) (*User, error) {
 	if err := row.Scan(
 		&user.ID,
 		&user.Email,
-		&user.RoleTypeID,
+		&user.UserRoleID,
 		&user.UpdatedAt,
 		&user.CreatedAt,
 	); err != nil {
@@ -86,23 +103,20 @@ func (r *UserRepoImpl) FindOne(ctx context.Context, id int64) (*User, error) {
 
 // Find user
 func (r *UserRepoImpl) Find(ctx context.Context) (list []*User, err error) {
-	var (
-		rows *sql.Rows
-	)
-
 	builder := sq.StatementBuilder.
 		Select(
-			"id",
-			"email",
-			"role_type_id",
-			"updated_at",
-			"created_at",
+			UserTable.ID,
+			UserTable.Email,
+			UserTable.UserRoleID,
+			UserTable.UpdatedAt,
+			UserTable.CreatedAt,
 		).
-		From(UserTable).
+		From(UserTableName).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
 
-	if rows, err = builder.QueryContext(ctx); err != nil {
+	rows, err := builder.QueryContext(ctx)
+	if err != nil {
 		dbtxn.SetError(ctx, err)
 		return
 	}
@@ -115,7 +129,7 @@ func (r *UserRepoImpl) Find(ctx context.Context) (list []*User, err error) {
 		if err = rows.Scan(
 			&user.ID,
 			&user.Email,
-			&user.RoleTypeID,
+			&user.UserRoleID,
 			&user.UpdatedAt,
 			&user.CreatedAt,
 		); err != nil {
@@ -130,16 +144,16 @@ func (r *UserRepoImpl) Find(ctx context.Context) (list []*User, err error) {
 // Insert user
 func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int64, err error) {
 	query := sq.
-		Insert(UserTable).
+		Insert(UserTableName).
 		Columns(
-			"role_type_id",
-			"email",
+			UserTable.UserRoleID,
+			UserTable.Email,
 		).
 		Values(
-			user.RoleTypeID,
+			user.UserRoleID,
 			user.Email,
 		).
-		Suffix("RETURNING \"id\"").
+		Suffix(fmt.Sprintf("RETURNING \"%s\"", UserTable.ID)).
 		RunWith(dbtxn.DB(ctx, r)).
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
@@ -156,7 +170,7 @@ func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int6
 // Delete user
 func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.StatementBuilder.
-		Delete(UserTable).
+		Delete(UserTableName).
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
@@ -171,11 +185,13 @@ func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 // Update user
 func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 	builder := sq.StatementBuilder.
-		Update(UserTable).
-		Set("role_type_id", user.RoleTypeID).
-		Set("email", user.Email).
-		Set("updated_at", time.Now()).
-		Where(sq.Eq{"id": user.ID}).
+		Update(UserTableName).
+		Set(UserTable.UserRoleID, user.UserRoleID).
+		Set(UserTable.Email, user.Email).
+		Set(UserTable.UpdatedAt, time.Now()).
+		Where(
+			sq.Eq{UserTable.ID: user.ID},
+		).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
 
@@ -189,11 +205,11 @@ func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 func (r *UserRepoImpl) FindUserByEmail(ctx context.Context, email string) (*User, error) {
 	row := sq.StatementBuilder.
 		Select(
-			"id",
-			"role_type_id",
+			UserTable.ID,
+			UserTable.UserRoleID,
 		).
-		From(UserTable).
-		Where(sq.Eq{"email": email}).
+		From(UserTableName).
+		Where(sq.Eq{UserTable.Email: email}).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r)).
 		QueryRowContext(ctx)
@@ -201,7 +217,7 @@ func (r *UserRepoImpl) FindUserByEmail(ctx context.Context, email string) (*User
 	user := new(User)
 	if err := row.Scan(
 		&user.ID,
-		&user.RoleTypeID,
+		&user.UserRoleID,
 	); err != nil {
 		dbtxn.SetError(ctx, err)
 		return nil, err

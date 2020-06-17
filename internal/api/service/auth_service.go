@@ -70,7 +70,7 @@ func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google
 	var roleMenus []string
 	var rolePaths []string
 	if user != nil {
-		UserRole, err := c.UserRoleRepo.FindOne(ctx, user.RoleTypeID)
+		UserRole, err := c.UserRoleRepo.FindOne(ctx, user.UserRoleID)
 		if err == sql.ErrNoRows {
 			return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 		}

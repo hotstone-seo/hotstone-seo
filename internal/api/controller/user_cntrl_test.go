@@ -31,15 +31,15 @@ func TestUserController_Create(t *testing.T) {
 	})
 	t.Run("WHEN insert error", func(t *testing.T) {
 		userSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(-1), errors.New("some-insert-error"))
-		_, err := echotest.DoPOST(userCntrl.Create, "/", `{ "email": "some-name", "role_type_id":1}`, nil)
+		_, err := echotest.DoPOST(userCntrl.Create, "/", `{ "email": "some-name", "user_role_id":1}`, nil)
 		require.EqualError(t, err, "code=422, message=some-insert-error")
 	})
 	t.Run("WHEN insert success", func(t *testing.T) {
 		userSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(100), nil)
-		rr, err := echotest.DoPOST(userCntrl.Create, "/", `{ "email": "some-name", "role_type_id":1}`, nil)
+		rr, err := echotest.DoPOST(userCntrl.Create, "/", `{ "email": "some-name", "user_role_id":1}`, nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusCreated, rr.Code)
-		require.Equal(t, "{\"id\":100,\"email\":\"some-name\",\"role_type_id\":1,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"email\":\"some-name\",\"user_role_id\":1,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 
@@ -68,7 +68,7 @@ func TestUserController_Find(t *testing.T) {
 		rr, err := echotest.DoGET(userCntrl.Find, "/", nil)
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "[{\"id\":100,\"email\":\"test@tiket.com\",\"role_type_id\":0,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
+		require.Equal(t, "[{\"id\":100,\"email\":\"test@tiket.com\",\"user_role_id\":0,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}]\n", rr.Body.String())
 	})
 }
 
@@ -104,7 +104,7 @@ func TestUserController_FindOne(t *testing.T) {
 		rr, err := echotest.DoGET(userCntrl.FindOne, "/", map[string]string{"id": "100"})
 		require.NoError(t, err)
 		require.Equal(t, http.StatusOK, rr.Code)
-		require.Equal(t, "{\"id\":100,\"email\":\"test@tiket.com\",\"role_type_id\":0,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
+		require.Equal(t, "{\"id\":100,\"email\":\"test@tiket.com\",\"user_role_id\":0,\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
 	})
 }
 
