@@ -39,14 +39,6 @@ func NewTagService(impl TagServiceImpl) TagService {
 	return &impl
 }
 
-// FindByRuleAndLocale returns list of Tag entity by searching on matching ruleID and locale
-func (s *TagServiceImpl) FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) (list []*repository.Tag, err error) {
-	return s.Find(ctx,
-		dbkit.Equal("rule_id", strconv.FormatInt(ruleID, 10)),
-		dbkit.Equal("locale", locale),
-	)
-}
-
 // Find returns list of Tag entity based on provided filters
 //
 // TODO: Since its possible for QueryParams to provide array of strings, we should extend
