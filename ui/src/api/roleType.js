@@ -1,7 +1,8 @@
-import client from './client';
+import client from "./client";
 
 export function fetchRoleTypes(cfg = {}) {
-  return client.get('/role_types', cfg)
+  return client
+    .get("/user_roles", cfg)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -9,7 +10,8 @@ export function fetchRoleTypes(cfg = {}) {
 }
 
 export function getRoleType(id) {
-  return client.get(`/role_types/${id}`)
+  return client
+    .get(`/user_roles/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -17,7 +19,8 @@ export function getRoleType(id) {
 }
 
 export function createRoleType(roleType) {
-  return client.post('/role_types', roleType)
+  return client
+    .post("/user_roles", roleType)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -25,7 +28,8 @@ export function createRoleType(roleType) {
 }
 
 export function updateRoleType(roleType) {
-  return client.put('/role_types', roleType)
+  return client
+    .put("/user_roles", roleType)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -33,7 +37,8 @@ export function updateRoleType(roleType) {
 }
 
 export function deleteRoleType(id) {
-  return client.delete(`/role_types/${id}`)
+  return client
+    .delete(`/user_roles/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       throw error;

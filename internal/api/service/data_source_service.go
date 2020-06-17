@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
@@ -25,7 +25,7 @@ type DataSourceServiceImpl struct {
 }
 
 // NewDataSourceService return new instance of DataSourceService
-// @constructor
+// @ctor
 func NewDataSourceService(impl DataSourceServiceImpl) DataSourceService {
 	return &impl
 }
@@ -38,11 +38,13 @@ func (s *DataSourceServiceImpl) Insert(ctx context.Context, data repository.Data
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"data_sources",
-			data.ID,
-			repository.Insert,
-			nil,
-			data,
+			Record{
+				EntityName: "data_sources",
+				EntityID:   data.ID,
+				Operation:  InsertOp,
+				PrevData:   nil,
+				NextData:   data,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -62,11 +64,13 @@ func (s *DataSourceServiceImpl) Update(ctx context.Context, data repository.Data
 	go func() {
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"data_sources",
-			data.ID,
-			repository.Update,
-			oldData,
-			data,
+			Record{
+				EntityName: "data_sources",
+				EntityID:   data.ID,
+				Operation:  UpdateOp,
+				PrevData:   oldData,
+				NextData:   data,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
@@ -94,11 +98,13 @@ func (s *DataSourceServiceImpl) Delete(ctx context.Context, id int64) (err error
 		}
 		if _, auditErr := s.AuditTrailService.RecordChanges(
 			ctx,
-			"data_sources",
-			id,
-			repository.Delete,
-			oldData,
-			nil,
+			Record{
+				EntityName: "data_sources",
+				EntityID:   id,
+				Operation:  DeleteOp,
+				PrevData:   oldData,
+				NextData:   nil,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}

@@ -39,7 +39,7 @@ type ClientKeyRepoImpl struct {
 }
 
 // NewClientKeyRepo return new instance of ClientKeyRepo
-// @constructor
+// @ctor
 func NewClientKeyRepo(impl ClientKeyRepoImpl) ClientKeyRepo {
 	return &impl
 }

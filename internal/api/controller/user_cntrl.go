@@ -15,34 +15,31 @@ import (
 // UserCntrl is controller to user entity
 type UserCntrl struct {
 	dig.In
-	service.UserService
+	Svc service.UserSvc
 }
 
 // Route to define API Route
-func (c *UserCntrl) Route(e *echo.Group) {
-	e.GET("/users", c.Find)
-	e.POST("/users", c.Create)
-	e.GET("/users/:id", c.FindOne)
-	e.PUT("/users", c.Update)
-	e.DELETE("/users/:id", c.Delete)
-	e.POST("/users_is_exists", c.FindOneByEmail)
+func (u *UserCntrl) Route(e *echo.Group) {
+	e.GET("/users", u.Find)
+	e.POST("/users", u.Create)
+	e.GET("/users/:id", u.FindOne)
+	e.PUT("/users", u.Update)
+	e.DELETE("/users/:id", u.Delete)
 }
 
 // Find all users
-func (c *UserCntrl) Find(ctx echo.Context) (err error) {
+func (u *UserCntrl) Find(c echo.Context) (err error) {
 	var users []*repository.User
-	ctx0 := ctx.Request().Context()
+	ctx := c.Request().Context()
 
-	validCols := []string{"id", "email", "role_type_id", "updated_at", "created_at"}
-	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
-	if users, err = c.UserService.Find(ctx0, paginationParam); err != nil {
+	if users, err = u.Svc.Find(ctx); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, users)
+	return c.JSON(http.StatusOK, users)
 }
 
 // FindOne user
-func (c *UserCntrl) FindOne(ec echo.Context) (err error) {
+func (u *UserCntrl) FindOne(ec echo.Context) (err error) {
 	var (
 		id   int64
 		user *repository.User
@@ -52,7 +49,7 @@ func (c *UserCntrl) FindOne(ec echo.Context) (err error) {
 	if id, err = strconv.ParseInt(ec.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, "Invalid ID")
 	}
-	user, err = c.UserService.FindOne(ctx, id)
+	user, err = u.Svc.FindOne(ctx, id)
 	if err == sql.ErrNoRows {
 		return echo.NewHTTPError(http.StatusNotFound)
 	}
@@ -64,43 +61,43 @@ func (c *UserCntrl) FindOne(ec echo.Context) (err error) {
 }
 
 // Create user
-func (c *UserCntrl) Create(ctx echo.Context) (err error) {
+func (u *UserCntrl) Create(c echo.Context) (err error) {
 	var user repository.User
-	var lastInsertID int64
-	ctx0 := ctx.Request().Context()
-	if err = ctx.Bind(&user); err != nil {
+	ctx := c.Request().Context()
+	if err = c.Bind(&user); err != nil {
 		return err
 	}
 	if err = user.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if lastInsertID, err = c.UserService.Insert(ctx0, user); err != nil {
+	lastInsertID, err := u.Svc.Insert(ctx, user)
+	if err != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
 	}
 	user.ID = lastInsertID
-	return ctx.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusCreated, user)
 }
 
 // Delete user
-func (c *UserCntrl) Delete(ctx echo.Context) (err error) {
+func (u *UserCntrl) Delete(c echo.Context) (err error) {
 	var id int64
-	ctx0 := ctx.Request().Context()
-	if id, err = strconv.ParseInt(ctx.Param("id"), 10, 64); err != nil {
+	ctx := c.Request().Context()
+	if id, err = strconv.ParseInt(c.Param("id"), 10, 64); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	if err = c.UserService.Delete(ctx0, id); err != nil {
+	if err = u.Svc.Delete(ctx, id); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, GeneralResponse{
+	return c.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Success delete user #%d", id),
 	})
 }
 
 // Update user
-func (c *UserCntrl) Update(ctx echo.Context) (err error) {
+func (u *UserCntrl) Update(c echo.Context) (err error) {
 	var user repository.User
-	ctx0 := ctx.Request().Context()
-	if err = ctx.Bind(&user); err != nil {
+	ctx0 := c.Request().Context()
+	if err = c.Bind(&user); err != nil {
 		return err
 	}
 	if user.ID <= 0 {
@@ -109,32 +106,10 @@ func (c *UserCntrl) Update(ctx echo.Context) (err error) {
 	if err = user.Validate(); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	if err = c.UserService.Update(ctx0, user); err != nil {
+	if err = u.Svc.Update(ctx0, user); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return ctx.JSON(http.StatusOK, GeneralResponse{
+	return c.JSON(http.StatusOK, GeneralResponse{
 		Message: fmt.Sprintf("Success update user #%d", user.ID),
 	})
-}
-
-// FindOneByEmail user
-func (c *UserCntrl) FindOneByEmail(ctx echo.Context) (err error) {
-	var user *repository.User
-	ctx0 := ctx.Request().Context()
-	if err = ctx.Bind(&user); err != nil {
-		return err
-	}
-	if err = user.Validate(); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	user, err = c.UserService.FindOneByEmail(ctx0, user.Email)
-	if err == sql.ErrNoRows {
-		user = nil
-	}
-
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-
-	return ctx.JSON(http.StatusOK, user)
 }

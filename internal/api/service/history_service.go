@@ -22,7 +22,7 @@ type HistoryServiceImpl struct {
 }
 
 // NewHistoryService return new instance of HistoryService
-// @constructor
+// @ctor
 func NewHistoryService(impl HistoryServiceImpl) HistoryService {
 	return &impl
 }

@@ -3,42 +3,61 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
 
-// User Entity
-type User struct {
-	ID         int64     `json:"id"`
-	Email      string    `json:"email" validate:"required"`
-	RoleTypeID int64     `json:"role_type_id"`
-	UpdatedAt  time.Time `json:"updated_at"`
-	CreatedAt  time.Time `json:"created_at"`
-}
+var (
+	// UserTableName is table name of user
+	UserTableName = "users"
+	// UserTable is table column of user
+	UserTable = struct {
+		ID         string
+		Email      string
+		UserRoleID string
+		UpdatedAt  string
+		CreatedAt  string
+	}{
+		ID:         "id",
+		Email:      "email",
+		UserRoleID: "user_role_id",
+		UpdatedAt:  "updated_at",
+		CreatedAt:  "created_at",
+	}
+)
 
-// UserRepo is user repository
-// @mock
-type UserRepo interface {
-	FindOne(ctx context.Context, id int64) (*User, error)
-	Find(ctx context.Context, paginationParam PaginationParam) ([]*User, error)
-	Insert(ctx context.Context, user User) (lastInsertID int64, err error)
-	Delete(ctx context.Context, id int64) error
-	Update(ctx context.Context, user User) error
-	FindUserByEmail(ctx context.Context, email string) (*User, error)
-}
-
-// UserRepoImpl is implementation user repository
-type UserRepoImpl struct {
-	dig.In
-	*sql.DB
-}
+type (
+	// User Entity
+	User struct {
+		ID         int64     `json:"id"`
+		Email      string    `json:"email" validate:"required"`
+		UserRoleID int64     `json:"user_role_id"`
+		UpdatedAt  time.Time `json:"updated_at"`
+		CreatedAt  time.Time `json:"created_at"`
+	}
+	// UserRepo is user repository
+	// @mock
+	UserRepo interface {
+		Find(context.Context, ...dbkit.SelectOption) ([]*User, error)
+		Insert(ctx context.Context, user User) (lastInsertID int64, err error)
+		Delete(ctx context.Context, id int64) error
+		Update(ctx context.Context, user User) error
+	}
+	// UserRepoImpl is implementation user repository
+	UserRepoImpl struct {
+		dig.In
+		*sql.DB
+	}
+)
 
 // NewUserRepo return new instance of UserRepo
-// @constructor
+// @ctor
 func NewUserRepo(impl UserRepoImpl) UserRepo {
 	return &impl
 }
@@ -48,71 +67,40 @@ func (user User) Validate() error {
 	return validator.New().Struct(user)
 }
 
-// FindOne user
-func (r *UserRepoImpl) FindOne(ctx context.Context, id int64) (*User, error) {
-	row := sq.StatementBuilder.
-		Select(
-			"id",
-			"email",
-			"role_type_id",
-			"updated_at",
-			"created_at",
-		).
-		From("role_user").
-		Where(sq.Eq{"id": id}).
-		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r)).
-		QueryRowContext(ctx)
-
-	user := new(User)
-	if err := row.Scan(
-		&user.ID,
-		&user.Email,
-		&user.RoleTypeID,
-		&user.UpdatedAt,
-		&user.CreatedAt,
-	); err != nil {
-		dbtxn.SetError(ctx, err)
-		return nil, err
-	}
-
-	return user, nil
-}
-
 // Find user
-func (r *UserRepoImpl) Find(ctx context.Context, paginationParam PaginationParam) (list []*User, err error) {
-	var (
-		rows *sql.Rows
-	)
-
-	builder := sq.StatementBuilder.
+func (r *UserRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (list []*User, err error) {
+	builder := sq.
 		Select(
-			"id",
-			"email",
-			"role_type_id",
-			"updated_at",
-			"created_at",
+			UserTable.ID,
+			UserTable.Email,
+			UserTable.UserRoleID,
+			UserTable.UpdatedAt,
+			UserTable.CreatedAt,
 		).
-		From("role_user").
+		From(UserTableName).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
 
-	builder = ComposePagination(builder, paginationParam)
+	for _, opt := range opts {
+		if builder, err = opt.CompileSelect(builder); err != nil {
+			return nil, fmt.Errorf("user-repo: %w", err)
+		}
+	}
 
-	if rows, err = builder.QueryContext(ctx); err != nil {
+	rows, err := builder.QueryContext(ctx)
+	if err != nil {
 		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
 
 	list = make([]*User, 0)
-
 	for rows.Next() {
 		user := new(User)
 		if err = rows.Scan(
 			&user.ID,
 			&user.Email,
-			&user.RoleTypeID,
+			&user.UserRoleID,
 			&user.UpdatedAt,
 			&user.CreatedAt,
 		); err != nil {
@@ -126,17 +114,17 @@ func (r *UserRepoImpl) Find(ctx context.Context, paginationParam PaginationParam
 
 // Insert user
 func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int64, err error) {
-
-	query := sq.Insert("role_user").
+	query := sq.
+		Insert(UserTableName).
 		Columns(
-			"role_type_id",
-			"email",
+			UserTable.UserRoleID,
+			UserTable.Email,
 		).
 		Values(
-			user.RoleTypeID,
+			user.UserRoleID,
 			user.Email,
 		).
-		Suffix("RETURNING \"id\"").
+		Suffix(fmt.Sprintf("RETURNING \"%s\"", UserTable.ID)).
 		RunWith(dbtxn.DB(ctx, r)).
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
@@ -153,7 +141,7 @@ func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int6
 // Delete user
 func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 	builder := sq.StatementBuilder.
-		Delete("role_user").
+		Delete(UserTableName).
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
@@ -168,11 +156,13 @@ func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 // Update user
 func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 	builder := sq.StatementBuilder.
-		Update("role_user").
-		Set("role_type_id", user.RoleTypeID).
-		Set("email", user.Email).
-		Set("updated_at", time.Now()).
-		Where(sq.Eq{"id": user.ID}).
+		Update(UserTableName).
+		Set(UserTable.UserRoleID, user.UserRoleID).
+		Set(UserTable.Email, user.Email).
+		Set(UserTable.UpdatedAt, time.Now()).
+		Where(
+			sq.Eq{UserTable.ID: user.ID},
+		).
 		PlaceholderFormat(sq.Dollar).
 		RunWith(dbtxn.DB(ctx, r))
 
@@ -180,28 +170,4 @@ func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 		dbtxn.SetError(ctx, err)
 	}
 	return
-}
-
-// FindUserByEmail address
-func (r *UserRepoImpl) FindUserByEmail(ctx context.Context, email string) (*User, error) {
-	row := sq.StatementBuilder.
-		Select(
-			"id",
-			"role_type_id",
-		).
-		From("role_user").
-		Where(sq.Eq{"email": email}).
-		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r)).
-		QueryRowContext(ctx)
-
-	user := new(User)
-	if err := row.Scan(
-		&user.ID,
-		&user.RoleTypeID,
-	); err != nil {
-		dbtxn.SetError(ctx, err)
-		return nil, err
-	}
-	return user, nil
 }

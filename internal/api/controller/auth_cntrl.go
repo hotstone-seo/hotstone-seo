@@ -2,16 +2,15 @@ package controller
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
-	"strings"
+	"regexp"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
-	"github.com/hotstone-seo/hotstone-seo/internal/app/config"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -28,7 +27,7 @@ type (
 	// AuthCntrl is controller to handle authentication
 	AuthCntrl struct {
 		dig.In
-		*config.Config
+		*infra.App
 		service.AuthService
 	}
 )
@@ -41,7 +40,7 @@ func (c *AuthCntrl) Oauth2GoogleCallback(ce echo.Context, gUser oauth2google.Goo
 		return err
 	}
 
-	jwtToken, err := c.AuthService.GenerateJwtToken(jwtClaims, c.Config.JWTSecret)
+	jwtToken, err := c.AuthService.GenerateJwtToken(jwtClaims, c.App.JWTSecret)
 	if err != nil {
 		return err
 	}
@@ -50,7 +49,7 @@ func (c *AuthCntrl) Oauth2GoogleCallback(ce echo.Context, gUser oauth2google.Goo
 		Name: "secure_token", Value: string(jwtToken),
 		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
-		HttpOnly: true, Secure: c.Config.CookieSecure,
+		HttpOnly: true, Secure: c.App.CookieSecure,
 	}
 	ce.SetCookie(secureTokenCookie)
 
@@ -58,7 +57,7 @@ func (c *AuthCntrl) Oauth2GoogleCallback(ce echo.Context, gUser oauth2google.Goo
 		Name: "token", Value: string(jwtToken),
 		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
-		HttpOnly: false, Secure: c.Config.CookieSecure,
+		HttpOnly: false, Secure: c.App.CookieSecure,
 	}
 	ce.SetCookie(tokenCookie)
 	return nil
@@ -69,7 +68,7 @@ func (c *AuthCntrl) Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ce echo.Context) error {
 			cfg := middleware.DefaultJWTConfig
-			cfg.SigningKey = []byte(c.Config.JWTSecret)
+			cfg.SigningKey = []byte(c.App.JWTSecret)
 			cfg.TokenLookup = "cookie:secure_token"
 
 			if err := middleware.JWTWithConfig(cfg)(next)(ce); err != nil {
@@ -114,14 +113,10 @@ type DataModule struct {
 	Module []Module `json:"modules"`
 }
 type Module struct {
-	Label   string     `json:"label"`
-	Name    string     `json:"name"`
-	Path    string     `json:"path"`
-	APIPath []APIPathS `json:"api_path"`
-}
-
-type APIPathS struct {
-	Path string `json:"path"`
+	Label string `json:"label"`
+	Name  string `json:"name"`
+	Path  string `json:"path"`
+	//APIPath []APIPathS `json:"api_path"`
 }
 
 // CheckAuthModules for check auth module access
@@ -131,39 +126,27 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			// get user data from cookie
 			user := ce.Get("user").(*jwt.Token)
 			claims := user.Claims.(jwt.MapClaims)
-			modules := claims["modules"]
 
-			currentAccessAPIPath := ce.Path() // get current API Path
-
-			in := []byte(modules.(string))
-			var raw DataModule
-			if err := json.Unmarshal(in, &raw); err != nil {
-				log.Warnf("JWT Error CheckAuthModules: %s", err.Error())
-			}
-			modArray := raw.Module
-
-			isAllow := false
-			for index, result := range modArray {
-				for k, v := range result.APIPath {
-					idxStr := strings.Index(currentAccessAPIPath, v.Path)
-					if idxStr > -1 {
-						log.Infof(currentAccessAPIPath, " was found at index", index, ";", k)
-						isAllow = true
-						break
-					}
-				}
-				if isAllow {
-					break
-				}
-			}
-			if !isAllow {
-				log.Errorf("CheckAuthModules. Invalid Access")
+			path := ce.Path()
+			if !IsRoleAllow(path, claims) {
+				log.Errorf("CheckAuthModules. Invalid Access ", path)
 				c.clean(ce)
-				return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
 			}
 			return next(ce)
 		}
 	}
+}
+
+// IsRoleAllow check is path allow by role
+func IsRoleAllow(path string, claims jwt.MapClaims) bool {
+	rolePaths := claims["paths"].([]interface{})
+	for _, v := range rolePaths {
+		matched, _ := regexp.MatchString(v.(string), path)
+		if matched {
+			return true
+		}
+	}
+	return false
 }
 
 func urlWithQueryParams(rawurl string, values url.Values) (s string, err error) {

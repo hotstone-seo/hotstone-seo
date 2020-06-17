@@ -8,7 +8,6 @@ import {
   UserOutlined,
   LockOutlined,
   UsergroupAddOutlined,
-  MenuOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
 
@@ -25,91 +24,123 @@ import ClientKey from "views/ClientKey";
 import GenericNotFound from "views/GenericNotFound";
 import User from "./views/User";
 import RoleType from "./views/RoleType";
-import Module from "./views/Module";
 import Setting from "./views/Setting";
 
-const COMPONENT_MAP = {
-  rule: Rule,
-  datasources: DataSource,
-  mismatchrule: MismatchRule,
-  analytic: Analytic,
-  simulation: Simulation,
-  audittrail: AuditTrail,
-  user: User,
-  clientkey: ClientKey,
-  roletype: RoleType,
-  module: Module,
-  notfound: GenericNotFound,
-  setting: Setting,
-};
+function match(text, patterns) {
+  let flag = false;
+  patterns.forEach((p) => {
+    if (text.match(p)) {
+      flag = true;
+    }
+  });
+  return flag;
+}
 
-const ICON_MAP = {
-  rule: FormOutlined,
-  datasources: DatabaseOutlined,
-  mismatchrule: TagsOutlined,
-  analytic: AreaChartOutlined,
-  simulation: PlayCircleOutlined,
-  audittrail: AuditOutlined,
-  user: UserOutlined,
-  clientkey: LockOutlined,
-  roletype: UsergroupAddOutlined,
-  module: MenuOutlined,
-  setting: SettingOutlined,
-};
+function filter(routes, menuPatterns) {
+  const newRoutes = [];
+  routes.forEach((r) => {
+    if (r.name && match(r.name, menuPatterns)) {
+      newRoutes.push(r);
+    }
+  });
+  return newRoutes;
+}
 
-// TODO : Label menu will use label from API
-const LABEL_MAP = {
-  rule: "Rules",
-  datasources: "Data Sources",
-  mismatchrule: "Mismatch Rule",
-  analytic: "Analytic",
-  simulation: "Simulation",
-  audittrail: "Audit Trail",
-  user: "Users",
-  clientkey: "Client Keys",
-  roletype: "Role User",
-  module: "Modules",
-  setting: "Setting",
-};
-
+const defaultRoutes = [
+  {
+    path: "/rules",
+    name: "Rules",
+    component: Rule,
+    icon: FormOutlined,
+    visible: true,
+  },
+  {
+    path: "/datasources",
+    name: "Data Sources",
+    component: DataSource,
+    icon: DatabaseOutlined,
+    visible: true,
+  },
+  {
+    path: "/mismatch-rule",
+    name: "Mismatch Rule",
+    component: MismatchRule,
+    icon: TagsOutlined,
+    visible: true,
+  },
+  {
+    path: "/analytic",
+    name: "Analytic",
+    component: Analytic,
+    icon: AreaChartOutlined,
+    visible: true,
+  },
+  {
+    path: "/simulation",
+    name: "Simulation",
+    component: Simulation,
+    icon: PlayCircleOutlined,
+    visible: true,
+  },
+  {
+    path: "/audit-trail",
+    name: "Audit Trail",
+    component: AuditTrail,
+    icon: AuditOutlined,
+    visible: true,
+  },
+  {
+    path: "/users",
+    name: "User",
+    component: User,
+    icon: UserOutlined,
+    visible: true,
+  },
+  {
+    path: "/role-type",
+    name: "User Role",
+    component: RoleType,
+    icon: UsergroupAddOutlined,
+    visible: true,
+  },
+  {
+    path: "/client-keys",
+    name: "Client Keys",
+    component: ClientKey,
+    icon: LockOutlined,
+    visible: true,
+  },
+  {
+    path: "/setting",
+    name: "Setting",
+    component: Setting,
+    icon: SettingOutlined,
+    visible: true,
+  },
+  {
+    path: "*",
+    component: GenericNotFound,
+  },
+];
 const token = Cookies.get("token");
 const tokenDecoded = token !== undefined ? jwt.decode(token) : undefined;
 
 let isOldCookieVersion = false;
 if (tokenDecoded !== undefined)
-  isOldCookieVersion = tokenDecoded.modules === undefined;
+  isOldCookieVersion = tokenDecoded.menus === undefined;
 
-let routes = [];
+let routes = defaultRoutes;
 
 if (tokenDecoded !== undefined && isOldCookieVersion === false) {
   // status : already login
-  let jsonModules = tokenDecoded !== undefined ? tokenDecoded.modules : [];
-  let mn;
-  jsonModules = JSON.parse(jsonModules);
-
-  Object.keys(jsonModules).forEach((key) => {
-    mn = jsonModules[key];
-  });
-
-  const arrMenu = [];
-  mn.forEach((item) => {
-    const tempMenu = [];
-    const isAnyLabel = item.label !== undefined;
-    tempMenu.path = "/".concat(item.path);
-    if (isAnyLabel) tempMenu.name = item.label;
-    else tempMenu.name = LABEL_MAP[item.name];
-    tempMenu.component = COMPONENT_MAP[item.name];
-    tempMenu.icon = ICON_MAP[item.name];
-    tempMenu.visible = true;
-    arrMenu.push(tempMenu);
-  });
-
-  const menu404 = [];
-  menu404.path = "*";
-  menu404.component = COMPONENT_MAP["notfound"];
-  arrMenu.push(menu404);
-
-  routes = arrMenu;
+  const arrayStr = tokenDecoded.menus;
+  let i = 0;
+  let tempResult = "";
+  const regResult = [];
+  for (i = 0; i < arrayStr.length; i++) {
+    tempResult = new RegExp(arrayStr[i], "i");
+    regResult.push(tempResult);
+  }
+  routes = filter(defaultRoutes, regResult);
 }
-
 export default routes;

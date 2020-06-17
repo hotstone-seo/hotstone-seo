@@ -26,22 +26,22 @@ services:
     networks:
     - ht-main
     restart: unless-stopped
-  redis:
+  redis01:
     image: redis:4.0.5-alpine
     command: redis-server --requirepass "redispass"
     volumes:
-    - redis:/data
+    - redis01:/data
     ports:
     - 6379:6379
     networks:
-    - redis
+    - redis01
 networks:
   ht-analyt:
     driver: bridge
   ht-main:
     driver: bridge
-  redis: null
+  redis01: null
 volumes:
   ht-analyt: null
   ht-main: null
-  redis: null
+  redis01: null

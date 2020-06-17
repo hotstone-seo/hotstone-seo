@@ -40,7 +40,7 @@ type (
 )
 
 // NewSyncRepo return new instance of SyncRepo
-// @constructor
+// @ctor
 func NewSyncRepo(impl SyncRepoImpl) SyncRepo {
 	return &impl
 }

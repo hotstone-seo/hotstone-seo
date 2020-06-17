@@ -8,22 +8,41 @@ import (
 	"go.uber.org/dig"
 )
 
-// AuditTrailService contain logic for AuditTrail Controller
-// @mock
-type AuditTrailService interface {
-	Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error)
-	RecordChanges(ctx context.Context, entityName string, entityID int64, opsType repository.OperationType,
-		oldData interface{}, newData interface{}) (lastInsertID int64, err error)
-}
+type (
+	// AuditTrailService contain logic for AuditTrail Controller
+	// @mock
+	AuditTrailService interface {
+		Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error)
+		RecordChanges(ctx context.Context, record Record) (lastInsertID int64, err error)
+	}
 
-// AuditTrailServiceImpl is implementation of AuditTrailService
-type AuditTrailServiceImpl struct {
-	dig.In
-	AuditTrailRepo repository.AuditTrailRepo
-}
+	// AuditTrailServiceImpl is implementation of AuditTrailService
+	AuditTrailServiceImpl struct {
+		dig.In
+		AuditTrailRepo repository.AuditTrailRepo
+	}
+
+	// Record represents operations that will be logged into audit trail
+	Record struct {
+		EntityName string
+		EntityID   int64
+		Operation  OperationType
+		PrevData   interface{}
+		NextData   interface{}
+	}
+
+	// OperationType is type of changes operation
+	OperationType string
+)
+
+const (
+	InsertOp OperationType = "INSERT"
+	UpdateOp               = "UPDATE"
+	DeleteOp               = "DELETE"
+)
 
 // NewAuditTrailService return new instance of AuditTrailService
-// @constructor
+// @ctor
 func NewAuditTrailService(impl AuditTrailServiceImpl) AuditTrailService {
 	return &impl
 }
@@ -34,33 +53,30 @@ func (r *AuditTrailServiceImpl) Find(ctx context.Context, paginationParam reposi
 }
 
 // RecordChanges insert changes
-func (r *AuditTrailServiceImpl) RecordChanges(ctx context.Context,
-	entityName string, entityID int64, opsType repository.OperationType,
-	oldData interface{}, newData interface{}) (lastInsertID int64, err error) {
-
-	oldDataJSON := repository.JSON("{}")
-	if oldData != nil {
-		oldDataJSON, err = json.Marshal(oldData)
+func (r *AuditTrailServiceImpl) RecordChanges(ctx context.Context, record Record) (lastInsertID int64, err error) {
+	prevDataJSON := repository.JSON("{}")
+	if record.PrevData != nil {
+		prevDataJSON, err = json.Marshal(record.PrevData)
 		if err != nil {
 			return
 		}
 	}
 
-	newDataJSON := repository.JSON("{}")
-	if newData != nil {
-		newDataJSON, err = json.Marshal(newData)
+	nextDataJSON := repository.JSON("{}")
+	if record.NextData != nil {
+		nextDataJSON, err = json.Marshal(record.NextData)
 		if err != nil {
 			return
 		}
 	}
 
 	auditTrail := repository.AuditTrail{
-		EntityName: entityName,
-		EntityID:   entityID,
-		Operation:  string(opsType),
+		EntityName: record.EntityName,
+		EntityID:   record.EntityID,
+		Operation:  string(record.Operation),
 		Username:   repository.GetUsername(ctx),
-		OldData:    oldDataJSON,
-		NewData:    newDataJSON,
+		OldData:    prevDataJSON,
+		NewData:    nextDataJSON,
 	}
 
 	return r.AuditTrailRepo.Insert(ctx, auditTrail)

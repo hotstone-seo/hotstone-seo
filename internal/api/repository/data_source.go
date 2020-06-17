@@ -25,7 +25,7 @@ type DataSourceRepo interface {
 }
 
 // NewDataSourceRepo return new instance of DataSourceRepo
-// @constructor
+// @ctor
 func NewDataSourceRepo(impl DataSourceRepoImpl) DataSourceRepo {
 	return &impl
 }

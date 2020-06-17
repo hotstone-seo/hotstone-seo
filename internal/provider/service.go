@@ -43,7 +43,7 @@ type (
 )
 
 // NewService return new instance of Service
-// @constructor
+// @ctor
 func NewService(impl ServiceImpl) Service {
 	return &impl
 }

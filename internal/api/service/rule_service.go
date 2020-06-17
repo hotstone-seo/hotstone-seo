@@ -34,7 +34,7 @@ type RuleServiceImpl struct {
 }
 
 // NewRuleService creates and returns new instance of RuleService
-// @constructor
+// @ctor
 func NewRuleService(impl RuleServiceImpl) RuleService {
 	return &impl
 }
@@ -50,23 +50,93 @@ func (r *RuleServiceImpl) Find(ctx context.Context, paginationParam repository.P
 }
 
 // Insert creates a new Rule on the persistent storage configured for the service
-func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (newRuleID int64, err error) {
-	if rule.ID, err = r.RuleRepo.Insert(ctx, rule); err != nil {
-		return
-	}
-	go func() {
+func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (newID int64, err error) {
+	defer func() {
+		if err != nil {
+			return
+		}
 		if _, auditErr := r.AuditTrailService.RecordChanges(
 			ctx,
-			"rules",
-			rule.ID,
-			repository.Insert,
-			nil,
-			rule,
+			Record{
+				EntityName: "rules",
+				EntityID:   newID,
+				Operation:  InsertOp,
+				PrevData:   nil,
+				NextData:   rule,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
 	}()
-	return rule.ID, nil
+	return r.RuleRepo.Insert(ctx, rule)
+}
+
+// Update replaces the values of an existing Rule in the persistent storage by a new Rule
+// TODO: Make updating URL store clearer
+func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
+	defer r.BeginTxn(&ctx)()
+	var (
+		Sync *urlstore.Sync
+	)
+	oldRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
+	if err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	if err = r.RuleRepo.Update(ctx, rule); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	if Sync, err = r.SyncRepo.FindRule(ctx, rule.ID); err != nil {
+		r.CancelMe(ctx, err)
+		return
+	}
+	if syncOP := syncOperation(rule, Sync); syncOP != "" {
+		if _, err = r.SyncRepo.Insert(ctx, urlstore.Sync{
+			Operation:        syncOP,
+			RuleID:           rule.ID,
+			LatestURLPattern: &rule.URLPattern,
+		}); err != nil {
+			r.CancelMe(ctx, err)
+			return
+		}
+	}
+	go func() {
+		if _, auditErr := r.AuditTrailService.RecordChanges(
+			ctx,
+			Record{
+				EntityName: "rules",
+				EntityID:   rule.ID,
+				Operation:  UpdateOp,
+				PrevData:   oldRule,
+				NextData:   rule,
+			},
+		); auditErr != nil {
+			log.Error(auditErr)
+		}
+	}()
+	return nil
+}
+
+// Patch updates only selected fields to an existing Rule in the persistent storage
+func (r *RuleServiceImpl) Patch(ctx context.Context, ruleID int64, fields map[string]interface{}) (err error) {
+	existingRule, err := r.RuleRepo.FindOne(ctx, ruleID)
+	if err != nil {
+		return
+	}
+	targetMap := structs.Map(existingRule)
+	for k, v := range fields {
+		targetMap[k] = v
+	}
+	j, err := json.Marshal(targetMap)
+	if err != nil {
+		return
+	}
+	var newRule repository.Rule
+	if err = json.Unmarshal(j, &newRule); err != nil {
+		return
+	}
+	return r.Update(ctx, newRule)
 }
 
 // Delete removes the Rule entry from persistent storage configured for the service
@@ -100,81 +170,18 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		}
 		if _, auditErr := r.AuditTrailService.RecordChanges(
 			ctx,
-			"rules",
-			id,
-			repository.Delete,
-			oldRule,
-			nil,
+			Record{
+				EntityName: "rules",
+				EntityID:   id,
+				Operation:  DeleteOp,
+				PrevData:   oldRule,
+				NextData:   nil,
+			},
 		); auditErr != nil {
 			log.Error(auditErr)
 		}
 	}()
 	return nil
-}
-
-// Update replaces the values of an existing Rule in the persistent storage by a new Rule
-func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
-	defer r.BeginTxn(&ctx)()
-	var (
-		Sync *urlstore.Sync
-	)
-	oldRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
-	if err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
-	if err = r.RuleRepo.Update(ctx, rule); err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
-	if Sync, err = r.SyncRepo.FindRule(ctx, rule.ID); err != nil {
-		r.CancelMe(ctx, err)
-		return
-	}
-	if syncOP := syncOperation(rule, Sync); syncOP != "" {
-		if _, err = r.SyncRepo.Insert(ctx, urlstore.Sync{
-			Operation:        syncOP,
-			RuleID:           rule.ID,
-			LatestURLPattern: &rule.URLPattern,
-		}); err != nil {
-			r.CancelMe(ctx, err)
-			return
-		}
-	}
-	go func() {
-		if _, auditErr := r.AuditTrailService.RecordChanges(
-			ctx,
-			"rules",
-			rule.ID,
-			repository.Update,
-			oldRule,
-			rule,
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
-	return nil
-}
-
-// Patch updates only selected fields to an existing Rule in the persistent storage
-func (r *RuleServiceImpl) Patch(ctx context.Context, ruleID int64, fields map[string]interface{}) (err error) {
-	existingRule, err := r.RuleRepo.FindOne(ctx, ruleID)
-	if err != nil {
-		return
-	}
-	targetMap := structs.Map(existingRule)
-	for k, v := range fields {
-		targetMap[k] = v
-	}
-	j, err := json.Marshal(targetMap)
-	if err != nil {
-		return
-	}
-	var newRule repository.Rule
-	if err = json.Unmarshal(j, &newRule); err != nil {
-		return
-	}
-	return r.Update(ctx, newRule)
 }
 
 func syncOperation(rule repository.Rule, lastSync *urlstore.Sync) string {

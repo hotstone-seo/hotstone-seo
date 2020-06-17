@@ -5,9 +5,10 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"time"
+
+	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
@@ -22,22 +23,19 @@ var (
 )
 
 type (
-
 	// AuthService is center related logic
 	// @mock
 	AuthService interface {
 		BuildJwtClaims(ctx context.Context, gUser oauth2google.GoogleUser) (JwtClaims, error)
 		GenerateJwtToken(jwtClaim JwtClaims, jwtSecret string) (string, error)
 	}
-
 	// AuthServiceImpl implementation of AuthService
 	AuthServiceImpl struct {
 		dig.In
 		UserRepo     repository.UserRepo
-		RoleTypeRepo repository.RoleTypeRepo
+		UserRoleRepo repository.UserRoleRepo
 		SettingSvc   SettingSvc
 	}
-
 	// JwtClaims holds JWT claims information
 	JwtClaims struct {
 		email         string
@@ -46,48 +44,38 @@ type (
 		userRole      string
 		modules       string
 		simulationKey string
+		paths         []string
+		menus         []string
 	}
 )
 
-// NewService return new instance of AuthGoogleService
+// NewAuthService return new instance of AuthGoogleService
 // @ctor
-func NewService(userRepo repository.UserRepo, roleTypeRepo repository.RoleTypeRepo, settingSvc SettingSvc) AuthService {
-	return &AuthServiceImpl{
-		UserRepo:     userRepo,
-		RoleTypeRepo: roleTypeRepo,
-		SettingSvc:   settingSvc,
-	}
+func NewAuthService(impl AuthServiceImpl) AuthService {
+	return &impl
 }
 
 // BuildJwtClaims build JWT claims based on given user
 func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google.GoogleUser) (jwtClaims JwtClaims, err error) {
-	user, err := c.UserRepo.FindUserByEmail(ctx, gUser.Email)
-	if user == nil || err == sql.ErrNoRows {
+	users, _ := c.UserRepo.Find(ctx, dbkit.Equal(repository.UserTable.Email, gUser.Email))
+	if len(users) < 1 {
 		return jwtClaims, fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
 	}
-	var roleAccess string
-	var roleModule string
-	if user != nil {
-		roleType, err := c.RoleTypeRepo.FindOne(ctx, user.RoleTypeID)
-		if err == sql.ErrNoRows {
-			return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
-		}
-		roleAccess = roleType.Name
 
-		rawData, err := json.Marshal(roleType.Modules)
-		if err != nil {
-			return jwtClaims, fmt.Errorf("AuthVerifyCallback convert JSON: %w", err)
-		}
-		roleModule = string(rawData)
+	role, err := c.UserRoleRepo.FindOne(ctx, users[0].UserRoleID)
+	if err == sql.ErrNoRows {
+		return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
 	}
+
 	simulationKey := c.SettingSvc.GetValue(ctx, SimulationKey)
 	return JwtClaims{
 		email:         gUser.Email,
 		picture:       gUser.Picture,
-		userID:        user.ID,
-		userRole:      roleAccess,
-		modules:       roleModule,
+		userID:        users[0].ID,
+		userRole:      role.Name,
 		simulationKey: simulationKey,
+		menus:         role.Menus,
+		paths:         role.Paths,
 	}, nil
 }
 
@@ -106,6 +94,8 @@ func (c *AuthServiceImpl) GenerateJwtToken(jwtClaim JwtClaims, jwtSecret string)
 	claims["user_role"] = jwtClaim.userRole
 	claims["modules"] = jwtClaim.modules
 	claims["simulation_key"] = jwtClaim.simulationKey
+	claims["menus"] = jwtClaim.menus
+	claims["paths"] = jwtClaim.paths
 
 	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte(jwtSecret))

@@ -33,7 +33,7 @@ type (
 )
 
 // NewRuleMatchingRepo return new instance of MetricsRuleMatchingRepo
-// @constructor
+// @ctor
 func NewRuleMatchingRepo(impl RuleMatchingRepoImpl) RuleMatchingRepo {
 	return &impl
 }
