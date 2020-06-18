@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/internal/api/controller"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"go.uber.org/dig"
@@ -13,7 +12,6 @@ type API struct {
 	dig.In
 	controller.AuthMiddleware
 
-	Oauth2GoogleCntrl oauth2google.AuthCntrl
 	controller.AuthCntrl
 	controller.RuleCntrl
 	controller.DataSourceCntrl
@@ -31,7 +29,7 @@ type API struct {
 // SetRoute for API
 func (a *API) SetRoute(e *echo.Echo) {
 	e.POST("auth/google/login", a.AuthCntrl.Login)
-	e.GET("auth/google/callback", a.Oauth2GoogleCntrl.Callback(a.AuthCntrl.Oauth2GoogleCallback))
+	e.GET("auth/google/callback", a.AuthCntrl.Callback)
 
 	group := e.Group("/api")
 	group.Use(a.AuthMiddleware.Middleware())

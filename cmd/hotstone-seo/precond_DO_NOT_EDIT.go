@@ -87,9 +87,9 @@ func init() {
 		},
 		&typgo.Constructor{
 			Name: "",
-			Fn: func() (cfg *oauth2google.Config, err error) {
-				cfg = new(oauth2google.Config)
-				if err = typgo.ProcessConfig("OAUTH2_GOOGLE", cfg); err != nil {
+			Fn: func() (cfg *infra.Auth, err error) {
+				cfg = new(infra.Auth)
+				if err = typgo.ProcessConfig("AUTH", cfg); err != nil {
 					return nil, err
 				}
 				return

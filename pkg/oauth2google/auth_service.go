@@ -10,12 +10,22 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/labstack/echo"
 	"go.uber.org/dig"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+)
+
+var (
+	// CookieExpiration is expiration for oauthstate cookie
+	CookieExpiration time.Duration = 72 * time.Hour
+
+	StateExpiration time.Duration = 20 * time.Minute
+
+	TokenEpiration time.Duration = 72 * time.Hour
 )
 
 type (
@@ -32,7 +42,7 @@ type (
 	AuthServiceImpl struct {
 		dig.In
 		*oauth2.Config
-		cfg *Config
+		Cfg *infra.Auth
 	}
 	googleOauth2UserInfoResp map[string]interface{}
 	// GoogleUser holds Google user information
@@ -44,9 +54,9 @@ type (
 
 // NewService return new instance of AuthGoogleService
 // @ctor
-func NewService(cfg *Config) AuthService {
+func NewService(cfg *infra.Auth) AuthService {
 	return &AuthServiceImpl{
-		cfg: cfg,
+		Cfg: cfg,
 		Config: &oauth2.Config{
 			RedirectURL:  cfg.Callback,
 			ClientID:     cfg.ClientID,
@@ -65,7 +75,7 @@ func (c *AuthServiceImpl) GenerateOauthState() (oauthState string) {
 // SetState set oauthstate to cookie
 func (c *AuthServiceImpl) SetState(ce echo.Context, state string) {
 	expire := time.Now().Add(StateExpiration)
-	cookie := &http.Cookie{Name: "oauthstate", Value: state, Expires: expire, HttpOnly: true, Secure: c.cfg.CookieSecure}
+	cookie := &http.Cookie{Name: "oauthstate", Value: state, Expires: expire, HttpOnly: true, Secure: c.Cfg.CookieSecure}
 	ce.SetCookie(cookie)
 }
 
@@ -137,8 +147,8 @@ func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp googleOauth2UserInfo
 		return errors.New("AuthUserInfo: invalid or empty verified_email")
 	}
 
-	if c.cfg.HostedDomain != "" {
-		if hd, ok := userInfoResp["hd"]; !ok || hd != c.cfg.HostedDomain {
+	if c.Cfg.HostedDomain != "" {
+		if hd, ok := userInfoResp["hd"]; !ok || hd != c.Cfg.HostedDomain {
 			return errors.New("AuthUserInfo: invalid or empty hd")
 		}
 	}

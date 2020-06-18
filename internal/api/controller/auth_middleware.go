@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"net/url"
 	"regexp"
 
 	"github.com/dgrijalva/jwt-go"
@@ -17,7 +16,7 @@ import (
 // AuthMiddleware is middleware for authentication
 type AuthMiddleware struct {
 	dig.In
-	*infra.App
+	*infra.Auth
 }
 
 // Middleware for google social login
@@ -25,7 +24,7 @@ func (c *AuthMiddleware) Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(ce echo.Context) error {
 			cfg := middleware.DefaultJWTConfig
-			cfg.SigningKey = []byte(c.App.JWTSecret)
+			cfg.SigningKey = []byte(c.Auth.JWTSecret)
 			cfg.TokenLookup = "cookie:secure_token"
 
 			if err := middleware.JWTWithConfig(cfg)(next)(ce); err != nil {
@@ -82,13 +81,4 @@ func IsRoleAllow(path string, claims jwt.MapClaims) bool {
 		}
 	}
 	return false
-}
-
-func urlWithQueryParams(rawurl string, values url.Values) (s string, err error) {
-	var u *url.URL
-	if u, err = url.Parse(rawurl); err != nil {
-		return
-	}
-	u.RawQuery = values.Encode()
-	return u.String(), nil
 }

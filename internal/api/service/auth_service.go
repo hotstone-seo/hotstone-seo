@@ -12,6 +12,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 
 	"go.uber.org/dig"
@@ -36,6 +37,7 @@ type (
 	// AuthServiceImpl implementation of AuthService
 	AuthServiceImpl struct {
 		dig.In
+		*infra.App
 		UserRepo     repository.UserRepo
 		UserRoleRepo repository.UserRoleRepo
 		SettingSvc   SettingSvc
