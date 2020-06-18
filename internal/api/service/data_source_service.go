@@ -5,24 +5,23 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
-// DataSourceService contain logic for DataSourceController
-// @mock
-type DataSourceService interface {
-	repository.DataSourceRepo
-}
-
-// DataSourceServiceImpl is implementation of DataSourceService
-type DataSourceServiceImpl struct {
-	dig.In
-	dbtxn.Transactional
-	repository.DataSourceRepo
-	AuditTrail     AuditTrailService
-	HistoryService HistoryService
-}
+type (
+	// DataSourceService contain logic for DataSourceController
+	// @mock
+	DataSourceService interface {
+		repository.DataSourceRepo
+	}
+	// DataSourceServiceImpl is implementation of DataSourceService
+	DataSourceServiceImpl struct {
+		dig.In
+		dbtxn.Transactional
+		repository.DataSourceRepo
+		AuditTrail AuditTrailService
+	}
+)
 
 // NewDataSourceService return new instance of DataSourceService
 // @ctor
@@ -63,17 +62,7 @@ func (s *DataSourceServiceImpl) Delete(ctx context.Context, id int64) (err error
 	if err = s.DataSourceRepo.Delete(ctx, id); err != nil {
 		return
 	}
-	go func() {
-		if _, histErr := s.HistoryService.RecordHistory(
-			ctx,
-			"data_source",
-			id,
-			oldData,
-		); histErr != nil {
-			log.Error(histErr)
-		}
 
-	}()
 	s.AuditTrail.RecordDelete(ctx, "data_sources", id, oldData)
 	return nil
 }

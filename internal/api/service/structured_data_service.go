@@ -5,25 +5,24 @@ import (
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
-	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
-// StructuredDataService manages instances of Structured Data
-// @mock
-type StructuredDataService interface {
-	FindByRule(ctx context.Context, ruleID int64) ([]*repository.StructuredData, error)
-	repository.StructuredDataRepo
-}
-
-// StructuredDataServiceImpl is an impolementation of StructuredDataService
-type StructuredDataServiceImpl struct {
-	dig.In
-	repository.StructuredDataRepo
-	AuditTrail     AuditTrailService
-	HistoryService HistoryService
-}
+type (
+	// StructuredDataService manages instances of Structured Data
+	// @mock
+	StructuredDataService interface {
+		FindByRule(ctx context.Context, ruleID int64) ([]*repository.StructuredData, error)
+		repository.StructuredDataRepo
+	}
+	// StructuredDataServiceImpl is an impolementation of StructuredDataService
+	StructuredDataServiceImpl struct {
+		dig.In
+		repository.StructuredDataRepo
+		AuditTrail AuditTrailService
+	}
+)
 
 // NewStructuredDataService returns nrw instance of StructuredDataService
 // @ctor
@@ -71,16 +70,6 @@ func (s *StructuredDataServiceImpl) Delete(ctx context.Context, id int64) (err e
 	if err = s.StructuredDataRepo.Delete(ctx, id); err != nil {
 		return
 	}
-	go func() {
-		if _, histErr := s.HistoryService.RecordHistory(
-			ctx,
-			"structured data",
-			id,
-			strData,
-		); histErr != nil {
-			log.Error(histErr)
-		}
-	}()
 	s.AuditTrail.RecordDelete(ctx, "structured data", id, strData)
 	return nil
 }

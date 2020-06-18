@@ -6,26 +6,25 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
 
-// TagService provides available method to be used for managing Tag entity
-// @mock
-type TagService interface {
-	FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) ([]*repository.Tag, error)
-	repository.TagRepo
-}
-
-// TagServiceImpl is the implementation of TagService
-type TagServiceImpl struct {
-	dig.In
-	repository.TagRepo
-	dbtxn.Transactional
-	AuditTrail     AuditTrailService
-	HistoryService HistoryService
-}
+type (
+	// TagService provides available method to be used for managing Tag entity
+	// @mock
+	TagService interface {
+		FindByRuleAndLocale(ctx context.Context, ruleID int64, locale string) ([]*repository.Tag, error)
+		repository.TagRepo
+	}
+	// TagServiceImpl is the implementation of TagService
+	TagServiceImpl struct {
+		dig.In
+		repository.TagRepo
+		dbtxn.Transactional
+		AuditTrail AuditTrailService
+	}
+)
 
 // NewTagService return new instance of TagService
 // @ctor
@@ -76,19 +75,6 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 	if currentTag, err = s.TagRepo.FindOne(ctx, id); err != nil {
 		return
 	}
-	defer func() {
-		if err != nil {
-			return
-		}
-		if _, histErr := s.HistoryService.RecordHistory(
-			ctx,
-			currentTag.Type+"-tag",
-			id,
-			currentTag,
-		); histErr != nil {
-			log.Error(histErr)
-		}
-	}()
 	s.AuditTrail.RecordDelete(ctx, "tags", id, currentTag)
 	return s.TagRepo.Delete(ctx, id)
 }

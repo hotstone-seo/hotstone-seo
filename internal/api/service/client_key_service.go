@@ -12,7 +12,6 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
@@ -28,15 +27,13 @@ type (
 		repository.ClientKeyRepo
 		IsValidClientKey(ctx context.Context, clientKey string) bool
 	}
-
 	// ClientKeyServiceImpl is implementation of ClientKeyService
 	ClientKeyServiceImpl struct {
 		dig.In
 		repository.ClientKeyRepo
 		analyt.ClientKeyAnalytRepo
 		dbtxn.Transactional
-		AuditTrail     AuditTrailService
-		HistoryService HistoryService
+		AuditTrail AuditTrailService
 	}
 )
 
@@ -86,17 +83,6 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 		s.CancelMe(ctx, err)
 		return
 	}
-	go func() {
-		if _, histErr := s.HistoryService.RecordHistory(
-			ctx,
-			"client_keys",
-			id,
-			oldData,
-		); histErr != nil {
-			log.Error(histErr)
-		}
-	}()
-
 	s.AuditTrail.RecordDelete(ctx, "client_keys", id, oldData)
 	return nil
 }

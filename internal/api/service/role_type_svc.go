@@ -7,7 +7,6 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
@@ -27,7 +26,6 @@ type (
 		dig.In
 		UserRoleRepo repository.UserRoleRepo
 		AuditTrail   AuditTrailService
-		HistoryService
 		dbtxn.Transactional
 	}
 	// UserRoleRequest is request model for UserRole related method
@@ -111,16 +109,6 @@ func (r *UserRoleSvcImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
-	go func() {
-		if _, histErr := r.HistoryService.RecordHistory(
-			ctx,
-			"UserRole",
-			id,
-			oldData,
-		); histErr != nil {
-			log.Error(histErr)
-		}
-	}()
 	r.AuditTrail.RecordDelete(ctx, "UserRole", id, oldData)
 	return nil
 }

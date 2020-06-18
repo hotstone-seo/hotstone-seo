@@ -25,7 +25,6 @@ type (
 		dig.In
 		UserRepo   repository.UserRepo
 		AuditTrail AuditTrailService
-		HistoryService
 		dbtxn.Transactional
 	}
 )
@@ -71,11 +70,6 @@ func (r *UserSvcImpl) Delete(ctx context.Context, id int64) error {
 	users, _ := r.UserRepo.Find(ctx, dbkit.Equal(repository.UserTable.ID, id))
 	if len(users) < 1 {
 		return nil
-	}
-
-	if _, err := r.HistoryService.RecordHistory(ctx, "users", id, users[0]); err != nil {
-		r.CancelMe(ctx, err)
-		return err
 	}
 
 	if err := r.UserRepo.Delete(ctx, id); err != nil {
