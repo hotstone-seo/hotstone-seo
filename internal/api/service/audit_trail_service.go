@@ -10,48 +10,29 @@ import (
 )
 
 type (
-	// AuditTrailService contain logic for AuditTrail Controller
+	// AuditTrailSvc contain logic for AuditTrail Controller
 	// @mock
-	AuditTrailService interface {
+	AuditTrailSvc interface {
 		Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error)
 		RecordInsert(ctx context.Context, entity string, id int64, obj interface{})
 		RecordDelete(ctx context.Context, entity string, id int64, obj interface{})
 		RecordUpdate(ctx context.Context, entity string, id int64, prevObj, nextObj interface{})
 	}
-
-	// AuditTrailServiceImpl is implementation of AuditTrailService
-	AuditTrailServiceImpl struct {
+	// AuditTrailSvcImpl is implementation of AuditTrailService
+	AuditTrailSvcImpl struct {
 		dig.In
 		AuditTrailRepo repository.AuditTrailRepo
 	}
-
-	// Record represents operations that will be logged into audit trail
-	Record struct {
-		EntityName string
-		EntityID   int64
-		Operation  OperationType
-		PrevData   interface{}
-		NextData   interface{}
-	}
-
-	// OperationType is type of changes operation
-	OperationType string
 )
 
-const (
-	InsertOp OperationType = "INSERT"
-	UpdateOp               = "UPDATE"
-	DeleteOp               = "DELETE"
-)
-
-// NewAuditTrailService return new instance of AuditTrailService
+// NewAuditTrailSvc return new instance of AuditTrailService
 // @ctor
-func NewAuditTrailService(impl AuditTrailServiceImpl) AuditTrailService {
+func NewAuditTrailSvc(impl AuditTrailSvcImpl) AuditTrailSvc {
 	return &impl
 }
 
 // Find audit trail data
-func (r *AuditTrailServiceImpl) Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error) {
+func (r *AuditTrailSvcImpl) Find(ctx context.Context, paginationParam repository.PaginationParam) ([]*repository.AuditTrail, error) {
 	return r.AuditTrailRepo.Find(ctx, paginationParam)
 }
 
@@ -67,7 +48,7 @@ func marshal(v interface{}) []byte {
 }
 
 // RecordInsert to insert audit-trail for insert operation
-func (r *AuditTrailServiceImpl) RecordInsert(ctx context.Context, entity string, id int64, obj interface{}) {
+func (r *AuditTrailSvcImpl) RecordInsert(ctx context.Context, entity string, id int64, obj interface{}) {
 	go func() {
 		_, err := r.AuditTrailRepo.Insert(ctx, repository.AuditTrail{
 			EntityName: entity,
@@ -84,7 +65,7 @@ func (r *AuditTrailServiceImpl) RecordInsert(ctx context.Context, entity string,
 }
 
 // RecordDelete to insert audit-trail for delete operation
-func (r *AuditTrailServiceImpl) RecordDelete(ctx context.Context, entity string, id int64, obj interface{}) {
+func (r *AuditTrailSvcImpl) RecordDelete(ctx context.Context, entity string, id int64, obj interface{}) {
 	go func() {
 		_, err := r.AuditTrailRepo.Insert(ctx, repository.AuditTrail{
 			EntityName: entity,
@@ -101,7 +82,7 @@ func (r *AuditTrailServiceImpl) RecordDelete(ctx context.Context, entity string,
 }
 
 // RecordUpdate to insert audit-trail for update operation
-func (r *AuditTrailServiceImpl) RecordUpdate(ctx context.Context, entity string, id int64, oldObj, newObj interface{}) {
+func (r *AuditTrailSvcImpl) RecordUpdate(ctx context.Context, entity string, id int64, oldObj, newObj interface{}) {
 	go func() {
 		_, err := r.AuditTrailRepo.Insert(ctx, repository.AuditTrail{
 			EntityName: entity,

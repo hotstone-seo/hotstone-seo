@@ -13,15 +13,15 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 )
 
-type onAuditTrailSvc func(repo *repository_mock.MockAuditTrailRepo)
+type auditTrailSvcFn func(repo *repository_mock.MockAuditTrailRepo)
 
-func createAuditTrailSvc(t *testing.T, fn onAuditTrailSvc) (service.AuditTrailService, *gomock.Controller) {
+func createAuditTrailSvc(t *testing.T, fn auditTrailSvcFn) (service.AuditTrailSvc, *gomock.Controller) {
 	mock := gomock.NewController(t)
 	repo := repository_mock.NewMockAuditTrailRepo(mock)
 	if fn != nil {
 		fn(repo)
 	}
-	return &service.AuditTrailServiceImpl{
+	return &service.AuditTrailSvcImpl{
 		AuditTrailRepo: repo,
 	}, mock
 }
