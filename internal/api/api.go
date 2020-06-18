@@ -11,6 +11,8 @@ import (
 // API side
 type API struct {
 	dig.In
+	controller.AuthMiddleware
+
 	Oauth2GoogleCntrl oauth2google.AuthCntrl
 	controller.AuthCntrl
 	controller.RuleCntrl
@@ -32,9 +34,9 @@ func (a *API) SetRoute(e *echo.Echo) {
 	e.GET("auth/google/callback", a.Oauth2GoogleCntrl.Callback(a.AuthCntrl.Oauth2GoogleCallback))
 
 	group := e.Group("/api")
-	group.Use(a.AuthCntrl.Middleware())
-	group.Use(a.AuthCntrl.SetTokenCtxMiddleware())
-	group.Use(a.AuthCntrl.CheckAuthModules())
+	group.Use(a.AuthMiddleware.Middleware())
+	group.Use(a.AuthMiddleware.SetTokenCtxMiddleware())
+	group.Use(a.AuthMiddleware.CheckAuthModules())
 	group.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	group.Use(middleware.Recover())
 	group.POST("/logout", a.AuthCntrl.Logout)
