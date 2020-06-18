@@ -59,7 +59,7 @@ func TestAuditTrailService_RecordInsert(t *testing.T) {
 
 			ctx := context.WithValue(
 				context.Background(),
-				repository.TokenCtxKey,
+				service.TokenCtxKey,
 				&jwt.Token{
 					Claims: jwt.MapClaims{
 						"email": tt.username,
@@ -105,7 +105,7 @@ func TestAuditTrailService_RecordDelete(t *testing.T) {
 
 			ctx := context.WithValue(
 				context.Background(),
-				repository.TokenCtxKey,
+				service.TokenCtxKey,
 				&jwt.Token{
 					Claims: jwt.MapClaims{
 						"email": tt.username,
@@ -153,7 +153,7 @@ func TestAuditTrailService_RecordUpdate(t *testing.T) {
 
 			ctx := context.WithValue(
 				context.Background(),
-				repository.TokenCtxKey,
+				service.TokenCtxKey,
 				&jwt.Token{
 					Claims: jwt.MapClaims{
 						"email": tt.username,

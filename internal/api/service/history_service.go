@@ -43,7 +43,7 @@ func (r *HistoryServiceImpl) RecordHistory(ctx context.Context,
 	History := repository.History{
 		EntityID:   entityID,
 		EntityFrom: string(entityFrom),
-		Username:   repository.GetUsername(ctx),
+		Username:   GetUsername(ctx),
 		Data:       dataJSON,
 	}
 

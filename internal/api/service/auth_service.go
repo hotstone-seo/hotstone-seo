@@ -22,6 +22,10 @@ var (
 	TokenEpiration time.Duration = 72 * time.Hour
 )
 
+const (
+	TokenCtxKey CtxKey = iota
+)
+
 type (
 	// AuthService is center related logic
 	// @mock
@@ -47,6 +51,7 @@ type (
 		paths         []string
 		menus         []string
 	}
+	CtxKey int
 )
 
 // NewAuthService return new instance of AuthGoogleService
@@ -111,4 +116,20 @@ func generateRandomBase64(keyLength int) string {
 	rand.Read(b)
 
 	return base64.URLEncoding.EncodeToString(b)
+}
+
+func GetUsername(ctx context.Context) string {
+	token, ok := ctx.Value(TokenCtxKey).(*jwt.Token)
+	if !ok {
+		return ""
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return ""
+	}
+	email, ok := claims["email"].(string)
+	if !ok {
+		return ""
+	}
+	return email
 }

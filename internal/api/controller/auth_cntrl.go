@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
@@ -72,7 +71,7 @@ func (c *AuthCntrl) Middleware() echo.MiddlewareFunc {
 			cfg.TokenLookup = "cookie:secure_token"
 
 			if err := middleware.JWTWithConfig(cfg)(next)(ce); err != nil {
-				c.clean(ce)
+				cleanCookie(ce)
 				return err
 			}
 
@@ -88,7 +87,7 @@ func (c *AuthCntrl) SetTokenCtxMiddleware() echo.MiddlewareFunc {
 			token := c.Get("user")
 			currCtx := c.Request().Context()
 			modifiedReq := c.Request().Clone(
-				context.WithValue(currCtx, repository.TokenCtxKey, token))
+				context.WithValue(currCtx, service.TokenCtxKey, token))
 			// log.Warnf("# TOKEN: %+v", token)
 
 			c.SetRequest(modifiedReq)
@@ -97,7 +96,7 @@ func (c *AuthCntrl) SetTokenCtxMiddleware() echo.MiddlewareFunc {
 	}
 }
 
-func (c *AuthCntrl) clean(ce echo.Context) (err error) {
+func cleanCookie(ce echo.Context) (err error) {
 	ce.SetCookie(&http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"})
 	ce.SetCookie(&http.Cookie{Name: "token", MaxAge: -1, Path: "/"})
 	return
@@ -105,18 +104,8 @@ func (c *AuthCntrl) clean(ce echo.Context) (err error) {
 
 // Logout by invalidating cookies
 func (c *AuthCntrl) Logout(ce echo.Context) (err error) {
-	c.clean(ce)
+	cleanCookie(ce)
 	return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
-}
-
-type DataModule struct {
-	Module []Module `json:"modules"`
-}
-type Module struct {
-	Label string `json:"label"`
-	Name  string `json:"name"`
-	Path  string `json:"path"`
-	//APIPath []APIPathS `json:"api_path"`
 }
 
 // CheckAuthModules for check auth module access
@@ -130,7 +119,7 @@ func (c *AuthCntrl) CheckAuthModules() echo.MiddlewareFunc {
 			path := ce.Path()
 			if !IsRoleAllow(path, claims) {
 				log.Errorf("CheckAuthModules. Invalid Access ", path)
-				c.clean(ce)
+				cleanCookie(ce)
 			}
 			return next(ce)
 		}
