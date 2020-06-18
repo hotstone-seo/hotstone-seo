@@ -22,8 +22,18 @@ type (
 		dig.In
 		*infra.App
 		service.AuthService
+		Svc2 oauth2google.AuthService
 	}
 )
+
+// Login with google auth
+func (c *AuthCntrl) Login(ce echo.Context) (err error) {
+	oauthState := c.Svc2.GenerateOauthState()
+	c.Svc2.SetState(ce, oauthState)
+
+	authCodeURL := c.Svc2.GetAuthCodeURL(oauthState)
+	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
+}
 
 // Oauth2GoogleCallback is called after google auth flow has been successfully finished
 func (c *AuthCntrl) Oauth2GoogleCallback(ce echo.Context, gUser oauth2google.GoogleUser) error {

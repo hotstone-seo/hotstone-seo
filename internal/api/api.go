@@ -30,7 +30,7 @@ type API struct {
 
 // SetRoute for API
 func (a *API) SetRoute(e *echo.Echo) {
-	e.POST("auth/google/login", a.Oauth2GoogleCntrl.Login)
+	e.POST("auth/google/login", a.AuthCntrl.Login)
 	e.GET("auth/google/callback", a.Oauth2GoogleCntrl.Callback(a.AuthCntrl.Oauth2GoogleCallback))
 
 	group := e.Group("/api")

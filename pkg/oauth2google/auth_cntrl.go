@@ -22,16 +22,6 @@ type (
 	Callback func(ce echo.Context, gUser GoogleUser) error
 )
 
-// Login with google auth
-func (c *AuthCntrl) Login(ce echo.Context) (err error) {
-	oauthState := c.GenerateOauthState()
-	c.SetState(ce, oauthState)
-
-	authCodeURL := c.GetAuthCodeURL(oauthState)
-	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
-
-}
-
 // Callback for google auth
 func (c *AuthCntrl) Callback(cb Callback) func(echo.Context) error {
 	return func(ce echo.Context) (err error) {
