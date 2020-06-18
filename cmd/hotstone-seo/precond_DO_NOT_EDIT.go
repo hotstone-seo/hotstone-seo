@@ -28,7 +28,7 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: repository.NewTagRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewUserRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewUserRoleRepo},
-		&typgo.Constructor{Name: "", Fn: service.NewAuditTrailService},
+		&typgo.Constructor{Name: "", Fn: service.NewAuditTrailSvc},
 		&typgo.Constructor{Name: "", Fn: service.NewAuthService},
 		&typgo.Constructor{Name: "", Fn: service.NewCenterService},
 		&typgo.Constructor{Name: "", Fn: service.NewClientKeyService},

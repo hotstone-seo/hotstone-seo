@@ -19,7 +19,7 @@ type (
 		dig.In
 		dbtxn.Transactional
 		repository.DataSourceRepo
-		AuditTrail AuditTrailService
+		AuditTrail AuditTrailSvc
 	}
 )
 

@@ -24,7 +24,7 @@ type (
 	UserSvcImpl struct {
 		dig.In
 		UserRepo   repository.UserRepo
-		AuditTrail AuditTrailService
+		AuditTrail AuditTrailSvc
 		dbtxn.Transactional
 	}
 )

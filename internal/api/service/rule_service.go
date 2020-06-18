@@ -27,7 +27,7 @@ type (
 		dig.In
 		RuleRepo   repository.RuleRepo
 		SyncRepo   urlstore.SyncRepo
-		AuditTrail AuditTrailService
+		AuditTrail AuditTrailSvc
 		dbtxn.Transactional
 	}
 )

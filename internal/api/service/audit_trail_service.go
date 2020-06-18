@@ -18,14 +18,14 @@ type (
 		RecordDelete(ctx context.Context, entity string, id int64, obj interface{})
 		RecordUpdate(ctx context.Context, entity string, id int64, prevObj, nextObj interface{})
 	}
-	// AuditTrailSvcImpl is implementation of AuditTrailService
+	// AuditTrailSvcImpl is implementation of AuditTrailSvc
 	AuditTrailSvcImpl struct {
 		dig.In
 		AuditTrailRepo repository.AuditTrailRepo
 	}
 )
 
-// NewAuditTrailSvc return new instance of AuditTrailService
+// NewAuditTrailSvc return new instance of AuditTrailSvc
 // @ctor
 func NewAuditTrailSvc(impl AuditTrailSvcImpl) AuditTrailSvc {
 	return &impl

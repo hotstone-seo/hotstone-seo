@@ -22,7 +22,7 @@ type (
 		dig.In
 		repository.TagRepo
 		dbtxn.Transactional
-		AuditTrail AuditTrailService
+		AuditTrail AuditTrailSvc
 	}
 )
 

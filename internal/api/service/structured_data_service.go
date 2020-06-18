@@ -20,7 +20,7 @@ type (
 	StructuredDataServiceImpl struct {
 		dig.In
 		repository.StructuredDataRepo
-		AuditTrail AuditTrailService
+		AuditTrail AuditTrailSvc
 	}
 )
 

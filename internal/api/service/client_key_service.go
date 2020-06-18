@@ -33,7 +33,7 @@ type (
 		repository.ClientKeyRepo
 		analyt.ClientKeyAnalytRepo
 		dbtxn.Transactional
-		AuditTrail AuditTrailService
+		AuditTrail AuditTrailSvc
 	}
 )
 

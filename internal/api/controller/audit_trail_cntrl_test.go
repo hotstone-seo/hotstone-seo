@@ -20,7 +20,7 @@ func TestAuditTrailController_Find(t *testing.T) {
 	defer ctrl.Finish()
 	auditTrailSvcMock := service_mock.NewMockAuditTrailService(ctrl)
 	auditTrailCntrl := controller.AuditTrailCntrl{
-		AuditTrailService: auditTrailSvcMock,
+		AuditTrailSvc: auditTrailSvcMock,
 	}
 
 	t.Run("WHEN retrieved error", func(t *testing.T) {

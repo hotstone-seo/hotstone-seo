@@ -25,7 +25,7 @@ type (
 	UserRoleSvcImpl struct {
 		dig.In
 		UserRoleRepo repository.UserRoleRepo
-		AuditTrail   AuditTrailService
+		AuditTrail   AuditTrailSvc
 		dbtxn.Transactional
 	}
 	// UserRoleRequest is request model for UserRole related method
