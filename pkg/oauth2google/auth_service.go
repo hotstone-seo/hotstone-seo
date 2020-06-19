@@ -34,7 +34,6 @@ type (
 	AuthService interface {
 		Login() (*LoginResult, error)
 		Callback(context.Context, *CallbackRequest) (*CallbackResult, error)
-		VerifyState(ce echo.Context, state string) bool
 		VerifyUser(ctx context.Context, code string) (*gauthkit.UserInfo, error)
 	}
 	// AuthServiceImpl implementation of AuthService
@@ -49,7 +48,10 @@ type (
 		Cookie   *http.Cookie
 	}
 	// CallbackRequest is request of callback
-	CallbackRequest struct{}
+	CallbackRequest struct {
+		OAuthState *http.Cookie
+		StateParam string
+	}
 	// CallbackResult is result of callback
 	CallbackResult struct{}
 )
@@ -90,6 +92,9 @@ func (c *AuthServiceImpl) Login() (*LoginResult, error) {
 
 // Callback process
 func (c *AuthServiceImpl) Callback(ctx context.Context, req *CallbackRequest) (*CallbackResult, error) {
+	if req.OAuthState == nil || req.StateParam != req.OAuthState.Value {
+		return nil, errors.New("bad-state")
+	}
 	return nil, nil
 }
 

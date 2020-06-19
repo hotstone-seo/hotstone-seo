@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
@@ -48,8 +49,19 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 		return fmt.Errorf("AuthCallback: %s", err.Error())
 	}
 
-	if !c.Svc2.VerifyState(ce, ce.QueryParam("state")) {
-		return fmt.Errorf("AuthCallback state not valid")
+	oauthState, _ := ce.Cookie("oauthstate")
+
+	_, err = c.Svc2.Callback(ctx, &oauth2google.CallbackRequest{
+		OAuthState: oauthState,
+		StateParam: ce.QueryParam("state"),
+	})
+	if err != nil {
+		errMsg := err.Error()
+		if strings.HasPrefix(errMsg, "callback-failed:") {
+			log.Error(errMsg)
+			return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
+		}
+		return err
 	}
 
 	gUser, err := c.Svc2.VerifyUser(ctx, ce.QueryParam("code"))
@@ -83,21 +95,23 @@ func (c *AuthCntrl) callback(ce echo.Context, gUser *gauthkit.UserInfo) error {
 		return err
 	}
 
-	secureTokenCookie := &http.Cookie{
-		Name: "secure_token", Value: string(jwtToken),
+	ce.SetCookie(&http.Cookie{
+		Name:     "secure_token",
+		Value:    string(jwtToken),
 		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
-		HttpOnly: true, Secure: c.Auth.CookieSecure,
-	}
-	ce.SetCookie(secureTokenCookie)
+		HttpOnly: true,
+		Secure:   c.Auth.CookieSecure,
+	})
 
-	tokenCookie := &http.Cookie{
-		Name: "token", Value: string(jwtToken),
+	ce.SetCookie(&http.Cookie{
+		Name:     "token",
+		Value:    string(jwtToken),
 		Expires:  time.Now().Add(CookieExpiration),
 		Path:     "/",
-		HttpOnly: false, Secure: c.Auth.CookieSecure,
-	}
-	ce.SetCookie(tokenCookie)
+		HttpOnly: false,
+		Secure:   c.Auth.CookieSecure,
+	})
 	return nil
 }
 
