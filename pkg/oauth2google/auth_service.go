@@ -4,13 +4,13 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
+	"github.com/hotstone-seo/hotstone-seo/pkg/gauthkit"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/labstack/echo"
@@ -33,25 +33,25 @@ type (
 	// @mock
 	AuthService interface {
 		Login() (*LoginResult, error)
+		Callback(context.Context, *CallbackRequest) (*CallbackResult, error)
 		VerifyState(ce echo.Context, state string) bool
-		VerifyUser(ctx context.Context, code string) (GoogleUser, error)
+		VerifyUser(ctx context.Context, code string) (*gauthkit.UserInfo, error)
 	}
 	// AuthServiceImpl implementation of AuthService
 	AuthServiceImpl struct {
 		dig.In
 		Cfg *infra.Auth
 	}
-	googleOauth2UserInfoResp map[string]interface{}
-	// GoogleUser holds Google user information
-	GoogleUser struct {
-		Email   string
-		Picture string
-	}
+
 	// LoginResult is result of login
 	LoginResult struct {
 		Redirect string
 		Cookie   *http.Cookie
 	}
+	// CallbackRequest is request of callback
+	CallbackRequest struct{}
+	// CallbackResult is result of callback
+	CallbackResult struct{}
 )
 
 // NewService return new instance of AuthGoogleService
@@ -70,6 +70,7 @@ func (c *AuthServiceImpl) oauthConfig() *oauth2.Config {
 	}
 }
 
+// Login process
 func (c *AuthServiceImpl) Login() (*LoginResult, error) {
 	b := make([]byte, 64)
 	rand.Read(b)
@@ -85,6 +86,11 @@ func (c *AuthServiceImpl) Login() (*LoginResult, error) {
 			Secure:   c.Cfg.CookieSecure,
 		},
 	}, nil
+}
+
+// Callback process
+func (c *AuthServiceImpl) Callback(ctx context.Context, req *CallbackRequest) (*CallbackResult, error) {
+	return nil, nil
 }
 
 // VerifyState verify oauthstate
@@ -104,57 +110,31 @@ func (c *AuthServiceImpl) VerifyState(ce echo.Context, state string) bool {
 }
 
 // VerifyUser verify and return legitimate username
-func (c *AuthServiceImpl) VerifyUser(ctx context.Context, code string) (gUser GoogleUser, err error) {
-	userInfoResp, err := c.getUserInfoFromGoogle(ctx, code)
-	if err != nil {
-		return gUser, fmt.Errorf("AuthVerifyCallback: %w", err)
-	}
-
-	err = c.validateUserInfoResp(userInfoResp)
-	if err != nil {
-		return gUser, fmt.Errorf("AuthVerifyCallback: %w", err)
-	}
-
-	return GoogleUser{Email: userInfoResp["email"].(string), Picture: userInfoResp["picture"].(string)}, nil
-}
-
-func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string) (userInfoResp googleOauth2UserInfoResp, err error) {
+func (c *AuthServiceImpl) VerifyUser(ctx context.Context, code string) (*gauthkit.UserInfo, error) {
 
 	config := c.oauthConfig()
 
 	// Use code to get token and get user info from Google.
 	token, err := config.Exchange(ctx, code)
 	if err != nil {
-		return nil, fmt.Errorf("AuthGetUserInfo: %w", err)
+		return nil, fmt.Errorf("verify-user: %w", err)
 	}
-
 	if !token.Valid() {
-		return nil, errors.New("AuthGetUserInfo: invalid token")
+		return nil, errors.New("verify-user: invalid token")
 	}
 
-	response, err := http.Get(fmt.Sprintf("https://www.googleapis.com/oauth2/v2/userinfo?access_token=%s", token.AccessToken))
+	userInfo, err := gauthkit.RetrieveUserInfo(ctx, token)
 	if err != nil {
-		return nil, fmt.Errorf("AuthGetUserInfo: %w", err)
-	}
-	defer response.Body.Close()
-
-	err = json.NewDecoder(response.Body).Decode(&userInfoResp)
-	if err != nil {
-		return nil, fmt.Errorf("AuthGetUserInfo: %w", err)
+		return nil, fmt.Errorf("verify-user: %w", err)
 	}
 
-	return userInfoResp, nil
-}
-
-func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp googleOauth2UserInfoResp) error {
-	if verifiedEmail, ok := userInfoResp["verified_email"]; !ok || !verifiedEmail.(bool) {
-		return errors.New("AuthUserInfo: invalid or empty verified_email")
+	if !userInfo.VerifiedEmail {
+		return nil, errors.New("verify-user: invalid or empty verified_email")
 	}
 
-	if c.Cfg.HostedDomain != "" {
-		if hd, ok := userInfoResp["hd"]; !ok || hd != c.Cfg.HostedDomain {
-			return errors.New("AuthUserInfo: invalid or empty hd")
-		}
+	if userInfo.Hd != c.Cfg.HostedDomain && c.Cfg.HostedDomain != "" {
+		return nil, errors.New("verify-user: invalid or empty hd")
 	}
-	return nil
+
+	return userInfo, nil
 }

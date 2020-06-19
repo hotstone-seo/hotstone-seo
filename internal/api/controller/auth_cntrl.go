@@ -8,6 +8,7 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
+	"github.com/hotstone-seo/hotstone-seo/pkg/gauthkit"
 	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
@@ -70,7 +71,7 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
 }
 
-func (c *AuthCntrl) callback(ce echo.Context, gUser oauth2google.GoogleUser) error {
+func (c *AuthCntrl) callback(ce echo.Context, gUser *gauthkit.UserInfo) error {
 	ctx := ce.Request().Context()
 	jwtClaims, err := c.AuthService.BuildJwtClaims(ctx, gUser)
 	if err != nil {

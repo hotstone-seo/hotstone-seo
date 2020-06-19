@@ -13,7 +13,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
+	"github.com/hotstone-seo/hotstone-seo/pkg/gauthkit"
 
 	"go.uber.org/dig"
 )
@@ -31,7 +31,7 @@ type (
 	// AuthService is center related logic
 	// @mock
 	AuthService interface {
-		BuildJwtClaims(ctx context.Context, gUser oauth2google.GoogleUser) (JwtClaims, error)
+		BuildJwtClaims(ctx context.Context, gUser *gauthkit.UserInfo) (JwtClaims, error)
 		GenerateJwtToken(jwtClaim JwtClaims, jwtSecret string) (string, error)
 	}
 	// AuthServiceImpl implementation of AuthService
@@ -63,7 +63,7 @@ func NewAuthService(impl AuthServiceImpl) AuthService {
 }
 
 // BuildJwtClaims build JWT claims based on given user
-func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser oauth2google.GoogleUser) (jwtClaims JwtClaims, err error) {
+func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser *gauthkit.UserInfo) (jwtClaims JwtClaims, err error) {
 	users, _ := c.UserRepo.Find(ctx, dbkit.Equal(repository.UserTable.Email, gUser.Email))
 	if len(users) < 1 {
 		return jwtClaims, fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
