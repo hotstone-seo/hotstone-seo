@@ -3,9 +3,8 @@ package service
 import (
 	"context"
 	"crypto/rand"
-	"database/sql"
 	"encoding/base64"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
@@ -31,27 +30,15 @@ type (
 	// AuthService is center related logic
 	// @mock
 	AuthService interface {
-		BuildJwtClaims(ctx context.Context, gUser *gauthkit.UserInfo) (JwtClaims, error)
-		GenerateJwtToken(jwtClaim JwtClaims, jwtSecret string) (string, error)
+		GenerateJwtToken(ctx context.Context, gUser *gauthkit.UserInfo) (string, error)
 	}
 	// AuthServiceImpl implementation of AuthService
 	AuthServiceImpl struct {
 		dig.In
-		*infra.App
+		*infra.Auth
 		UserRepo     repository.UserRepo
 		UserRoleRepo repository.UserRoleRepo
 		SettingSvc   SettingSvc
-	}
-	// JwtClaims holds JWT claims information
-	JwtClaims struct {
-		email         string
-		picture       string
-		userID        int64
-		userRole      string
-		modules       string
-		simulationKey string
-		paths         []string
-		menus         []string
 	}
 	CtxKey int
 )
@@ -62,55 +49,40 @@ func NewAuthService(impl AuthServiceImpl) AuthService {
 	return &impl
 }
 
-// BuildJwtClaims build JWT claims based on given user
-func (c *AuthServiceImpl) BuildJwtClaims(ctx context.Context, gUser *gauthkit.UserInfo) (jwtClaims JwtClaims, err error) {
+// GenerateJwtToken generates and returns JWT token with additional claims
+func (c *AuthServiceImpl) GenerateJwtToken(ctx context.Context, gUser *gauthkit.UserInfo) (string, error) {
+
 	users, _ := c.UserRepo.Find(ctx, dbkit.Equal(repository.UserTable.Email, gUser.Email))
 	if len(users) < 1 {
-		return jwtClaims, fmt.Errorf("AuthVerifyCallback check user exists : %w", err)
+		return "", errors.New("User is missing")
 	}
 
-	role, err := c.UserRoleRepo.FindOne(ctx, users[0].UserRoleID)
-	if err == sql.ErrNoRows {
-		return jwtClaims, fmt.Errorf("AuthVerifyCallback get role modules: %w", err)
+	role, _ := c.UserRoleRepo.FindOne(ctx, users[0].UserRoleID)
+	if role == nil {
+		return "", errors.New("Role is missing")
 	}
 
 	simulationKey := c.SettingSvc.GetValue(ctx, SimulationKey)
-	return JwtClaims{
-		email:         gUser.Email,
-		picture:       gUser.Picture,
-		userID:        users[0].ID,
-		userRole:      role.Name,
-		simulationKey: simulationKey,
-		menus:         role.Menus,
-		paths:         role.Paths,
-	}, nil
+
+	return c.signedKey(c.Auth.JWTSecret, map[string]interface{}{
+		"email":          gUser.Email,
+		"picture":        gUser.Picture,
+		"exp":            time.Now().Add(TokenEpiration).Unix(),
+		"user_id":        users[0].ID,
+		"user_role":      role.Name,
+		"simulation_key": simulationKey,
+		"menus":          role.Menus,
+		"paths":          role.Paths,
+	})
 }
 
-// GenerateJwtToken generates and returns JWT token with additional claims
-func (c *AuthServiceImpl) GenerateJwtToken(jwtClaim JwtClaims, jwtSecret string) (string, error) {
-
-	// Create token
+func (c *AuthServiceImpl) signedKey(key string, data map[string]interface{}) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
-
-	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
-	claims["email"] = jwtClaim.email
-	claims["picture"] = jwtClaim.picture
-	claims["exp"] = time.Now().Add(TokenEpiration).Unix()
-	claims["user_id"] = jwtClaim.userID
-	claims["user_role"] = jwtClaim.userRole
-	claims["modules"] = jwtClaim.modules
-	claims["simulation_key"] = jwtClaim.simulationKey
-	claims["menus"] = jwtClaim.menus
-	claims["paths"] = jwtClaim.paths
-
-	// Generate encoded token and send it as response.
-	t, err := token.SignedString([]byte(jwtSecret))
-	if err != nil {
-		return "", err
+	for k, v := range data {
+		claims[k] = v
 	}
-
-	return t, nil
+	return token.SignedString([]byte(c.JWTSecret))
 }
 
 func generateRandomBase64(keyLength int) string {

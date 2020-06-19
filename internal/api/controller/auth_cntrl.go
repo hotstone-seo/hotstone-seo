@@ -85,12 +85,8 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 
 func (c *AuthCntrl) callback(ce echo.Context, gUser *gauthkit.UserInfo) error {
 	ctx := ce.Request().Context()
-	jwtClaims, err := c.AuthService.BuildJwtClaims(ctx, gUser)
-	if err != nil {
-		return err
-	}
 
-	jwtToken, err := c.AuthService.GenerateJwtToken(jwtClaims, c.Auth.JWTSecret)
+	jwtToken, err := c.AuthService.GenerateJwtToken(ctx, gUser)
 	if err != nil {
 		return err
 	}
