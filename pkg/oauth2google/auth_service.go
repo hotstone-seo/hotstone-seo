@@ -32,16 +32,13 @@ type (
 	// AuthService is center related logic
 	// @mock
 	AuthService interface {
-		GenerateOauthState() string
-		SetState(ce echo.Context, state string)
+		Login() (*LoginResult, error)
 		VerifyState(ce echo.Context, state string) bool
-		GetAuthCodeURL(coauthState string) string
 		VerifyUser(ctx context.Context, code string) (GoogleUser, error)
 	}
 	// AuthServiceImpl implementation of AuthService
 	AuthServiceImpl struct {
 		dig.In
-		*oauth2.Config
 		Cfg *infra.Auth
 	}
 	googleOauth2UserInfoResp map[string]interface{}
@@ -50,33 +47,44 @@ type (
 		Email   string
 		Picture string
 	}
+	// LoginResult is result of login
+	LoginResult struct {
+		Redirect string
+		Cookie   *http.Cookie
+	}
 )
 
 // NewService return new instance of AuthGoogleService
 // @ctor
-func NewService(cfg *infra.Auth) AuthService {
-	return &AuthServiceImpl{
-		Cfg: cfg,
-		Config: &oauth2.Config{
-			RedirectURL:  cfg.Callback,
-			ClientID:     cfg.ClientID,
-			ClientSecret: cfg.ClientSecret,
-			Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-			Endpoint:     google.Endpoint,
-		},
+func NewService(impl AuthServiceImpl) AuthService {
+	return &impl
+}
+
+func (c *AuthServiceImpl) oauthConfig() *oauth2.Config {
+	return &oauth2.Config{
+		RedirectURL:  c.Cfg.Callback,
+		ClientID:     c.Cfg.ClientID,
+		ClientSecret: c.Cfg.ClientSecret,
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint:     google.Endpoint,
 	}
 }
 
-// GenerateOauthState generate oauth state
-func (c *AuthServiceImpl) GenerateOauthState() (oauthState string) {
-	return generateRandomBase64(64)
-}
+func (c *AuthServiceImpl) Login() (*LoginResult, error) {
+	b := make([]byte, 64)
+	rand.Read(b)
+	state := base64.URLEncoding.EncodeToString(b)
 
-// SetState set oauthstate to cookie
-func (c *AuthServiceImpl) SetState(ce echo.Context, state string) {
-	expire := time.Now().Add(StateExpiration)
-	cookie := &http.Cookie{Name: "oauthstate", Value: state, Expires: expire, HttpOnly: true, Secure: c.Cfg.CookieSecure}
-	ce.SetCookie(cookie)
+	return &LoginResult{
+		Redirect: c.oauthConfig().AuthCodeURL(state),
+		Cookie: &http.Cookie{
+			Name:     "oauthstate",
+			Value:    state,
+			Expires:  time.Now().Add(StateExpiration),
+			HttpOnly: true,
+			Secure:   c.Cfg.CookieSecure,
+		},
+	}, nil
 }
 
 // VerifyState verify oauthstate
@@ -95,13 +103,6 @@ func (c *AuthServiceImpl) VerifyState(ce echo.Context, state string) bool {
 	return true
 }
 
-// GetAuthCodeURL returns URL to validate and protect user from CSRF attacks
-func (c *AuthServiceImpl) GetAuthCodeURL(oauthState string) (authCodeURL string) {
-	urlAuthCode := c.AuthCodeURL(oauthState)
-
-	return urlAuthCode
-}
-
 // VerifyUser verify and return legitimate username
 func (c *AuthServiceImpl) VerifyUser(ctx context.Context, code string) (gUser GoogleUser, err error) {
 	userInfoResp, err := c.getUserInfoFromGoogle(ctx, code)
@@ -118,8 +119,11 @@ func (c *AuthServiceImpl) VerifyUser(ctx context.Context, code string) (gUser Go
 }
 
 func (c *AuthServiceImpl) getUserInfoFromGoogle(ctx context.Context, code string) (userInfoResp googleOauth2UserInfoResp, err error) {
+
+	config := c.oauthConfig()
+
 	// Use code to get token and get user info from Google.
-	token, err := c.Exchange(ctx, code)
+	token, err := config.Exchange(ctx, code)
 	if err != nil {
 		return nil, fmt.Errorf("AuthGetUserInfo: %w", err)
 	}
@@ -153,11 +157,4 @@ func (c *AuthServiceImpl) validateUserInfoResp(userInfoResp googleOauth2UserInfo
 		}
 	}
 	return nil
-}
-
-func generateRandomBase64(keyLength int) string {
-	b := make([]byte, keyLength)
-	rand.Read(b)
-
-	return base64.URLEncoding.EncodeToString(b)
 }

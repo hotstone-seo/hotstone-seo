@@ -30,12 +30,13 @@ type (
 )
 
 // Login with google auth
-func (c *AuthCntrl) Login(ce echo.Context) (err error) {
-	oauthState := c.Svc2.GenerateOauthState()
-	c.Svc2.SetState(ce, oauthState)
-
-	authCodeURL := c.Svc2.GetAuthCodeURL(oauthState)
-	return ce.Redirect(http.StatusTemporaryRedirect, authCodeURL)
+func (c *AuthCntrl) Login(ce echo.Context) error {
+	result, err := c.Svc2.Login()
+	if err != nil {
+		return err
+	}
+	ce.SetCookie(result.Cookie)
+	return ce.Redirect(http.StatusTemporaryRedirect, result.Redirect)
 }
 
 func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
