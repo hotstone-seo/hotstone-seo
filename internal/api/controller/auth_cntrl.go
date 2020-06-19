@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -17,6 +16,8 @@ import (
 var (
 	// CookieExpiration is expiration for JWT cookie
 	CookieExpiration time.Duration = 72 * time.Hour
+
+	StateExpiration time.Duration = 20 * time.Minute
 )
 
 type (
@@ -30,49 +31,46 @@ type (
 
 // Login with google auth
 func (c *AuthCntrl) Login(ce echo.Context) error {
-	result, err := c.Svc.Login()
+	loginRes, err := c.Svc.Login()
 	if err != nil {
 		return err
 	}
-	ce.SetCookie(result.Cookie)
-	return ce.Redirect(http.StatusTemporaryRedirect, result.Redirect)
+	ce.SetCookie(&http.Cookie{
+		Name:     "oauthstate",
+		Value:    loginRes.State,
+		Expires:  time.Now().Add(StateExpiration),
+		HttpOnly: true,
+		Secure:   c.Auth.CookieSecure,
+	})
+	return ce.Redirect(http.StatusTemporaryRedirect, loginRes.Redirect)
 }
 
 // Callback for google auth
 func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	ctx := ce.Request().Context()
 
-	failureURL, err := urlWithQueryParams(c.RedirectFailure, url.Values{"oauth_error": {"true"}})
-	if err != nil {
-		return fmt.Errorf("AuthCallback: %s", err.Error())
-	}
-
 	oauthState, _ := ce.Cookie("oauthstate")
 
 	callbackRes, err := c.Svc.Callback(ctx, &service.CallbackRequest{
-		OAuthState: oauthState,
-		StateParam: ce.QueryParam("state"),
-		CodeParam:  ce.QueryParam("code"),
+		OAuthState:      oauthState,
+		StateParam:      ce.QueryParam("state"),
+		CodeParam:       ce.QueryParam("code"),
+		TokenExpiration: CookieExpiration,
 	})
 	if err != nil {
 		errMsg := err.Error()
 		if strings.HasPrefix(errMsg, "callback-failed:") {
 			log.Error(errMsg)
-			return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
+			u, _ := url.Parse(c.RedirectFailure)
+			u.Query().Set("oauth_error", "true")
+			return ce.Redirect(http.StatusTemporaryRedirect, u.String())
 		}
 		return err
 	}
 
-	jwtToken := callbackRes.JWTToken
-
-	c.setCookie(ce, jwtToken, c.Auth.CookieSecure)
-
-	successURL, err := urlWithQueryParams(c.RedirectSuccess, url.Values{})
-	if err != nil {
-		log.Errorf("AuthCallback: %s", err.Error())
-		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
-	}
-	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
+	c.setCookie(ce, callbackRes.JWTToken, c.Auth.CookieSecure)
+	u, _ := url.Parse(c.RedirectSuccess)
+	return ce.Redirect(http.StatusTemporaryRedirect, u.String())
 }
 
 // Logout by invalidating cookies
@@ -104,13 +102,4 @@ func (c *AuthCntrl) setCookie(ce echo.Context, jwtToken string, secure bool) {
 		HttpOnly: false,
 		Secure:   secure,
 	})
-}
-
-func urlWithQueryParams(rawurl string, values url.Values) (s string, err error) {
-	var u *url.URL
-	if u, err = url.Parse(rawurl); err != nil {
-		return
-	}
-	u.RawQuery = values.Encode()
-	return u.String(), nil
 }

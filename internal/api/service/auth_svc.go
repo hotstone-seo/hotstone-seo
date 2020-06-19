@@ -25,13 +25,6 @@ const (
 )
 
 var (
-	// CookieExpiration is expiration for oauthstate cookie
-	CookieExpiration time.Duration = 72 * time.Hour
-
-	StateExpiration time.Duration = 20 * time.Minute
-
-	TokenEpiration time.Duration = 72 * time.Hour
-
 	// SimulationKey is HotStone client key for Simulation
 	SimulationKey string = "simulation_key"
 )
@@ -54,13 +47,14 @@ type (
 	// LoginResult is result of login
 	LoginResult struct {
 		Redirect string
-		Cookie   *http.Cookie
+		State    string
 	}
 	// CallbackRequest is request of callback
 	CallbackRequest struct {
-		OAuthState *http.Cookie
-		StateParam string
-		CodeParam  string
+		OAuthState      *http.Cookie
+		StateParam      string
+		CodeParam       string
+		TokenExpiration time.Duration
 	}
 	// CallbackResult is result of callback
 	CallbackResult struct {
@@ -93,13 +87,7 @@ func (c *AuthSvcImpl) Login() (*LoginResult, error) {
 
 	return &LoginResult{
 		Redirect: c.oauthConfig().AuthCodeURL(state),
-		Cookie: &http.Cookie{
-			Name:     "oauthstate",
-			Value:    state,
-			Expires:  time.Now().Add(StateExpiration),
-			HttpOnly: true,
-			Secure:   c.Auth.CookieSecure,
-		},
+		State:    state,
 	}, nil
 }
 
@@ -134,7 +122,7 @@ func (c *AuthSvcImpl) Callback(ctx context.Context, req *CallbackRequest) (*Call
 	jwtToken, err := c.signedKey(c.Auth.JWTSecret, map[string]interface{}{
 		"email":          userInfo.Email,
 		"picture":        userInfo.Picture,
-		"exp":            time.Now().Add(TokenEpiration).Unix(),
+		"exp":            time.Now().Add(req.TokenExpiration).Unix(),
 		"user_id":        users[0].ID,
 		"user_role":      role.Name,
 		"simulation_key": simulationKey,
