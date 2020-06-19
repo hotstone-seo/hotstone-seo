@@ -9,13 +9,11 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/typical-go/typical-go/pkg/typgo"
 )
 
 func init() {
 	typgo.Provide(
-		&typgo.Constructor{Name: "", Fn: oauth2google.NewService},
 		&typgo.Constructor{Name: "", Fn: analyt.NewClientKeyAnalytRepo},
 		&typgo.Constructor{Name: "", Fn: analyt.NewReportRepo},
 		&typgo.Constructor{Name: "", Fn: analyt.NewRuleMatchingRepo},
@@ -29,7 +27,7 @@ func init() {
 		&typgo.Constructor{Name: "", Fn: repository.NewUserRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewUserRoleRepo},
 		&typgo.Constructor{Name: "", Fn: service.NewAuditTrailSvc},
-		&typgo.Constructor{Name: "", Fn: service.NewAuthService},
+		&typgo.Constructor{Name: "", Fn: service.NewService},
 		&typgo.Constructor{Name: "", Fn: service.NewCenterService},
 		&typgo.Constructor{Name: "", Fn: service.NewClientKeyService},
 		&typgo.Constructor{Name: "", Fn: service.NewDataSourceService},

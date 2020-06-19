@@ -9,8 +9,6 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
-	"github.com/hotstone-seo/hotstone-seo/pkg/gauthkit"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
@@ -26,14 +24,13 @@ type (
 	AuthCntrl struct {
 		dig.In
 		*infra.Auth
-		service.AuthService
-		Svc2 oauth2google.AuthService
+		Svc service.AuthSvc
 	}
 )
 
 // Login with google auth
 func (c *AuthCntrl) Login(ce echo.Context) error {
-	result, err := c.Svc2.Login()
+	result, err := c.Svc.Login()
 	if err != nil {
 		return err
 	}
@@ -41,6 +38,7 @@ func (c *AuthCntrl) Login(ce echo.Context) error {
 	return ce.Redirect(http.StatusTemporaryRedirect, result.Redirect)
 }
 
+// Callback for google auth
 func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	ctx := ce.Request().Context()
 
@@ -51,9 +49,10 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 
 	oauthState, _ := ce.Cookie("oauthstate")
 
-	_, err = c.Svc2.Callback(ctx, &oauth2google.CallbackRequest{
+	callbackRes, err := c.Svc.Callback(ctx, &service.CallbackRequest{
 		OAuthState: oauthState,
 		StateParam: ce.QueryParam("state"),
+		CodeParam:  ce.QueryParam("code"),
 	})
 	if err != nil {
 		errMsg := err.Error()
@@ -64,16 +63,9 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 		return err
 	}
 
-	gUser, err := c.Svc2.VerifyUser(ctx, ce.QueryParam("code"))
-	if err != nil {
-		log.Errorf("AuthCallback verify user: %s", err.Error())
-		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
-	}
+	jwtToken := callbackRes.JWTToken
 
-	if err = c.callback(ce, gUser); err != nil {
-		log.Errorf("AuthCallback callback: %s", err.Error())
-		return ce.Redirect(http.StatusTemporaryRedirect, failureURL)
-	}
+	c.setCookie(ce, jwtToken, c.Auth.CookieSecure)
 
 	successURL, err := urlWithQueryParams(c.RedirectSuccess, url.Values{})
 	if err != nil {
@@ -83,44 +75,35 @@ func (c *AuthCntrl) Callback(ce echo.Context) (err error) {
 	return ce.Redirect(http.StatusTemporaryRedirect, successURL)
 }
 
-func (c *AuthCntrl) callback(ce echo.Context, gUser *gauthkit.UserInfo) error {
-	ctx := ce.Request().Context()
-
-	jwtToken, err := c.AuthService.GenerateJwtToken(ctx, gUser)
-	if err != nil {
-		return err
-	}
-
-	ce.SetCookie(&http.Cookie{
-		Name:     "secure_token",
-		Value:    string(jwtToken),
-		Expires:  time.Now().Add(CookieExpiration),
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   c.Auth.CookieSecure,
-	})
-
-	ce.SetCookie(&http.Cookie{
-		Name:     "token",
-		Value:    string(jwtToken),
-		Expires:  time.Now().Add(CookieExpiration),
-		Path:     "/",
-		HttpOnly: false,
-		Secure:   c.Auth.CookieSecure,
-	})
-	return nil
-}
-
 // Logout by invalidating cookies
 func (c *AuthCntrl) Logout(ce echo.Context) (err error) {
 	cleanCookie(ce)
 	return ce.Redirect(http.StatusSeeOther, c.LogoutRedirect)
 }
 
-func cleanCookie(ce echo.Context) (err error) {
+func cleanCookie(ce echo.Context) {
 	ce.SetCookie(&http.Cookie{Name: "secure_token", MaxAge: -1, Path: "/"})
 	ce.SetCookie(&http.Cookie{Name: "token", MaxAge: -1, Path: "/"})
-	return
+}
+
+func (c *AuthCntrl) setCookie(ce echo.Context, jwtToken string, secure bool) {
+	ce.SetCookie(&http.Cookie{
+		Name:     "secure_token",
+		Value:    jwtToken,
+		Expires:  time.Now().Add(CookieExpiration),
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   secure,
+	})
+
+	ce.SetCookie(&http.Cookie{
+		Name:     "token",
+		Value:    jwtToken,
+		Expires:  time.Now().Add(CookieExpiration),
+		Path:     "/",
+		HttpOnly: false,
+		Secure:   secure,
+	})
 }
 
 func urlWithQueryParams(rawurl string, values url.Values) (s string, err error) {
