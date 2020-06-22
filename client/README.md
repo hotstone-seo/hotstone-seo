@@ -40,6 +40,9 @@ import HotStone from 'hotstone-client';
 
 ## Changelog
 
+- 0.5.2
+  - `react` as peer dependency
+  - `renderHelmetTags` on `'hotstone-client/lib/react'`
 - 0.5.0
   - Support auth with client key to access HotStone service
   - Support HTTP caching
