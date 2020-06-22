@@ -6,7 +6,6 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 	"go.uber.org/dig"
@@ -28,8 +27,7 @@ type (
 		dig.In
 		repository.TagRepo
 		dbtxn.Transactional
-		AuditTrailService AuditTrailService
-		HistoryService    HistoryService
+		AuditTrail AuditTrailSvc
 	}
 )
 
@@ -69,30 +67,19 @@ func (s *TagServiceImpl) FindOne(ctx context.Context, id string) (*repository.Ta
 
 // Create creates a new Tag entity
 func (s *TagServiceImpl) Create(ctx context.Context, tag repository.Tag) (id int64, err error) {
-	defer func() {
-		if err != nil {
-			return
-		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "tags",
-				EntityID:   id,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   tag,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
 	if tag.Attributes == nil {
 		tag.Attributes = map[string]string{}
 	}
 	if err = tag.Validate(); err != nil {
 		return
 	}
-	return s.TagRepo.Insert(ctx, tag)
+	id, err = s.TagRepo.Insert(ctx, tag)
+	if err != nil {
+		return -1, err
+	}
+	tag.ID = id
+	s.AuditTrail.RecordInsert(ctx, "tags", id, tag)
+	return
 }
 
 // Update modify existing Tag entity
@@ -106,24 +93,10 @@ func (s *TagServiceImpl) Update(ctx context.Context, id string, tag repository.T
 	if err != nil {
 		return
 	}
-	defer func() {
-		if err != nil {
-			return
-		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "tags",
-				EntityID:   tagID,
-				Operation:  UpdateOp,
-				PrevData:   currentTag,
-				NextData:   tag,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
-	return s.TagRepo.Update(ctx, tag)
+	if err = s.TagRepo.Update(ctx, tag); err == nil {
+		s.AuditTrail.RecordUpdate(ctx, "tags", tag.ID, currentTag, tag)
+	}
+	return
 }
 
 // Delete tag
@@ -136,30 +109,8 @@ func (s *TagServiceImpl) Delete(ctx context.Context, id string) (err error) {
 	if err != nil {
 		return
 	}
-	defer func() {
-		if err != nil {
-			return
-		}
-		if _, histErr := s.HistoryService.RecordHistory(
-			ctx,
-			currentTag.Type+"-tag",
-			tagID,
-			currentTag,
-		); histErr != nil {
-			log.Error(histErr)
-		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "tags",
-				EntityID:   tagID,
-				Operation:  DeleteOp,
-				PrevData:   currentTag,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
-	return s.TagRepo.Delete(ctx, tagID)
+	if err = s.TagRepo.Delete(ctx, tagID); err == nil {
+		s.AuditTrail.RecordDelete(ctx, "tags", tagID, currentTag)
+	}
+	return
 }

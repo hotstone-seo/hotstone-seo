@@ -8,6 +8,7 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/internal/api/repository"
+	dbkit "github.com/typical-go/typical-rest-server/pkg/dbkit"
 	reflect "reflect"
 )
 
@@ -49,48 +50,23 @@ func (mr *MockUserRepoMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Call 
 }
 
 // Find mocks base method
-func (m *MockUserRepo) Find(arg0 context.Context, arg1 repository.PaginationParam) ([]*repository.User, error) {
+func (m *MockUserRepo) Find(arg0 context.Context, arg1 ...dbkit.SelectOption) ([]*repository.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Find", arg0, arg1)
+	varargs := []interface{}{arg0}
+	for _, a := range arg1 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Find", varargs...)
 	ret0, _ := ret[0].([]*repository.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find
-func (mr *MockUserRepoMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockUserRepoMockRecorder) Find(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockUserRepo)(nil).Find), arg0, arg1)
-}
-
-// FindOne mocks base method
-func (m *MockUserRepo) FindOne(arg0 context.Context, arg1 int64) (*repository.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindOne", arg0, arg1)
-	ret0, _ := ret[0].(*repository.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindOne indicates an expected call of FindOne
-func (mr *MockUserRepoMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockUserRepo)(nil).FindOne), arg0, arg1)
-}
-
-// FindUserByEmail mocks base method
-func (m *MockUserRepo) FindUserByEmail(arg0 context.Context, arg1 string) (*repository.User, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindUserByEmail", arg0, arg1)
-	ret0, _ := ret[0].(*repository.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindUserByEmail indicates an expected call of FindUserByEmail
-func (mr *MockUserRepoMockRecorder) FindUserByEmail(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserByEmail", reflect.TypeOf((*MockUserRepo)(nil).FindUserByEmail), arg0, arg1)
+	varargs := append([]interface{}{arg0}, arg1...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockUserRepo)(nil).Find), varargs...)
 }
 
 // Insert mocks base method

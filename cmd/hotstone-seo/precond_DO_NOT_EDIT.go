@@ -9,32 +9,28 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
 	"github.com/hotstone-seo/hotstone-seo/internal/provider"
 	"github.com/hotstone-seo/hotstone-seo/internal/urlstore"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/typical-go/typical-go/pkg/typgo"
 )
 
 func init() {
 	typgo.Provide(
-		&typgo.Constructor{Name: "", Fn: oauth2google.NewService},
 		&typgo.Constructor{Name: "", Fn: analyt.NewClientKeyAnalytRepo},
 		&typgo.Constructor{Name: "", Fn: analyt.NewReportRepo},
 		&typgo.Constructor{Name: "", Fn: analyt.NewRuleMatchingRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewAuditTrailRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewClientKeyRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewDataSourceRepo},
-		&typgo.Constructor{Name: "", Fn: repository.NewHistoryRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewRuleRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewSettingRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewStructuredDataRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewTagRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewUserRepo},
 		&typgo.Constructor{Name: "", Fn: repository.NewUserRoleRepo},
-		&typgo.Constructor{Name: "", Fn: service.NewAuditTrailService},
-		&typgo.Constructor{Name: "", Fn: service.NewAuthService},
+		&typgo.Constructor{Name: "", Fn: service.NewAuditTrailSvc},
+		&typgo.Constructor{Name: "", Fn: service.NewService},
 		&typgo.Constructor{Name: "", Fn: service.NewCenterService},
 		&typgo.Constructor{Name: "", Fn: service.NewClientKeyService},
 		&typgo.Constructor{Name: "", Fn: service.NewDataSourceService},
-		&typgo.Constructor{Name: "", Fn: service.NewHistoryService},
 		&typgo.Constructor{Name: "", Fn: service.NewMetricService},
 		&typgo.Constructor{Name: "", Fn: service.NewUserRoleSvc},
 		&typgo.Constructor{Name: "", Fn: service.NewRuleService},
@@ -89,9 +85,9 @@ func init() {
 		},
 		&typgo.Constructor{
 			Name: "",
-			Fn: func() (cfg *oauth2google.Config, err error) {
-				cfg = new(oauth2google.Config)
-				if err = typgo.ProcessConfig("OAUTH2_GOOGLE", cfg); err != nil {
+			Fn: func() (cfg *infra.Auth, err error) {
+				cfg = new(infra.Auth)
+				if err = typgo.ProcessConfig("AUTH", cfg); err != nil {
 					return nil, err
 				}
 				return

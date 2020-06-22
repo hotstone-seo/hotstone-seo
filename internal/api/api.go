@@ -2,7 +2,6 @@ package api
 
 import (
 	"github.com/hotstone-seo/hotstone-seo/internal/api/controller"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"go.uber.org/dig"
@@ -11,7 +10,8 @@ import (
 // API side
 type API struct {
 	dig.In
-	Oauth2GoogleCntrl oauth2google.AuthCntrl
+	controller.AuthMiddleware
+
 	controller.AuthCntrl
 	controller.RuleCntrl
 	controller.DataSourceCntrl
@@ -28,13 +28,13 @@ type API struct {
 
 // SetRoute for API
 func (a *API) SetRoute(e *echo.Echo) {
-	e.POST("auth/google/login", a.Oauth2GoogleCntrl.Login)
-	e.GET("auth/google/callback", a.Oauth2GoogleCntrl.Callback(a.AuthCntrl.Oauth2GoogleCallback))
+	e.POST("auth/google/login", a.AuthCntrl.Login)
+	e.GET("auth/google/callback", a.AuthCntrl.Callback)
 
 	group := e.Group("/api")
-	group.Use(a.AuthCntrl.Middleware())
-	group.Use(a.AuthCntrl.SetTokenCtxMiddleware())
-	group.Use(a.AuthCntrl.CheckAuthModules())
+	group.Use(a.AuthMiddleware.Middleware())
+	group.Use(a.AuthMiddleware.SetTokenCtxMiddleware())
+	group.Use(a.AuthMiddleware.CheckAuthModules())
 	group.Use(middleware.CORSWithConfig(middleware.DefaultCORSConfig))
 	group.Use(middleware.Recover())
 	group.POST("/logout", a.AuthCntrl.Logout)

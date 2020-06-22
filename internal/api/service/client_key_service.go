@@ -12,7 +12,6 @@ import (
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
@@ -28,15 +27,13 @@ type (
 		repository.ClientKeyRepo
 		IsValidClientKey(ctx context.Context, clientKey string) bool
 	}
-
 	// ClientKeyServiceImpl is implementation of ClientKeyService
 	ClientKeyServiceImpl struct {
 		dig.In
 		repository.ClientKeyRepo
 		analyt.ClientKeyAnalytRepo
 		dbtxn.Transactional
-		AuditTrailService AuditTrailService
-		HistoryService    HistoryService
+		AuditTrail AuditTrailSvc
 	}
 )
 
@@ -57,20 +54,8 @@ func (s *ClientKeyServiceImpl) Insert(ctx context.Context, data repository.Clien
 	if err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "client_keys",
-				EntityID:   newData.ID,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordInsert(ctx, "client_keys", newData.ID, data)
 	return
 }
 
@@ -83,20 +68,8 @@ func (s *ClientKeyServiceImpl) Update(ctx context.Context, data repository.Clien
 	if err = s.ClientKeyRepo.Update(ctx, data); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "client_keys",
-				EntityID:   data.ID,
-				Operation:  UpdateOp,
-				PrevData:   oldData,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	s.AuditTrail.RecordUpdate(ctx, "client_keys", data.ID, oldData, data)
 	return nil
 }
 
@@ -110,28 +83,7 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 		s.CancelMe(ctx, err)
 		return
 	}
-	go func() {
-		if _, histErr := s.HistoryService.RecordHistory(
-			ctx,
-			"client_keys",
-			id,
-			oldData,
-		); histErr != nil {
-			log.Error(histErr)
-		}
-		if _, auditErr := s.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "client_keys",
-				EntityID:   id,
-				Operation:  DeleteOp,
-				PrevData:   oldData,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+	s.AuditTrail.RecordDelete(ctx, "client_keys", id, oldData)
 	return nil
 }
 

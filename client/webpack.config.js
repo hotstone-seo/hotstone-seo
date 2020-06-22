@@ -4,11 +4,14 @@ const webpackNodeExternals = require('webpack-node-externals');
 module.exports = {
   target: 'node',
   mode: 'production',
-  entry: './src/index.js',
-  externals: [webpackNodeExternals()],
+  entry: {
+    'index': './src/index.js',
+    'react/index': './src/react/index.js',
+  },
+  externals: [webpackNodeExternals(), 'react'],
   output: {
     path: path.resolve(__dirname, 'lib'),
-    filename: 'hotstone-client.js',
+    filename: '[name].js',
     libraryTarget: 'umd'
   },
   module: {

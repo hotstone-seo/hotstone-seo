@@ -22,13 +22,13 @@ func TestClientKeyService_Insert(t *testing.T) {
 	ctx := context.Background()
 
 	svc := service.ClientKeyServiceImpl{
-		ClientKeyRepo:     repoMock,
-		AuditTrailService: auditSvcMock,
+		ClientKeyRepo: repoMock,
+		AuditTrail:    auditSvcMock,
 	}
 
-	newClientKey := repository.ClientKey{Name: "Foo", Prefix: "123", Key: "456"}
+	newClientKey := repository.ClientKey{ID: 999, Name: "Foo", Prefix: "123", Key: "456"}
 	repoMock.EXPECT().Insert(ctx, gomock.Any()).Return(newClientKey, nil)
-	auditSvcMock.EXPECT().RecordChanges(ctx, gomock.Any()).Return(int64(1), nil)
+	auditSvcMock.EXPECT().RecordInsert(ctx, "client_keys", int64(999), gomock.Any())
 
 	givenClientKey := repository.ClientKey{Name: "Foo"}
 	data, err := svc.Insert(ctx, givenClientKey)

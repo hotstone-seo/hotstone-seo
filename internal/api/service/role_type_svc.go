@@ -7,7 +7,6 @@ import (
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
-	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 )
 
@@ -26,8 +25,7 @@ type (
 	UserRoleSvcImpl struct {
 		dig.In
 		UserRoleRepo repository.UserRoleRepo
-		AuditTrailService
-		HistoryService
+		AuditTrail   AuditTrailSvc
 		dbtxn.Transactional
 	}
 	// UserRoleRequest is request model for UserRole related method
@@ -74,20 +72,8 @@ func (r *UserRoleSvcImpl) Insert(ctx context.Context, req UserRoleRequest) (newI
 	if data.ID, err = r.UserRoleRepo.Insert(ctx, data); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := r.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "UserRole",
-				EntityID:   data.ID,
-				Operation:  InsertOp,
-				PrevData:   nil,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	r.AuditTrail.RecordInsert(ctx, "UserRole", data.ID, data)
 	return data.ID, nil
 }
 
@@ -108,20 +94,8 @@ func (r *UserRoleSvcImpl) Update(ctx context.Context, req UserRoleRequest) (err 
 	if err = r.UserRoleRepo.Update(ctx, data); err != nil {
 		return
 	}
-	go func() {
-		if _, auditErr := r.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "UserRole",
-				EntityID:   data.ID,
-				Operation:  UpdateOp,
-				PrevData:   oldData,
-				NextData:   data,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+
+	r.AuditTrail.RecordUpdate(ctx, "UserRole", data.ID, oldData, data)
 	return nil
 }
 
@@ -135,28 +109,7 @@ func (r *UserRoleSvcImpl) Delete(ctx context.Context, id int64) (err error) {
 		r.CancelMe(ctx, err)
 		return
 	}
-	go func() {
-		if _, histErr := r.HistoryService.RecordHistory(
-			ctx,
-			"UserRole",
-			id,
-			oldData,
-		); histErr != nil {
-			log.Error(histErr)
-		}
-		if _, auditErr := r.AuditTrailService.RecordChanges(
-			ctx,
-			Record{
-				EntityName: "UserRole",
-				EntityID:   id,
-				Operation:  DeleteOp,
-				PrevData:   oldData,
-				NextData:   nil,
-			},
-		); auditErr != nil {
-			log.Error(auditErr)
-		}
-	}()
+	r.AuditTrail.RecordDelete(ctx, "UserRole", id, oldData)
 	return nil
 }
 

@@ -12,7 +12,7 @@ import (
 // AuditTrailCntrl is controller to rule entity
 type AuditTrailCntrl struct {
 	dig.In
-	service.AuditTrailService
+	service.AuditTrailSvc
 }
 
 // Route to define API Route
@@ -27,7 +27,7 @@ func (c *AuditTrailCntrl) Find(ctx echo.Context) (err error) {
 
 	validCols := []string{"id", "time", "entity_name", "entity_id", "operation", "username", "old_data", "new_data"}
 	paginationParam := repository.BuildPaginationParam(ctx.QueryParams(), validCols)
-	if listAuditTrail, err = c.AuditTrailService.Find(ctx0, paginationParam); err != nil {
+	if listAuditTrail, err = c.AuditTrailSvc.Find(ctx0, paginationParam); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return ctx.JSON(http.StatusOK, listAuditTrail)

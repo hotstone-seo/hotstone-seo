@@ -14,12 +14,22 @@ import (
 type (
 	// App config
 	App struct {
-		Address        string `default:":8089" required:"true"`
-		CookieSecure   bool   `envconfig:"COOKIE_SECURE" default:"false"`
-		JWTSecret      string `envconfig:"JWT_SECRET"`
-		LogoutRedirect string `envconfig:"LOGOUT_REDIRECT"`
-		Debug          bool   `default:"true"`
+		Address string `default:":8089" required:"true"`
+		Debug   bool   `default:"true"`
 	}
+	// Auth config
+	Auth struct {
+		JWTSecret       string `envconfig:"JWT_SECRET" require:"true"`
+		ClientID        string `envconfig:"CLIENT_ID" required:"true"`
+		ClientSecret    string `envconfig:"CLIENT_SECRET" required:"true"`
+		Callback        string `envconfig:"CALLBACK" required:"true"`
+		HostedDomain    string `envconfig:"HOSTED_DOMAIN"`
+		CookieSecure    bool   `envconfig:"COOKIE_SECURE" default:"false"`
+		RedirectSuccess string `envconfig:"REDIRECT_SUCCESS"`
+		RedirectFailure string `envconfig:"REDIRECT_FAILURE"`
+		LogoutRedirect  string `envconfig:"LOGOUT_REDIRECT" require:"true"`
+	}
+
 	// Redis Configuration
 	Redis struct {
 		Host     string `required:"true" default:"localhost"`

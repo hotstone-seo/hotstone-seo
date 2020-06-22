@@ -3,7 +3,6 @@ package typical
 import (
 	"github.com/hotstone-seo/hotstone-seo/internal/app"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
-	"github.com/hotstone-seo/hotstone-seo/pkg/oauth2google"
 	"github.com/typical-go/typical-go/pkg/typdocker"
 	"github.com/typical-go/typical-go/pkg/typgo"
 	"github.com/typical-go/typical-go/pkg/typmock"
@@ -27,7 +26,7 @@ var (
 					{Name: "REDIS", Spec: &infra.Redis{}},
 					{Name: "PG", Spec: &infra.Pg{}},
 					{Name: "ANALYT", Spec: &infra.Analyt{}},
-					{Name: "OAUTH2_GOOGLE", Spec: &oauth2google.Config{}},
+					{Name: "AUTH", Spec: &infra.Auth{}},
 				},
 			},
 		},
