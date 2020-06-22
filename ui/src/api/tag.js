@@ -18,6 +18,10 @@ function getTag(id) {
 
 function createTag(tag) {
   return client.post('/tags', tag)
+    .then((response) => {
+      const { location } = response.headers;
+      return client.get(location);
+    })
     .then((response) => response.data)
     .catch((error) => {
       throw error;
@@ -25,7 +29,8 @@ function createTag(tag) {
 }
 
 function updateTag(tag) {
-  return client.put('/tags', tag)
+  const { id } = tag;
+  return client.put(`/tags/${id}`, tag)
     .then((response) => response.data)
     .catch((error) => {
       throw error;
