@@ -28,7 +28,7 @@ type (
 		analyt.RuleMatchingRepo
 		repository.DataSourceRepo
 		repository.RuleRepo
-		service.TagService
+		repository.TagRepo
 		service.StructuredDataService
 
 		Redis *redis.Client
