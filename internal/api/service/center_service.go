@@ -11,17 +11,17 @@ import (
 // CenterService is center related logic
 // @mock
 type CenterService interface {
-	AddMetaTag(ctx context.Context, req MetaTagRequest) (*repository.Tag, error)
-	UpdateMetaTag(ctx context.Context, req MetaTagRequest) error
+	AddMetaTag(context.Context, MetaTagRequest) (*repository.Tag, error)
+	UpdateMetaTag(context.Context, string, MetaTagRequest) error
 
-	AddTitleTag(ctx context.Context, req TitleTagRequest) (*repository.Tag, error)
-	UpdateTitleTag(ctx context.Context, req TitleTagRequest) error
+	AddTitleTag(context.Context, TitleTagRequest) (*repository.Tag, error)
+	UpdateTitleTag(context.Context, string, TitleTagRequest) error
 
-	AddCanonicalTag(ctx context.Context, req CanonicalTagRequest) (*repository.Tag, error)
-	UpdateCanonicalTag(ctx context.Context, req CanonicalTagRequest) error
+	AddCanonicalTag(context.Context, CanonicalTagRequest) (*repository.Tag, error)
+	UpdateCanonicalTag(context.Context, string, CanonicalTagRequest) error
 
-	AddScriptTag(ctx context.Context, req ScriptTagRequest) (*repository.Tag, error)
-	UpdateScriptTag(ctx context.Context, req ScriptTagRequest) error
+	AddScriptTag(context.Context, ScriptTagRequest) (*repository.Tag, error)
+	UpdateScriptTag(context.Context, string, ScriptTagRequest) error
 
 	AddFAQPage(ctx context.Context, req FAQPageRequest) (*repository.StructuredData, error)
 	UpdateFAQPage(ctx context.Context, req FAQPageRequest) error
@@ -61,13 +61,13 @@ func (i *CenterServiceImpl) AddMetaTag(ctx context.Context, req MetaTagRequest) 
 		UpdatedAt: time.Now(),
 		CreatedAt: time.Now(),
 	}
-	tag.ID, err = i.TagService.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Create(ctx, *tag)
 	return
 }
 
 // UpdateMetaTag updates existing meta tag
-func (i *CenterServiceImpl) UpdateMetaTag(ctx context.Context, req MetaTagRequest) error {
-	return i.TagService.Update(ctx, repository.Tag{
+func (i *CenterServiceImpl) UpdateMetaTag(ctx context.Context, id string, req MetaTagRequest) error {
+	return i.TagService.Update(ctx, id, repository.Tag{
 		ID:     req.ID,
 		RuleID: req.RuleID,
 		Locale: req.Locale,
@@ -92,13 +92,13 @@ func (i *CenterServiceImpl) AddTitleTag(ctx context.Context, req TitleTagRequest
 		UpdatedAt:  time.Now(),
 		CreatedAt:  time.Now(),
 	}
-	tag.ID, err = i.TagService.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Create(ctx, *tag)
 	return
 }
 
 // UpdateTitleTag updates existing title tag
-func (i *CenterServiceImpl) UpdateTitleTag(ctx context.Context, req TitleTagRequest) error {
-	return i.TagService.Update(ctx, repository.Tag{
+func (i *CenterServiceImpl) UpdateTitleTag(ctx context.Context, id string, req TitleTagRequest) error {
+	return i.TagService.Update(ctx, id, repository.Tag{
 		ID:         req.ID,
 		RuleID:     req.RuleID,
 		Locale:     req.Locale,
@@ -123,13 +123,13 @@ func (i *CenterServiceImpl) AddCanonicalTag(ctx context.Context, req CanonicalTa
 		UpdatedAt: time.Now(),
 		CreatedAt: time.Now(),
 	}
-	tag.ID, err = i.TagService.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Create(ctx, *tag)
 	return
 }
 
 // UpdateCanonicalTag updates existing canonical tag
-func (i *CenterServiceImpl) UpdateCanonicalTag(ctx context.Context, req CanonicalTagRequest) error {
-	return i.TagService.Update(ctx, repository.Tag{
+func (i *CenterServiceImpl) UpdateCanonicalTag(ctx context.Context, id string, req CanonicalTagRequest) error {
+	return i.TagService.Update(ctx, id, repository.Tag{
 		ID:     req.ID,
 		RuleID: req.RuleID,
 		Locale: req.Locale,
@@ -156,13 +156,13 @@ func (i *CenterServiceImpl) AddScriptTag(ctx context.Context, req ScriptTagReque
 		UpdatedAt: time.Now(),
 		CreatedAt: time.Now(),
 	}
-	tag.ID, err = i.TagService.Insert(ctx, *tag)
+	tag.ID, err = i.TagService.Create(ctx, *tag)
 	return
 }
 
 // UpdateScriptTag updates existing script tag
-func (i *CenterServiceImpl) UpdateScriptTag(ctx context.Context, req ScriptTagRequest) error {
-	return i.TagService.Update(ctx, repository.Tag{
+func (i *CenterServiceImpl) UpdateScriptTag(ctx context.Context, id string, req ScriptTagRequest) error {
+	return i.TagService.Update(ctx, id, repository.Tag{
 		ID:     req.ID,
 		RuleID: req.RuleID,
 		Locale: req.Locale,
