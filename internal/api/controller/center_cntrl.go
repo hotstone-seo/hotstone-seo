@@ -18,17 +18,17 @@ type CenterCntrl struct {
 
 // Route to define API Route
 func (c *CenterCntrl) Route(e *echo.Group) {
-	e.POST("/center/metaTag", c.AddMetaTag)
-	e.PUT("/center/metaTag", c.UpdateMetaTag)
+	e.POST("/center/meta-tag", c.CreateMetaTag)
+	e.PUT("/center/meta-tag/:id", c.UpdateMetaTag)
 
-	e.POST("/center/titleTag", c.AddTitleTag)
-	e.PUT("/center/titleTag", c.UpdateTitleTag)
+	e.POST("/center/title-tag", c.AddTitleTag)
+	e.PUT("/center/title-tag/:id", c.UpdateTitleTag)
 
-	e.POST("/center/canonicalTag", c.AddCanonicalTag)
-	e.PUT("/center/canonicalTag", c.UpdateCanonicalTag)
+	e.POST("/center/canonical-tag", c.AddCanonicalTag)
+	e.PUT("/center/canonical-tag/:id", c.UpdateCanonicalTag)
 
-	e.POST("/center/scriptTag", c.AddScriptTag)
-	e.PUT("/center/scriptTag", c.UpdateScriptTag)
+	e.POST("/center/script-tag", c.AddScriptTag)
+	e.PUT("/center/script-tag/:id", c.UpdateScriptTag)
 
 	e.POST("/center/faq-page", c.AddFAQPage)
 	e.PUT("/center/faq-page", c.UpdateFAQPage)
@@ -42,148 +42,128 @@ func (c *CenterCntrl) Route(e *echo.Group) {
 	e.POST("/center/addArticle", c.AddArticle)
 }
 
-// AddMetaTag provides endpoint to add meta tag
-func (c *CenterCntrl) AddMetaTag(ce echo.Context) (err error) {
+// CreateMetaTag adds a new meta tag entity
+func (c *CenterCntrl) CreateMetaTag(ctx echo.Context) (err error) {
 	var (
 		req service.MetaTagRequest
 		tag *repository.Tag
-		ctx = ce.Request().Context()
 	)
-	if err = ce.Bind(&req); err != nil {
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if tag, err = c.CenterService.AddMetaTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	if tag, err = c.CenterService.AddMetaTag(ctx.Request().Context(), req); err != nil {
+		return httpError(err)
 	}
-	return ce.JSON(http.StatusCreated, tag)
+	return ctx.JSON(http.StatusCreated, tag)
 }
 
-// UpdateMetaTag provides endpoint to update meta tag
-func (c *CenterCntrl) UpdateMetaTag(ce echo.Context) (err error) {
-	var (
-		req service.MetaTagRequest
-		ctx = ce.Request().Context()
-	)
-	if err = ce.Bind(&req); err != nil {
+// UpdateMetaTag modifies an existing meta tag entity
+func (c *CenterCntrl) UpdateMetaTag(ctx echo.Context) (err error) {
+	var req service.MetaTagRequest
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if req.ID <= 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	if err = c.CenterService.UpdateMetaTag(
+		ctx.Request().Context(),
+		ctx.Param("id"),
+		req,
+	); err != nil {
+		return httpError(err)
 	}
-	if err = c.CenterService.UpdateMetaTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-	return ce.JSON(http.StatusOK, GeneralResponse{
-		Message: fmt.Sprintf("Successfully update meta tag #%d", req.ID),
-	})
+	return ctx.NoContent(http.StatusOK)
 }
 
-// AddTitleTag provides endpoint to add title tag
-func (c *CenterCntrl) AddTitleTag(ce echo.Context) (err error) {
+// AddTitleTag adds a new title tag entity
+func (c *CenterCntrl) AddTitleTag(ctx echo.Context) (err error) {
 	var (
 		req service.TitleTagRequest
 		tag *repository.Tag
-		ctx = ce.Request().Context()
 	)
-	if err = ce.Bind(&req); err != nil {
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if tag, err = c.CenterService.AddTitleTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	if tag, err = c.CenterService.AddTitleTag(ctx.Request().Context(), req); err != nil {
+		return httpError(err)
 	}
-	return ce.JSON(http.StatusCreated, tag)
+	return ctx.JSON(http.StatusCreated, tag)
 }
 
-// UpdateTitleTag provides endpoint to update title tag
-func (c *CenterCntrl) UpdateTitleTag(ce echo.Context) (err error) {
-	var (
-		req service.TitleTagRequest
-		ctx = ce.Request().Context()
-	)
-	if err = ce.Bind(&req); err != nil {
+// UpdateTitleTag modifies an existing title tag entity
+func (c *CenterCntrl) UpdateTitleTag(ctx echo.Context) (err error) {
+	var req service.TitleTagRequest
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if req.ID <= 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	if err = c.CenterService.UpdateTitleTag(
+		ctx.Request().Context(),
+		ctx.Param("id"),
+		req,
+	); err != nil {
+		return httpError(err)
 	}
-	if err = c.CenterService.UpdateTitleTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-	return ce.JSON(http.StatusOK, GeneralResponse{
-		Message: fmt.Sprintf("Successfully update title tag #%d", req.ID),
-	})
+	return ctx.NoContent(http.StatusOK)
 }
 
-// AddCanonicalTag provides endpoint to add canonical tag
-func (c *CenterCntrl) AddCanonicalTag(ce echo.Context) (err error) {
+// AddCanonicalTag adds a new canonical tag entity
+func (c *CenterCntrl) AddCanonicalTag(ctx echo.Context) (err error) {
 	var (
 		req service.CanonicalTagRequest
 		tag *repository.Tag
-		ctx = ce.Request().Context()
 	)
-	if err = ce.Bind(&req); err != nil {
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if tag, err = c.CenterService.AddCanonicalTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	if tag, err = c.CenterService.AddCanonicalTag(ctx.Request().Context(), req); err != nil {
+		return httpError(err)
 	}
-	return ce.JSON(http.StatusCreated, tag)
+	return ctx.JSON(http.StatusCreated, tag)
 }
 
-// UpdateCanonicalTag provides endpoint to update canonical tag
-func (c *CenterCntrl) UpdateCanonicalTag(ce echo.Context) (err error) {
-	var (
-		req service.CanonicalTagRequest
-		ctx = ce.Request().Context()
-	)
-	if err = ce.Bind(&req); err != nil {
+// UpdateCanonicalTag modifies an existing canonical tag entity
+func (c *CenterCntrl) UpdateCanonicalTag(ctx echo.Context) (err error) {
+	var req service.CanonicalTagRequest
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if req.ID <= 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	if err = c.CenterService.UpdateCanonicalTag(
+		ctx.Request().Context(),
+		ctx.Param("id"),
+		req,
+	); err != nil {
+		return httpError(err)
 	}
-	if err = c.CenterService.UpdateCanonicalTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-	return ce.JSON(http.StatusOK, GeneralResponse{
-		Message: fmt.Sprintf("Successfully update canonical tag #%d", req.ID),
-	})
+	return ctx.NoContent(http.StatusOK)
 }
 
-// AddScriptTag provides endpoint to add script tag
-func (c *CenterCntrl) AddScriptTag(ce echo.Context) (err error) {
+// AddScriptTag adds a new script tag entity
+func (c *CenterCntrl) AddScriptTag(ctx echo.Context) (err error) {
 	var (
 		req service.ScriptTagRequest
 		tag *repository.Tag
-		ctx = ce.Request().Context()
 	)
-	if err = ce.Bind(&req); err != nil {
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if tag, err = c.CenterService.AddScriptTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
+	if tag, err = c.CenterService.AddScriptTag(ctx.Request().Context(), req); err != nil {
+		return httpError(err)
 	}
-	return ce.JSON(http.StatusCreated, tag)
+	return ctx.JSON(http.StatusCreated, tag)
 }
 
-// UpdateScriptTag provides endpoint to update script tag
-func (c *CenterCntrl) UpdateScriptTag(ce echo.Context) (err error) {
-	var (
-		req service.ScriptTagRequest
-		ctx = ce.Request().Context()
-	)
-	if err = ce.Bind(&req); err != nil {
+// UpdateScriptTag modifies an existing script tag entity
+func (c *CenterCntrl) UpdateScriptTag(ctx echo.Context) (err error) {
+	var req service.ScriptTagRequest
+	if err = ctx.Bind(&req); err != nil {
 		return
 	}
-	if req.ID <= 0 {
-		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
+	if err = c.CenterService.UpdateScriptTag(
+		ctx.Request().Context(),
+		ctx.Param("id"),
+		req,
+	); err != nil {
+		return httpError(err)
 	}
-	if err = c.CenterService.UpdateScriptTag(ctx, req); err != nil {
-		return echo.NewHTTPError(http.StatusUnprocessableEntity, err.Error())
-	}
-	return ce.JSON(http.StatusOK, GeneralResponse{
-		Message: fmt.Sprintf("Successfully update script tag #%d", req.ID),
-	})
+	return ctx.NoContent(http.StatusOK)
 }
 
 // AddFAQPage provides endpoint to add FAQPage structured data
