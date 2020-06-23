@@ -32,7 +32,7 @@ type (
 )
 
 // NewTagService returns new instance of TagService
-// @constructor
+// @ctor
 func NewTagService(impl TagServiceImpl) TagService {
 	return &impl
 }
@@ -99,7 +99,7 @@ func (s *TagServiceImpl) Update(ctx context.Context, id string, tag repository.T
 	return
 }
 
-// Delete tag
+// Delete removes an existing tag
 func (s *TagServiceImpl) Delete(ctx context.Context, id string) (err error) {
 	tagID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
