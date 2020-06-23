@@ -8,7 +8,6 @@ import (
 	context "context"
 	gomock "github.com/golang/mock/gomock"
 	repository "github.com/hotstone-seo/hotstone-seo/internal/api/repository"
-	dbkit "github.com/typical-go/typical-rest-server/pkg/dbkit"
 	reflect "reflect"
 )
 
@@ -35,8 +34,23 @@ func (m *MockTagService) EXPECT() *MockTagServiceMockRecorder {
 	return m.recorder
 }
 
+// Create mocks base method
+func (m *MockTagService) Create(arg0 context.Context, arg1 repository.Tag) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Create indicates an expected call of Create
+func (mr *MockTagServiceMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTagService)(nil).Create), arg0, arg1)
+}
+
 // Delete mocks base method
-func (m *MockTagService) Delete(arg0 context.Context, arg1 int64) error {
+func (m *MockTagService) Delete(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -50,42 +64,22 @@ func (mr *MockTagServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Cal
 }
 
 // Find mocks base method
-func (m *MockTagService) Find(arg0 context.Context, arg1 ...dbkit.SelectOption) ([]*repository.Tag, error) {
+func (m *MockTagService) Find(arg0 context.Context, arg1 map[string][]string) ([]*repository.Tag, error) {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{arg0}
-	for _, a := range arg1 {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Find", varargs...)
+	ret := m.ctrl.Call(m, "Find", arg0, arg1)
 	ret0, _ := ret[0].([]*repository.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Find indicates an expected call of Find
-func (mr *MockTagServiceMockRecorder) Find(arg0 interface{}, arg1 ...interface{}) *gomock.Call {
+func (mr *MockTagServiceMockRecorder) Find(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{arg0}, arg1...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagService)(nil).Find), varargs...)
-}
-
-// FindByRuleAndLocale mocks base method
-func (m *MockTagService) FindByRuleAndLocale(arg0 context.Context, arg1 int64, arg2 string) ([]*repository.Tag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindByRuleAndLocale", arg0, arg1, arg2)
-	ret0, _ := ret[0].([]*repository.Tag)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// FindByRuleAndLocale indicates an expected call of FindByRuleAndLocale
-func (mr *MockTagServiceMockRecorder) FindByRuleAndLocale(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByRuleAndLocale", reflect.TypeOf((*MockTagService)(nil).FindByRuleAndLocale), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockTagService)(nil).Find), arg0, arg1)
 }
 
 // FindOne mocks base method
-func (m *MockTagService) FindOne(arg0 context.Context, arg1 int64) (*repository.Tag, error) {
+func (m *MockTagService) FindOne(arg0 context.Context, arg1 string) (*repository.Tag, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindOne", arg0, arg1)
 	ret0, _ := ret[0].(*repository.Tag)
@@ -99,31 +93,16 @@ func (mr *MockTagServiceMockRecorder) FindOne(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockTagService)(nil).FindOne), arg0, arg1)
 }
 
-// Insert mocks base method
-func (m *MockTagService) Insert(arg0 context.Context, arg1 repository.Tag) (int64, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Insert", arg0, arg1)
-	ret0, _ := ret[0].(int64)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Insert indicates an expected call of Insert
-func (mr *MockTagServiceMockRecorder) Insert(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockTagService)(nil).Insert), arg0, arg1)
-}
-
 // Update mocks base method
-func (m *MockTagService) Update(arg0 context.Context, arg1 repository.Tag) error {
+func (m *MockTagService) Update(arg0 context.Context, arg1 string, arg2 repository.Tag) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret := m.ctrl.Call(m, "Update", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update
-func (mr *MockTagServiceMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockTagServiceMockRecorder) Update(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTagService)(nil).Update), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTagService)(nil).Update), arg0, arg1, arg2)
 }

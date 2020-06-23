@@ -155,17 +155,17 @@ func (mr *MockCenterServiceMockRecorder) UpdateBreadcrumbList(arg0, arg1 interfa
 }
 
 // UpdateCanonicalTag mocks base method
-func (m *MockCenterService) UpdateCanonicalTag(arg0 context.Context, arg1 service.CanonicalTagRequest) error {
+func (m *MockCenterService) UpdateCanonicalTag(arg0 context.Context, arg1 string, arg2 service.CanonicalTagRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateCanonicalTag", arg0, arg1)
+	ret := m.ctrl.Call(m, "UpdateCanonicalTag", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateCanonicalTag indicates an expected call of UpdateCanonicalTag
-func (mr *MockCenterServiceMockRecorder) UpdateCanonicalTag(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) UpdateCanonicalTag(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).UpdateCanonicalTag), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCanonicalTag", reflect.TypeOf((*MockCenterService)(nil).UpdateCanonicalTag), arg0, arg1, arg2)
 }
 
 // UpdateFAQPage mocks base method
@@ -197,43 +197,43 @@ func (mr *MockCenterServiceMockRecorder) UpdateLocalBusiness(arg0, arg1 interfac
 }
 
 // UpdateMetaTag mocks base method
-func (m *MockCenterService) UpdateMetaTag(arg0 context.Context, arg1 service.MetaTagRequest) error {
+func (m *MockCenterService) UpdateMetaTag(arg0 context.Context, arg1 string, arg2 service.MetaTagRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateMetaTag", arg0, arg1)
+	ret := m.ctrl.Call(m, "UpdateMetaTag", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateMetaTag indicates an expected call of UpdateMetaTag
-func (mr *MockCenterServiceMockRecorder) UpdateMetaTag(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) UpdateMetaTag(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMetaTag", reflect.TypeOf((*MockCenterService)(nil).UpdateMetaTag), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMetaTag", reflect.TypeOf((*MockCenterService)(nil).UpdateMetaTag), arg0, arg1, arg2)
 }
 
 // UpdateScriptTag mocks base method
-func (m *MockCenterService) UpdateScriptTag(arg0 context.Context, arg1 service.ScriptTagRequest) error {
+func (m *MockCenterService) UpdateScriptTag(arg0 context.Context, arg1 string, arg2 service.ScriptTagRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateScriptTag", arg0, arg1)
+	ret := m.ctrl.Call(m, "UpdateScriptTag", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateScriptTag indicates an expected call of UpdateScriptTag
-func (mr *MockCenterServiceMockRecorder) UpdateScriptTag(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) UpdateScriptTag(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateScriptTag", reflect.TypeOf((*MockCenterService)(nil).UpdateScriptTag), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateScriptTag", reflect.TypeOf((*MockCenterService)(nil).UpdateScriptTag), arg0, arg1, arg2)
 }
 
 // UpdateTitleTag mocks base method
-func (m *MockCenterService) UpdateTitleTag(arg0 context.Context, arg1 service.TitleTagRequest) error {
+func (m *MockCenterService) UpdateTitleTag(arg0 context.Context, arg1 string, arg2 service.TitleTagRequest) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateTitleTag", arg0, arg1)
+	ret := m.ctrl.Call(m, "UpdateTitleTag", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateTitleTag indicates an expected call of UpdateTitleTag
-func (mr *MockCenterServiceMockRecorder) UpdateTitleTag(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockCenterServiceMockRecorder) UpdateTitleTag(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTitleTag", reflect.TypeOf((*MockCenterService)(nil).UpdateTitleTag), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTitleTag", reflect.TypeOf((*MockCenterService)(nil).UpdateTitleTag), arg0, arg1, arg2)
 }
