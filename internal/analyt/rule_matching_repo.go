@@ -40,15 +40,19 @@ func NewRuleMatchingRepo(impl RuleMatchingRepoImpl) RuleMatchingRepo {
 
 // Insert metrics_rule_matching
 func (r *RuleMatchingRepoImpl) Insert(ctx context.Context, e RuleMatching) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.
 		Insert("metrics_rule_matching").
 		Columns("is_matched", "url", "rule_id").
 		Values(e.IsMatched, e.URL, e.RuleID).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(r)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	return

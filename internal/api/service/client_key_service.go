@@ -11,7 +11,6 @@ import (
 	"github.com/dchest/uniuri"
 	"github.com/hotstone-seo/hotstone-seo/internal/analyt"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
@@ -32,7 +31,6 @@ type (
 		dig.In
 		repository.ClientKeyRepo
 		analyt.ClientKeyAnalytRepo
-		dbtxn.Transactional
 		AuditTrail AuditTrailSvc
 	}
 )
@@ -80,7 +78,6 @@ func (s *ClientKeyServiceImpl) Delete(ctx context.Context, id int64) (err error)
 		return
 	}
 	if err = s.ClientKeyRepo.Delete(ctx, id); err != nil {
-		s.CancelMe(ctx, err)
 		return
 	}
 	s.AuditTrail.RecordDelete(ctx, "client_keys", id, oldData)

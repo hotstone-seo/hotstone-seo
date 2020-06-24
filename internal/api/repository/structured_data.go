@@ -59,7 +59,7 @@ func (r *StructuredDataRepoImpl) FindOne(ctx context.Context, id int64) (e *Stru
 		From("structured_datas").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r)).
+		RunWith(r).
 		QueryRowContext(ctx)
 
 	e = new(StructuredData)
@@ -71,7 +71,6 @@ func (r *StructuredDataRepoImpl) FindOne(ctx context.Context, id int64) (e *Stru
 		&e.UpdatedAt,
 		&e.CreatedAt,
 	); err != nil {
-		dbtxn.SetError(ctx, err)
 		return nil, err
 	}
 	return
@@ -91,17 +90,15 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectO
 		).
 		From("structured_datas").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(r)
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileSelect(builder); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 	}
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -117,7 +114,6 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectO
 			&e.UpdatedAt,
 			&e.CreatedAt,
 		); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, &e)
@@ -126,7 +122,11 @@ func (r *StructuredDataRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectO
 }
 
 // Insert creates a new Structured Data in database, returning its ID if success
-func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (lastInsertID int64, err error) {
+func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (int64, error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return -1, err
+	}
 	builder := sq.
 		Insert("structured_datas").
 		Columns(
@@ -137,32 +137,39 @@ func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (
 		Values(e.RuleID, e.Type, e.Data).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
-		dbtxn.SetError(ctx, err)
-		return
+		txn.SetError(err)
+		return -1, err
 	}
-	lastInsertID = e.ID
-	return
+	return e.ID, nil
 }
 
 // Delete removes a Structured Data entry from database
 func (r *StructuredDataRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.
 		Delete("structured_datas").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 	}
 	return
 }
 
 // Update modifies existing Structured Data fields in the database
 func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.
 		Update("structured_datas").
 		Set("rule_id", e.RuleID).
@@ -171,10 +178,10 @@ func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	return

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
@@ -17,7 +16,6 @@ type (
 	// DataSourceServiceImpl is implementation of DataSourceService
 	DataSourceServiceImpl struct {
 		dig.In
-		dbtxn.Transactional
 		repository.DataSourceRepo
 		AuditTrail AuditTrailSvc
 	}

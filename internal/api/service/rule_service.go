@@ -28,7 +28,6 @@ type (
 		RuleRepo   repository.RuleRepo
 		SyncRepo   urlstore.SyncRepo
 		AuditTrail AuditTrailSvc
-		dbtxn.Transactional
 	}
 )
 
@@ -61,30 +60,25 @@ func (r *RuleServiceImpl) Insert(ctx context.Context, rule repository.Rule) (int
 
 // Update replaces the values of an existing Rule in the persistent storage by a new Rule
 func (r *RuleServiceImpl) Update(ctx context.Context, rule repository.Rule) (err error) {
-	defer r.BeginTxn(&ctx)()
-	var (
-		Sync *urlstore.Sync
-	)
+	defer dbtxn.Begin(&ctx)()
+
 	oldRule, err := r.RuleRepo.FindOne(ctx, rule.ID)
 	if err != nil {
-		r.CancelMe(ctx, err)
 		return
 	}
 	if err = r.RuleRepo.Update(ctx, rule); err != nil {
-		r.CancelMe(ctx, err)
 		return
 	}
-	if Sync, err = r.SyncRepo.FindRule(ctx, rule.ID); err != nil {
-		r.CancelMe(ctx, err)
+	sync, err := r.SyncRepo.FindRule(ctx, rule.ID)
+	if err != nil {
 		return
 	}
-	if syncOP := syncOperation(rule, Sync); syncOP != "" {
+	if syncOP := syncOperation(rule, sync); syncOP != "" {
 		if _, err = r.SyncRepo.Insert(ctx, urlstore.Sync{
 			Operation:        syncOP,
 			RuleID:           rule.ID,
 			LatestURLPattern: &rule.URLPattern,
 		}); err != nil {
-			r.CancelMe(ctx, err)
 			return
 		}
 	}
@@ -116,14 +110,12 @@ func (r *RuleServiceImpl) Patch(ctx context.Context, ruleID int64, fields map[st
 
 // Delete removes the Rule entry from persistent storage configured for the service
 func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
-	defer r.BeginTxn(&ctx)()
+	defer dbtxn.Begin(&ctx)()
 	oldRule, err := r.RuleRepo.FindOne(ctx, id)
 	if err != nil {
-		r.CancelMe(ctx, err)
 		return
 	}
 	if err = r.RuleRepo.Delete(ctx, id); err != nil {
-		r.CancelMe(ctx, err)
 		return
 	}
 	if _, err = r.SyncRepo.Insert(ctx, urlstore.Sync{
@@ -131,7 +123,6 @@ func (r *RuleServiceImpl) Delete(ctx context.Context, id int64) (err error) {
 		RuleID:           id,
 		LatestURLPattern: nil,
 	}); err != nil {
-		r.CancelMe(ctx, err)
 		return
 	}
 	r.AuditTrail.RecordDelete(ctx, "rules", id, oldRule)

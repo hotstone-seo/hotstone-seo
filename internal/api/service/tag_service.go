@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
 	"go.uber.org/dig"
 )
@@ -21,7 +20,6 @@ type (
 	TagServiceImpl struct {
 		dig.In
 		repository.TagRepo
-		dbtxn.Transactional
 		AuditTrail AuditTrailSvc
 	}
 )

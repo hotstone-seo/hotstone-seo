@@ -62,7 +62,7 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 		From("tags").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r)).
+		RunWith(r).
 		QueryRowContext(ctx)
 
 	e = new(Tag)
@@ -76,7 +76,6 @@ func (r *TagRepoImpl) FindOne(ctx context.Context, id int64) (e *Tag, err error)
 		&e.UpdatedAt,
 		&e.CreatedAt,
 	); err != nil {
-		dbtxn.SetError(ctx, err)
 		return nil, err
 	}
 
@@ -99,17 +98,15 @@ func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (lis
 		).
 		From("tags").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(r)
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileSelect(builder); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 	}
 
 	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -127,7 +124,6 @@ func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (lis
 			&e.UpdatedAt,
 			&e.CreatedAt,
 		); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, &e)
@@ -136,7 +132,11 @@ func (r *TagRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (lis
 }
 
 // Insert tag
-func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, err error) {
+func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (int64, error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return -1, err
+	}
 	builder := sq.
 		Insert("tags").
 		Columns(
@@ -149,31 +149,40 @@ func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (lastInsertID int64, er
 		Values(e.RuleID, e.Locale, e.Type, e.Attributes, e.Value).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
+	var lastInsertID int64
 	if err = builder.QueryRowContext(ctx).Scan(&lastInsertID); err != nil {
-		dbtxn.SetError(ctx, err)
-		return
+		txn.SetError(err)
+		return -1, err
 	}
-	return
+	return lastInsertID, nil
 }
 
 // Delete tag
 func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.
 		Delete("tags").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 	}
 	return
 }
 
 // Update tag
 func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	if e.Attributes == nil {
 		e.Attributes = map[string]string{}
 	}
@@ -188,10 +197,10 @@ func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	return

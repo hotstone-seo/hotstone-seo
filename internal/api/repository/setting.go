@@ -66,7 +66,7 @@ func (s *SettingRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) 
 		).
 		From(SettingTable).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, s))
+		RunWith(s)
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileSelect(builder); err != nil {
@@ -76,7 +76,6 @@ func (s *SettingRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) 
 
 	rows, err := builder.QueryContext(ctx)
 	if err != nil {
-		dbtxn.SetError(ctx, err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -90,7 +89,6 @@ func (s *SettingRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) 
 			&setting.Value,
 			&setting.UpdatedAt,
 		); err != nil {
-			dbtxn.SetError(ctx, err)
 			return nil, err
 		}
 		settings = append(settings, &setting)
@@ -101,21 +99,25 @@ func (s *SettingRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) 
 
 // Update setting
 func (s *SettingRepoImpl) Update(ctx context.Context, setting *Setting, opt dbkit.UpdateOption) (err error) {
+	txn, err := dbtxn.Use(ctx, s.DB)
+	if err != nil {
+		return
+	}
 	builder := sq.
 		Update(SettingTable).
 		Set(SettingCols.Value, setting.Value).
 		Set(SettingCols.UpdatedAt, time.Now()).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, s))
+		RunWith(txn.DB())
 
 	if builder, err = opt.CompileUpdate(builder); err != nil {
+		txn.SetError(err)
 		return
 	}
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
-
 	return
 }

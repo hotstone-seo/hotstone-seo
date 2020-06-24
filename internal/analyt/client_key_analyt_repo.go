@@ -38,10 +38,9 @@ func (r *ClientKeyAnalytRepoImpl) ClientKeyLastUsed(ctx context.Context, clientK
 		From("metrics_client_key").
 		Where(sq.Eq{"client_key_id": clientKeyID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(r)
 
 	if err = builder.QueryRowContext(ctx).Scan(&lastTimeUsed); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	return
@@ -49,15 +48,19 @@ func (r *ClientKeyAnalytRepoImpl) ClientKeyLastUsed(ctx context.Context, clientK
 
 // Insert metrics_client_key
 func (r *ClientKeyAnalytRepoImpl) Insert(ctx context.Context, clientKeyID int64) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.
 		Insert("metrics_client_key").
 		Columns("client_key_id").
 		Values(clientKeyID).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	return

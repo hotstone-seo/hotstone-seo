@@ -6,7 +6,6 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
@@ -60,7 +59,6 @@ func (r *AuditTrailRepoImpl) Find(ctx context.Context, paginationParam Paginatio
 		RunWith(r)
 
 	if rows, err = ComposePagination(builder, paginationParam).QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -69,7 +67,6 @@ func (r *AuditTrailRepoImpl) Find(ctx context.Context, paginationParam Paginatio
 	for rows.Next() {
 		var rule *AuditTrail
 		if rule, err = scanAuditTrail(rows); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, rule)
@@ -93,7 +90,6 @@ func (r *AuditTrailRepoImpl) Insert(ctx context.Context, m AuditTrail) (lastInse
 		RunWith(r).
 		PlaceholderFormat(sq.Dollar)
 	if err = query.QueryRowContext(ctx).Scan(&m.ID); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	lastInsertID = m.ID

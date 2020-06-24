@@ -79,7 +79,7 @@ func (r *UserRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (li
 		).
 		From(UserTableName).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(r.DB)
 
 	for _, opt := range opts {
 		if builder, err = opt.CompileSelect(builder); err != nil {
@@ -89,7 +89,6 @@ func (r *UserRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (li
 
 	rows, err := builder.QueryContext(ctx)
 	if err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -104,7 +103,6 @@ func (r *UserRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (li
 			&user.UpdatedAt,
 			&user.CreatedAt,
 		); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, user)
@@ -114,6 +112,10 @@ func (r *UserRepoImpl) Find(ctx context.Context, opts ...dbkit.SelectOption) (li
 
 // Insert user
 func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int64, err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return -1, err
+	}
 	query := sq.
 		Insert(UserTableName).
 		Columns(
@@ -125,12 +127,12 @@ func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int6
 			user.Email,
 		).
 		Suffix(fmt.Sprintf("RETURNING \"%s\"", UserTable.ID)).
-		RunWith(dbtxn.DB(ctx, r)).
+		RunWith(txn.DB()).
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
 
 	if err = query.Scan(&user.ID); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 
@@ -140,14 +142,18 @@ func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int6
 
 // Delete user
 func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.StatementBuilder.
 		Delete(UserTableName).
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	return
@@ -155,6 +161,10 @@ func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 
 // Update user
 func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.StatementBuilder.
 		Update(UserTableName).
 		Set(UserTable.UserRoleID, user.UserRoleID).
@@ -164,10 +174,10 @@ func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 			sq.Eq{UserTable.ID: user.ID},
 		).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 	}
 	return
 }

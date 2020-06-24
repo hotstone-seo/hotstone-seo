@@ -68,9 +68,9 @@ func (r *UserRoleRepoImpl) FindOne(ctx context.Context, id int64) (e *UserRole, 
 		).
 		From(UserRoleTable).
 		Where(sq.Eq{"id": id}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
+		PlaceholderFormat(sq.Dollar).
+		RunWith(r)
 	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -84,7 +84,6 @@ func (r *UserRoleRepoImpl) FindOne(ctx context.Context, id int64) (e *UserRole, 
 			&e.UpdatedAt,
 			&e.CreatedAt,
 		); err != nil {
-			dbtxn.SetError(ctx, err)
 			return nil, err
 		}
 	}
@@ -105,9 +104,8 @@ func (r *UserRoleRepoImpl) Find(ctx context.Context) (list []*UserRole, err erro
 		).
 		From(UserRoleTable).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(r)
 	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -122,7 +120,6 @@ func (r *UserRoleRepoImpl) Find(ctx context.Context) (list []*UserRole, err erro
 			&e.UpdatedAt,
 			&e.CreatedAt,
 		); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, &e)
@@ -132,7 +129,10 @@ func (r *UserRoleRepoImpl) Find(ctx context.Context) (list []*UserRole, err erro
 
 // Insert role_type
 func (r *UserRoleRepoImpl) Insert(ctx context.Context, e UserRole) (lastInsertID int64, err error) {
-
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return -1, err
+	}
 	builder := sq.
 		Insert(UserRoleTable).
 		Columns(
@@ -147,10 +147,10 @@ func (r *UserRoleRepoImpl) Insert(ctx context.Context, e UserRole) (lastInsertID
 		).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	lastInsertID = e.ID
@@ -159,6 +159,10 @@ func (r *UserRoleRepoImpl) Insert(ctx context.Context, e UserRole) (lastInsertID
 
 // Update role_type
 func (r *UserRoleRepoImpl) Update(ctx context.Context, e UserRole) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.
 		Update(UserRoleTable).
 		Set("name", e.Name).
@@ -167,10 +171,10 @@ func (r *UserRoleRepoImpl) Update(ctx context.Context, e UserRole) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	return
@@ -178,35 +182,39 @@ func (r *UserRoleRepoImpl) Update(ctx context.Context, e UserRole) (err error) {
 
 // Delete role_type
 func (r *UserRoleRepoImpl) Delete(ctx context.Context, id int64) (err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return err
+	}
 	builder := sq.
 		Delete(UserRoleTable).
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(dbtxn.DB(ctx, r))
+		RunWith(txn.DB())
 
 	if _, err = builder.ExecContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 	}
 	return
 }
 
 // FindOneByName role_type
 func (r *UserRoleRepoImpl) FindOneByName(ctx context.Context, name string) (e *UserRole, err error) {
-	var rows *sql.Rows
 	builder := sq.
 		Select("id").
 		From(UserRoleTable).
 		Where(sq.Eq{"name": name}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
-	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		PlaceholderFormat(sq.Dollar).
+		RunWith(r)
+
+	rows, err := builder.QueryContext(ctx)
+	if err != nil {
 		return
 	}
 	defer rows.Close()
 	if rows.Next() {
 		e = new(UserRole)
 		if err = rows.Scan(&e.ID); err != nil {
-			dbtxn.SetError(ctx, err)
 			return nil, err
 		}
 	}

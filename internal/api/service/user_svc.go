@@ -25,7 +25,6 @@ type (
 		dig.In
 		UserRepo   repository.UserRepo
 		AuditTrail AuditTrailSvc
-		dbtxn.Transactional
 	}
 )
 
@@ -66,14 +65,13 @@ func (r *UserSvcImpl) Insert(ctx context.Context, user repository.User) (int64, 
 
 // Delete user
 func (r *UserSvcImpl) Delete(ctx context.Context, id int64) error {
-	defer r.BeginTxn(&ctx)()
+	defer dbtxn.Begin(&ctx)()
 	users, _ := r.UserRepo.Find(ctx, dbkit.Equal(repository.UserTable.ID, id))
 	if len(users) < 1 {
 		return nil
 	}
 
 	if err := r.UserRepo.Delete(ctx, id); err != nil {
-		r.CancelMe(ctx, err)
 		return err
 	}
 
@@ -83,7 +81,7 @@ func (r *UserSvcImpl) Delete(ctx context.Context, id int64) error {
 
 // Update user
 func (r *UserSvcImpl) Update(ctx context.Context, user repository.User) error {
-	defer r.BeginTxn(&ctx)()
+	defer dbtxn.Begin(&ctx)()
 	oldUser, err := r.UserRepo.Find(ctx, dbkit.Equal(repository.UserTable.ID, user.ID))
 	if err != nil {
 		return err

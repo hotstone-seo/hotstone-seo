@@ -49,19 +49,23 @@ func NewSyncRepo(impl SyncRepoImpl) SyncRepo {
 func (r *SyncRepoImpl) FindOne(ctx context.Context, version int64) (urlStoreSync *Sync, err error) {
 	var rows *sql.Rows
 	builder := sq.
-		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
+		Select(
+			"version",
+			"operation",
+			"rule_id",
+			"latest_url_pattern",
+			"created_at",
+		).
 		From("url_sync").
 		Where(sq.Eq{"version": version}).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
+		PlaceholderFormat(sq.Dollar).
+		RunWith(r)
 	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
 	if rows.Next() {
-		if urlStoreSync, err = scanSync(rows); err != nil {
-			dbtxn.SetError(ctx, err)
-		}
+		return scanSync(rows)
 	}
 	return
 }
@@ -73,9 +77,9 @@ func (r *SyncRepoImpl) Find(ctx context.Context) (list []*Sync, err error) {
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
+		PlaceholderFormat(sq.Dollar).
+		RunWith(r)
 	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
@@ -83,7 +87,6 @@ func (r *SyncRepoImpl) Find(ctx context.Context) (list []*Sync, err error) {
 	for rows.Next() {
 		var urlStoreSync *Sync
 		if urlStoreSync, err = scanSync(rows); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, urlStoreSync)
@@ -93,14 +96,19 @@ func (r *SyncRepoImpl) Find(ctx context.Context) (list []*Sync, err error) {
 
 // Insert urlStoreSync
 func (r *SyncRepoImpl) Insert(ctx context.Context, urlStoreSync Sync) (lastInsertID int64, err error) {
+	txn, err := dbtxn.Use(ctx, r.DB)
+	if err != nil {
+		return
+	}
 	query := sq.
 		Insert("url_sync").
 		Columns("operation", "rule_id", "latest_url_pattern").
 		Values(urlStoreSync.Operation, urlStoreSync.RuleID, urlStoreSync.LatestURLPattern).
 		Suffix("RETURNING \"version\"").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
+		PlaceholderFormat(sq.Dollar).
+		RunWith(txn.DB())
 	if err = query.QueryRowContext(ctx).Scan(&urlStoreSync.Version); err != nil {
-		dbtxn.SetError(ctx, err)
+		txn.SetError(err)
 		return
 	}
 	lastInsertID = urlStoreSync.Version
@@ -108,41 +116,46 @@ func (r *SyncRepoImpl) Insert(ctx context.Context, urlStoreSync Sync) (lastInser
 }
 
 // GetLatestVersion of url store
-func (r *SyncRepoImpl) GetLatestVersion(ctx context.Context) (latestVersion int64, err error) {
+func (r *SyncRepoImpl) GetLatestVersion(ctx context.Context) (int64, error) {
+	var latestVersion int64
 	builder := sq.
 		Select("version").
 		From("url_sync").
 		OrderBy("version DESC").
 		Limit(1).
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
-	if err = builder.QueryRowContext(ctx).Scan(&latestVersion); err != nil {
+		PlaceholderFormat(sq.Dollar).
+		RunWith(r)
+
+	err := builder.QueryRowContext(ctx).Scan(&latestVersion)
+	if err != nil {
 		if err == sql.ErrNoRows {
-			dbtxn.SetError(ctx, err)
 			return 0, nil
 		}
-		return
+		return -1, err
 	}
 
-	return
+	return latestVersion, nil
 }
 
 func (r *SyncRepoImpl) GetListDiff(ctx context.Context, offsetVersion int64) (list []*Sync, err error) {
-	var rows *sql.Rows
+
 	builder := sq.
 		Select("version", "operation", "rule_id", "latest_url_pattern", "created_at").
 		From("url_sync").
 		Where(sq.Gt{"version": offsetVersion}).
 		OrderBy("version").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
-	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
+		PlaceholderFormat(sq.Dollar).
+		RunWith(r)
+
+	rows, err := builder.QueryContext(ctx)
+	if err != nil {
 		return
 	}
 	defer rows.Close()
+
 	for rows.Next() {
 		var urlStoreSync *Sync
 		if urlStoreSync, err = scanSync(rows); err != nil {
-			dbtxn.SetError(ctx, err)
 			return
 		}
 		list = append(list, urlStoreSync)
@@ -157,18 +170,17 @@ func (r *SyncRepoImpl) FindRule(ctx context.Context, ruleID int64) (urlStoreSync
 		From("url_sync").
 		Where(sq.Eq{"rule_id": ruleID}).
 		OrderBy("version DESC").
-		PlaceholderFormat(sq.Dollar).RunWith(dbtxn.DB(ctx, r))
+		PlaceholderFormat(sq.Dollar).
+		RunWith(r)
 	if rows, err = builder.QueryContext(ctx); err != nil {
-		dbtxn.SetError(ctx, err)
 		return
 	}
 	defer rows.Close()
+
 	if rows.Next() {
-		if urlStoreSync, err = scanSync(rows); err != nil {
-			dbtxn.SetError(ctx, err)
-		}
+		return scanSync(rows)
 	}
-	return
+	return nil, nil
 }
 
 func scanSync(rows *sql.Rows) (*Sync, error) {
