@@ -8,6 +8,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -201,7 +202,10 @@ func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
 func (tag Tag) Validate() error {
 	validate := validator.New()
 	validate.RegisterStructValidation(TagStructLevelValidation, Tag{})
-	return validate.Struct(tag)
+	if err := validate.Struct(tag); err != nil {
+		return errvalid.New(err.Error())
+	}
+	return nil
 }
 
 // TagStructLevelValidation validate per type
