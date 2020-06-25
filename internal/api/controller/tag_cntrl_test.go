@@ -1,49 +1,108 @@
 package controller_test
 
 import (
-	"database/sql"
 	"errors"
 	"net/http"
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"github.com/typical-go/typical-rest-server/pkg/echotest"
+	"github.com/typical-go/typical-rest-server/pkg/errvalid"
 
 	"github.com/hotstone-seo/hotstone-seo/internal/api/controller"
 	"github.com/hotstone-seo/hotstone-seo/internal/api/service_mock"
-	"github.com/hotstone-seo/hotstone-seo/internal/api/repository"
 )
 
-func TestTagController_Create(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-	tagSvcMock := service_mock.NewMockTagService(ctrl)
-	tagCntrl := controller.TagCntrl{
-		TagService: tagSvcMock,
+type (
+	tagCntrlFn func(*service_mock.MockTagService)
+
+	testCase struct {
+		testName   string
+		tagCntrlFn tagCntrlFn
+		echotest.TestCase
 	}
-	t.Run("WHEN body is malformed", func(t *testing.T) {
-		_, err := echotest.DoPOST(tagCntrl.Create, "/", `{ "rule_id", "type": "title" }`, nil)
-		require.EqualError(t, err, "code=400, message=Syntax error: offset=12, error=invalid character ',' after object key")
-	})
-	t.Run("WHEN tag is invalid", func(t *testing.T) {
-		_, err := echotest.DoPOST(tagCntrl.Create, "/", `{ "rule_id": 999, "locale": "en_US", "type": "title" }`, nil)
-		require.EqualError(t, err, "code=400, message=Key: 'Tag.Value' Error:Field validation for 'Value' failed on the 'noempty' tag")
-	})
-	t.Run("WHEN received error after inserting", func(t *testing.T) {
-		tagSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(-1), errors.New("insert error"))
-		_, err := echotest.DoPOST(tagCntrl.Create, "/", `{ "rule_id": 999, "locale": "en_US", "type": "title", "value": "Page Title" }`, nil)
-		require.EqualError(t, err, "code=422, message=insert error")
-	})
-	t.Run("WHEN successfully insert new tag", func(t *testing.T) {
-		tagSvcMock.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(int64(999), nil)
-		rr, err := echotest.DoPOST(tagCntrl.Create, "/", `{ "rule_id": 999, "locale": "en_US", "type": "title", "value": "Page Title" }`, nil)
-		require.NoError(t, err)
-		require.Equal(t, http.StatusCreated, rr.Code)
-		require.Equal(t, "{\"id\":999,\"rule_id\":999,\"locale\":\"en_US\",\"type\":\"title\",\"attributes\":null,\"value\":\"Page Title\",\"updated_at\":\"0001-01-01T00:00:00Z\",\"created_at\":\"0001-01-01T00:00:00Z\"}\n", rr.Body.String())
-	})
+)
+
+func createTagCntrl(t *testing.T, fn tagCntrlFn) (*controller.TagCntrl, *gomock.Controller) {
+	mock := gomock.NewController(t)
+	mockSvc := service_mock.NewMockTagService(mock)
+	if fn != nil {
+		fn(mockSvc)
+	}
+	return &controller.TagCntrl{
+		TagService: mockSvc,
+	}, mock
 }
 
+func TestTagController_Create(t *testing.T) {
+	testCases := []testCase{
+		{
+			testName: "Malformed request body",
+			TestCase: echotest.TestCase{
+				Request: echotest.Request{
+					Method: http.MethodPost,
+					Target: "/tags",
+					Body:   "{ invalid }",
+					Header: echotest.HeaderForJSON(),
+				},
+				ExpectedCode: http.StatusInternalServerError,
+				ExpectedErr:  "",
+			},
+		},
+		{
+			testName: "Invalid tag",
+			TestCase: echotest.TestCase{
+				Request: echotest.Request{
+					Method: http.MethodPost,
+					Target: "/tags",
+					Body:   `{ rule_id: 999, locale: "en_US" }`,
+					Header: echotest.HeaderForJSON(),
+				},
+				ExpectedCode: http.StatusUnprocessableEntity,
+				ExpectedErr:  "",
+			},
+			tagCntrlFn: func(svc *service_mock.MockTagService) {
+				svc.EXPECT().Create(gomock.Any(), gomock.Any()).Return(int64(-1), errvalid.New("Validation error"))
+			},
+		},
+		{
+			testName: "Error when inserting",
+			TestCase: echotest.TestCase{
+				Request: echotest.Request{
+					Method: http.MethodPost,
+					Target: "/tags",
+					Body:   `{ "rule_id": 999, "locale": "en_US", "type": "title", "value": "Page Title" }`,
+					Header: echotest.HeaderForJSON(),
+				},
+				ExpectedCode: http.StatusInternalServerError,
+				ExpectedErr:  "",
+			},
+			tagCntrlFn: func(svc *service_mock.MockTagService) {
+				svc.EXPECT().Create(gomock.Any(), gomock.Any()).Return(int64(-1), errors.New("Unexpected error"))
+			},
+		},
+		{
+			testName: "Successfully insert",
+			TestCase: echotest.TestCase{
+				Request: echotest.Request{
+					Method: http.MethodPost,
+					Target: "/tags",
+					Body:   `{ "rule_id": 999, "locale": "en_US", "type": "title", "value": "Page Title" }`,
+					Header: echotest.HeaderForJSON(),
+				},
+				ExpectedCode: http.StatusCreated,
+				ExpectedHeader: map[string]string{
+					"Location": "/tags/999",
+				},
+			},
+			tagCntrlFn: func(svc *service_mock.MockTagService) {
+				svc.EXPECT().Create(gomock.Any(), gomock.Any()).Return(int64(999), nil)
+			},
+		},
+	}
+}
+
+/*
 func TestTagController_Find(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -178,3 +237,4 @@ func TestTagController_Update(t *testing.T) {
 		require.Equal(t, "{\"message\":\"Success update tag #999\"}\n", rr.Body.String())
 	})
 }
+*/
