@@ -24,7 +24,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/thoas/go-funk v0.6.0
 	github.com/typical-go/typical-go v0.9.57
-	github.com/typical-go/typical-rest-server v0.8.32
+	github.com/typical-go/typical-rest-server v0.8.33
 	github.com/urfave/cli/v2 v2.2.0
 	github.com/xorcare/pointer v1.1.0
 	github.com/yuin/gopher-lua v0.0.0-20191220021717-ab39c6098bdb // indirect

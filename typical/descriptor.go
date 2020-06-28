@@ -3,9 +3,12 @@ package typical
 import (
 	"github.com/hotstone-seo/hotstone-seo/internal/app"
 	"github.com/hotstone-seo/hotstone-seo/internal/app/infra"
+	"github.com/hotstone-seo/hotstone-seo/pkg/pgcmd"
+	"github.com/hotstone-seo/hotstone-seo/pkg/rediscmd"
 	"github.com/typical-go/typical-go/pkg/typdocker"
 	"github.com/typical-go/typical-go/pkg/typgo"
 	"github.com/typical-go/typical-go/pkg/typmock"
+	"github.com/typical-go/typical-rest-server/pkg/dockerrx"
 )
 
 var (
@@ -38,44 +41,52 @@ var (
 
 		Utility: typgo.Utilities{
 			&typmock.Utility{},
-			&pgUtility{
-				name:         "main-db",
-				hostEnv:      "PG_HOST",
-				portEnv:      "PG_PORT",
-				userEnv:      "PG_USER",
-				passwordEnv:  "PG_PASSWORD",
-				dbnameEnv:    "PG_DBNAME",
-				migrationSrc: "scripts/main-db/migration",
-				seedSrc:      "scripts/main-db/seed",
+			&pgcmd.Utility{
+				Name:         "main-db",
+				HostEnv:      "PG_HOST",
+				PortEnv:      "PG_PORT",
+				UserEnv:      "PG_USER",
+				PasswordEnv:  "PG_PASSWORD",
+				DBNameEnv:    "PG_DBNAME",
+				MigrationSrc: "scripts/main-db/migration",
+				SeedSrc:      "scripts/main-db/seed",
 			},
-			&pgUtility{
-				name:         "analyt-db",
-				hostEnv:      "ANALYT_HOST",
-				portEnv:      "ANALYT_PORT",
-				userEnv:      "ANALYT_USER",
-				passwordEnv:  "ANALYT_PASSWORD",
-				dbnameEnv:    "ANALYT_DBNAME",
-				migrationSrc: "scripts/analyt-db/migration",
-				seedSrc:      "scripts/analyt-db/seed",
+			&pgcmd.Utility{
+				Name:         "analyt-db",
+				HostEnv:      "ANALYT_HOST",
+				PortEnv:      "ANALYT_PORT",
+				UserEnv:      "ANALYT_USER",
+				PasswordEnv:  "ANALYT_PASSWORD",
+				DBNameEnv:    "ANALYT_DBNAME",
+				MigrationSrc: "scripts/analyt-db/migration",
+				SeedSrc:      "scripts/analyt-db/seed",
 			},
-			&redisUtility{},
-
+			&rediscmd.Utility{
+				Name:        "redis",
+				HostEnv:     "REDIS_HOST",
+				PortEnv:     "REDIS_PORT",
+				PasswordEnv: "REDIS_PASSWORD",
+			},
 			&typdocker.Utility{
 				Version: typdocker.V3,
 				Composers: []typdocker.Composer{
-					&redisDocker{name: "redis01"},
-					&pgDocker{
-						name:        "ht-main",
-						userEnv:     "PG_USER",
-						passwordEnv: "PG_PASSWORD",
-						portEnv:     "PG_PORT",
+					&dockerrx.RedisWithEnv{
+						Name:        "redis01",
+						PasswordEnv: "REDIS_PASSWORD",
+						PortEnv:     "REDIS_PORT",
 					},
-					&pgDocker{
-						name:        "ht-analyt",
-						image:       "timescale/timescaledb:latest-pg11",
-						userEnv:     "ANALYT_USER",
-						passwordEnv: "ANALYT_PASSWORD",
-						portEnv:     "ANALYT_PORT",
+					&dockerrx.PostgresWithEnv{
+						Name:        "ht-main",
+						UserEnv:     "PG_USER",
+						PasswordEnv: "PG_PASSWORD",
+						PortEnv:     "PG_PORT",
+					},
+					&dockerrx.PostgresWithEnv{
+						Name:        "ht-analyt",
+						Image:       "timescale/timescaledb:latest-pg11",
+						UserEnv:     "ANALYT_USER",
+						PasswordEnv: "ANALYT_PASSWORD",
+						PortEnv:     "ANALYT_PORT",
 					},
 				},
 			},
