@@ -35,7 +35,7 @@ func startServer(s server) error {
 	initErrHandler(e)
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:  "build",
+		Root:  s.StaticDir,
 		HTML5: true,
 	}))
 

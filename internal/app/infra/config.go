@@ -14,9 +14,11 @@ import (
 type (
 	// App config
 	App struct {
-		Address string `default:":8089" required:"true"`
-		Debug   bool   `default:"true"`
+		Address   string `default:":8089" required:"true"`
+		Debug     bool   `default:"true"`
+		StaticDir string `envconfig:"STATIC_DIR"`
 	}
+
 	// Auth config
 	Auth struct {
 		JWTSecret       string `envconfig:"JWT_SECRET" require:"true"`
