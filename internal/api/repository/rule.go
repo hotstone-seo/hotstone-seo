@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -219,7 +219,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": rule.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if rule.Status != "" {
 		builder = builder.Set("change_status_at", time.Now())
@@ -233,7 +233,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 		Delete("rule_data_sources").
 		Where(sq.Eq{"rule_id": rule.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = deletePrevDataSource.ExecContext(ctx); err != nil {
 		return
@@ -245,7 +245,7 @@ func (r *RuleRepoImpl) Update(ctx context.Context, rule Rule) (err error) {
 				"rule_id",
 				"data_source_id",
 			).
-			RunWith(txn.DB()).
+			RunWith(txn.DB).
 			PlaceholderFormat(sq.Dollar)
 
 		for _, dataSourceID := range rule.DataSourceIDs {

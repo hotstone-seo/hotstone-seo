@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
@@ -108,7 +108,7 @@ func (r *DataSourceRepoImpl) Insert(ctx context.Context, e DataSource) (int64, e
 		Values(e.Name, e.URL).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		txn.SetError(err)
 		return -1, err
@@ -127,7 +127,7 @@ func (r *DataSourceRepoImpl) Delete(ctx context.Context, id int64) error {
 		Delete("data_sources").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)
 	}
@@ -147,7 +147,7 @@ func (r *DataSourceRepoImpl) Update(ctx context.Context, e DataSource) error {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)
 	}

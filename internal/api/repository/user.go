@@ -7,8 +7,8 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -127,7 +127,7 @@ func (r *UserRepoImpl) Insert(ctx context.Context, user User) (lastInsertID int6
 			user.Email,
 		).
 		Suffix(fmt.Sprintf("RETURNING \"%s\"", UserTable.ID)).
-		RunWith(txn.DB()).
+		RunWith(txn.DB).
 		PlaceholderFormat(sq.Dollar).
 		QueryRowContext(ctx)
 
@@ -150,7 +150,7 @@ func (r *UserRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete(UserTableName).
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)
@@ -174,7 +174,7 @@ func (r *UserRepoImpl) Update(ctx context.Context, user User) (err error) {
 			sq.Eq{UserTable.ID: user.ID},
 		).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)

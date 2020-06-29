@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
@@ -57,7 +57,7 @@ func (r *ClientKeyAnalytRepoImpl) Insert(ctx context.Context, clientKeyID int64)
 		Columns("client_key_id").
 		Values(clientKeyID).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)
