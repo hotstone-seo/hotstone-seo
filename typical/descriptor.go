@@ -48,8 +48,8 @@ var (
 				UserEnv:      "PG_USER",
 				PasswordEnv:  "PG_PASSWORD",
 				DBNameEnv:    "PG_DBNAME",
-				MigrationSrc: "scripts/main-db/migration",
-				SeedSrc:      "scripts/main-db/seed",
+				MigrationSrc: "databases/main-db/migration",
+				SeedSrc:      "databases/main-db/seed",
 			},
 			&pgcmd.Utility{
 				Name:         "analyt-db",
@@ -58,8 +58,8 @@ var (
 				UserEnv:      "ANALYT_USER",
 				PasswordEnv:  "ANALYT_PASSWORD",
 				DBNameEnv:    "ANALYT_DBNAME",
-				MigrationSrc: "scripts/analyt-db/migration",
-				SeedSrc:      "scripts/analyt-db/seed",
+				MigrationSrc: "databases/analyt-db/migration",
+				SeedSrc:      "databases/analyt-db/seed",
 			},
 			&rediscmd.Utility{
 				Name:        "redis",
