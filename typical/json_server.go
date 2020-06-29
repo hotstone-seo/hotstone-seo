@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	jsonServerSrc = "scripts/json-server/db.json"
+	jsonServerSrc = "api/json-server/db.json"
 )
 
 var (
