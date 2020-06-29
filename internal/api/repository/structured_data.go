@@ -7,9 +7,9 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	log "github.com/sirupsen/logrus"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
@@ -137,7 +137,7 @@ func (r *StructuredDataRepoImpl) Insert(ctx context.Context, e StructuredData) (
 		Values(e.RuleID, e.Type, e.Data).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if err = builder.QueryRowContext(ctx).Scan(&e.ID); err != nil {
 		txn.SetError(err)
@@ -156,7 +156,7 @@ func (r *StructuredDataRepoImpl) Delete(ctx context.Context, id int64) (err erro
 		Delete("structured_datas").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)
@@ -178,7 +178,7 @@ func (r *StructuredDataRepoImpl) Update(ctx context.Context, e StructuredData) (
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)

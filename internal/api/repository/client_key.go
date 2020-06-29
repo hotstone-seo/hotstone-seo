@@ -6,8 +6,8 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -142,7 +142,7 @@ func (r *ClientKeyRepoImpl) Insert(ctx context.Context, e ClientKey) (newClientK
 		Values(e.Name, e.Prefix, e.Key).
 		Suffix("RETURNING *").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	err = builder.QueryRowContext(ctx).Scan(
 		&newClientKey.ID,
@@ -171,7 +171,7 @@ func (r *ClientKeyRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("client_keys").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)
@@ -192,7 +192,7 @@ func (r *ClientKeyRepoImpl) Update(ctx context.Context, e ClientKey) (err error)
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)

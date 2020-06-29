@@ -8,7 +8,7 @@ import (
 	sq "github.com/Masterminds/squirrel"
 	"go.uber.org/dig"
 
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 )
 
 type (
@@ -106,7 +106,7 @@ func (r *SyncRepoImpl) Insert(ctx context.Context, urlStoreSync Sync) (lastInser
 		Values(urlStoreSync.Operation, urlStoreSync.RuleID, urlStoreSync.LatestURLPattern).
 		Suffix("RETURNING \"version\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 	if err = query.QueryRowContext(ctx).Scan(&urlStoreSync.Version); err != nil {
 		txn.SetError(err)
 		return

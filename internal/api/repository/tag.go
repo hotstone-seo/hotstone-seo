@@ -6,8 +6,8 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -149,7 +149,7 @@ func (r *TagRepoImpl) Insert(ctx context.Context, e Tag) (int64, error) {
 		Values(e.RuleID, e.Locale, e.Type, e.Attributes, e.Value).
 		Suffix("RETURNING \"id\"").
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	var lastInsertID int64
 	if err = builder.QueryRowContext(ctx).Scan(&lastInsertID); err != nil {
@@ -169,7 +169,7 @@ func (r *TagRepoImpl) Delete(ctx context.Context, id int64) (err error) {
 		Delete("tags").
 		Where(sq.Eq{"id": id}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)
@@ -197,7 +197,7 @@ func (r *TagRepoImpl) Update(ctx context.Context, e Tag) (err error) {
 		Set("updated_at", time.Now()).
 		Where(sq.Eq{"id": e.ID}).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if _, err = builder.ExecContext(ctx); err != nil {
 		txn.SetError(err)

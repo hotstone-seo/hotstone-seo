@@ -6,8 +6,8 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/hotstone-seo/hotstone-seo/pkg/dbtxn"
 	"github.com/typical-go/typical-rest-server/pkg/dbkit"
+	"github.com/typical-go/typical-rest-server/pkg/dbtxn"
 	"go.uber.org/dig"
 )
 
@@ -108,7 +108,7 @@ func (s *SettingRepoImpl) Update(ctx context.Context, setting *Setting, opt dbki
 		Set(SettingCols.Value, setting.Value).
 		Set(SettingCols.UpdatedAt, time.Now()).
 		PlaceholderFormat(sq.Dollar).
-		RunWith(txn.DB())
+		RunWith(txn.DB)
 
 	if builder, err = opt.CompileUpdate(builder); err != nil {
 		txn.SetError(err)
