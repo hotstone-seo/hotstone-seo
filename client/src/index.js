@@ -4,8 +4,12 @@ import cachingFetch from "make-fetch-happen"
 class HotStoneClient {
   constructor(hostURL, key, opts = {}) {
     this.bearer = `Bearer ${key}`
-    this.baseURL = hostURL
+    this.baseURL = this.stripTrailingSlash(hostURL)
     this.fetch = cachingFetch.defaults(opts)
+  }
+
+  stripTrailingSlash(str) {
+    return str.replace(/^(.+?)\/*?$/, "$1");
   }
 
   async match(path) {

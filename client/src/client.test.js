@@ -16,6 +16,23 @@ describe('HotStone-Client', () => {
         mockServer.done()
     })
 
+    describe('baseURL', () => {
+        const testCases = [
+            { name: 'no trailing slash', givenBaseURL: 'http://foo.com', expectBaseURL: 'http://foo.com' },
+            { name: 'single trailing slash', givenBaseURL: 'http://foo.com/', expectBaseURL: 'http://foo.com' },
+            { name: 'multi trailing slash', givenBaseURL: 'http://foo.com///', expectBaseURL: 'http://foo.com' },
+            { name: 'only trailing slash', givenBaseURL: '/', expectBaseURL: '/' }
+        ]
+
+        testCases.map(({ name, givenBaseURL, expectBaseURL }) => {
+            test(name, async () => {
+                const key = "abc.12345678901234567890123456789012"
+                const client = new HotStoneClient(givenBaseURL, key);
+                expect(client.baseURL).toEqual(expectBaseURL)
+            })
+        })
+    })
+
     describe('match', () => {
         test('good response', async () => {
             const mockResp = {
