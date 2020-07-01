@@ -9,6 +9,9 @@ Read [HotStone Client Usage](https://hotstone-seo.github.io/getting-started/hots
 
 ## Changelog
 
+- 0.5.3
+  - Avoid global handling error; Only handle (try-catch) invalid response format
+  - Fix: strip trailing slash of baseURL
 - 0.5.2
   - `react` as peer dependency
   - `renderHelmetTags` on `'hotstone-client/lib/react'`
