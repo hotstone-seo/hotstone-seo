@@ -39,6 +39,28 @@ describe('HotStone-Client', () => {
             const rule = await subject.match('/bar/fred')
             expect(rule).toEqual({})
         })
+
+        test('bad format response', async () => {
+            const mockResp = {
+                message: 'foo msg'
+            }
+
+            mockServer.get('/p/match')
+                .query({ _path: '/bar/fred' })
+                .reply(200, mockResp)
+
+            const rule = await subject.match('/bar/fred')
+            expect(rule).toEqual({})
+        })
+
+        test('not json format', async () => {
+            mockServer.get('/p/match')
+                .query({ _path: '/bar/fred' })
+                .reply(200, `<html>message</html>`)
+
+            const rule = await subject.match('/bar/fred')
+            expect(rule).toEqual({})
+        })
     })
 
     describe('tags', () => {
@@ -65,6 +87,33 @@ describe('HotStone-Client', () => {
             mockServer.get('/p/fetch-tags')
                 .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
                 .reply(400)
+
+            const tags = await subject.tags(givenRule, givenLocale)
+            expect(tags).toEqual([])
+        })
+
+        test('bad format response', async () => {
+            const mockResp = {
+                message: 'foo msg'
+            }
+            const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
+            const givenLocale = 'en_US'
+
+            mockServer.get('/p/fetch-tags')
+                .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
+                .reply(200, mockResp)
+
+            const tags = await subject.tags(givenRule, givenLocale)
+            expect(tags).toEqual(mockResp)
+        })
+
+        test('not json format', async () => {
+            const givenRule = { rule_id: 9, path_param: { src: 'JKTC', dst: 'MESC' } }
+            const givenLocale = 'en_US'
+
+            mockServer.get('/p/fetch-tags')
+                .query({ _rule: 9, _locale: 'en_US', src: 'JKTC', dst: 'MESC' })
+                .reply(200, `<html>message</html>`)
 
             const tags = await subject.tags(givenRule, givenLocale)
             expect(tags).toEqual([])
